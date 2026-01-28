@@ -1,6 +1,6 @@
 # Estifanos Wedding Website
 
-A luxury 3D wedding website featuring an immersive hero experience, guest RSVP system, admin dashboard with campaign management, and multi-channel notifications (Email + SMS).
+A wedding website with an immersive 3D hero experience, guest RSVP system, admin dashboard with campaign management, and multi-channel notifications (Email + SMS).
 
 **Live:** [theestifanos.com](https://theestifanos.com)
 
