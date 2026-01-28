@@ -23,10 +23,10 @@ export default function GoogleEarthVideo() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        const fullyVisible = entry.isIntersecting && entry.intersectionRatio >= 0.98;
-        setCanPlay(fullyVisible);
+        const visibleEnough = entry.isIntersecting && entry.intersectionRatio >= 0.5;
+        setCanPlay(visibleEnough);
       },
-      { threshold: [0, 0.5, 0.98, 1] }
+      { threshold: [0, 0.5, 1] }
     );
 
     observer.observe(containerRef.current);
