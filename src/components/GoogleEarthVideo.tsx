@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const VIDEO_SRC = "https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/wedding_venue.mp4";
@@ -13,8 +13,36 @@ const CAPTIONS = [
 ];
 
 export default function GoogleEarthVideo() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [currentCaptionIndex, setCurrentCaptionIndex] = useState(0);
+  const [canPlay, setCanPlay] = useState(false);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const fullyVisible = entry.isIntersecting && entry.intersectionRatio >= 0.98;
+        setCanPlay(fullyVisible);
+      },
+      { threshold: [0, 0.5, 0.98, 1] }
+    );
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+    const video = videoRef.current;
+
+    if (canPlay) {
+      video.play().catch(() => null);
+    } else {
+      video.pause();
+    }
+  }, [canPlay]);
 
   const handleTimeUpdate = () => {
     if (!videoRef.current) return;
@@ -29,15 +57,16 @@ export default function GoogleEarthVideo() {
   };
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black">
+    <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-black">
       <video
         ref={videoRef}
         src={VIDEO_SRC}
         className="absolute inset-0 w-full h-full object-cover"
-        autoPlay
+        autoPlay={false}
         muted
         loop
         playsInline
+        preload="metadata"
         onTimeUpdate={handleTimeUpdate}
       />
       
