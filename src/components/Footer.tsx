@@ -13,7 +13,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative w-full bg-[#0a0908] py-20 border-t border-[#D4A845]/20 flex flex-col items-center justify-center gap-8 z-20">
+    <footer className="relative w-full bg-[#0a0908] py-10 border-t border-[#D4A845]/20 flex flex-col items-center justify-center gap-6 z-20">
       
       {/* Return to Top Button */}
       <button 
@@ -44,7 +44,7 @@ export default function Footer() {
 
       {/* Signature & Copyright */}
       <div className="flex flex-col items-center gap-4 text-center">
-        <p className="font-serif text-[#FFF5E6]/90 text-lg italic">
+        <p className="font-serif text-[#FFF5E6]/90 text-base italic">
           Made with <span className="text-[#D4A845]">♥</span> by Yonatan
         </p>
         <p className="font-sans text-[#FFF5E6]/40 text-xs tracking-wider uppercase">
