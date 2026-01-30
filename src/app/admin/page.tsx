@@ -416,7 +416,7 @@ export default function AdminDashboard() {
         // to the old contact info, now targeting the updated email/phone.
         if (campaignsToResend.size > 0) {
           const resendResults: string[] = [];
-          for (const campaignId of campaignsToResend) {
+          for (const campaignId of Array.from(campaignsToResend)) {
             try {
               const res = await fetch('/api/notify', {
                 method: 'POST',
