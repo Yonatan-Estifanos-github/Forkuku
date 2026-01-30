@@ -331,13 +331,52 @@ export default function AdminDashboard() {
     try {
       if (editingParty) {
         // ========== UPDATE MODE ==========
+        const oldEmail = editingParty.email?.trim() || '';
+        const oldPhone = editingParty.phone?.trim() || '';
+        const newEmail = partyEmail.trim();
+        const newPhone = partyPhone.trim();
+        const emailChanged = newEmail && newEmail !== oldEmail;
+        const phoneChanged = newPhone && newPhone !== oldPhone;
+
+        // Collect campaigns that were previously sent on changed channels
+        // so we can re-send to the updated contact info after saving.
+        const campaignsToResend = new Set<string>();
+
+        if (emailChanged) {
+          const sentEmailLogs = editingParty.campaign_logs?.filter(
+            l => l.channel === 'email' && l.status === 'sent'
+          ) || [];
+          sentEmailLogs.forEach(l => campaignsToResend.add(l.campaign_id));
+
+          // Clear stale email logs so status resets to "Not Sent"
+          await supabase
+            .from('campaign_logs')
+            .delete()
+            .eq('party_id', editingParty.id)
+            .eq('channel', 'email');
+        }
+
+        if (phoneChanged) {
+          const sentSmsLogs = editingParty.campaign_logs?.filter(
+            l => l.channel === 'sms' && l.status === 'sent'
+          ) || [];
+          sentSmsLogs.forEach(l => campaignsToResend.add(l.campaign_id));
+
+          // Clear stale SMS logs so status resets to "Not Sent"
+          await supabase
+            .from('campaign_logs')
+            .delete()
+            .eq('party_id', editingParty.id)
+            .eq('channel', 'sms');
+        }
+
         // Update party info
         const { error: partyError } = await supabase
           .from('parties')
           .update({
             party_name: partyName.trim(),
-            email: partyEmail.trim() || null,
-            phone: partyPhone.trim() || null,
+            email: newEmail || null,
+            phone: newPhone || null,
           })
           .eq('id', editingParty.id);
 
@@ -371,6 +410,31 @@ export default function AdminDashboard() {
               is_attending: false,
             }))
           );
+        }
+
+        // Re-send notifications for campaigns that were previously delivered
+        // to the old contact info, now targeting the updated email/phone.
+        if (campaignsToResend.size > 0) {
+          const resendResults: string[] = [];
+          for (const campaignId of campaignsToResend) {
+            try {
+              const res = await fetch('/api/notify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ partyId: editingParty.id, campaignId }),
+              });
+              const result = await res.json();
+              if (res.ok) {
+                const label = CAMPAIGNS.find(c => c.id === campaignId)?.label || campaignId;
+                resendResults.push(`${label}: sent`);
+              } else {
+                resendResults.push(`${campaignId}: ${result.error || 'failed'}`);
+              }
+            } catch {
+              resendResults.push(`${campaignId}: network error`);
+            }
+          }
+          alert(`Contact info updated. Re-sent ${campaignsToResend.size} campaign(s):\n${resendResults.join('\n')}`);
         }
       } else {
         // ========== CREATE MODE ==========
