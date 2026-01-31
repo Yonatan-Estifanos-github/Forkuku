@@ -194,6 +194,13 @@ export default function AdminDashboard() {
   };
 
   const handleSendNotification = async (partyId: number) => {
+    const party = parties.find(p => p.id === partyId);
+    const campaignLabel = CAMPAIGNS.find(c => c.id === selectedCampaign)?.label || selectedCampaign;
+    const confirmed = window.confirm(
+      `Send "${campaignLabel}" to ${party?.party_name || 'this party'}?`
+    );
+    if (!confirmed) return;
+
     setSendingId(partyId);
     try {
       const res = await fetch('/api/notify', {
