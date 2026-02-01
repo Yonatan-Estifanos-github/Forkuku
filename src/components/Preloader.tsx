@@ -9,9 +9,9 @@ import { useCountdown, formatNumber } from '@/hooks/useCountdown';
 // ============================================================================
 const PRELOADER_MESSAGE = `Glory to God for this beautiful season! We are so excited to share our story with you.
 
-The Wedding Parable: Many are loved, but few are invited. Our venue is incredibly intimate, so if your name isn't on the official digital guest list, we unfortunately cannot squeeze you in.
+We have a strict guest limit we need to stick to, so if you did not receive a Save the Date via email or phone number, we unfortunately cannot accommodate you. We love you dearly and appreciate your understanding.
 
-We love you dearly and appreciate your understanding! (And yes, the Registry button works for everyone 😉)
+The Registry is open to everyone — no invite needed for that one.
 
 - Yonatan & Saron`;
 
