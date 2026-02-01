@@ -27,9 +27,11 @@
 
 ## Available Tools (MCP)
 You have direct access to the following live infrastructure via Model Context Protocol:
+- **GitHub:** Can manage issues, PRs, branches, and code search.
+- **Supabase:** Can run SQL queries, inspect schemas, and manage migrations for project `foxezhxncpzzpbemdafa`.
 - **Vercel:** Can access deployments, build logs, and environment variables for the `estifanos-wedding` project.
-- **Supabase:** Can run SQL queries and inspect schemas for project `foxezhxncpzzpbemdafa`.
-- **Linear:** Can access project issues and roadmap (if configured).
+
+**GitHub Repo:** `Yonatan-Estifanos-github/Forkuku` (The MCP tool is connected globally; use this slug for context).
 
 ## References
 - @import "./PROJECT.md"
