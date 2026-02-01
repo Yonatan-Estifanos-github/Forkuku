@@ -98,9 +98,9 @@ export default function Preloader({ onComplete }: PreloaderProps) {
               {paragraph.split('').map((char, charIdx) => (
                 <motion.span
                   key={charIdx}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.15 }}
+                  initial={{ opacity: 0, filter: 'blur(4px)', y: 5 }}
+                  animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+                  transition={{ duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] }}
                 >
                   {char}
                 </motion.span>
