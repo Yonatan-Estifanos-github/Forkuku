@@ -102,7 +102,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
               {index < paragraphs.length - 1 && <><br /><br /></>}
             </span>
           ))}
-          <span className={`typewriter-cursor ${isTypingComplete ? 'opacity-0' : ''}`}>|</span>
+          <span className={`typewriter-cursor inline-block w-[2px] h-[1em] bg-[#D4A845] align-middle ml-1 animate-pulse ${isTypingComplete ? 'opacity-0' : ''}`} aria-hidden="true" />
         </p>
 
         {/* Central Countdown */}
