@@ -8,24 +8,22 @@ import { JOURNEY_DATA } from './journeyData';
 export default function JourneyGallery() {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const [endPercent, setEndPercent] = useState(-100);
+  const [endX, setEndX] = useState(0);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   });
 
-  // Calculate how far to translate based on track width vs viewport
+  // Calculate exact pixel distance so the last card's right edge meets the viewport's right edge
   useEffect(() => {
     function measure() {
       if (!trackRef.current) return;
-      const trackWidth = trackRef.current.scrollWidth;
+      const trackScrollWidth = trackRef.current.scrollWidth;
       const viewportWidth = window.innerWidth;
-      const overflow = trackWidth - viewportWidth;
+      const overflow = trackScrollWidth - viewportWidth;
       if (overflow > 0) {
-        // Smaller buffer on mobile to prevent over-scrolling
-        const buffer = viewportWidth < 768 ? 1.05 : 1.1;
-        setEndPercent(-((overflow * buffer) / trackWidth) * 100);
+        setEndX(-overflow);
       }
     }
     measure();
@@ -33,11 +31,7 @@ export default function JourneyGallery() {
     return () => window.removeEventListener('resize', measure);
   }, []);
 
-  const x = useTransform(
-    scrollYProgress,
-    [0, 1],
-    ['0%', `${endPercent}%`]
-  );
+  const x = useTransform(scrollYProgress, [0, 1], [0, endX]);
 
   return (
     <section id="story" ref={containerRef} className="relative h-[250vh] md:h-[300vh]">
@@ -57,7 +51,7 @@ export default function JourneyGallery() {
         <motion.div
           ref={trackRef}
           style={{ x }}
-          className="flex gap-6 md:gap-8 pl-[5vw] md:pl-[10vw]"
+          className="flex gap-6 md:gap-8 pl-[5vw] md:pl-[10vw] pr-[5vw] md:pr-[10vw]"
         >
           {JOURNEY_DATA.map((item, index) => (
             <JourneyCard
@@ -67,8 +61,6 @@ export default function JourneyGallery() {
               scrollProgress={scrollYProgress}
             />
           ))}
-          {/* End spacer so last card can reach center */}
-          <div className="flex-shrink-0 w-[10vw]" />
         </motion.div>
 
         {/* Progress bar */}
