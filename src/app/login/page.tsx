@@ -68,7 +68,6 @@ export default function SiteLoginPage() {
               className="w-full p-4 bg-[#1a1815] border border-[#D4A845]/30 rounded outline-none focus:border-[#D4A845] transition-colors text-[#E6D2B5] text-center tracking-widest placeholder:text-[#E6D2B5]/30"
               placeholder="Enter Password"
               required
-              autoFocus
             />
           </div>
 
