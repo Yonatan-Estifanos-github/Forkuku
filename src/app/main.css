@@ -115,6 +115,17 @@ body.preloader-active .countdown-container {
 }
 
 /* ================================
+   SCROLLBAR HIDE UTILITY
+   ================================ */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ================================
    REACTIVE LIQUID GOLD SHIMMER
    Mouse-driven metallic text effect
    ================================ */

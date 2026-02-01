@@ -1,8 +1,8 @@
 import Hero from '@/components/Hero';
-import OurStory from '@/components/OurStory';
 import ScriptureSection from '@/components/ScriptureSection';
 import Rsvp from '@/components/Rsvp';
 import GoogleEarthVideo from '@/components/GoogleEarthVideo';
+import JourneyGallery from '@/components/journey/JourneyGallery';
 import Section from '@/components/ui/Section';
 import Footer from '@/components/Footer';
 
@@ -13,9 +13,7 @@ export default function Home() {
         <Hero />
       </Section>
 
-      <Section id="story">
-        <OurStory />
-      </Section>
+      <JourneyGallery />
 
       <Section id="venue">
         <GoogleEarthVideo />
