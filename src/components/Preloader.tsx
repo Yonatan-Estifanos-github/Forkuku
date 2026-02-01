@@ -93,21 +93,35 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       <div className="flex flex-col items-center max-w-[600px] px-8">
         {/* Typing Effect Message */}
         <p className="preloader-text font-serif italic text-xl sm:text-2xl text-[#D4A845] leading-relaxed text-center mb-12">
-          {PRELOADER_MESSAGE.slice(0, visibleCount).split('\n\n').map((paragraph, index, array) => (
-            <span key={index}>
-              {paragraph.split('').map((char, charIdx) => (
-                <motion.span
-                  key={charIdx}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  {char}
-                </motion.span>
-              ))}
-              {index < array.length - 1 && <><br /><br /></>}
-            </span>
-          ))}
+          {(() => {
+            let charCounter = 0;
+            return PRELOADER_MESSAGE.split('\n\n').map((paragraph, pIndex, pArray) => (
+              <span key={pIndex}>
+                {paragraph.split('').map((char, cIndex) => {
+                  const currentGlobalIndex = charCounter++;
+                  const isVisible = currentGlobalIndex < visibleCount;
+                  
+                  return (
+                    <motion.span
+                      key={cIndex}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: isVisible ? 1 : 0 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      {char}
+                    </motion.span>
+                  );
+                })}
+                {pIndex < pArray.length - 1 && (
+                  <>
+                    {/* Advance counter for newlines if we want strict accounting, 
+                        though visual flow is key here. Let's just render the breaks. */}
+                    <br /><br />
+                  </>
+                )}
+              </span>
+            ));
+          })()}
         </p>
 
         {/* Central Countdown */}
