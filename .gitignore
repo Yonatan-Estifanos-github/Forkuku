@@ -39,3 +39,4 @@ public/videos/
 
 # claude
 .claude/
+.env

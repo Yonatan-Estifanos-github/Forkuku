@@ -133,7 +133,6 @@ function SearchScreen({ onFound }: { onFound: (party: Party) => void }) {
             onChange={(e) => setQuery(e.target.value)}
             disabled={isLoading}
             placeholder="Ex. Sarah Fortune"
-            autoFocus
           />
         </div>
 
