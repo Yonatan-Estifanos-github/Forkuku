@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Cormorant_Garamond, Allura } from "next/font/google";
+import { Inter, Cormorant_Garamond, Allura, Playfair_Display } from "next/font/google";
 import "./main.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import ConditionalUI from "@/components/ConditionalUI";
@@ -14,6 +14,11 @@ const allura = Allura({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--font-allura"
+});
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-playfair"
 });
 
 export const metadata: Metadata = {
@@ -34,7 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${cormorant.variable} ${allura.variable} font-sans`}>
+      <body className={`${inter.variable} ${cormorant.variable} ${allura.variable} ${playfair.variable} font-sans`}>
         <SmoothScroll>
           {/* Conditionally render nav/sound (hidden on admin/login) */}
           <ConditionalUI />

@@ -28,6 +28,10 @@ const config: Config = {
         sans: ['var(--font-inter)'],
         serif: ['var(--font-cormorant)'],
         script: ['var(--font-allura)'],
+        display: ['var(--font-playfair)'],
+      },
+      animation: {
+        'spin-slow': 'spin 20s linear infinite',
       },
     },
   },

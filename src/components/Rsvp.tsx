@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 // ============================================================================
 // TYPES
@@ -20,14 +21,57 @@ interface Party {
 }
 
 // ============================================================================
-// SHARED STYLES
+// LUXURY INPUT — animated center-expand underline
 // ============================================================================
-const inputStyles = {
-  base: `w-full bg-transparent border-b border-stone-700 py-3 text-lg font-serif tracking-wide
-         transition-colors duration-300 outline-none text-stone-200
-         focus:border-amber-500 placeholder:text-stone-500 placeholder:italic`,
-  label: 'text-xs tracking-[0.2em] uppercase font-medium text-stone-400',
-};
+function LuxuryInput({
+  label,
+  id,
+  ...props
+}: { label: string; id: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-amber-500/80">
+        {label}
+      </label>
+      <div className="luxury-input relative">
+        <input
+          id={id}
+          className="w-full bg-transparent border-0 py-3 text-lg font-serif tracking-wide outline-none text-stone-200 placeholder:text-stone-600 placeholder:italic"
+          {...props}
+        />
+        <span className="luxury-input-line" />
+      </div>
+    </div>
+  );
+}
+
+function LuxuryTextarea({
+  label,
+  id,
+  ...props
+}: { label: string; id: string } & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-amber-500/80">
+        {label}
+      </label>
+      <div className="luxury-input relative">
+        <textarea
+          id={id}
+          className="w-full bg-transparent border-0 py-3 text-lg font-serif tracking-wide outline-none text-stone-200 resize-none placeholder:text-stone-600 placeholder:italic"
+          {...props}
+        />
+        <span className="luxury-input-line" />
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// BUTTON
+// ============================================================================
+const btnClass =
+  'px-10 py-4 font-medium text-sm tracking-widest uppercase transition-all duration-300 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white rounded shadow-lg shadow-amber-900/20 disabled:opacity-50 disabled:cursor-not-allowed';
 
 // ============================================================================
 // SEARCH SCREEN
@@ -73,27 +117,21 @@ function SearchScreen({ onFound }: { onFound: (party: Party) => void }) {
 
   return (
     <div className="w-full max-w-lg text-center">
-      <p className="font-serif text-base md:text-lg mb-10 leading-relaxed px-4 text-stone-300">
+      <p className="font-serif text-base md:text-lg mb-10 leading-relaxed px-4 text-stone-400">
         Please enter the first and last name of one member of your party below.
         If you&apos;re responding for you and a guest (or your family), you&apos;ll
         be able to RSVP for your entire group on the next page.
       </p>
 
       <form onSubmit={handleSearch} className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2 text-left">
-          <label
-            htmlFor="search"
-            className={inputStyles.label}
-          >
-            First and Last Name
-          </label>
-          <input
-            type="text"
+        <div className="text-left">
+          <LuxuryInput
+            label="First and Last Name"
             id="search"
+            type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             disabled={isLoading}
-            className={`${inputStyles.base} disabled:opacity-50`}
             placeholder="Ex. Sarah Fortune"
             autoFocus
           />
@@ -105,11 +143,7 @@ function SearchScreen({ onFound }: { onFound: (party: Party) => void }) {
           </p>
         )}
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="px-10 py-4 font-serif text-lg tracking-[0.15em] uppercase transition-all duration-300 bg-amber-600 hover:bg-amber-700 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button type="submit" disabled={isLoading} className={btnClass}>
           {isLoading ? 'Searching...' : 'Find My Invitation'}
         </button>
       </form>
@@ -187,30 +221,20 @@ function FormScreen({
       {/* Back Button */}
       <button
         onClick={onBack}
-        className="mb-8 font-serif text-sm tracking-wide flex items-center gap-2 text-stone-400 opacity-60 hover:opacity-100 transition-opacity"
+        className="mb-8 font-serif text-sm tracking-wide flex items-center gap-2 text-stone-500 hover:text-stone-300 transition-colors"
       >
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-          />
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
         Search Again
       </button>
 
       {/* Welcome Header */}
       <div className="text-center mb-10">
-        <p className="font-serif text-sm tracking-[0.3em] uppercase mb-2 text-stone-400">
+        <p className="text-xs tracking-widest uppercase mb-2 text-amber-500/80">
           You&apos;re Invited
         </p>
-        <h3 className="font-serif text-3xl md:text-4xl tracking-wide text-stone-200">
+        <h3 className="font-display text-3xl md:text-4xl tracking-wide text-stone-200">
           Welcome, {party.party_name}!
         </h3>
       </div>
@@ -218,7 +242,7 @@ function FormScreen({
       <form onSubmit={handleSubmit}>
         {/* Guest List */}
         <div className="mb-10">
-          <p className={`${inputStyles.label} mb-6`}>
+          <p className="text-xs tracking-widest uppercase font-medium text-amber-500/80 mb-6">
             Please respond for each guest
           </p>
 
@@ -237,10 +261,10 @@ function FormScreen({
                     <button
                       type="button"
                       onClick={() => toggleGuest(idx, true)}
-                      className={`px-4 py-2 text-sm font-serif tracking-wide border rounded-full transition-all duration-300 ${
+                      className={`px-4 py-2 text-xs tracking-widest uppercase border rounded-full transition-all duration-300 ${
                         guest.is_attending
-                          ? 'bg-amber-600 text-white border-amber-600'
-                          : 'bg-transparent border-stone-700 text-stone-300 hover:border-amber-500'
+                          ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white border-amber-600 shadow-lg shadow-amber-900/20'
+                          : 'bg-transparent border-stone-700 text-stone-400 hover:border-amber-500/50'
                       }`}
                     >
                       Accept
@@ -248,10 +272,10 @@ function FormScreen({
                     <button
                       type="button"
                       onClick={() => toggleGuest(idx, false)}
-                      className={`px-4 py-2 text-sm font-serif tracking-wide border rounded-full transition-all duration-300 ${
+                      className={`px-4 py-2 text-xs tracking-widest uppercase border rounded-full transition-all duration-300 ${
                         !guest.is_attending
-                          ? 'bg-amber-600 text-white border-amber-600'
-                          : 'bg-transparent border-stone-700 text-stone-300 hover:border-amber-500'
+                          ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white border-amber-600 shadow-lg shadow-amber-900/20'
+                          : 'bg-transparent border-stone-700 text-stone-400 hover:border-amber-500/50'
                       }`}
                     >
                       Decline
@@ -261,13 +285,16 @@ function FormScreen({
 
                 {/* Edit Plus One Name */}
                 {guest.is_plus_one && (
-                  <input
-                    type="text"
-                    placeholder="Guest Full Name"
-                    value={guest.name || ''}
-                    onChange={(e) => handleNameChange(idx, e.target.value)}
-                    className="w-full bg-transparent border-b border-dashed border-amber-600 text-sm font-serif py-1 outline-none text-stone-200 opacity-80 focus:opacity-100 transition-opacity placeholder:italic placeholder:text-stone-500"
-                  />
+                  <div className="luxury-input relative">
+                    <input
+                      type="text"
+                      placeholder="Guest Full Name"
+                      value={guest.name || ''}
+                      onChange={(e) => handleNameChange(idx, e.target.value)}
+                      className="w-full bg-transparent border-0 text-sm font-serif py-1 outline-none text-stone-200 placeholder:italic placeholder:text-stone-600"
+                    />
+                    <span className="luxury-input-line" />
+                  </div>
                 )}
               </div>
             ))}
@@ -276,63 +303,34 @@ function FormScreen({
 
         {/* Contact Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="email"
-              className={inputStyles.label}
-            >
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={contact.email}
-              onChange={(e) =>
-                setContact((p) => ({ ...p, email: e.target.value }))
-              }
-              required
-              className={inputStyles.base}
-              placeholder="your@email.com"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="phone"
-              className={inputStyles.label}
-            >
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              id="phone"
-              value={contact.phone}
-              onChange={(e) =>
-                setContact((p) => ({ ...p, phone: e.target.value }))
-              }
-              required
-              className={inputStyles.base}
-              placeholder="(555) 123-4567"
-            />
-          </div>
+          <LuxuryInput
+            label="Email Address"
+            id="email"
+            type="email"
+            value={contact.email}
+            onChange={(e) => setContact((p) => ({ ...p, email: e.target.value }))}
+            required
+            placeholder="your@email.com"
+          />
+          <LuxuryInput
+            label="Phone Number"
+            id="phone"
+            type="tel"
+            value={contact.phone}
+            onChange={(e) => setContact((p) => ({ ...p, phone: e.target.value }))}
+            required
+            placeholder="(555) 123-4567"
+          />
         </div>
 
         {/* Message */}
-        <div className="flex flex-col gap-2 mb-10">
-          <label
-            htmlFor="message"
-            className={inputStyles.label}
-          >
-            Note to the Couple (Optional)
-          </label>
-          <textarea
+        <div className="mb-10">
+          <LuxuryTextarea
+            label="Note to the Couple (Optional)"
             id="message"
             value={contact.message}
-            onChange={(e) =>
-              setContact((p) => ({ ...p, message: e.target.value }))
-            }
+            onChange={(e) => setContact((p) => ({ ...p, message: e.target.value }))}
             rows={3}
-            className={`${inputStyles.base} resize-none`}
             placeholder="Share a message or well-wishes..."
           />
         </div>
@@ -346,11 +344,7 @@ function FormScreen({
 
         {/* Submit */}
         <div className="flex justify-center">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="px-12 py-4 font-serif text-lg tracking-[0.15em] uppercase transition-all duration-300 bg-amber-600 hover:bg-amber-700 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <button type="submit" disabled={isSubmitting} className={btnClass}>
             {isSubmitting ? 'Sending...' : 'Submit RSVP'}
           </button>
         </div>
@@ -365,22 +359,12 @@ function FormScreen({
 function SuccessScreen({ partyName }: { partyName: string }) {
   return (
     <div className="text-center max-w-md">
-      <div className="w-20 h-20 rounded-full border-2 border-amber-600 flex items-center justify-center mx-auto mb-8">
-        <svg
-          className="w-10 h-10 text-amber-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M5 13l4 4L19 7"
-          />
+      <div className="w-20 h-20 rounded-full border border-amber-500/30 flex items-center justify-center mx-auto mb-8">
+        <svg className="w-10 h-10 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       </div>
-      <h3 className="font-serif text-3xl md:text-4xl mb-4 text-stone-200">
+      <h3 className="font-display text-3xl md:text-4xl mb-4 text-stone-200">
         Thank You!
       </h3>
       <p className="font-serif text-lg italic leading-relaxed text-stone-400">
@@ -404,41 +388,50 @@ export default function Rsvp() {
   return (
     <section className="relative min-h-screen w-full bg-stone-950">
       <div className="relative z-10 flex flex-col items-center pt-60 md:pt-64 pb-20 px-6 min-h-screen">
-        {/* Card container */}
-        <div className="max-w-xl w-full mx-auto bg-stone-900/50 backdrop-blur-sm border border-white/5 rounded-2xl p-8 md:p-12 flex flex-col items-center">
-          {/* Header */}
-          <h2 className="font-serif text-6xl md:text-7xl lg:text-8xl tracking-wide mb-4 text-stone-200">
-            RSVP
-          </h2>
-          <p className="font-serif italic text-base md:text-lg tracking-wide mb-12 text-stone-400">
-            Kindly reply by March 1st
-          </p>
+        {/* Card container — fades in on scroll */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="rsvp-card-noise relative max-w-xl w-full mx-auto bg-stone-900 border border-white/10 rounded-2xl p-8 md:p-12 flex flex-col items-center overflow-hidden"
+        >
+          {/* Content sits above the noise pseudo-element */}
+          <div className="relative z-10 flex flex-col items-center w-full">
+            {/* Header */}
+            <h2 className="font-display text-6xl tracking-wide mb-4 text-amber-500">
+              RSVP
+            </h2>
+            <p className="font-serif italic text-base md:text-lg tracking-wide mb-12 text-stone-400">
+              Kindly reply by March 1st
+            </p>
 
-          {/* View Router */}
-          {view === 'search' && (
-            <SearchScreen
-              onFound={(p) => {
-                setParty(p);
-                setView('form');
-              }}
-            />
-          )}
+            {/* View Router */}
+            {view === 'search' && (
+              <SearchScreen
+                onFound={(p) => {
+                  setParty(p);
+                  setView('form');
+                }}
+              />
+            )}
 
-          {view === 'form' && party && (
-            <FormScreen
-              party={party}
-              onSubmit={() => setView('success')}
-              onBack={() => {
-                setView('search');
-                setParty(null);
-              }}
-            />
-          )}
+            {view === 'form' && party && (
+              <FormScreen
+                party={party}
+                onSubmit={() => setView('success')}
+                onBack={() => {
+                  setView('search');
+                  setParty(null);
+                }}
+              />
+            )}
 
-          {view === 'success' && party && (
-            <SuccessScreen partyName={party.party_name} />
-          )}
-        </div>
+            {view === 'success' && party && (
+              <SuccessScreen partyName={party.party_name} />
+            )}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
