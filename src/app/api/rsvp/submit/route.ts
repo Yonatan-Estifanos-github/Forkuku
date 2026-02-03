@@ -14,6 +14,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
+    // Check if party has already responded
+    const { data: existingParty, error: fetchError } = await supabaseAdmin
+      .from('parties')
+      .select('has_responded')
+      .eq('id', party_id)
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching party:', fetchError);
+      return NextResponse.json({ error: 'Party not found' }, { status: 404 });
+    }
+
+    if (existingParty?.has_responded) {
+      return NextResponse.json({ error: 'RSVP has already been submitted for this party' }, { status: 400 });
+    }
+
     // 1. Update Party Details
     // We update status to 'replied' and has_responded to true.
     // We store the message in admin_notes.

@@ -7,10 +7,16 @@ const NAV_ITEMS = [
   { label: 'Story', href: '#story', icon: BookIcon },
   { label: 'Venue', href: '#venue', icon: MapPinIcon },
   { label: 'RSVP', href: '#rsvp', icon: EnvelopeIcon },
+  { label: 'Registry', href: '/registry', icon: GiftIcon },
 ];
 
 export default function FloatingNav() {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Allow normal navigation for page links (not hash links)
+    if (!href.startsWith('#')) {
+      return;
+    }
+
     e.preventDefault();
     if (href === '#') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -112,6 +118,25 @@ function EnvelopeIcon({ className }: { className?: string }) {
     >
       <rect x="2" y="4" width="20" height="16" rx="2" />
       <path d="M22 6L12 13 2 6" />
+    </svg>
+  );
+}
+
+function GiftIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="8" width="18" height="13" rx="1" />
+      <path d="M12 8v13" />
+      <path d="M3 12h18" />
+      <path d="M19 8c0-1.7-1.3-4-4-4-1.4 0-2.6 1.3-3 2.5C11.6 5.3 10.4 4 9 4c-2.7 0-4 2.3-4 4" />
     </svg>
   );
 }
