@@ -23,6 +23,7 @@ export async function POST(req: Request) {
         id,
         party_name,
         status,
+        has_responded,
         guests (
           id,
           name,

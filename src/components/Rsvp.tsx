@@ -17,6 +17,7 @@ interface Party {
   id: number;
   party_name: string;
   status: string;
+  has_responded: boolean;
   guests: Guest[];
 }
 
@@ -396,9 +397,47 @@ function SuccessScreen({ partyName }: { partyName: string }) {
 }
 
 // ============================================================================
+// ALREADY RESPONDED SCREEN
+// ============================================================================
+function AlreadyRespondedScreen({ partyName }: { partyName: string }) {
+  return (
+    <div className="text-center max-w-md">
+      <div className="w-20 h-20 rounded-full border border-amber-500/30 flex items-center justify-center mx-auto mb-8">
+        <svg className="w-10 h-10 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+
+      <h3 className="font-display text-3xl md:text-4xl mb-4 text-stone-200">
+        Already Responded
+      </h3>
+      <p className="font-serif text-lg italic leading-relaxed text-stone-400">
+        {partyName}, we&apos;ve already received your RSVP.
+        <br />
+        Thank you for confirming!
+      </p>
+
+      {/* Registry note */}
+      <div className="mt-10 pt-8 border-t border-white/10">
+        <p className="font-serif text-base leading-relaxed text-stone-400 mb-6">
+          If you need to make changes to your response, please contact us directly.
+        </p>
+
+        <a
+          href="/registry"
+          className="inline-block px-8 py-3 font-medium text-sm tracking-widest uppercase transition-all duration-300 border border-amber-500/50 text-amber-500 rounded hover:bg-amber-500/10 hover:border-amber-500"
+        >
+          View Registry
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
 // MAIN COMPONENT
 // ============================================================================
-type View = 'search' | 'form' | 'success';
+type View = 'search' | 'form' | 'success' | 'already_responded';
 
 export default function Rsvp() {
   const [view, setView] = useState<View>('search');
@@ -430,7 +469,11 @@ export default function Rsvp() {
               <SearchScreen
                 onFound={(p) => {
                   setParty(p);
-                  setView('form');
+                  if (p.has_responded) {
+                    setView('already_responded');
+                  } else {
+                    setView('form');
+                  }
                 }}
               />
             )}
@@ -448,6 +491,10 @@ export default function Rsvp() {
 
             {view === 'success' && party && (
               <SuccessScreen partyName={party.party_name} />
+            )}
+
+            {view === 'already_responded' && party && (
+              <AlreadyRespondedScreen partyName={party.party_name} />
             )}
           </div>
         </motion.div>
