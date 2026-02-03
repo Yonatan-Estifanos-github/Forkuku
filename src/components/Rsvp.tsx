@@ -358,11 +358,14 @@ function FormScreen({
 function SuccessScreen({ partyName }: { partyName: string }) {
   return (
     <div className="text-center max-w-md">
+      {/* Checkmark icon */}
       <div className="w-20 h-20 rounded-full border border-amber-500/30 flex items-center justify-center mx-auto mb-8">
         <svg className="w-10 h-10 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       </div>
+
+      {/* Thank you message */}
       <h3 className="font-display text-3xl md:text-4xl mb-4 text-stone-200">
         Thank You!
       </h3>
@@ -371,6 +374,23 @@ function SuccessScreen({ partyName }: { partyName: string }) {
         <br />
         We look forward to celebrating with you!
       </p>
+
+      {/* Registry note */}
+      <div className="mt-10 pt-8 border-t border-white/10">
+        <p className="font-serif text-base leading-relaxed text-stone-400 mb-6">
+          Your presence at our celebration means the world to us and is truly all we need.
+          For those who have kindly asked about gifts, we&apos;ve put together a{' '}
+          <span className="text-wedding-gold">registry</span> to help with coordination.
+        </p>
+
+        {/* Registry button - luxury gold-bordered style */}
+        <a
+          href="/registry"
+          className="inline-block px-8 py-3 font-medium text-sm tracking-widest uppercase transition-all duration-300 border border-amber-500/50 text-amber-500 rounded hover:bg-amber-500/10 hover:border-amber-500"
+        >
+          View Registry
+        </a>
+      </div>
     </div>
   );
 }
