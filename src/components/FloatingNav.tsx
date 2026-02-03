@@ -19,8 +19,13 @@ export default function FloatingNav() {
     if (href === '/registry') {
       return pathname === '/registry';
     }
-    // Home and hash links are active when on home page
-    return pathname === '/';
+    // Only "Home" link is active on the home page
+    // Hash links (Story, Venue, RSVP) are not marked active since we can't detect scroll position
+    if (href === '/') {
+      return pathname === '/';
+    }
+    // Hash links are never marked as "active" (they just navigate)
+    return false;
   };
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
