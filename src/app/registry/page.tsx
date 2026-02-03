@@ -1,11 +1,40 @@
 'use client';
 
+import { useState, useRef, useCallback } from 'react';
 import Script from 'next/script';
 import Section from '@/components/ui/Section';
 import FadeIn from '@/components/ui/FadeIn';
 import Link from 'next/link';
 
 export default function RegistryPage() {
+  const [scriptStatus, setScriptStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const widgetRef = useRef<HTMLDivElement>(null);
+  const checkAttempts = useRef(0);
+
+  // Check if widget actually rendered content
+  const verifyWidgetLoaded = useCallback(() => {
+    checkAttempts.current += 1;
+
+    // Check if the widget container has any content
+    if (widgetRef.current && widgetRef.current.children.length > 0) {
+      setScriptStatus('ready');
+      return;
+    }
+
+    // Retry up to 10 times (5 seconds total)
+    if (checkAttempts.current < 10) {
+      setTimeout(verifyWidgetLoaded, 500);
+    } else {
+      // Widget didn't render after 5 seconds - show fallback
+      setScriptStatus('error');
+    }
+  }, []);
+
+  const handleScriptLoad = () => {
+    // Script loaded, but verify widget actually initializes
+    setTimeout(verifyWidgetLoaded, 500);
+  };
+
   return (
     <main className="min-h-screen bg-luxury-black">
       <Section className="py-20 px-4">
@@ -33,8 +62,35 @@ export default function RegistryPage() {
         {/* Zola Embed Container */}
         <FadeIn delay={0.2}>
           <div className="max-w-4xl mx-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 md:p-8">
+            {/* Loading state */}
+            {scriptStatus === 'loading' && (
+              <div className="text-center py-12">
+                <div className="inline-block w-8 h-8 border-2 border-wedding-gold/30 border-t-wedding-gold rounded-full animate-spin mb-4" />
+                <p className="font-serif text-white/50">Loading registry...</p>
+              </div>
+            )}
+
+            {/* Error fallback */}
+            {scriptStatus === 'error' && (
+              <div className="text-center py-12">
+                <p className="font-serif text-white/70 mb-6">
+                  Unable to load the registry widget. Please visit our registry directly:
+                </p>
+                <a
+                  href="https://www.zola.com/registry/saronandyonatan"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-8 py-3 font-medium text-sm tracking-widest uppercase transition-all duration-300 border border-amber-500/50 text-amber-500 rounded hover:bg-amber-500/10 hover:border-amber-500"
+                >
+                  View Registry on Zola
+                </a>
+              </div>
+            )}
+
+            {/* Zola embed - hidden until loaded */}
             <div
-              className="zola-registry-embed"
+              ref={widgetRef}
+              className={`zola-registry-embed ${scriptStatus !== 'ready' ? 'hidden' : ''}`}
               data-registry-key="saronandyonatan"
             />
           </div>
@@ -45,6 +101,8 @@ export default function RegistryPage() {
       <Script
         src="https://widget.zola.com/js/widget.js"
         strategy="afterInteractive"
+        onLoad={handleScriptLoad}
+        onError={() => setScriptStatus('error')}
       />
     </main>
   );

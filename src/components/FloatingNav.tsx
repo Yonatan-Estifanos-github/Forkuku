@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 
 const NAV_ITEMS = [
@@ -11,20 +12,38 @@ const NAV_ITEMS = [
 ];
 
 export default function FloatingNav() {
+  const pathname = usePathname();
+
+  const isActive = (href: string) => {
+    // Registry page is active only when on /registry
+    if (href === '/registry') {
+      return pathname === '/registry';
+    }
+    // Home and hash links are active when on home page
+    return pathname === '/';
+  };
+
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     // Check if we're on the home page
-    const isHomePage = window.location.pathname === '/';
+    const isHomePage = pathname === '/';
 
     // For home page with hash links, use smooth scrolling
     if (isHomePage && (href === '/' || href.startsWith('/#'))) {
-      e.preventDefault();
       if (href === '/') {
+        e.preventDefault();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        const hash = href.replace('/', '');
-        const target = document.querySelector(hash);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
+        // Extract hash from "/#section" format
+        const hashIndex = href.indexOf('#');
+        if (hashIndex !== -1) {
+          const hash = href.substring(hashIndex);
+          const target = document.querySelector(hash);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+          // If target doesn't exist, let browser handle navigation normally
+          // This will reload the page with the hash, triggering any scroll behavior
         }
       }
     }
@@ -37,28 +56,41 @@ export default function FloatingNav() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 2.5, ease: 'easeOut' }}
       className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-8 pb-[max(2rem,env(safe-area-inset-bottom))]"
+      aria-label="Main navigation"
     >
       <div className="flex items-center gap-1 sm:gap-4 rounded-full border border-white/10 bg-black/50 backdrop-blur-md px-3 sm:px-5 py-2 transition-all">
-        {NAV_ITEMS.map(({ label, href, icon: Icon }) => (
-          <a
-            key={label}
-            href={href}
-            onClick={(e) => handleClick(e, href)}
-            className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 rounded-full font-serif text-[10px] sm:text-sm text-white transition-colors duration-300 hover:text-[#D4A845]"
-          >
-            <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>{label}</span>
-          </a>
-        ))}
+        {NAV_ITEMS.map(({ label, href, icon: Icon }) => {
+          const active = isActive(href);
+          return (
+            <a
+              key={label}
+              href={href}
+              onClick={(e) => handleClick(e, href)}
+              aria-current={active ? 'page' : undefined}
+              className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 rounded-full font-serif text-[10px] sm:text-sm transition-colors duration-300 hover:text-[#D4A845] ${
+                active ? 'text-[#D4A845]' : 'text-white'
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
+              <span>{label}</span>
+            </a>
+          );
+        })}
       </div>
     </motion.nav>
   );
 }
 
-function HomeIcon({ className }: { className?: string }) {
+interface IconProps {
+  className?: string;
+  'aria-hidden'?: boolean | 'true' | 'false';
+}
+
+function HomeIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
   return (
     <svg
       className={className}
+      aria-hidden={ariaHidden}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -72,10 +104,11 @@ function HomeIcon({ className }: { className?: string }) {
   );
 }
 
-function BookIcon({ className }: { className?: string }) {
+function BookIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
   return (
     <svg
       className={className}
+      aria-hidden={ariaHidden}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -91,10 +124,11 @@ function BookIcon({ className }: { className?: string }) {
   );
 }
 
-function MapPinIcon({ className }: { className?: string }) {
+function MapPinIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
   return (
     <svg
       className={className}
+      aria-hidden={ariaHidden}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -108,10 +142,11 @@ function MapPinIcon({ className }: { className?: string }) {
   );
 }
 
-function EnvelopeIcon({ className }: { className?: string }) {
+function EnvelopeIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
   return (
     <svg
       className={className}
+      aria-hidden={ariaHidden}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -125,10 +160,11 @@ function EnvelopeIcon({ className }: { className?: string }) {
   );
 }
 
-function GiftIcon({ className }: { className?: string }) {
+function GiftIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
   return (
     <svg
       className={className}
+      aria-hidden={ariaHidden}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
