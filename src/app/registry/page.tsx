@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState } from 'react';
 import Script from 'next/script';
 import Section from '@/components/ui/Section';
 import FadeIn from '@/components/ui/FadeIn';
@@ -8,32 +8,6 @@ import Link from 'next/link';
 
 export default function RegistryPage() {
   const [scriptStatus, setScriptStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-  const widgetRef = useRef<HTMLDivElement>(null);
-  const checkAttempts = useRef(0);
-
-  // Check if widget actually rendered content
-  const verifyWidgetLoaded = useCallback(() => {
-    checkAttempts.current += 1;
-
-    // Check if the widget container has any content
-    if (widgetRef.current && widgetRef.current.children.length > 0) {
-      setScriptStatus('ready');
-      return;
-    }
-
-    // Retry up to 10 times (5 seconds total)
-    if (checkAttempts.current < 10) {
-      setTimeout(verifyWidgetLoaded, 500);
-    } else {
-      // Widget didn't render after 5 seconds - show fallback
-      setScriptStatus('error');
-    }
-  }, []);
-
-  const handleScriptLoad = () => {
-    // Script loaded, but verify widget actually initializes
-    setTimeout(verifyWidgetLoaded, 500);
-  };
 
   return (
     <main className="min-h-screen bg-luxury-black">
@@ -89,7 +63,6 @@ export default function RegistryPage() {
 
             {/* Zola embed - hidden until loaded */}
             <div
-              ref={widgetRef}
               className={`zola-registry-embed ${scriptStatus !== 'ready' ? 'hidden' : ''}`}
               data-registry-key="saronandyonatan"
             />
@@ -101,7 +74,7 @@ export default function RegistryPage() {
       <Script
         src="https://widget.zola.com/js/widget.js"
         strategy="afterInteractive"
-        onLoad={handleScriptLoad}
+        onLoad={() => setScriptStatus('ready')}
         onError={() => setScriptStatus('error')}
       />
     </main>
