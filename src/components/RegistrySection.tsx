@@ -199,7 +199,7 @@ export default function RegistrySection() {
         {/* Registry Items Grid */}
         {!loading && availableItems.length > 0 && (
           <FadeIn delay={0.2}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 max-w-7xl mx-auto">
               {availableItems.map((item, index) => (
                 <div
                   key={item.id}
@@ -247,12 +247,12 @@ export default function RegistrySection() {
                   </div>
 
                   {/* Content */}
-                  <div className="p-4">
-                    <h3 className="font-serif text-lg text-white mb-1 line-clamp-2">{item.name}</h3>
-                    <p className="font-serif text-2xl text-wedding-gold mb-2">${Number(item.price).toFixed(2)}</p>
-                    <div className="flex items-center gap-2 text-xs text-white/50">
-                      <span className="bg-white/10 px-2 py-0.5 rounded">{item.category}</span>
-                      <span className="bg-white/10 px-2 py-0.5 rounded">{item.store}</span>
+                  <div className="p-2 sm:p-4">
+                    <h3 className="font-serif text-sm sm:text-lg text-white mb-1 line-clamp-2">{item.name}</h3>
+                    <p className="font-serif text-lg sm:text-2xl text-wedding-gold mb-1 sm:mb-2">${Number(item.price).toFixed(2)}</p>
+                    <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-white/50">
+                      <span className="bg-white/10 px-1.5 sm:px-2 py-0.5 rounded">{item.category}</span>
+                      <span className="bg-white/10 px-1.5 sm:px-2 py-0.5 rounded">{item.store}</span>
                     </div>
                   </div>
                 </div>
