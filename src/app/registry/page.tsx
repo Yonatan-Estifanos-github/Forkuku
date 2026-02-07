@@ -338,31 +338,31 @@ export default function RegistryPage() {
             {/* STEP A: Shipping Info */}
             {modalStep === 'shipping' && (
               <>
-                {/* Gift icon */}
+                {/* Home icon */}
                 <div className="flex justify-center mb-6">
                   <div className="w-16 h-16 rounded-full bg-wedding-gold/10 flex items-center justify-center">
                     <svg className="w-8 h-8 text-wedding-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                   </div>
                 </div>
 
                 {/* Title */}
                 <h3 className="font-serif text-2xl text-wedding-gold text-center mb-2">
-                  Gift This Item
+                  You&apos;re Helping Us Build Our Home
                 </h3>
 
-                {/* Item name */}
-                <p className="font-serif text-white/60 text-center text-sm mb-6">
-                  {selectedItem.name}
+                {/* Personal note */}
+                <p className="font-serif text-white/60 text-center text-sm mb-6 italic">
+                  &ldquo;{selectedItem.name}&rdquo;
                 </p>
 
                 {/* Address card with copy */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-5 mb-4">
+                <div className="bg-white/5 border border-white/10 rounded-xl p-5 mb-2">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-xs uppercase tracking-widest text-wedding-gold/70 mb-2">
-                        Ship to:
+                      <p className="font-serif text-white/50 text-sm mb-2">
+                        Please send it to our doorstep:
                       </p>
                       <p className="font-serif text-white text-lg leading-relaxed">
                         {SHIPPING_ADDRESS.line1}<br />
@@ -390,13 +390,18 @@ export default function RegistryPage() {
                   )}
                 </div>
 
+                {/* Signature */}
+                <p className="font-script text-wedding-gold/60 text-right text-lg mb-6 pr-4">
+                  — Saron & Yonatan
+                </p>
+
                 {/* Buttons */}
                 <div className="flex flex-col gap-3">
                   <button
                     onClick={handleGoToStore}
                     className="w-full py-3 bg-wedding-gold text-luxury-black font-serif font-medium rounded-lg hover:bg-wedding-gold/90 transition-colors flex items-center justify-center gap-2"
                   >
-                    Go to {selectedItem.store}
+                    Continue to {selectedItem.store}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
@@ -405,13 +410,13 @@ export default function RegistryPage() {
                     onClick={handlePurchased}
                     className="w-full py-3 border border-wedding-gold/50 text-wedding-gold font-serif rounded-lg hover:bg-wedding-gold/10 transition-colors"
                   >
-                    I Have Purchased This
+                    I&apos;ve Already Purchased This
                   </button>
                   <button
                     onClick={handleCloseModal}
                     className="w-full py-2 text-white/50 font-serif text-sm hover:text-white/70 transition-colors"
                   >
-                    Cancel
+                    Maybe Later
                   </button>
                 </div>
               </>
@@ -431,10 +436,10 @@ export default function RegistryPage() {
 
                 {/* Title */}
                 <h3 className="font-serif text-2xl text-wedding-gold text-center mb-2">
-                  Thank You!
+                  You&apos;re Amazing!
                 </h3>
                 <p className="font-serif text-white/60 text-center text-sm mb-6">
-                  Who is this gift from?
+                  Let us know who to thank when it arrives
                 </p>
 
                 {/* Form */}
@@ -447,30 +452,30 @@ export default function RegistryPage() {
                       type="text"
                       value={purchaserName}
                       onChange={(e) => setPurchaserName(e.target.value)}
-                      placeholder="Enter your name"
+                      placeholder="Who should we thank?"
                       className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors"
                     />
                   </div>
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-white/50 mb-2">
-                      Your Email <span className="text-white/30">(optional)</span>
+                      Your Email <span className="text-white/30">(for our thank you note)</span>
                     </label>
                     <input
                       type="email"
                       value={purchaserEmail}
                       onChange={(e) => setPurchaserEmail(e.target.value)}
-                      placeholder="For thank you notes"
+                      placeholder="your@email.com"
                       className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors"
                     />
                   </div>
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-white/50 mb-2">
-                      Message <span className="text-white/30">(optional)</span>
+                      Leave us a note <span className="text-white/30">(optional)</span>
                     </label>
                     <textarea
                       value={purchaserMessage}
                       onChange={(e) => setPurchaserMessage(e.target.value)}
-                      placeholder="So happy for you both!"
+                      placeholder="We'd love to hear from you..."
                       rows={3}
                       className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors resize-none"
                     />
@@ -484,13 +489,13 @@ export default function RegistryPage() {
                     disabled={submitting || !purchaserName.trim()}
                     className="w-full py-3 bg-wedding-gold text-luxury-black font-serif font-medium rounded-lg hover:bg-wedding-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {submitting ? 'Confirming...' : 'Confirm Purchase'}
+                    {submitting ? 'Saving...' : 'All Done!'}
                   </button>
                   <button
                     onClick={() => setModalStep('shipping')}
                     className="w-full py-2 text-white/50 font-serif text-sm hover:text-white/70 transition-colors"
                   >
-                    Back
+                    Go Back
                   </button>
                 </div>
               </>
@@ -510,15 +515,13 @@ export default function RegistryPage() {
 
                 {/* Title */}
                 <h3 className="font-serif text-3xl text-wedding-gold text-center mb-3">
-                  Thank You, {purchaserName}!
+                  {purchaserName}, You&apos;re the Best!
                 </h3>
 
                 {/* Message */}
-                <p className="font-serif text-white/70 text-center mb-2">
-                  Your gift has been marked as purchased.
-                </p>
-                <p className="font-serif text-white/50 text-center text-sm mb-8">
-                  We can&apos;t wait to celebrate with you!
+                <p className="font-serif text-white/70 text-center mb-8 leading-relaxed">
+                  We&apos;re so grateful for your generosity.<br />
+                  <span className="text-white/50 text-sm">Can&apos;t wait to celebrate with you!</span>
                 </p>
 
                 {/* Item confirmation */}
@@ -532,21 +535,26 @@ export default function RegistryPage() {
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="font-serif text-white text-sm line-clamp-2">{selectedItem.name}</p>
-                    <p className="font-serif text-wedding-gold">${Number(selectedItem.price).toFixed(2)}</p>
+                    <p className="text-white/40 text-xs mt-1">On its way to our home</p>
                   </div>
-                  <div className="text-green-500">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <div className="text-wedding-gold">
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                     </svg>
                   </div>
                 </div>
 
+                {/* Signature */}
+                <p className="font-script text-wedding-gold/60 text-center text-xl mb-6">
+                  With love, Saron & Yonatan
+                </p>
+
                 {/* Close button */}
                 <button
                   onClick={handleCloseModal}
-                  className="w-full py-3 bg-wedding-gold text-luxury-black font-serif font-medium rounded-lg hover:bg-wedding-gold/90 transition-colors"
+                  className="w-full py-3 border border-wedding-gold/50 text-wedding-gold font-serif rounded-lg hover:bg-wedding-gold/10 transition-colors"
                 >
-                  Close
+                  Back to Registry
                 </button>
               </>
             )}
