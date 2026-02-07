@@ -554,6 +554,11 @@ export default function Hero() {
   useEffect(() => {
     setMounted(true);
 
+    // Check if preloader was already shown this session
+    if (sessionStorage.getItem('preloaderShown') === 'true') {
+      setPreloaderComplete(true);
+    }
+
     // Optimize performance by pausing rendering when out of view
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -604,9 +609,12 @@ export default function Hero() {
         '--mouse-x': '50%',
       } as React.CSSProperties}
     >
-      {/* Preloader - shows first */}
+      {/* Preloader - shows first (skipped if already shown this session) */}
       {mounted && !preloaderComplete && (
-        <Preloader onComplete={() => setPreloaderComplete(true)} />
+        <Preloader onComplete={() => {
+          sessionStorage.setItem('preloaderShown', 'true');
+          setPreloaderComplete(true);
+        }} />
       )}
 
       {/* Main content - only renders after preloader */}
