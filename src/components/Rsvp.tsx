@@ -31,7 +31,7 @@ function LuxuryInput({
 }: { label: string; id: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-amber-500/80">
+      <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-wedding-gold/80">
         {label}
       </label>
       <div className="luxury-input relative">
@@ -53,7 +53,7 @@ function LuxuryTextarea({
 }: { label: string; id: string } & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-amber-500/80">
+      <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-wedding-gold/80">
         {label}
       </label>
       <div className="luxury-input relative">
@@ -72,7 +72,7 @@ function LuxuryTextarea({
 // BUTTON
 // ============================================================================
 const btnClass =
-  'px-10 py-4 font-medium text-sm tracking-widest uppercase transition-all duration-300 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white rounded shadow-lg shadow-amber-900/20 disabled:opacity-50 disabled:cursor-not-allowed';
+  'px-10 py-4 font-medium text-sm tracking-widest uppercase transition-all duration-300 bg-gradient-to-r from-wedding-gold to-wedding-gold/90 hover:from-wedding-gold/90 hover:to-wedding-gold text-white rounded shadow-lg shadow-wedding-gold/20 disabled:opacity-50 disabled:cursor-not-allowed';
 
 // ============================================================================
 // SEARCH SCREEN
@@ -327,7 +327,7 @@ function FormScreen({
 
       {/* Welcome Header */}
       <div className="text-center mb-10">
-        <p className="text-xs tracking-widest uppercase mb-2 text-amber-500/80">
+        <p className="text-xs tracking-widest uppercase mb-2 text-wedding-gold/80">
           You&apos;re Invited
         </p>
         <h3 className="font-display text-3xl md:text-4xl tracking-wide text-stone-200">
@@ -338,7 +338,7 @@ function FormScreen({
       <form onSubmit={handleSubmit}>
         {/* Guest List */}
         <div className="mb-10">
-          <p className="text-xs tracking-widest uppercase font-medium text-amber-500/80 mb-6">
+          <p className="text-xs tracking-widest uppercase font-medium text-wedding-gold/80 mb-6">
             Please respond for each guest
           </p>
 
@@ -371,8 +371,8 @@ function FormScreen({
                       onClick={() => toggleGuest(idx, true)}
                       className={`px-4 py-2 text-xs tracking-widest uppercase border rounded-full transition-all duration-300 ${
                         guest.is_attending
-                          ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white border-amber-600 shadow-lg shadow-amber-900/20'
-                          : 'bg-transparent border-stone-700 text-stone-400 hover:border-amber-500/50'
+                          ? 'bg-gradient-to-r from-wedding-gold to-wedding-gold/90 text-white border-wedding-gold shadow-lg shadow-wedding-gold/20'
+                          : 'bg-transparent border-stone-700 text-stone-400 hover:border-wedding-gold/50'
                       }`}
                     >
                       Accept
@@ -382,8 +382,8 @@ function FormScreen({
                       onClick={() => toggleGuest(idx, false)}
                       className={`px-4 py-2 text-xs tracking-widest uppercase border rounded-full transition-all duration-300 ${
                         !guest.is_attending
-                          ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white border-amber-600 shadow-lg shadow-amber-900/20'
-                          : 'bg-transparent border-stone-700 text-stone-400 hover:border-amber-500/50'
+                          ? 'bg-gradient-to-r from-wedding-gold to-wedding-gold/90 text-white border-wedding-gold shadow-lg shadow-wedding-gold/20'
+                          : 'bg-transparent border-stone-700 text-stone-400 hover:border-wedding-gold/50'
                       }`}
                     >
                       Decline
@@ -468,8 +468,8 @@ function SuccessScreen({ partyName }: { partyName: string }) {
   return (
     <div className="text-center max-w-md">
       {/* Checkmark icon */}
-      <div className="w-20 h-20 rounded-full border border-amber-500/30 flex items-center justify-center mx-auto mb-8">
-        <svg className="w-10 h-10 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="w-20 h-20 rounded-full border border-wedding-gold/30 flex items-center justify-center mx-auto mb-8">
+        <svg className="w-10 h-10 text-wedding-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       </div>
@@ -494,8 +494,8 @@ function SuccessScreen({ partyName }: { partyName: string }) {
 
         {/* Registry button - luxury gold-bordered style */}
         <a
-          href="/registry"
-          className="inline-block px-8 py-3 font-medium text-sm tracking-widest uppercase transition-all duration-300 border border-amber-500/50 text-amber-500 rounded hover:bg-amber-500/10 hover:border-amber-500"
+          href="/#registry"
+          className="inline-block px-8 py-3 font-medium text-sm tracking-widest uppercase transition-all duration-300 border border-wedding-gold/50 text-wedding-gold rounded hover:bg-wedding-gold/10 hover:border-wedding-gold"
         >
           View Registry
         </a>
@@ -510,8 +510,8 @@ function SuccessScreen({ partyName }: { partyName: string }) {
 function AlreadyRespondedScreen({ partyName }: { partyName: string }) {
   return (
     <div className="text-center max-w-md">
-      <div className="w-20 h-20 rounded-full border border-amber-500/30 flex items-center justify-center mx-auto mb-8">
-        <svg className="w-10 h-10 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="w-20 h-20 rounded-full border border-wedding-gold/30 flex items-center justify-center mx-auto mb-8">
+        <svg className="w-10 h-10 text-wedding-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       </div>
@@ -532,8 +532,8 @@ function AlreadyRespondedScreen({ partyName }: { partyName: string }) {
         </p>
 
         <a
-          href="/registry"
-          className="inline-block px-8 py-3 font-medium text-sm tracking-widest uppercase transition-all duration-300 border border-amber-500/50 text-amber-500 rounded hover:bg-amber-500/10 hover:border-amber-500"
+          href="/#registry"
+          className="inline-block px-8 py-3 font-medium text-sm tracking-widest uppercase transition-all duration-300 border border-wedding-gold/50 text-wedding-gold rounded hover:bg-wedding-gold/10 hover:border-wedding-gold"
         >
           View Registry
         </a>
@@ -565,7 +565,7 @@ export default function Rsvp() {
           {/* Content sits above the noise pseudo-element */}
           <div className="relative z-10 flex flex-col items-center w-full">
             {/* Header */}
-            <h2 className="font-display text-6xl tracking-wide mb-4 text-amber-500">
+            <h2 className="font-display text-6xl tracking-wide mb-4 text-wedding-gold">
               RSVP
             </h2>
             <p className="font-serif italic text-base md:text-lg tracking-wide mb-12 text-stone-400">
