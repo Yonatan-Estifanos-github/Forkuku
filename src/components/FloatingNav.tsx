@@ -2,29 +2,67 @@
 
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 const NAV_ITEMS = [
-  { label: 'Home', href: '/', icon: HomeIcon },
-  { label: 'Story', href: '/#story', icon: BookIcon },
-  { label: 'Venue', href: '/#venue', icon: MapPinIcon },
-  { label: 'RSVP', href: '/#rsvp', icon: EnvelopeIcon },
-  { label: 'Registry', href: '/registry', icon: GiftIcon },
+  { label: 'Home', href: '/', icon: HomeIcon, sectionId: 'home' },
+  { label: 'Story', href: '/#story', icon: BookIcon, sectionId: 'story' },
+  { label: 'Venue', href: '/#venue', icon: MapPinIcon, sectionId: 'venue' },
+  { label: 'RSVP', href: '/#rsvp', icon: EnvelopeIcon, sectionId: 'rsvp' },
+  { label: 'Registry', href: '/registry', icon: GiftIcon, sectionId: null },
 ];
 
 export default function FloatingNav() {
   const pathname = usePathname();
+  const [activeSection, setActiveSection] = useState<string>('home');
 
-  const isActive = (href: string) => {
-    // Registry page is active only when on /registry
+  // Track which section is in view on the home page
+  useEffect(() => {
+    if (pathname !== '/') return;
+
+    const sectionIds = ['home', 'story', 'venue', 'rsvp'];
+    let observer: IntersectionObserver | null = null;
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      observer = new IntersectionObserver(
+        (entries) => {
+          // Find the most visible section
+          const visible = entries.filter(e => e.isIntersecting);
+          if (visible.length > 0) {
+            // Pick the one with highest intersection ratio
+            const mostVisible = visible.reduce((a, b) =>
+              a.intersectionRatio > b.intersectionRatio ? a : b
+            );
+            setActiveSection(mostVisible.target.id);
+          }
+        },
+        { threshold: [0.1, 0.3, 0.5], rootMargin: '-10% 0px -40% 0px' }
+      );
+
+      sectionIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) observer?.observe(el);
+      });
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      observer?.disconnect();
+    };
+  }, [pathname]);
+
+  const isActive = (href: string, sectionId: string | null) => {
+    // Registry page - active when on /registry
     if (href === '/registry') {
       return pathname === '/registry';
     }
-    // Only "Home" link is active on the home page
-    // Hash links (Story, Venue, RSVP) are not marked active since we can't detect scroll position
-    if (href === '/') {
-      return pathname === '/';
+    // On home page, check which section is active
+    if (pathname === '/') {
+      if (sectionId) {
+        return activeSection === sectionId;
+      }
     }
-    // Hash links are never marked as "active" (they just navigate)
     return false;
   };
 
@@ -64,8 +102,8 @@ export default function FloatingNav() {
       aria-label="Main navigation"
     >
       <div className="flex items-center gap-1 sm:gap-4 rounded-full border border-white/10 bg-black/50 backdrop-blur-md px-3 sm:px-5 py-2 transition-all">
-        {NAV_ITEMS.map(({ label, href, icon: Icon }) => {
-          const active = isActive(href);
+        {NAV_ITEMS.map(({ label, href, icon: Icon, sectionId }) => {
+          const active = isActive(href, sectionId);
           return (
             <a
               key={label}
