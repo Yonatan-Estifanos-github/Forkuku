@@ -18,13 +18,12 @@ interface RegistryItem {
   purchaser_name?: string;
 }
 
-// Shipping address for gifts
-const SHIPPING_ADDRESS = {
-  line1: '474 Kelker St',
-  city: 'Oberlin',
-  state: 'PA',
-  zip: '17113',
-};
+interface ShippingAddress {
+  line1: string;
+  city: string;
+  state: string;
+  zip: string;
+}
 
 type ModalStep = 'shipping' | 'details' | 'success';
 
@@ -33,6 +32,7 @@ export default function RegistrySection() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedItem, setSelectedItem] = useState<RegistryItem | null>(null);
+  const [shippingAddress, setShippingAddress] = useState<ShippingAddress | null>(null);
 
   // Multi-step modal state
   const [modalStep, setModalStep] = useState<ModalStep>('shipping');
@@ -57,8 +57,21 @@ export default function RegistrySection() {
     setLoading(false);
   };
 
+  const fetchShippingAddress = async () => {
+    try {
+      const res = await fetch('/api/settings/shipping-address');
+      if (res.ok) {
+        const data = await res.json();
+        setShippingAddress(data);
+      }
+    } catch (err) {
+      console.error('Error fetching shipping address:', err);
+    }
+  };
+
   useEffect(() => {
     fetchItems();
+    fetchShippingAddress();
   }, []);
 
   // Get unique categories
@@ -85,7 +98,8 @@ export default function RegistrySection() {
   };
 
   const handleCopyAddress = () => {
-    const address = `${SHIPPING_ADDRESS.line1}, ${SHIPPING_ADDRESS.city}, ${SHIPPING_ADDRESS.state} ${SHIPPING_ADDRESS.zip}`;
+    if (!shippingAddress) return;
+    const address = `${shippingAddress.line1}, ${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.zip}`;
     navigator.clipboard.writeText(address);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -351,14 +365,19 @@ export default function RegistrySection() {
                       <p className="font-serif text-white/50 text-sm mb-2">
                         Please send it to our doorstep:
                       </p>
-                      <p className="font-serif text-white text-lg leading-relaxed">
-                        {SHIPPING_ADDRESS.line1}<br />
-                        {SHIPPING_ADDRESS.city}, {SHIPPING_ADDRESS.state} {SHIPPING_ADDRESS.zip}
-                      </p>
+                      {shippingAddress ? (
+                        <p className="font-serif text-white text-lg leading-relaxed">
+                          {shippingAddress.line1}<br />
+                          {shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}
+                        </p>
+                      ) : (
+                        <p className="font-serif text-white/50 text-sm">Loading address...</p>
+                      )}
                     </div>
                     <button
                       onClick={handleCopyAddress}
-                      className="p-2 text-wedding-gold/70 hover:text-wedding-gold transition-colors"
+                      disabled={!shippingAddress}
+                      className="p-2 text-wedding-gold/70 hover:text-wedding-gold transition-colors disabled:opacity-50"
                       title="Copy address"
                     >
                       {copied ? (
