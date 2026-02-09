@@ -40,3 +40,10 @@ public/videos/
 # claude
 .claude/
 .env
+
+# gemini
+.gemini/
+PLAN.md
+ARCHITECTURE.md
+PROJECT.md
+STYLE.md
