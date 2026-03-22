@@ -50,11 +50,9 @@ const BRIDESMAIDS: PartyMember[] = [
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Elegant continuous line-art objects — 1px gold stroke, no fill
-// Groomsmen: Bowtie · Boutonnière · Pocket Watch
-// Bridesmaids: Rose · Champagne Coupe · Ribbon
+// Groomsmen: Bowtie   |   Bridesmaids: Ribbon
 // ─────────────────────────────────────────────────────────────────────────────
 const G  = 'rgba(212,168,69,0.82)';   // main stroke
-const GD = 'rgba(212,168,69,0.55)';   // detail / secondary stroke
 
 const lineProps = {
   fill: 'none',
@@ -80,97 +78,6 @@ function Bowtie() {
   );
 }
 
-function Boutonniere() {
-  return (
-    <svg viewBox="0 0 80 80" fill="none" className="w-full h-full">
-      {/* Stem */}
-      <path {...lineProps} d="M40 52 Q38 61 40 70" />
-      {/* Leaf */}
-      <path {...lineProps} d="M40 63 Q50 58 52 51 Q45 54 40 63" />
-      {/* Centre circle */}
-      <circle cx="40" cy="38" r="4.5" stroke={G} strokeWidth="1" fill="none" />
-      {/* 5 petals */}
-      <path {...lineProps} d="M40 34 Q43 25 40 19 Q37 25 40 34" />
-      <path {...lineProps} d="M44 37 Q53 34 56 27 Q49 29 44 37" />
-      <path {...lineProps} d="M43 43 Q50 51 57 50 Q52 44 43 43" />
-      <path {...lineProps} d="M37 43 Q30 51 23 50 Q28 44 37 43" />
-      <path {...lineProps} d="M36 37 Q27 34 24 27 Q31 29 36 37" />
-    </svg>
-  );
-}
-
-function PocketWatch() {
-  return (
-    <svg viewBox="0 0 80 80" fill="none" className="w-full h-full">
-      {/* Winding crown */}
-      <rect x="36.5" y="9" width="7" height="5" rx="2"
-        stroke={G} strokeWidth="1" fill="none" />
-      {/* Stem connecting crown to case */}
-      <line x1="40" y1="14" x2="40" y2="18" stroke={G} strokeWidth="1" strokeLinecap="round" />
-      {/* Outer case */}
-      <circle cx="40" cy="46" r="28" stroke={G} strokeWidth="1" fill="none" />
-      {/* Inner dial bezel */}
-      <circle cx="40" cy="46" r="22" stroke={GD} strokeWidth="0.7" fill="none" />
-      {/* Hour marks — 12, 3, 6, 9 */}
-      <line x1="40" y1="26" x2="40" y2="29" stroke={G} strokeWidth="1" strokeLinecap="round" />
-      <line x1="60" y1="46" x2="57" y2="46" stroke={G} strokeWidth="1" strokeLinecap="round" />
-      <line x1="40" y1="66" x2="40" y2="63" stroke={G} strokeWidth="1" strokeLinecap="round" />
-      <line x1="20" y1="46" x2="23" y2="46" stroke={G} strokeWidth="1" strokeLinecap="round" />
-      {/* Hands — set to ~10:10 */}
-      <line x1="40" y1="46" x2="32" y2="35" stroke={G} strokeWidth="1" strokeLinecap="round" />
-      <line x1="40" y1="46" x2="52" y2="42" stroke={G} strokeWidth="1" strokeLinecap="round" />
-      {/* Centre pin */}
-      <circle cx="40" cy="46" r="1.8" stroke={G} strokeWidth="0.9" fill="none" />
-    </svg>
-  );
-}
-
-function Rose() {
-  return (
-    <svg viewBox="0 0 80 80" fill="none" className="w-full h-full">
-      {/* Stem */}
-      <path {...lineProps} d="M40 56 Q39 64 40 72" />
-      {/* Right leaf */}
-      <path {...lineProps} d="M41 65 Q51 60 53 53 Q46 56 41 65" />
-      {/* Left leaf */}
-      <path {...lineProps} d="M39 68 Q29 63 27 56 Q34 59 39 68" />
-      {/* Outer left petal */}
-      <path {...lineProps} d="M40 50 Q26 47 20 36 Q24 26 34 24 Q38 26 40 34" />
-      {/* Outer right petal */}
-      <path {...lineProps} d="M40 50 Q54 47 60 36 Q56 26 46 24 Q42 26 40 34" />
-      {/* Top outer petal */}
-      <path {...lineProps} d="M34 24 Q33 14 40 12 Q47 14 46 24" />
-      {/* Inner left petal */}
-      <path {...lineProps} d="M40 44 Q32 41 31 34 Q35 30 40 33" />
-      {/* Inner right petal */}
-      <path {...lineProps} d="M40 44 Q48 41 49 34 Q45 30 40 33" />
-      {/* Centre spiral */}
-      <path {...lineProps} d="M40 33 Q38 37 40 41 Q42 37 40 33" />
-    </svg>
-  );
-}
-
-function ChampagneCoupe() {
-  return (
-    <svg viewBox="0 0 80 80" fill="none" className="w-full h-full">
-      {/* Rim */}
-      <line x1="13" y1="24" x2="67" y2="24" stroke={G} strokeWidth="1" strokeLinecap="round" />
-      {/* Bowl — wide shallow coupe curve */}
-      <path {...lineProps} d="M13 24 Q17 42 40 46 Q63 42 67 24" />
-      {/* Stem */}
-      <line x1="40" y1="46" x2="40" y2="64" stroke={G} strokeWidth="1" />
-      {/* Base */}
-      <path {...lineProps} d="M26 64 Q40 68 54 64" />
-      {/* Rising bubbles — dotted lines */}
-      <line x1="32" y1="43" x2="30" y2="30"
-        stroke={GD} strokeWidth="0.7" strokeLinecap="round" strokeDasharray="1.5 3" />
-      <line x1="40" y1="45" x2="40" y2="30"
-        stroke={GD} strokeWidth="0.7" strokeLinecap="round" strokeDasharray="1.5 3" />
-      <line x1="48" y1="43" x2="50" y2="30"
-        stroke={GD} strokeWidth="0.7" strokeLinecap="round" strokeDasharray="1.5 3" />
-    </svg>
-  );
-}
 
 function Ribbon() {
   return (
