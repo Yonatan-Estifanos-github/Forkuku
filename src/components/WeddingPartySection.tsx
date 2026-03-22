@@ -81,20 +81,37 @@ function Bowtie() {
 
 function Flower() {
   return (
-    <svg viewBox="0 0 80 80" fill="none" className="w-full h-full">
-      {/* 6 petals radiating from centre */}
-      <path {...lineProps} d="M40 38 Q36 28 40 18 Q44 28 40 38" />
-      <path {...lineProps} d="M40 38 Q50 34 58 26 Q52 36 40 38" />
-      <path {...lineProps} d="M40 38 Q50 44 60 42 Q52 34 40 38" />
-      <path {...lineProps} d="M40 42 Q44 52 40 62 Q36 52 40 42" />
-      <path {...lineProps} d="M40 42 Q30 46 22 54 Q28 44 40 42" />
-      <path {...lineProps} d="M40 42 Q30 36 20 38 Q28 46 40 42" />
-      {/* Centre circle */}
-      <circle cx="40" cy="40" r="5" stroke={G} strokeWidth="1" fill="none" />
+    <svg viewBox="0 0 100 120" fill="none" className="w-full h-full">
+      {/* Petal 1 — top */}
+      <path {...lineProps}
+        d="M50 42 C46 34 42 22 50 14 C58 22 54 34 50 42Z" />
+      {/* Petal 2 — top-right */}
+      <path {...lineProps}
+        d="M50 42 C58 38 68 30 72 22 C66 18 56 24 50 42Z" />
+      {/* Petal 3 — bottom-right */}
+      <path {...lineProps}
+        d="M50 46 C58 48 70 46 76 40 C70 34 60 38 50 46Z" />
+      {/* Petal 4 — bottom */}
+      <path {...lineProps}
+        d="M50 46 C46 54 42 66 50 74 C58 66 54 54 50 46Z" />
+      {/* Petal 5 — bottom-left */}
+      <path {...lineProps}
+        d="M50 46 C42 48 30 46 24 40 C30 34 40 38 50 46Z" />
+      {/* Petal 6 — top-left */}
+      <path {...lineProps}
+        d="M50 42 C42 38 32 30 28 22 C34 18 44 24 50 42Z" />
+      {/* Outer centre ring */}
+      <circle cx="50" cy="44" r="8" stroke={G} strokeWidth="1" fill="none" />
+      {/* Inner centre */}
+      <circle cx="50" cy="44" r="3.5" stroke={G} strokeWidth="0.8" fill="none" />
+      {/* Centre dots */}
+      <circle cx="50" cy="44" r="0.8" stroke={G} strokeWidth="0.8" fill="none" />
       {/* Stem */}
-      <path {...lineProps} d="M40 62 Q39 68 40 74" />
-      {/* Leaf */}
-      <path {...lineProps} d="M40 67 Q50 62 52 55 Q45 58 40 67" />
+      <path {...lineProps} d="M50 74 C49 82 50 90 50 96" />
+      {/* Right leaf */}
+      <path {...lineProps} d="M50 84 C58 78 64 70 60 64 C54 68 50 78 50 84Z" />
+      {/* Left leaf */}
+      <path {...lineProps} d="M50 88 C42 82 36 74 40 68 C46 72 50 82 50 88Z" />
     </svg>
   );
 }
