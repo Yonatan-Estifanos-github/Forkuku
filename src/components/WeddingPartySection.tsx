@@ -50,7 +50,7 @@ const BRIDESMAIDS: PartyMember[] = [
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Elegant continuous line-art objects — 1px gold stroke, no fill
-// Groomsmen: Bowtie   |   Bridesmaids: Ribbon
+// Groomsmen: Bowtie   |   Bridesmaids: Flower
 // ─────────────────────────────────────────────────────────────────────────────
 const G  = 'rgba(212,168,69,0.82)';   // main stroke
 
@@ -79,28 +79,28 @@ function Bowtie() {
 }
 
 
-function Ribbon() {
+function Flower() {
   return (
     <svg viewBox="0 0 80 80" fill="none" className="w-full h-full">
-      {/* Left loop */}
-      <path {...lineProps}
-        d="M38 40 Q28 30 16 33 Q11 40 16 47 Q28 50 38 40" />
-      {/* Right loop */}
-      <path {...lineProps}
-        d="M42 40 Q52 30 64 33 Q69 40 64 47 Q52 50 42 40" />
-      {/* Centre knot */}
-      <path {...lineProps}
-        d="M37 37 Q40 34 43 37 L43 43 Q40 46 37 43 Z" />
-      {/* Left tail */}
-      <path {...lineProps} d="M38 42 Q31 53 24 60 Q22 63 24 66" />
-      {/* Right tail */}
-      <path {...lineProps} d="M42 42 Q49 53 56 60 Q58 63 56 66" />
+      {/* 6 petals radiating from centre */}
+      <path {...lineProps} d="M40 38 Q36 28 40 18 Q44 28 40 38" />
+      <path {...lineProps} d="M40 38 Q50 34 58 26 Q52 36 40 38" />
+      <path {...lineProps} d="M40 38 Q50 44 60 42 Q52 34 40 38" />
+      <path {...lineProps} d="M40 42 Q44 52 40 62 Q36 52 40 42" />
+      <path {...lineProps} d="M40 42 Q30 46 22 54 Q28 44 40 42" />
+      <path {...lineProps} d="M40 42 Q30 36 20 38 Q28 46 40 42" />
+      {/* Centre circle */}
+      <circle cx="40" cy="40" r="5" stroke={G} strokeWidth="1" fill="none" />
+      {/* Stem */}
+      <path {...lineProps} d="M40 62 Q39 68 40 74" />
+      {/* Leaf */}
+      <path {...lineProps} d="M40 67 Q50 62 52 55 Q45 58 40 67" />
     </svg>
   );
 }
 
 const MALE_SILHOUETTES   = [Bowtie];
-const FEMALE_SILHOUETTES = [Ribbon];
+const FEMALE_SILHOUETTES = [Flower];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation variants
