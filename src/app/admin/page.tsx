@@ -27,6 +27,7 @@ interface Party {
   phone?: string;
   admin_notes?: string;
   updated_at?: string;
+  family_side?: 'bride' | 'groom' | null;
   guests: Guest[];
   campaign_logs: CampaignLog[];
 }
@@ -166,6 +167,12 @@ export default function AdminDashboard() {
   const [partyPhone, setPartyPhone] = useState('');
   const [guests, setGuests] = useState<EditableGuest[]>([{ name: '' }]);
   const [saving, setSaving] = useState(false);
+
+  // Family Side Filter
+  const [familySideFilter, setFamilySideFilter] = useState<'all' | 'bride' | 'groom' | 'unassigned'>('all');
+
+  // Party family side (modal)
+  const [partyFamilySide, setPartyFamilySide] = useState<'bride' | 'groom' | ''>('');
 
   // CSV Upload State
   const [uploading, setUploading] = useState(false);
@@ -356,6 +363,7 @@ export default function AdminDashboard() {
     setPartyName('');
     setPartyEmail('');
     setPartyPhone('');
+    setPartyFamilySide('');
     setGuests([{ name: '' }]);
     setShowModal(true);
   };
@@ -365,6 +373,7 @@ export default function AdminDashboard() {
     setPartyName(party.party_name);
     setPartyEmail(party.email || '');
     setPartyPhone(party.phone || '');
+    setPartyFamilySide(party.family_side || '');
     setGuests(
       party.guests.length > 0
         ? party.guests.map(g => ({ id: g.id, name: g.name || '' }))
@@ -379,6 +388,7 @@ export default function AdminDashboard() {
     setPartyName('');
     setPartyEmail('');
     setPartyPhone('');
+    setPartyFamilySide('');
     setGuests([{ name: '' }]);
   };
 
@@ -467,6 +477,7 @@ export default function AdminDashboard() {
             party_name: partyName.trim(),
             email: newEmail || null,
             phone: newPhone || null,
+            family_side: partyFamilySide || null,
           })
           .eq('id', editingParty.id);
 
@@ -534,6 +545,7 @@ export default function AdminDashboard() {
             party_name: partyName.trim(),
             email: partyEmail.trim() || null,
             phone: partyPhone.trim() || null,
+            family_side: partyFamilySide || null,
             status: 'pending',
           })
           .select('id')
@@ -957,6 +969,36 @@ export default function AdminDashboard() {
               </span>
             </div>
 
+            {/* Family Side Filter */}
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
+              {(['all', 'bride', 'groom', 'unassigned'] as const).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setFamilySideFilter(f)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
+                    familySideFilter === f
+                      ? f === 'bride'
+                        ? 'bg-pink-500 text-white'
+                        : f === 'groom'
+                        ? 'bg-blue-600 text-white'
+                        : f === 'unassigned'
+                        ? 'bg-gray-400 text-white'
+                        : 'bg-[#1B3B28] text-white'
+                      : 'bg-white border border-gray-200 text-gray-500 hover:border-gray-400'
+                  }`}
+                >
+                  {f === 'bride' ? "Bride's Side" : f === 'groom' ? "Groom's Side" : f === 'unassigned' ? 'Unassigned' : 'All'}
+                  {f !== 'all' && (
+                    <span className="ml-1 opacity-70">
+                      ({f === 'unassigned'
+                        ? parties.filter(p => !p.family_side).length
+                        : parties.filter(p => p.family_side === f).length})
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+
             {/* Data Table */}
             <div className="bg-white rounded shadow-sm overflow-hidden border border-gray-100">
               <div className="overflow-x-auto">
@@ -971,7 +1013,11 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 text-sm">
-                    {parties.map((party) => {
+                    {parties.filter(p =>
+                      familySideFilter === 'all' ? true :
+                      familySideFilter === 'unassigned' ? !p.family_side :
+                      p.family_side === familySideFilter
+                    ).map((party) => {
                       const emailSent = getChannelStatus(party, 'email');
                       const smsSent = getChannelStatus(party, 'sms');
                       const hasEmail = !!party.email;
@@ -982,7 +1028,17 @@ export default function AdminDashboard() {
 
                       return (
                         <tr key={party.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="p-4 font-medium text-[#1B3B28]">{party.party_name}</td>
+                          <td className="p-4 font-medium text-[#1B3B28]">
+                            <div className="flex items-center gap-2">
+                              {party.party_name}
+                              {party.family_side === 'bride' && (
+                                <span className="text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-pink-100 text-pink-600">Bride</span>
+                              )}
+                              {party.family_side === 'groom' && (
+                                <span className="text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-blue-100 text-blue-600">Groom</span>
+                              )}
+                            </div>
+                          </td>
                           <td className="p-4">
                             {party.guests.length}{' '}
                             <span className="text-gray-400">
@@ -1086,10 +1142,16 @@ export default function AdminDashboard() {
                         </tr>
                       );
                     })}
-                    {parties.length === 0 && (
+                    {parties.filter(p =>
+                      familySideFilter === 'all' ? true :
+                      familySideFilter === 'unassigned' ? !p.family_side :
+                      p.family_side === familySideFilter
+                    ).length === 0 && (
                       <tr>
                         <td colSpan={5} className="p-8 text-center text-gray-400">
-                          No parties found. Add one using the toolbar above.
+                          {familySideFilter === 'all'
+                            ? 'No parties found. Add one using the toolbar above.'
+                            : `No parties assigned to ${familySideFilter === 'unassigned' ? 'unassigned' : familySideFilter === 'bride' ? "bride's side" : "groom's side"}.`}
                         </td>
                       </tr>
                     )}
@@ -1236,6 +1298,32 @@ export default function AdminDashboard() {
                   placeholder="e.g., The Smith Family"
                   className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
                 />
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
+                  Family Side
+                </label>
+                <div className="flex gap-3">
+                  {(['', 'bride', 'groom'] as const).map((side) => (
+                    <button
+                      key={side}
+                      type="button"
+                      onClick={() => setPartyFamilySide(side)}
+                      className={`flex-1 py-2 rounded text-xs font-bold uppercase tracking-widest transition-colors border ${
+                        partyFamilySide === side
+                          ? side === 'bride'
+                            ? 'bg-pink-500 text-white border-pink-500'
+                            : side === 'groom'
+                            ? 'bg-blue-600 text-white border-blue-600'
+                            : 'bg-gray-200 text-gray-600 border-gray-200'
+                          : 'bg-white text-gray-400 border-gray-200 hover:border-gray-400'
+                      }`}
+                    >
+                      {side === '' ? 'Unassigned' : side === 'bride' ? "Bride's Side" : "Groom's Side"}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
