@@ -246,82 +246,92 @@ function PartyCard({
       className="relative aspect-[3/4]"
       style={{ perspective: '600px' }}
     >
-      {/* Tilt container — responds to mouse in real time */}
+      {/* Tilt + static gradient border + overflow clip — all one element */}
       <motion.div
-        className="absolute inset-0"
-        style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+        className="absolute inset-0 overflow-hidden"
+        style={{
+          rotateX,
+          rotateY,
+          transformStyle: 'preserve-3d',
+          // Static gradient border: gold top-left corner → transparent
+          background:
+            'linear-gradient(160deg, #141210 0%, #0a0908 100%) padding-box,' +
+            'linear-gradient(135deg, rgba(212,168,69,0.55) 0%, rgba(212,168,69,0.12) 50%, transparent 100%) border-box',
+          border: '1px solid transparent',
+        }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
-        {/* ── Animated glowing border (conic-gradient comet) ── */}
-        <motion.div
-          className="absolute inset-0 z-0"
-          style={{
-            background:
-              'conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 270deg, rgba(212,168,69,0.45) 310deg, rgba(255,240,150,0.85) 345deg, rgba(212,168,69,0.45) 360deg)',
-          }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: 'linear' }}
-        />
-
-        {/* ── Card surface (1px inset exposes the spinning border) ── */}
-        <div
-          className="absolute inset-[1px] z-10 overflow-hidden"
-          style={{ background: 'linear-gradient(160deg, #141210 0%, #0a0908 60%, #0d0b09 100%)' }}
-        >
-          {/* Jersey number watermark */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-            <span
-              className="font-serif leading-none text-wedding-gold"
-              style={{ fontSize: '4.5rem', opacity: 0.07 }}
-            >
-              {member.id}
-            </span>
-          </div>
-
-          {/* Silhouette with gold drop-shadow */}
-          <div
-            className="absolute inset-x-[10%] top-[6%] bottom-[26%] pointer-events-none"
-            style={{ filter: 'drop-shadow(0 0 6px rgba(212,168,69,0.35))' }}
+        {/* Jersey number watermark */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+          <span
+            className="font-serif leading-none text-wedding-gold"
+            style={{ fontSize: '4.5rem', opacity: 0.07 }}
           >
-            <Silhouette />
-          </div>
-
-          {/* Glare overlay — moves with mouse */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none z-20"
-            style={{ background: glareBackground }}
-          />
-
-          {/* Bottom label */}
-          <div className="absolute bottom-0 left-0 right-0 px-2 pb-2.5 text-center z-30">
-            {member.name ? (
-              <>
-                <p className="font-serif text-[10px] md:text-xs text-white/85 leading-tight truncate">
-                  {member.name}
-                </p>
-                <p className="font-sans text-[7px] md:text-[9px] text-wedding-gold/60 tracking-[0.3em] uppercase mt-0.5 truncate">
-                  {member.role}
-                </p>
-              </>
-            ) : (
-              <p className="font-sans text-[7px] md:text-[9px] text-white/22 tracking-[0.3em] uppercase">
-                {member.role}
-              </p>
-            )}
-          </div>
-
-          {/* Edge vignette */}
-          <div
-            className="absolute inset-0 pointer-events-none z-10"
-            style={{
-              background:
-                'radial-gradient(ellipse at 50% 0%, transparent 50%, rgba(0,0,0,0.5) 100%)',
-            }}
-          />
+            {member.id}
+          </span>
         </div>
 
-        {/* ── Gold flash on entrance — sits above the card surface ── */}
+        {/* Silhouette with gold drop-shadow */}
+        <div
+          className="absolute inset-x-[10%] top-[6%] bottom-[26%] pointer-events-none"
+          style={{ filter: 'drop-shadow(0 0 6px rgba(212,168,69,0.35))' }}
+        >
+          <Silhouette />
+        </div>
+
+        {/* Glare overlay — moves with cursor */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none z-20"
+          style={{ background: glareBackground }}
+        />
+
+        {/* ── Periodic foil shimmer — diagonal light sweep, like a holographic card ── */}
+        <motion.div
+          className="absolute inset-0 z-25 pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(108deg, transparent 25%, rgba(255,245,160,0.32) 47%, rgba(255,255,255,0.10) 52%, transparent 72%)',
+          }}
+          initial={{ x: '-130%' }}
+          animate={{ x: '130%' }}
+          transition={{
+            duration: 1.3,
+            repeat: Infinity,
+            repeatDelay: 4,
+            ease: [0.25, 0.1, 0.25, 1],
+            delay: (member.id % 6) * 0.65,
+          }}
+        />
+
+        {/* Bottom label */}
+        <div className="absolute bottom-0 left-0 right-0 px-2 pb-2.5 text-center z-30">
+          {member.name ? (
+            <>
+              <p className="font-serif text-[10px] md:text-xs text-white/85 leading-tight truncate">
+                {member.name}
+              </p>
+              <p className="font-sans text-[7px] md:text-[9px] text-wedding-gold/60 tracking-[0.3em] uppercase mt-0.5 truncate">
+                {member.role}
+              </p>
+            </>
+          ) : (
+            <p className="font-sans text-[7px] md:text-[9px] text-white/22 tracking-[0.3em] uppercase">
+              {member.role}
+            </p>
+          )}
+        </div>
+
+        {/* Edge vignette */}
+        <div
+          className="absolute inset-0 pointer-events-none z-10"
+          style={{
+            background:
+              'radial-gradient(ellipse at 50% 0%, transparent 50%, rgba(0,0,0,0.5) 100%)',
+          }}
+        />
+
+        {/* ── Gold flash on entrance ── */}
         <motion.div
           variants={flashVariants}
           className="absolute inset-0 z-30 pointer-events-none"
