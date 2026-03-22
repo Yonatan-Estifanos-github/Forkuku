@@ -21,31 +21,31 @@ interface PartyMember {
 }
 
 const GROOMSMEN: PartyMember[] = [
-  { id: 1,  name: '', role: 'Best Man',   funFact: 'He knew before anyone else. When Yonatan called at midnight to say he\'d found the one, he picked up on the first ring.' },
-  { id: 2,  name: '', role: 'Groomsman',  funFact: 'Their friendship started with a disagreement that turned into a three-hour conversation. They\'ve never agreed on everything — and that\'s why it works.' },
-  { id: 3,  name: '', role: 'Groomsman',  funFact: 'The friend who shows up — not just to the fun stuff, but to everything. Every single time.' },
-  { id: 4,  name: '', role: 'Groomsman',  funFact: 'A quiet loyalty that speaks louder than most people\'s words. He\'s been in Yonatan\'s corner since day one.' },
-  { id: 5,  name: '', role: 'Groomsman',  funFact: 'They bonded over a shared playlist and never looked back. His music taste has the couple\'s full endorsement.' },
-  { id: 6,  name: '', role: 'Groomsman',  funFact: 'The one who always has the right words — or the perfect silence. Either way, exactly what was needed.' },
-  { id: 7,  name: '', role: 'Groomsman',  funFact: 'He traveled across state lines just to be here today. No hesitation asked, no hesitation given.' },
-  { id: 8,  name: '', role: 'Groomsman',  funFact: 'They met in college and immediately knew this friendship was built to last. Years later, here\'s the proof.' },
-  { id: 9,  name: '', role: 'Groomsman',  funFact: 'He remembers everything — birthdays, milestones, the hard seasons. Not because he has to. Because he cares.' },
-  { id: 10, name: '', role: 'Groomsman',  funFact: 'He gave the best advice when Yonatan was nervous about the proposal. It was simple, honest, and exactly right.' },
-  { id: 11, name: '', role: 'Groomsman',  funFact: 'A friendship forged through shared challenges. They pushed each other to grow, and both are better for it.' },
+  { id: 1,  name: 'Symney Cameron',    role: 'Best Man',  funFact: '' },
+  { id: 2,  name: 'Ziam Jan',          role: 'Groomsman', funFact: '' },
+  { id: 3,  name: 'Yoseph Estifanos',  role: 'Groomsman', funFact: '' },
+  { id: 4,  name: 'Kiran Pandey',      role: 'Groomsman', funFact: '' },
+  { id: 5,  name: 'Amanuel Estifanos', role: 'Groomsman', funFact: '' },
+  { id: 6,  name: 'Fikru Ashenafi',    role: 'Groomsman', funFact: '' },
+  { id: 7,  name: 'Daniel Hodeta',     role: 'Groomsman', funFact: '' },
+  { id: 8,  name: 'Kaleab Mekonen',    role: 'Groomsman', funFact: '' },
+  { id: 9,  name: 'Abel Gebre',        role: 'Groomsman', funFact: '' },
+  { id: 10, name: 'Samuel Guta',       role: 'Groomsman', funFact: '' },
+  { id: 11, name: 'Kirollos Rezkalla', role: 'Groomsman', funFact: '' },
 ];
 
 const BRIDESMAIDS: PartyMember[] = [
-  { id: 1,  name: '', role: 'Maid of Honor', funFact: 'Saron\'s person. She was the first phone call after the proposal — and she cried before Saron did.' },
-  { id: 2,  name: '', role: 'Bridesmaid',    funFact: 'They met at church and became instant friends. She has a laugh that fills the entire room.' },
-  { id: 3,  name: '', role: 'Bridesmaid',    funFact: 'A friend who has seen every version of Saron and loved them all unconditionally.' },
-  { id: 4,  name: '', role: 'Bridesmaid',    funFact: 'She drove four hours just to celebrate when Saron said yes. Didn\'t even ask — just showed up.' },
-  { id: 5,  name: '', role: 'Bridesmaid',    funFact: 'They met through work and quickly realised they had far more in common than their job titles.' },
-  { id: 6,  name: '', role: 'Bridesmaid',    funFact: 'She gives honest advice even when it\'s hard to hear. That\'s a rare and irreplaceable quality in a friend.' },
-  { id: 7,  name: '', role: 'Bridesmaid',    funFact: 'She and Saron have been through a lot together — the kind of history that creates an unbreakable bond.' },
-  { id: 8,  name: '', role: 'Bridesmaid',    funFact: 'They bonded over a shared love of cooking. Many dinners later, she\'s become part of the family.' },
-  { id: 9,  name: '', role: 'Bridesmaid',    funFact: 'Saron said she makes every room brighter just by being in it — on the very first day they met.' },
-  { id: 10, name: '', role: 'Bridesmaid',    funFact: 'What started as strangers at a mutual friend\'s gathering became one of the most important friendships in Saron\'s life.' },
-  { id: 11, name: '', role: 'Bridesmaid',    funFact: 'A constant through every season. Some friendships are simply built to last — this is one of them.' },
+  { id: 1,  name: 'Abigael Gebremariam', role: 'Maid of Honor', funFact: '' },
+  { id: 2,  name: 'Tina Teferaehu',      role: 'Bridesmaid',    funFact: '' },
+  { id: 3,  name: 'Hermella Gebre',      role: 'Bridesmaid',    funFact: '' },
+  { id: 4,  name: 'Lydia Dawit',         role: 'Bridesmaid',    funFact: '' },
+  { id: 5,  name: 'Edom Wake',           role: 'Bridesmaid',    funFact: '' },
+  { id: 6,  name: 'Sabrina Yohannes',    role: 'Bridesmaid',    funFact: '' },
+  { id: 7,  name: 'Maranatha Haile',     role: 'Bridesmaid',    funFact: '' },
+  { id: 8,  name: 'Ariam Yohannes',      role: 'Bridesmaid',    funFact: '' },
+  { id: 9,  name: 'Elroi Gebre',         role: 'Bridesmaid',    funFact: '' },
+  { id: 10, name: 'Ruth Tefera',         role: 'Bridesmaid',    funFact: '' },
+  { id: 11, name: 'Amen Tefera',         role: 'Bridesmaid',    funFact: '' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
