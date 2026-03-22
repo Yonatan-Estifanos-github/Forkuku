@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import {
   motion,
   useInView,
@@ -10,184 +10,119 @@ import {
 } from 'framer-motion';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DATA — swap name / role / photo for any member. Layout is fully data-driven.
+// DATA — swap name / role / funFact / photo for any member. Zero layout changes.
 // ─────────────────────────────────────────────────────────────────────────────
 interface PartyMember {
   id: number;
   name: string;
   role: string;
+  funFact: string;
   photo?: string;
 }
 
 const GROOMSMEN: PartyMember[] = [
-  { id: 1,  name: '', role: 'Best Man' },
-  { id: 2,  name: '', role: 'Groomsman' },
-  { id: 3,  name: '', role: 'Groomsman' },
-  { id: 4,  name: '', role: 'Groomsman' },
-  { id: 5,  name: '', role: 'Groomsman' },
-  { id: 6,  name: '', role: 'Groomsman' },
-  { id: 7,  name: '', role: 'Groomsman' },
-  { id: 8,  name: '', role: 'Groomsman' },
-  { id: 9,  name: '', role: 'Groomsman' },
-  { id: 10, name: '', role: 'Groomsman' },
-  { id: 11, name: '', role: 'Groomsman' },
+  { id: 1,  name: '', role: 'Best Man',   funFact: 'He knew before anyone else. When Yonatan called at midnight to say he\'d found the one, he picked up on the first ring.' },
+  { id: 2,  name: '', role: 'Groomsman',  funFact: 'Their friendship started with a disagreement that turned into a three-hour conversation. They\'ve never agreed on everything — and that\'s why it works.' },
+  { id: 3,  name: '', role: 'Groomsman',  funFact: 'The friend who shows up — not just to the fun stuff, but to everything. Every single time.' },
+  { id: 4,  name: '', role: 'Groomsman',  funFact: 'A quiet loyalty that speaks louder than most people\'s words. He\'s been in Yonatan\'s corner since day one.' },
+  { id: 5,  name: '', role: 'Groomsman',  funFact: 'They bonded over a shared playlist and never looked back. His music taste has the couple\'s full endorsement.' },
+  { id: 6,  name: '', role: 'Groomsman',  funFact: 'The one who always has the right words — or the perfect silence. Either way, exactly what was needed.' },
+  { id: 7,  name: '', role: 'Groomsman',  funFact: 'He traveled across state lines just to be here today. No hesitation asked, no hesitation given.' },
+  { id: 8,  name: '', role: 'Groomsman',  funFact: 'They met in college and immediately knew this friendship was built to last. Years later, here\'s the proof.' },
+  { id: 9,  name: '', role: 'Groomsman',  funFact: 'He remembers everything — birthdays, milestones, the hard seasons. Not because he has to. Because he cares.' },
+  { id: 10, name: '', role: 'Groomsman',  funFact: 'He gave the best advice when Yonatan was nervous about the proposal. It was simple, honest, and exactly right.' },
+  { id: 11, name: '', role: 'Groomsman',  funFact: 'A friendship forged through shared challenges. They pushed each other to grow, and both are better for it.' },
 ];
 
 const BRIDESMAIDS: PartyMember[] = [
-  { id: 1,  name: '', role: 'Maid of Honor' },
-  { id: 2,  name: '', role: 'Bridesmaid' },
-  { id: 3,  name: '', role: 'Bridesmaid' },
-  { id: 4,  name: '', role: 'Bridesmaid' },
-  { id: 5,  name: '', role: 'Bridesmaid' },
-  { id: 6,  name: '', role: 'Bridesmaid' },
-  { id: 7,  name: '', role: 'Bridesmaid' },
-  { id: 8,  name: '', role: 'Bridesmaid' },
-  { id: 9,  name: '', role: 'Bridesmaid' },
-  { id: 10, name: '', role: 'Bridesmaid' },
-  { id: 11, name: '', role: 'Bridesmaid' },
+  { id: 1,  name: '', role: 'Maid of Honor', funFact: 'Saron\'s person. She was the first phone call after the proposal — and she cried before Saron did.' },
+  { id: 2,  name: '', role: 'Bridesmaid',    funFact: 'They met at church and became instant friends. She has a laugh that fills the entire room.' },
+  { id: 3,  name: '', role: 'Bridesmaid',    funFact: 'A friend who has seen every version of Saron and loved them all unconditionally.' },
+  { id: 4,  name: '', role: 'Bridesmaid',    funFact: 'She drove four hours just to celebrate when Saron said yes. Didn\'t even ask — just showed up.' },
+  { id: 5,  name: '', role: 'Bridesmaid',    funFact: 'They met through work and quickly realised they had far more in common than their job titles.' },
+  { id: 6,  name: '', role: 'Bridesmaid',    funFact: 'She gives honest advice even when it\'s hard to hear. That\'s a rare and irreplaceable quality in a friend.' },
+  { id: 7,  name: '', role: 'Bridesmaid',    funFact: 'She and Saron have been through a lot together — the kind of history that creates an unbreakable bond.' },
+  { id: 8,  name: '', role: 'Bridesmaid',    funFact: 'They bonded over a shared love of cooking. Many dinners later, she\'s become part of the family.' },
+  { id: 9,  name: '', role: 'Bridesmaid',    funFact: 'Saron said she makes every room brighter just by being in it — on the very first day they met.' },
+  { id: 10, name: '', role: 'Bridesmaid',    funFact: 'What started as strangers at a mutual friend\'s gathering became one of the most important friendships in Saron\'s life.' },
+  { id: 11, name: '', role: 'Bridesmaid',    funFact: 'A constant through every season. Some friendships are simply built to last — this is one of them.' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Silhouette SVGs — 3 male poses, 3 female poses (rotated across the grid)
-// Each has a subtle gold drop-shadow applied via the wrapper div
+// Headshot silhouettes — bust crop only (head + neck + shoulder hint)
+// 2 male variants, 2 female variants — alternated across each grid
 // ─────────────────────────────────────────────────────────────────────────────
-const S = 'rgba(212,168,69,0.22)'; // stroke
-const F1 = 'rgba(255,255,255,0.07)'; // head fill
-const F2 = 'rgba(255,255,255,0.05)'; // body fill
+const S  = 'rgba(212,168,69,0.22)';
+const SL = 'rgba(212,168,69,0.13)';
+const F1 = 'rgba(255,255,255,0.07)';
+const F2 = 'rgba(255,255,255,0.05)';
 
-function MaleUpright() {
+function MaleHeadshot() {
   return (
-    <svg viewBox="0 0 80 110" fill="none" className="w-full h-full">
-      <ellipse cx="40" cy="18" rx="12" ry="13" fill={F1} stroke={S} strokeWidth="0.8" />
-      <rect x="36" y="29" width="8" height="8" rx="2" fill={F2} />
-      {/* Wide-shouldered jacket */}
-      <path d="M7 40 L17 36 Q27 33 35 37 L40 42 L45 37 Q53 33 63 36 L73 40 Q77 56 75 100 H5 Q3 56 7 40Z"
-        fill={F2} stroke={S} strokeWidth="0.7" />
-      {/* Left arm at side */}
-      <path d="M9 44 Q3 58 4 76 Q6 79 9 75 Q9 60 13 46Z" fill={F2} />
-      {/* Right arm at side */}
-      <path d="M71 44 Q77 58 76 76 Q74 79 71 75 Q71 60 67 46Z" fill={F2} />
+    <svg viewBox="0 0 80 90" fill="none" className="w-full h-full">
+      <ellipse cx="40" cy="30" rx="18" ry="20" fill={F1} stroke={S} strokeWidth="0.9" />
+      <path d="M34 48 L34 56 Q40 58 46 56 L46 48" fill={F2} />
+      <path d="M10 82 Q18 62 34 56 Q40 58 46 56 Q62 62 70 82" fill={F2} stroke={SL} strokeWidth="0.8" />
     </svg>
   );
 }
 
-function MaleAdjustingTie() {
+function MaleHeadshotAlt() {
   return (
-    <svg viewBox="0 0 80 110" fill="none" className="w-full h-full">
-      <ellipse cx="40" cy="18" rx="12" ry="13" fill={F1} stroke={S} strokeWidth="0.8" />
-      <rect x="36" y="29" width="8" height="8" rx="2" fill={F2} />
-      <path d="M7 40 L17 36 Q27 33 35 37 L40 42 L45 37 Q53 33 63 36 L73 40 Q77 56 75 100 H5 Q3 56 7 40Z"
-        fill={F2} stroke={S} strokeWidth="0.7" />
-      {/* Left arm down */}
-      <path d="M9 44 Q3 58 4 76 Q6 79 9 75 Q9 60 13 46Z" fill={F2} />
-      {/* Right arm raised — elbow bent, forearm toward collar */}
-      <path d="M65 37 Q74 32 77 22 Q75 16 71 19 Q69 26 62 37Z" fill={F2} stroke={S} strokeWidth="0.6" />
-      <path d="M62 37 Q67 30 70 22 Q68 18 65 21 Q63 28 58 38Z" fill={F2} />
+    <svg viewBox="0 0 80 90" fill="none" className="w-full h-full">
+      {/* Slightly wider jaw */}
+      <ellipse cx="40" cy="30" rx="20" ry="18" fill={F1} stroke={S} strokeWidth="0.9" />
+      <path d="M33 46 L33 55 Q40 57 47 55 L47 46" fill={F2} />
+      <path d="M8 82 Q16 62 33 55 Q40 57 47 55 Q64 62 72 82" fill={F2} stroke={SL} strokeWidth="0.8" />
     </svg>
   );
 }
 
-function MaleArmsCrossed() {
+function FemaleHeadshotLongHair() {
   return (
-    <svg viewBox="0 0 80 110" fill="none" className="w-full h-full">
-      <ellipse cx="40" cy="18" rx="12" ry="13" fill={F1} stroke={S} strokeWidth="0.8" />
-      <rect x="36" y="29" width="8" height="8" rx="2" fill={F2} />
-      <path d="M7 40 L17 36 Q27 33 35 37 L40 42 L45 37 Q53 33 63 36 L73 40 Q77 56 75 100 H5 Q3 56 7 40Z"
-        fill={F2} stroke={S} strokeWidth="0.7" />
-      {/* Left arm crossing right */}
-      <path d="M14 46 Q24 52 40 55 Q38 59 36 60 Q20 58 8 50 Q8 46 14 46Z" fill={F2} stroke={S} strokeWidth="0.5" />
-      {/* Right arm crossing left */}
-      <path d="M66 46 Q56 52 40 57 Q42 61 44 62 Q60 59 72 50 Q72 46 66 46Z" fill={F2} stroke={S} strokeWidth="0.5" />
+    <svg viewBox="0 0 80 90" fill="none" className="w-full h-full">
+      {/* Hair flowing down sides */}
+      <path d="M22 28 Q18 55 20 76 Q28 72 32 58 Q40 62 48 58 Q52 72 60 76 Q62 55 58 28 Q54 12 40 12 Q26 12 22 28Z"
+        fill={F2} stroke="rgba(212,168,69,0.1)" strokeWidth="0.7" />
+      {/* Face */}
+      <ellipse cx="40" cy="30" rx="15" ry="18" fill={F1} stroke={S} strokeWidth="0.9" />
+      <path d="M35 46 L35 55 Q40 57 45 55 L45 46" fill={F2} />
+      <path d="M12 82 Q19 63 35 55 Q40 57 45 55 Q61 63 68 82" fill={F2} stroke={SL} strokeWidth="0.8" />
     </svg>
   );
 }
 
-function FemaleBouquet() {
+function FemaleHeadshotUpdo() {
   return (
-    <svg viewBox="0 0 80 110" fill="none" className="w-full h-full">
-      <ellipse cx="40" cy="16" rx="11" ry="12" fill={F1} stroke={S} strokeWidth="0.8" />
-      <rect x="37" y="27" width="6" height="7" rx="2" fill={F2} />
-      {/* Bodice */}
-      <path d="M22 35 Q28 32 36 34 L40 39 L44 34 Q52 32 58 35 Q63 47 58 62 Q52 65 40 65 Q28 65 22 62 Q17 47 22 35Z"
-        fill={F2} stroke={S} strokeWidth="0.7" />
-      {/* Skirt */}
-      <path d="M22 62 Q28 65 40 65 Q52 65 58 62 Q65 78 68 100 H12 Q15 78 22 62Z"
-        fill={F2} stroke={S} strokeWidth="0.6" />
-      {/* Arms coming to center at waist */}
-      <path d="M22 38 Q14 50 18 62 Q20 64 22 62 Q20 52 25 41Z" fill={F2} />
-      <path d="M58 38 Q66 50 62 62 Q60 64 58 62 Q60 52 55 41Z" fill={F2} />
-      {/* Bouquet */}
-      <ellipse cx="40" cy="68" rx="9" ry="7"
-        fill="rgba(212,168,69,0.07)" stroke="rgba(212,168,69,0.25)" strokeWidth="0.8" />
-      <circle cx="37" cy="67" r="2.5" fill="rgba(212,168,69,0.1)" />
-      <circle cx="43" cy="67" r="2.5" fill="rgba(212,168,69,0.1)" />
-      <circle cx="40" cy="64" r="2.5" fill="rgba(212,168,69,0.1)" />
+    <svg viewBox="0 0 80 90" fill="none" className="w-full h-full">
+      {/* Bun */}
+      <ellipse cx="40" cy="10" rx="8" ry="6" fill={F2} stroke="rgba(212,168,69,0.18)" strokeWidth="0.7" />
+      <path d="M32 14 Q28 20 28 30" stroke="rgba(212,168,69,0.1)" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M48 14 Q52 20 52 30" stroke="rgba(212,168,69,0.1)" strokeWidth="1.2" strokeLinecap="round" />
+      {/* Head */}
+      <ellipse cx="40" cy="33" rx="16" ry="18" fill={F1} stroke={S} strokeWidth="0.9" />
+      <path d="M35 49 L35 58 Q40 60 45 58 L45 49" fill={F2} />
+      <path d="M14 82 Q20 63 35 58 Q40 60 45 58 Q60 63 66 82" fill={F2} stroke={SL} strokeWidth="0.8" />
     </svg>
   );
 }
 
-function FemaleStanding() {
-  return (
-    <svg viewBox="0 0 80 110" fill="none" className="w-full h-full">
-      <ellipse cx="40" cy="16" rx="11" ry="12" fill={F1} stroke={S} strokeWidth="0.8" />
-      <rect x="37" y="27" width="6" height="7" rx="2" fill={F2} />
-      {/* Bodice */}
-      <path d="M24 35 Q30 32 37 34 L40 39 L43 34 Q50 32 56 35 Q60 47 56 61 Q50 64 40 64 Q30 64 24 61 Q20 47 24 35Z"
-        fill={F2} stroke={S} strokeWidth="0.7" />
-      {/* Wide flowing skirt */}
-      <path d="M20 61 Q28 64 40 64 Q52 64 60 61 Q68 77 72 100 H8 Q12 77 20 61Z"
-        fill={F2} stroke={S} strokeWidth="0.6" />
-      {/* Arms flowing at sides */}
-      <path d="M24 38 Q15 52 14 70 Q16 73 19 70 Q19 56 26 42Z" fill={F2} />
-      <path d="M56 38 Q65 52 66 70 Q64 73 61 70 Q61 56 54 42Z" fill={F2} />
-    </svg>
-  );
-}
-
-function FemaleHandOnHip() {
-  return (
-    <svg viewBox="0 0 80 110" fill="none" className="w-full h-full">
-      <ellipse cx="40" cy="16" rx="11" ry="12" fill={F1} stroke={S} strokeWidth="0.8" />
-      <rect x="37" y="27" width="6" height="7" rx="2" fill={F2} />
-      {/* Bodice */}
-      <path d="M24 35 Q30 32 37 34 L40 39 L43 34 Q50 32 56 35 Q60 47 56 61 Q50 64 40 64 Q30 64 24 61 Q20 47 24 35Z"
-        fill={F2} stroke={S} strokeWidth="0.7" />
-      {/* Skirt */}
-      <path d="M20 61 Q28 64 40 64 Q52 64 60 61 Q68 77 72 100 H8 Q12 77 20 61Z"
-        fill={F2} stroke={S} strokeWidth="0.6" />
-      {/* Left arm at side */}
-      <path d="M24 38 Q15 52 14 70 Q16 73 19 70 Q19 56 26 42Z" fill={F2} />
-      {/* Right arm bent — hand on hip */}
-      <path d="M56 36 Q67 38 70 50 Q68 54 65 52 Q64 44 58 40Z" fill={F2} stroke={S} strokeWidth="0.5" />
-      <path d="M63 50 Q67 61 61 65 Q59 63 61 58 Q65 57 63 50Z" fill={F2} />
-    </svg>
-  );
-}
-
-const MALE_SILHOUETTES = [MaleUpright, MaleAdjustingTie, MaleArmsCrossed];
-const FEMALE_SILHOUETTES = [FemaleBouquet, FemaleStanding, FemaleHandOnHip];
+const MALE_SILHOUETTES   = [MaleHeadshot, MaleHeadshotAlt];
+const FEMALE_SILHOUETTES = [FemaleHeadshotLongHair, FemaleHeadshotUpdo];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation variants
 // ─────────────────────────────────────────────────────────────────────────────
 const gridVariants = {
   hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.07, delayChildren: 0.05 },
-  },
+  visible: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
 };
 
-// Scale-up entrance: 0.5 → 1 — FIFA card pack reveal energy
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.5 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] },
-  },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
 };
 
-// Gold flash fires on entrance via variant name propagation from gridVariants
 const flashVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -196,8 +131,18 @@ const flashVariants = {
   },
 };
 
+// Shared border style used on both front and back face
+const cardFaceStyle = {
+  background:
+    'linear-gradient(160deg, #141210 0%, #0a0908 100%) padding-box,' +
+    'linear-gradient(135deg, rgba(212,168,69,0.55) 0%, rgba(212,168,69,0.12) 50%, transparent 100%) border-box',
+  border: '1px solid transparent',
+  backfaceVisibility: 'hidden' as const,
+  WebkitBackfaceVisibility: 'hidden' as const,
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
-// PartyCard — FIFA Ultimate Team card: 3D tilt + glare + spinning border + flash
+// PartyCard — 3D tilt on hover, 3D flip on click to reveal fun fact
 // ─────────────────────────────────────────────────────────────────────────────
 function PartyCard({
   member,
@@ -208,30 +153,35 @@ function PartyCard({
   gender: 'male' | 'female';
   silhouetteIndex: number;
 }) {
-  // ── 3D Tilt ──
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  // ── 3D tilt (front face only) ──
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const springConfig = { stiffness: 180, damping: 18 };
-  const mouseXSpring = useSpring(mouseX, springConfig);
-  const mouseYSpring = useSpring(mouseY, springConfig);
+  const spring = { stiffness: 180, damping: 18 };
+  const mouseXSpring = useSpring(mouseX, spring);
+  const mouseYSpring = useSpring(mouseY, spring);
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['14deg', '-14deg']);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-14deg', '14deg']);
 
-  // ── Glare overlay tracks cursor ──
+  // ── Glare follows cursor ──
   const glareBackground = useTransform(
     [mouseXSpring, mouseYSpring],
     ([mx, my]) =>
-      `radial-gradient(circle at ${(Number(mx) + 0.5) * 100}% ${(Number(my) + 0.5) * 100}%, rgba(255,240,150,0.28) 0%, rgba(212,168,69,0.1) 30%, transparent 65%)`
+      `radial-gradient(circle at ${(Number(mx) + 0.5) * 100}% ${(Number(my) + 0.5) * 100}%, rgba(255,240,150,0.28) 0%, rgba(212,168,69,0.10) 30%, transparent 65%)`
   );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isFlipped) return;
     const rect = e.currentTarget.getBoundingClientRect();
     mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
     mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
   };
-  const handleMouseLeave = () => {
+
+  const handleClick = () => {
     mouseX.set(0);
     mouseY.set(0);
+    setIsFlipped(f => !f);
   };
 
   const Silhouette =
@@ -240,113 +190,97 @@ function PartyCard({
       : MALE_SILHOUETTES[silhouetteIndex % MALE_SILHOUETTES.length];
 
   return (
-    // Outer wrapper: handles entrance variant + perspective for children
     <motion.div
       variants={cardVariants}
-      className="relative aspect-[3/4]"
-      style={{ perspective: '600px' }}
+      className="relative aspect-[3/4] cursor-pointer"
+      style={{ perspective: '700px' }}
+      onClick={handleClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}
     >
-      {/* Tilt + static gradient border + overflow clip — all one element */}
+      {/* Flip container — rotates 180° on click */}
       <motion.div
-        className="absolute inset-0 overflow-hidden"
-        style={{
-          rotateX,
-          rotateY,
-          transformStyle: 'preserve-3d',
-          // Static gradient border: gold top-left corner → transparent
-          background:
-            'linear-gradient(160deg, #141210 0%, #0a0908 100%) padding-box,' +
-            'linear-gradient(135deg, rgba(212,168,69,0.55) 0%, rgba(212,168,69,0.12) 50%, transparent 100%) border-box',
-          border: '1px solid transparent',
-        }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+        className="absolute inset-0"
+        style={{ transformStyle: 'preserve-3d' }}
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
       >
-        {/* Jersey number watermark */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-          <span
-            className="font-serif leading-none text-wedding-gold"
-            style={{ fontSize: '4.5rem', opacity: 0.07 }}
-          >
-            {member.id}
-          </span>
-        </div>
-
-        {/* Silhouette with gold drop-shadow */}
-        <div
-          className="absolute inset-x-[10%] top-[6%] bottom-[26%] pointer-events-none"
-          style={{ filter: 'drop-shadow(0 0 6px rgba(212,168,69,0.35))' }}
+        {/* ── FRONT FACE — headshot + tilt + glare ── */}
+        <motion.div
+          className="absolute inset-0 overflow-hidden"
+          style={{ ...cardFaceStyle, rotateX, rotateY }}
         >
-          <Silhouette />
-        </div>
+          {/* Number watermark */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+            <span className="font-serif leading-none text-wedding-gold" style={{ fontSize: '4.5rem', opacity: 0.07 }}>
+              {member.id}
+            </span>
+          </div>
 
-        {/* Glare overlay — moves with cursor */}
-        <motion.div
-          className="absolute inset-0 pointer-events-none z-20"
-          style={{ background: glareBackground }}
-        />
+          {/* Headshot silhouette with gold drop-shadow */}
+          <div
+            className="absolute inset-x-[8%] top-[5%] bottom-[24%] pointer-events-none"
+            style={{ filter: 'drop-shadow(0 0 7px rgba(212,168,69,0.38))' }}
+          >
+            <Silhouette />
+          </div>
 
-        {/* ── Periodic foil shimmer — diagonal light sweep, like a holographic card ── */}
-        <motion.div
-          className="absolute inset-0 z-25 pointer-events-none"
-          style={{
-            background:
-              'linear-gradient(108deg, transparent 25%, rgba(255,245,160,0.32) 47%, rgba(255,255,255,0.10) 52%, transparent 72%)',
-          }}
-          initial={{ x: '-130%' }}
-          animate={{ x: '130%' }}
-          transition={{
-            duration: 1.3,
-            repeat: Infinity,
-            repeatDelay: 4,
-            ease: [0.25, 0.1, 0.25, 1],
-            delay: (member.id % 6) * 0.65,
-          }}
-        />
+          {/* Glare */}
+          <motion.div className="absolute inset-0 pointer-events-none z-20" style={{ background: glareBackground }} />
 
-        {/* Bottom label */}
-        <div className="absolute bottom-0 left-0 right-0 px-2 pb-2.5 text-center z-30">
-          {member.name ? (
-            <>
-              <p className="font-serif text-[10px] md:text-xs text-white/85 leading-tight truncate">
-                {member.name}
-              </p>
-              <p className="font-sans text-[7px] md:text-[9px] text-wedding-gold/60 tracking-[0.3em] uppercase mt-0.5 truncate">
-                {member.role}
-              </p>
-            </>
-          ) : (
-            <p className="font-sans text-[7px] md:text-[9px] text-white/22 tracking-[0.3em] uppercase">
-              {member.role}
-            </p>
-          )}
-        </div>
+          {/* Bottom label */}
+          <div className="absolute bottom-0 left-0 right-0 px-2 pb-2 text-center z-30">
+            {member.name ? (
+              <>
+                <p className="font-serif text-[10px] md:text-xs text-white/85 leading-tight truncate">{member.name}</p>
+                <p className="font-sans text-[7px] md:text-[9px] text-wedding-gold/60 tracking-[0.3em] uppercase mt-0.5 truncate">{member.role}</p>
+              </>
+            ) : (
+              <p className="font-sans text-[7px] md:text-[9px] text-white/22 tracking-[0.3em] uppercase">{member.role}</p>
+            )}
+          </div>
 
-        {/* Edge vignette */}
+          {/* Tap hint */}
+          <div className="absolute top-1.5 right-1.5 z-30">
+            <span className="font-sans text-[6px] text-white/20 tracking-widest uppercase">tap</span>
+          </div>
+
+          {/* Edge vignette */}
+          <div className="absolute inset-0 pointer-events-none z-10"
+            style={{ background: 'radial-gradient(ellipse at 50% 0%, transparent 50%, rgba(0,0,0,0.5) 100%)' }} />
+
+          {/* Gold flash on entrance */}
+          <motion.div variants={flashVariants} className="absolute inset-0 z-40 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(255,240,130,0.9) 0%, rgba(212,168,69,0.6) 35%, transparent 70%)' }} />
+        </motion.div>
+
+        {/* ── BACK FACE — fun fact ── */}
         <div
-          className="absolute inset-0 pointer-events-none z-10"
-          style={{
-            background:
-              'radial-gradient(ellipse at 50% 0%, transparent 50%, rgba(0,0,0,0.5) 100%)',
-          }}
-        />
+          className="absolute inset-0 overflow-hidden flex flex-col items-center justify-between py-3 px-2.5"
+          style={{ ...cardFaceStyle, transform: 'rotateY(180deg)' }}
+        >
+          {/* Top ornament */}
+          <div className="flex flex-col items-center gap-1 pt-0.5">
+            <div className="w-5 h-[1px] bg-wedding-gold/40" />
+            <p className="font-sans text-[6px] md:text-[7px] text-wedding-gold/60 tracking-[0.4em] uppercase">Fun Fact</p>
+            <div className="w-5 h-[1px] bg-wedding-gold/40" />
+          </div>
 
-        {/* ── Gold flash on entrance ── */}
-        <motion.div
-          variants={flashVariants}
-          className="absolute inset-0 z-30 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(ellipse at 50% 30%, rgba(255,240,130,0.9) 0%, rgba(212,168,69,0.6) 35%, transparent 70%)',
-          }}
-        />
+          {/* Fun fact text */}
+          <p className="font-serif text-[8px] md:text-[9px] text-white/78 text-center leading-relaxed italic flex-1 flex items-center px-0.5 py-2">
+            {member.funFact}
+          </p>
+
+          {/* Bottom hint */}
+          <p className="font-sans text-[6px] text-white/20 tracking-[0.25em] uppercase">tap to close</p>
+        </div>
       </motion.div>
     </motion.div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PartyColumn — column header + staggered card grid
+// PartyColumn
 // ─────────────────────────────────────────────────────────────────────────────
 function PartyColumn({
   title,
@@ -364,7 +298,6 @@ function PartyColumn({
 
   return (
     <div className="flex-1 flex flex-col items-center min-w-0">
-      {/* Column header */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -374,16 +307,13 @@ function PartyColumn({
         <p className="font-sans text-wedding-gold/45 uppercase tracking-[0.5em] text-[10px] mb-2">
           {side === 'left' ? 'His' : 'Her'}
         </p>
-        <h3
-          className="font-serif text-xl md:text-2xl text-white/90"
-          style={{ filter: 'drop-shadow(0 0 12px rgba(212,168,69,0.2))' }}
-        >
+        <h3 className="font-serif text-xl md:text-2xl text-white/90"
+          style={{ filter: 'drop-shadow(0 0 12px rgba(212,168,69,0.2))' }}>
           {title}
         </h3>
         <div className="w-6 h-[1px] bg-wedding-gold/40 mx-auto mt-3" />
       </motion.div>
 
-      {/* Card grid — perspective for scale-in depth */}
       <motion.div
         ref={ref}
         variants={gridVariants}
@@ -410,47 +340,20 @@ function PartyColumn({
 // ─────────────────────────────────────────────────────────────────────────────
 export default function WeddingPartySection() {
   return (
-    <section
-      id="wedding-party"
-      className="relative bg-luxury-black py-24 md:py-40 px-4 overflow-hidden"
-    >
-      {/* Ambient background glow */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(212,168,69,0.04) 0%, transparent 70%)',
-        }}
-      />
+    <section id="wedding-party" className="relative bg-luxury-black py-24 md:py-40 px-4 overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(212,168,69,0.04) 0%, transparent 70%)' }} />
 
-      {/* ── Section header ── */}
       <div className="text-center mb-16 md:mb-24 relative z-10">
-        <p className="font-sans text-wedding-gold/45 uppercase tracking-[0.55em] text-xs mb-6">
-          Wedding Party
-        </p>
-
-        {/* Names — gold shimmer + amplified glow */}
-        <h2
-          className="font-serif text-5xl md:text-7xl lg:text-8xl gold-shimmer"
-          style={{
-            filter:
-              'drop-shadow(0 0 60px rgba(212,168,69,0.28)) drop-shadow(0 2px 24px rgba(212,168,69,0.35))',
-          }}
-        >
+        <p className="font-sans text-wedding-gold/45 uppercase tracking-[0.55em] text-xs mb-6">Wedding Party</p>
+        <h2 className="font-serif text-5xl md:text-7xl lg:text-8xl gold-shimmer"
+          style={{ filter: 'drop-shadow(0 0 60px rgba(212,168,69,0.28)) drop-shadow(0 2px 24px rgba(212,168,69,0.35))' }}>
           Yonatan &amp; Saron
         </h2>
-
-        {/* Subtitle — shimmering gold hint */}
-        <p
-          className="font-serif text-base md:text-lg italic mt-5"
-          style={{
-            color: 'rgba(212,168,69,0.5)',
-            filter: 'drop-shadow(0 0 20px rgba(212,168,69,0.2))',
-          }}
-        >
+        <p className="font-serif text-base md:text-lg italic mt-5"
+          style={{ color: 'rgba(212,168,69,0.5)', filter: 'drop-shadow(0 0 20px rgba(212,168,69,0.2))' }}>
           The friends who&apos;ve been with us every step of the way
         </p>
-
-        {/* Luxury divider */}
         <div className="flex items-center justify-center gap-4 mt-8">
           <div className="w-20 md:w-36 h-[1px] bg-gradient-to-r from-transparent to-wedding-gold/35" />
           <div className="w-1.5 h-1.5 rounded-full bg-wedding-gold/55" />
@@ -458,22 +361,13 @@ export default function WeddingPartySection() {
         </div>
       </div>
 
-      {/* ── Two-column party layout ── */}
       <div className="relative max-w-5xl mx-auto z-10">
         <div className="flex flex-col md:flex-row gap-10 md:gap-6 lg:gap-10">
-          <PartyColumn title="Groomsmen" members={GROOMSMEN} side="left" gender="male" />
-
-          {/* Vertical center divider — desktop only */}
+          <PartyColumn title="Groomsmen"  members={GROOMSMEN}   side="left"  gender="male"   />
           <div className="hidden md:flex flex-col items-center self-stretch py-4">
-            <div
-              className="flex-1 w-[1px]"
-              style={{
-                background:
-                  'linear-gradient(to bottom, transparent, rgba(212,168,69,0.2) 20%, rgba(212,168,69,0.2) 80%, transparent)',
-              }}
-            />
+            <div className="flex-1 w-[1px]"
+              style={{ background: 'linear-gradient(to bottom, transparent, rgba(212,168,69,0.2) 20%, rgba(212,168,69,0.2) 80%, transparent)' }} />
           </div>
-
           <PartyColumn title="Bridesmaids" members={BRIDESMAIDS} side="right" gender="female" />
         </div>
       </div>
