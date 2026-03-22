@@ -1,74 +1,50 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import JourneyCard from './JourneyCard';
 import { JOURNEY_DATA } from './journeyData';
 
 export default function JourneyGallery() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [endX, setEndX] = useState(0);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   });
 
-  // Calculate exact pixel distance so the last card's right edge meets the viewport's right edge
-  useEffect(() => {
-    function measure() {
-      if (!trackRef.current) return;
-      const trackScrollWidth = trackRef.current.scrollWidth;
-      const viewportWidth = window.innerWidth;
-      const overflow = trackScrollWidth - viewportWidth;
-      if (overflow > 0) {
-        setEndX(-overflow);
-      }
-    }
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, []);
-
-  const x = useTransform(scrollYProgress, [0, 1], [0, endX]);
+  // The golden thread scales from origin-top as user scrolls through the section
+  const lineScaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <section id="story" ref={containerRef} className="relative h-[250vh] md:h-[300vh]">
-      {/* Sticky viewport — dvh for mobile address bar, touch-pan-y for swipe */}
-      <div className="sticky top-0 h-[100dvh] overflow-hidden flex flex-col justify-center touch-pan-y">
-        {/* Section header */}
-        <div className="text-center mb-8 md:mb-12 px-4 z-10">
-          <p className="font-sans text-[#D4A845]/60 uppercase tracking-[0.4em] text-xs mb-3">
-            Our Story
-          </p>
-          <h2 className="font-serif text-4xl md:text-6xl gold-shimmer">
-            Our Journey
-          </h2>
+    <section id="story" ref={containerRef} className="relative bg-luxury-black py-24 md:py-40">
+      {/* Section header */}
+      <div className="text-center mb-20 md:mb-32 px-4">
+        <p className="font-sans text-wedding-gold/60 uppercase tracking-[0.4em] text-xs mb-4">
+          Our Story
+        </p>
+        <h2 className="font-serif text-4xl md:text-6xl gold-shimmer">Our Journey</h2>
+      </div>
+
+      {/* Timeline body */}
+      <div className="relative max-w-5xl mx-auto px-4 md:px-12">
+
+        {/* The Golden Thread — 1px vertical center line that draws downward on scroll */}
+        <div className="absolute left-6 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-[1px] overflow-hidden pointer-events-none">
+          {/* Dim background track */}
+          <div className="absolute inset-0 bg-wedding-gold/15" />
+          {/* Animated gold fill — origin-top so it draws downward */}
+          <motion.div
+            className="absolute inset-x-0 top-0 w-full bg-wedding-gold origin-top"
+            style={{ scaleY: lineScaleY, height: '100%' }}
+          />
         </div>
 
-        {/* Horizontal scrolling track */}
-        <motion.div
-          ref={trackRef}
-          style={{ x }}
-          className="flex gap-6 md:gap-8 pl-[5vw] md:pl-[10vw] pr-[5vw] md:pr-[10vw]"
-        >
+        {/* Cards */}
+        <div className="flex flex-col">
           {JOURNEY_DATA.map((item, index) => (
-            <JourneyCard
-              key={item.year}
-              item={item}
-              index={index}
-              scrollProgress={scrollYProgress}
-            />
+            <JourneyCard key={item.year} item={item} index={index} />
           ))}
-        </motion.div>
-
-        {/* Progress bar */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-48 h-[2px] bg-[#D4A845]/20 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-[#D4A845] origin-left"
-            style={{ scaleX: scrollYProgress }}
-          />
         </div>
       </div>
     </section>
