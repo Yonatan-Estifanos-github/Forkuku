@@ -53,7 +53,7 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
           animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: isLeft ? -30 : 30 }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
           className="relative"
-          style={{ width: 260, maxWidth: '100%' }}
+          style={{ width: 340, maxWidth: '100%' }}
         >
           {/* Year watermark — massive, 6% opacity, sits behind the frame */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0">

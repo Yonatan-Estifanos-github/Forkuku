@@ -42,6 +42,47 @@ const BRIDESMAIDS: PartyMember[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Silhouette SVGs — football lineup card style
+// ─────────────────────────────────────────────────────────────────────────────
+function MaleSilhouette() {
+  return (
+    <svg viewBox="0 0 80 105" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      {/* Head */}
+      <ellipse cx="40" cy="21" rx="13" ry="14"
+        fill="rgba(255,255,255,0.06)" stroke="rgba(212,168,69,0.18)" strokeWidth="0.8" />
+      {/* Neck */}
+      <rect x="35.5" y="33" width="9" height="8" rx="2"
+        fill="rgba(255,255,255,0.05)" />
+      {/* Jersey torso — wide shoulders like a kit */}
+      <path d="M6 48 L16 44 Q26 41 34 44 L40 49 L46 44 Q54 41 64 44 L74 48
+               Q78 62 76 100 H4 Q2 62 6 48Z"
+        fill="rgba(255,255,255,0.05)" stroke="rgba(212,168,69,0.13)" strokeWidth="0.8" />
+    </svg>
+  );
+}
+
+function FemaleSilhouette() {
+  return (
+    <svg viewBox="0 0 80 105" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      {/* Head */}
+      <ellipse cx="40" cy="19" rx="12" ry="13"
+        fill="rgba(255,255,255,0.06)" stroke="rgba(212,168,69,0.18)" strokeWidth="0.8" />
+      {/* Neck */}
+      <rect x="36" y="30" width="8" height="7" rx="2"
+        fill="rgba(255,255,255,0.05)" />
+      {/* Dress bodice — narrower, elegant shoulders */}
+      <path d="M22 39 Q28 37 36 38 L40 44 L44 38 Q52 37 58 39
+               Q64 50 60 64 Q52 67 40 67 Q28 67 20 64 Q16 50 22 39Z"
+        fill="rgba(255,255,255,0.05)" stroke="rgba(212,168,69,0.13)" strokeWidth="0.8" />
+      {/* Skirt — flares outward like a gown */}
+      <path d="M20 64 Q28 67 40 67 Q52 67 60 64
+               Q66 78 70 100 H10 Q14 78 20 64Z"
+        fill="rgba(255,255,255,0.04)" stroke="rgba(212,168,69,0.10)" strokeWidth="0.8" />
+    </svg>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Animation variants — staggered 3D fold-up entrance
 // ─────────────────────────────────────────────────────────────────────────────
 const gridVariants = {
@@ -64,7 +105,7 @@ const cardVariants = {
 // ─────────────────────────────────────────────────────────────────────────────
 // PartyCard — glassmorphic silhouette with cursor-following radial glow
 // ─────────────────────────────────────────────────────────────────────────────
-function PartyCard({ member }: { member: PartyMember }) {
+function PartyCard({ member, gender }: { member: PartyMember; gender: 'male' | 'female' }) {
   const [mouse, setMouse] = useState({ x: 50, y: 50 });
   const [hovered, setHovered] = useState(false);
 
@@ -84,7 +125,6 @@ function PartyCard({ member }: { member: PartyMember }) {
       onMouseLeave={() => setHovered(false)}
       className="relative aspect-[3/4] overflow-hidden cursor-default"
       style={{
-        // Gradient border trick: gold → transparent 1px border
         background:
           'linear-gradient(to bottom, #0e0d0c, #0a0908) padding-box,' +
           'linear-gradient(135deg, rgba(212,168,69,0.55), rgba(212,168,69,0) 55%) border-box',
@@ -94,6 +134,16 @@ function PartyCard({ member }: { member: PartyMember }) {
         transformOrigin: 'bottom center',
       }}
     >
+      {/* Jersey number watermark — football card style */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+        <span
+          className="font-serif leading-none text-wedding-gold"
+          style={{ fontSize: '4.5rem', opacity: 0.06 }}
+        >
+          {member.id}
+        </span>
+      </div>
+
       {/* Cursor-following radial gold glow */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
@@ -104,26 +154,9 @@ function PartyCard({ member }: { member: PartyMember }) {
         }}
       />
 
-      {/* Abstract portrait silhouette */}
-      <div className="absolute inset-0 flex flex-col items-center pt-[22%] pointer-events-none">
-        {/* Head */}
-        <div
-          className="rounded-full border border-wedding-gold/12"
-          style={{
-            width: '38%',
-            aspectRatio: '1',
-            background: 'rgba(255,255,255,0.05)',
-          }}
-        />
-        {/* Shoulders / torso */}
-        <div
-          className="mt-[5%] rounded-t-full border-t border-x border-wedding-gold/10"
-          style={{
-            width: '62%',
-            height: '36%',
-            background: 'rgba(255,255,255,0.03)',
-          }}
-        />
+      {/* Gender-appropriate silhouette */}
+      <div className="absolute inset-x-[12%] top-[8%] bottom-[28%] pointer-events-none">
+        {gender === 'female' ? <FemaleSilhouette /> : <MaleSilhouette />}
       </div>
 
       {/* Bottom label */}
@@ -144,7 +177,7 @@ function PartyCard({ member }: { member: PartyMember }) {
         )}
       </div>
 
-      {/* Top vignette for depth */}
+      {/* Vignette for depth */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -163,10 +196,12 @@ function PartyColumn({
   title,
   members,
   side,
+  gender,
 }: {
   title: string;
   members: PartyMember[];
   side: 'left' | 'right';
+  gender: 'male' | 'female';
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.12 });
@@ -197,7 +232,7 @@ function PartyColumn({
         style={{ perspective: '900px' }}
       >
         {members.map((member) => (
-          <PartyCard key={member.id} member={member} />
+          <PartyCard key={member.id} member={member} gender={gender} />
         ))}
       </motion.div>
     </div>
@@ -240,7 +275,7 @@ export default function WeddingPartySection() {
         </h2>
 
         <p className="font-serif text-white/35 text-base md:text-lg italic mt-5">
-          The people who made us who we are
+          The friends who&apos;ve been with us every step of the way
         </p>
 
         {/* Luxury divider */}
@@ -254,7 +289,7 @@ export default function WeddingPartySection() {
       {/* ── Two-column party layout ── */}
       <div className="relative max-w-5xl mx-auto z-10">
         <div className="flex flex-col md:flex-row gap-10 md:gap-6 lg:gap-10">
-          <PartyColumn title="Groomsmen" members={GROOMSMEN} side="left" />
+          <PartyColumn title="Groomsmen" members={GROOMSMEN} side="left" gender="male" />
 
           {/* Vertical center divider — desktop only */}
           <div className="hidden md:flex flex-col items-center self-stretch py-4">
@@ -267,7 +302,7 @@ export default function WeddingPartySection() {
             />
           </div>
 
-          <PartyColumn title="Bridesmaids" members={BRIDESMAIDS} side="right" />
+          <PartyColumn title="Bridesmaids" members={BRIDESMAIDS} side="right" gender="female" />
         </div>
       </div>
     </section>
