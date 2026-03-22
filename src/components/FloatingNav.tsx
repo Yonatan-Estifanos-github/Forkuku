@@ -5,50 +5,50 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
 const NAV_ITEMS = [
-  { label: 'Home', href: '/', icon: HomeIcon, sectionId: 'home' },
-  { label: 'Story', href: '/#story', icon: BookIcon, sectionId: 'story' },
-  { label: 'Venue', href: '/#venue', icon: MapPinIcon, sectionId: 'venue' },
-  { label: 'RSVP', href: '/#rsvp', icon: EnvelopeIcon, sectionId: 'rsvp' },
-  { label: 'Registry', href: '/#registry', icon: GiftIcon, sectionId: 'registry' },
+  { label: 'Home',    href: '/',               icon: HomeIcon,    sectionId: 'home' },
+  { label: 'Story',   href: '/#story',          icon: BookIcon,    sectionId: 'story' },
+  { label: 'Venue',   href: '/#venue',          icon: MapPinIcon,  sectionId: 'venue' },
+  { label: 'Party',   href: '/#wedding-party',  icon: PeopleIcon,  sectionId: 'wedding-party' },
+  { label: 'RSVP',   href: '/#rsvp',           icon: EnvelopeIcon, sectionId: 'rsvp' },
+  { label: 'Registry', href: '/#registry',      icon: GiftIcon,    sectionId: 'registry' },
 ];
 
 export default function FloatingNav() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string>('home');
 
-  // Track which section is in view on the home page
+  // Track which section is in view on the home page.
+  // Scroll-based midpoint detection is more reliable than IntersectionObserver
+  // for sections of varying heights (e.g. tall timeline vs short hero).
   useEffect(() => {
     if (pathname !== '/') return;
 
-    const sectionIds = ['home', 'story', 'venue', 'rsvp', 'registry'];
-    let observer: IntersectionObserver | null = null;
+    const sectionIds = ['home', 'story', 'venue', 'wedding-party', 'rsvp', 'registry'];
 
-    // Small delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      observer = new IntersectionObserver(
-        (entries) => {
-          // Find the most visible section
-          const visible = entries.filter(e => e.isIntersecting);
-          if (visible.length > 0) {
-            // Pick the one with highest intersection ratio
-            const mostVisible = visible.reduce((a, b) =>
-              a.intersectionRatio > b.intersectionRatio ? a : b
-            );
-            setActiveSection(mostVisible.target.id);
-          }
-        },
-        { threshold: [0.1, 0.3, 0.5], rootMargin: '-10% 0px -40% 0px' }
-      );
+    const handleScroll = () => {
+      // The "active" section is whichever section's top most recently passed
+      // the 40%-down mark of the viewport.
+      const midpoint = window.scrollY + window.innerHeight * 0.4;
 
-      sectionIds.forEach((id) => {
+      let active = sectionIds[0];
+      for (const id of sectionIds) {
         const el = document.getElementById(id);
-        if (el) observer?.observe(el);
-      });
+        if (el && el.offsetTop <= midpoint) {
+          active = id;
+        }
+      }
+      setActiveSection(active);
+    };
+
+    // Delay so the DOM is fully laid out before we measure offsets
+    const timer = setTimeout(() => {
+      handleScroll();
+      window.addEventListener('scroll', handleScroll, { passive: true });
     }, 500);
 
     return () => {
       clearTimeout(timer);
-      observer?.disconnect();
+      window.removeEventListener('scroll', handleScroll);
     };
   }, [pathname]);
 
@@ -195,6 +195,26 @@ function EnvelopeIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
     >
       <rect x="2" y="4" width="20" height="16" rx="2" />
       <path d="M22 6L12 13 2 6" />
+    </svg>
+  );
+}
+
+function PeopleIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
+  return (
+    <svg
+      className={className}
+      aria-hidden={ariaHidden}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="9" cy="7" r="3" />
+      <path d="M3 21v-2a5 5 0 015-5h2a5 5 0 015 5v2" />
+      <circle cx="17" cy="7" r="2.5" />
+      <path d="M21 21v-1.5a4 4 0 00-3-3.87" />
     </svg>
   );
 }

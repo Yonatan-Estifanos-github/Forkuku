@@ -1,79 +1,151 @@
 'use client';
 
-import { MotionValue, motion, useTransform } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import Image from 'next/image';
 import { JourneyItem } from './journeyData';
 
 interface JourneyCardProps {
   item: JourneyItem;
   index: number;
-  scrollProgress: MotionValue<number>;
 }
 
-export default function JourneyCard({
-  item,
-  index,
-  scrollProgress,
-}: JourneyCardProps) {
-  // Alternating vertical parallax offset
-  const direction = index % 2 === 0 ? 1 : -1;
-  const y = useTransform(scrollProgress, [0, 1], [direction * 20, direction * -20]);
+export default function JourneyCard({ item, index }: JourneyCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isLeft = index % 2 === 0;
+  const isInView = useInView(cardRef, { once: true, amount: 0.25 });
 
-  // Image parallax within its clipped container
-  const imageY = useTransform(scrollProgress, [0, 1], ['-5%', '5%']);
+  // Per-card scroll: drives image parallax within the museum frame
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ['start end', 'end start'],
+  });
+
+  // Image translates -8% → +8% as card moves through the viewport
+  const imageY = useTransform(scrollYProgress, [0, 1], ['-8%', '8%']);
 
   return (
-    <motion.div
-      style={{ y }}
-      className="group relative flex-shrink-0 w-[80vw] md:w-[400px] lg:w-[420px] aspect-[3/4]"
+    <div
+      ref={cardRef}
+      className={`relative flex flex-col md:flex-row ${
+        !isLeft ? 'md:flex-row-reverse' : ''
+      } items-center gap-8 md:gap-0 pt-6 pb-20 md:pb-36`}
     >
-      {/* Gold corner accents */}
-      <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-[#D4A845]/40" />
-      <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-[#D4A845]/40" />
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-[#D4A845]/40" />
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-[#D4A845]/40" />
+      {/* Thread dot — mobile: left edge, desktop: horizontal center */}
+      <div className="absolute left-6 top-7 md:left-1/2 md:-translate-x-1/2 z-10">
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          className="w-3 h-3 rounded-full bg-wedding-gold"
+          style={{ boxShadow: '0 0 12px 3px rgba(212,168,69,0.45)' }}
+        />
+      </div>
 
-      {item.image ? (
-        /* Photo card */
-        <div className="relative w-full h-full overflow-hidden">
-          <motion.div style={{ y: imageY }} className="absolute inset-[-10%]">
-            <Image
-              src={item.image}
-              alt={item.title}
-              fill
-              sizes="(max-width: 768px) 80vw, 420px"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </motion.div>
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        </div>
-      ) : (
-        /* Placeholder card */
-        <div className="relative w-full h-full bg-gradient-to-br from-[#1B3B28] via-[#0a0908] to-[#1B3B28] flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-4 border border-[#D4A845]/20" />
-          <span className="font-serif text-[#D4A845]/30 text-7xl md:text-8xl select-none">
+      {/* ── Museum frame side ── */}
+      <div
+        className={`w-full md:w-1/2 flex justify-center pl-14 md:pl-0 ${
+          isLeft ? 'md:justify-end md:pr-16' : 'md:justify-start md:pl-16'
+        }`}
+      >
+        <motion.div
+          initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
+          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: isLeft ? -30 : 30 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+          className="relative"
+          style={{ width: 340, maxWidth: '100%' }}
+        >
+          {/* Year watermark — massive, 6% opacity, sits behind the frame */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0">
+            <span
+              className="font-serif leading-none text-wedding-gold"
+              style={{ fontSize: 170, opacity: 0.07 }}
+            >
+              {item.year}
+            </span>
+          </div>
+
+          {/* Museum frame — generous padding, portrait orientation */}
+          <div
+            className="relative z-10 border border-wedding-gold/25 bg-[#0f0e0d] p-[18px]"
+            style={{ aspectRatio: '3/4' }}
+          >
+            {/* Gold corner accents */}
+            <div className="absolute top-1.5 left-1.5 w-5 h-5 border-t border-l border-wedding-gold/55" />
+            <div className="absolute top-1.5 right-1.5 w-5 h-5 border-t border-r border-wedding-gold/55" />
+            <div className="absolute bottom-1.5 left-1.5 w-5 h-5 border-b border-l border-wedding-gold/55" />
+            <div className="absolute bottom-1.5 right-1.5 w-5 h-5 border-b border-r border-wedding-gold/55" />
+
+            {/* Inner clipping container — overflow:hidden masks the parallax image */}
+            <div className="relative w-full h-full overflow-hidden">
+              {item.image ? (
+                <motion.div
+                  style={{
+                    y: imageY,
+                    position: 'absolute',
+                    // Extend 10% beyond edges so Y translation never reveals empty space
+                    top: '-10%',
+                    left: '-5%',
+                    right: '-5%',
+                    bottom: '-10%',
+                  }}
+                >
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="260px"
+                    // object-top preserves faces; no aggressive center-crop
+                    className="object-cover object-top"
+                  />
+                </motion.div>
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-[#1a1208] to-[#0a0908] flex items-center justify-center">
+                  <span className="font-serif text-wedding-gold/20 text-5xl">{item.year}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* ── Text side — blur-to-focus reveal ── */}
+      <div
+        className={`w-full md:w-1/2 pl-14 md:pl-0 flex flex-col ${
+          isLeft
+            ? 'items-start md:items-start md:pl-16'
+            : 'items-start md:items-end md:pr-16'
+        }`}
+      >
+        <motion.div
+          initial={{ opacity: 0, filter: 'blur(10px)', x: isLeft ? 30 : -30 }}
+          animate={
+            isInView
+              ? { opacity: 1, filter: 'blur(0px)', x: 0 }
+              : { opacity: 0, filter: 'blur(10px)', x: isLeft ? 30 : -30 }
+          }
+          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+          className={`flex flex-col ${!isLeft ? 'md:items-end md:text-right' : 'items-start'}`}
+        >
+          {/* Year label */}
+          <p className="font-sans text-wedding-gold/60 uppercase tracking-[0.4em] text-xs mb-3">
             {item.year}
-          </span>
-        </div>
-      )}
+          </p>
 
-      {/* Year badge */}
-      <div className="absolute top-4 right-4 z-10">
-        <span className="font-sans text-xs tracking-[0.3em] uppercase text-[#D4A845]/80 bg-black/40 backdrop-blur-sm px-3 py-1">
-          {item.year}
-        </span>
-      </div>
+          {/* Milestone title */}
+          <h3 className="font-serif text-2xl md:text-3xl text-white mb-3 leading-tight">
+            {item.title}
+          </h3>
 
-      {/* Bottom text overlay */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 p-6">
-        <h3 className="font-serif text-2xl md:text-3xl text-white mb-2">
-          {item.title}
-        </h3>
-        <p className="font-sans text-sm text-white/70 leading-relaxed line-clamp-3">
-          {item.description}
-        </p>
+          {/* Gold accent line */}
+          <div className={`w-8 h-[1px] bg-wedding-gold/40 mb-4 ${!isLeft ? 'md:ml-auto' : ''}`} />
+
+          {/* Description */}
+          <p className="font-sans text-sm text-white/55 leading-relaxed max-w-[260px]">
+            {item.description}
+          </p>
+        </motion.div>
       </div>
-    </motion.div>
+    </div>
   );
 }
