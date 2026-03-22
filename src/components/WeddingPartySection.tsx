@@ -49,66 +49,151 @@ const BRIDESMAIDS: PartyMember[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Headshot silhouettes — bust crop only (head + neck + shoulder hint)
-// 2 male variants, 2 female variants — alternated across each grid
+// Elegant continuous line-art objects — 1px gold stroke, no fill
+// Groomsmen: Bowtie · Boutonnière · Pocket Watch
+// Bridesmaids: Rose · Champagne Coupe · Ribbon
 // ─────────────────────────────────────────────────────────────────────────────
-const S  = 'rgba(212,168,69,0.22)';
-const SL = 'rgba(212,168,69,0.13)';
-const F1 = 'rgba(255,255,255,0.07)';
-const F2 = 'rgba(255,255,255,0.05)';
+const G  = 'rgba(212,168,69,0.82)';   // main stroke
+const GD = 'rgba(212,168,69,0.55)';   // detail / secondary stroke
 
-function MaleHeadshot() {
+const lineProps = {
+  fill: 'none',
+  stroke: G,
+  strokeWidth: '1',
+  strokeLinecap: 'round' as const,
+  strokeLinejoin: 'round' as const,
+};
+
+function Bowtie() {
   return (
-    <svg viewBox="0 0 80 90" fill="none" className="w-full h-full">
-      <ellipse cx="40" cy="30" rx="18" ry="20" fill={F1} stroke={S} strokeWidth="0.9" />
-      <path d="M34 48 L34 56 Q40 58 46 56 L46 48" fill={F2} />
-      <path d="M10 82 Q18 62 34 56 Q40 58 46 56 Q62 62 70 82" fill={F2} stroke={SL} strokeWidth="0.8" />
+    <svg viewBox="0 0 80 80" fill="none" className="w-full h-full">
+      {/* Left wing */}
+      <path {...lineProps}
+        d="M38 38 Q26 30 12 28 Q6 34 8 40 Q6 46 12 52 Q26 50 38 42 Q36 40 38 38Z" />
+      {/* Right wing */}
+      <path {...lineProps}
+        d="M42 38 Q54 30 68 28 Q74 34 72 40 Q74 46 68 52 Q54 50 42 42 Q44 40 42 38Z" />
+      {/* Centre knot */}
+      <path {...lineProps}
+        d="M38 38 Q40 35 42 38 L42 42 Q40 45 38 42 Z" />
     </svg>
   );
 }
 
-function MaleHeadshotAlt() {
+function Boutonniere() {
   return (
-    <svg viewBox="0 0 80 90" fill="none" className="w-full h-full">
-      {/* Slightly wider jaw */}
-      <ellipse cx="40" cy="30" rx="20" ry="18" fill={F1} stroke={S} strokeWidth="0.9" />
-      <path d="M33 46 L33 55 Q40 57 47 55 L47 46" fill={F2} />
-      <path d="M8 82 Q16 62 33 55 Q40 57 47 55 Q64 62 72 82" fill={F2} stroke={SL} strokeWidth="0.8" />
+    <svg viewBox="0 0 80 80" fill="none" className="w-full h-full">
+      {/* Stem */}
+      <path {...lineProps} d="M40 52 Q38 61 40 70" />
+      {/* Leaf */}
+      <path {...lineProps} d="M40 63 Q50 58 52 51 Q45 54 40 63" />
+      {/* Centre circle */}
+      <circle cx="40" cy="38" r="4.5" stroke={G} strokeWidth="1" fill="none" />
+      {/* 5 petals */}
+      <path {...lineProps} d="M40 34 Q43 25 40 19 Q37 25 40 34" />
+      <path {...lineProps} d="M44 37 Q53 34 56 27 Q49 29 44 37" />
+      <path {...lineProps} d="M43 43 Q50 51 57 50 Q52 44 43 43" />
+      <path {...lineProps} d="M37 43 Q30 51 23 50 Q28 44 37 43" />
+      <path {...lineProps} d="M36 37 Q27 34 24 27 Q31 29 36 37" />
     </svg>
   );
 }
 
-function FemaleHeadshotLongHair() {
+function PocketWatch() {
   return (
-    <svg viewBox="0 0 80 90" fill="none" className="w-full h-full">
-      {/* Hair flowing down sides */}
-      <path d="M22 28 Q18 55 20 76 Q28 72 32 58 Q40 62 48 58 Q52 72 60 76 Q62 55 58 28 Q54 12 40 12 Q26 12 22 28Z"
-        fill={F2} stroke="rgba(212,168,69,0.1)" strokeWidth="0.7" />
-      {/* Face */}
-      <ellipse cx="40" cy="30" rx="15" ry="18" fill={F1} stroke={S} strokeWidth="0.9" />
-      <path d="M35 46 L35 55 Q40 57 45 55 L45 46" fill={F2} />
-      <path d="M12 82 Q19 63 35 55 Q40 57 45 55 Q61 63 68 82" fill={F2} stroke={SL} strokeWidth="0.8" />
+    <svg viewBox="0 0 80 80" fill="none" className="w-full h-full">
+      {/* Winding crown */}
+      <rect x="36.5" y="9" width="7" height="5" rx="2"
+        stroke={G} strokeWidth="1" fill="none" />
+      {/* Stem connecting crown to case */}
+      <line x1="40" y1="14" x2="40" y2="18" stroke={G} strokeWidth="1" strokeLinecap="round" />
+      {/* Outer case */}
+      <circle cx="40" cy="46" r="28" stroke={G} strokeWidth="1" fill="none" />
+      {/* Inner dial bezel */}
+      <circle cx="40" cy="46" r="22" stroke={GD} strokeWidth="0.7" fill="none" />
+      {/* Hour marks — 12, 3, 6, 9 */}
+      <line x1="40" y1="26" x2="40" y2="29" stroke={G} strokeWidth="1" strokeLinecap="round" />
+      <line x1="60" y1="46" x2="57" y2="46" stroke={G} strokeWidth="1" strokeLinecap="round" />
+      <line x1="40" y1="66" x2="40" y2="63" stroke={G} strokeWidth="1" strokeLinecap="round" />
+      <line x1="20" y1="46" x2="23" y2="46" stroke={G} strokeWidth="1" strokeLinecap="round" />
+      {/* Hands — set to ~10:10 */}
+      <line x1="40" y1="46" x2="32" y2="35" stroke={G} strokeWidth="1" strokeLinecap="round" />
+      <line x1="40" y1="46" x2="52" y2="42" stroke={G} strokeWidth="1" strokeLinecap="round" />
+      {/* Centre pin */}
+      <circle cx="40" cy="46" r="1.8" stroke={G} strokeWidth="0.9" fill="none" />
     </svg>
   );
 }
 
-function FemaleHeadshotUpdo() {
+function Rose() {
   return (
-    <svg viewBox="0 0 80 90" fill="none" className="w-full h-full">
-      {/* Bun */}
-      <ellipse cx="40" cy="10" rx="8" ry="6" fill={F2} stroke="rgba(212,168,69,0.18)" strokeWidth="0.7" />
-      <path d="M32 14 Q28 20 28 30" stroke="rgba(212,168,69,0.1)" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M48 14 Q52 20 52 30" stroke="rgba(212,168,69,0.1)" strokeWidth="1.2" strokeLinecap="round" />
-      {/* Head */}
-      <ellipse cx="40" cy="33" rx="16" ry="18" fill={F1} stroke={S} strokeWidth="0.9" />
-      <path d="M35 49 L35 58 Q40 60 45 58 L45 49" fill={F2} />
-      <path d="M14 82 Q20 63 35 58 Q40 60 45 58 Q60 63 66 82" fill={F2} stroke={SL} strokeWidth="0.8" />
+    <svg viewBox="0 0 80 80" fill="none" className="w-full h-full">
+      {/* Stem */}
+      <path {...lineProps} d="M40 56 Q39 64 40 72" />
+      {/* Right leaf */}
+      <path {...lineProps} d="M41 65 Q51 60 53 53 Q46 56 41 65" />
+      {/* Left leaf */}
+      <path {...lineProps} d="M39 68 Q29 63 27 56 Q34 59 39 68" />
+      {/* Outer left petal */}
+      <path {...lineProps} d="M40 50 Q26 47 20 36 Q24 26 34 24 Q38 26 40 34" />
+      {/* Outer right petal */}
+      <path {...lineProps} d="M40 50 Q54 47 60 36 Q56 26 46 24 Q42 26 40 34" />
+      {/* Top outer petal */}
+      <path {...lineProps} d="M34 24 Q33 14 40 12 Q47 14 46 24" />
+      {/* Inner left petal */}
+      <path {...lineProps} d="M40 44 Q32 41 31 34 Q35 30 40 33" />
+      {/* Inner right petal */}
+      <path {...lineProps} d="M40 44 Q48 41 49 34 Q45 30 40 33" />
+      {/* Centre spiral */}
+      <path {...lineProps} d="M40 33 Q38 37 40 41 Q42 37 40 33" />
     </svg>
   );
 }
 
-const MALE_SILHOUETTES   = [MaleHeadshot, MaleHeadshotAlt];
-const FEMALE_SILHOUETTES = [FemaleHeadshotLongHair, FemaleHeadshotUpdo];
+function ChampagneCoupe() {
+  return (
+    <svg viewBox="0 0 80 80" fill="none" className="w-full h-full">
+      {/* Rim */}
+      <line x1="13" y1="24" x2="67" y2="24" stroke={G} strokeWidth="1" strokeLinecap="round" />
+      {/* Bowl — wide shallow coupe curve */}
+      <path {...lineProps} d="M13 24 Q17 42 40 46 Q63 42 67 24" />
+      {/* Stem */}
+      <line x1="40" y1="46" x2="40" y2="64" stroke={G} strokeWidth="1" />
+      {/* Base */}
+      <path {...lineProps} d="M26 64 Q40 68 54 64" />
+      {/* Rising bubbles — dotted lines */}
+      <line x1="32" y1="43" x2="30" y2="30"
+        stroke={GD} strokeWidth="0.7" strokeLinecap="round" strokeDasharray="1.5 3" />
+      <line x1="40" y1="45" x2="40" y2="30"
+        stroke={GD} strokeWidth="0.7" strokeLinecap="round" strokeDasharray="1.5 3" />
+      <line x1="48" y1="43" x2="50" y2="30"
+        stroke={GD} strokeWidth="0.7" strokeLinecap="round" strokeDasharray="1.5 3" />
+    </svg>
+  );
+}
+
+function Ribbon() {
+  return (
+    <svg viewBox="0 0 80 80" fill="none" className="w-full h-full">
+      {/* Left loop */}
+      <path {...lineProps}
+        d="M38 40 Q28 30 16 33 Q11 40 16 47 Q28 50 38 40" />
+      {/* Right loop */}
+      <path {...lineProps}
+        d="M42 40 Q52 30 64 33 Q69 40 64 47 Q52 50 42 40" />
+      {/* Centre knot */}
+      <path {...lineProps}
+        d="M37 37 Q40 34 43 37 L43 43 Q40 46 37 43 Z" />
+      {/* Left tail */}
+      <path {...lineProps} d="M38 42 Q31 53 24 60 Q22 63 24 66" />
+      {/* Right tail */}
+      <path {...lineProps} d="M42 42 Q49 53 56 60 Q58 63 56 66" />
+    </svg>
+  );
+}
+
+const MALE_SILHOUETTES   = [Bowtie, Boutonniere, PocketWatch];
+const FEMALE_SILHOUETTES = [Rose, ChampagneCoupe, Ribbon];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation variants
