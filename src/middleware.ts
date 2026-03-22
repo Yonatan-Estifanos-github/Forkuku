@@ -1,10 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export function middleware() {
-  // Disable password protection for carrier verification process
-  return NextResponse.next();
-
-  /*
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Paths to exclude from password protection
@@ -47,7 +43,6 @@ export function middleware() {
   // Redirect to login page
   const loginUrl = new URL('/login', request.url);
   return NextResponse.redirect(loginUrl);
-  */
 }
 
 export const config = {
