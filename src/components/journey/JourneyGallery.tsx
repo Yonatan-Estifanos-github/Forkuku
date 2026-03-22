@@ -20,9 +20,6 @@ export default function JourneyGallery() {
     <section id="story" ref={containerRef} className="relative bg-luxury-black py-24 md:py-40">
       {/* Section header */}
       <div className="text-center mb-20 md:mb-32 px-4">
-        <p className="font-sans text-wedding-gold/60 uppercase tracking-[0.4em] text-xs mb-4">
-          Our Story
-        </p>
         <h2 className="font-serif text-4xl md:text-6xl gold-shimmer">Our Journey</h2>
       </div>
 
