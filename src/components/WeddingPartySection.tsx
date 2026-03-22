@@ -192,8 +192,8 @@ function Ribbon() {
   );
 }
 
-const MALE_SILHOUETTES   = [Bowtie, Boutonniere, PocketWatch];
-const FEMALE_SILHOUETTES = [Rose, ChampagneCoupe, Ribbon];
+const MALE_SILHOUETTES   = [Bowtie];
+const FEMALE_SILHOUETTES = [Ribbon];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation variants
