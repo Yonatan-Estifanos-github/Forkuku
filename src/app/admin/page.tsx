@@ -23,8 +23,8 @@ interface Party {
   id: number;
   party_name: string;
   status: string;
-  email?: string;
-  phone?: string;
+  emails: string[];
+  phones: string[];
   admin_notes?: string;
   updated_at?: string;
   family_side?: 'bride' | 'groom' | null;
@@ -163,8 +163,8 @@ export default function AdminDashboard() {
   const [showModal, setShowModal] = useState(false);
   const [editingParty, setEditingParty] = useState<Party | null>(null);
   const [partyName, setPartyName] = useState('');
-  const [partyEmail, setPartyEmail] = useState('');
-  const [partyPhone, setPartyPhone] = useState('');
+  const [partyEmails, setPartyEmails] = useState<string[]>(['']);
+  const [partyPhones, setPartyPhones] = useState<string[]>(['']);
   const [guests, setGuests] = useState<EditableGuest[]>([{ name: '' }]);
   const [saving, setSaving] = useState(false);
 
@@ -361,8 +361,8 @@ export default function AdminDashboard() {
   const openAddModal = () => {
     setEditingParty(null);
     setPartyName('');
-    setPartyEmail('');
-    setPartyPhone('');
+    setPartyEmails(['']);
+    setPartyPhones(['']);
     setPartyFamilySide('');
     setGuests([{ name: '' }]);
     setShowModal(true);
@@ -371,8 +371,8 @@ export default function AdminDashboard() {
   const openEditModal = (party: Party) => {
     setEditingParty(party);
     setPartyName(party.party_name);
-    setPartyEmail(party.email || '');
-    setPartyPhone(party.phone || '');
+    setPartyEmails(party.emails?.length > 0 ? party.emails : ['']);
+    setPartyPhones(party.phones?.length > 0 ? party.phones : ['']);
     setPartyFamilySide(party.family_side || '');
     setGuests(
       party.guests.length > 0
@@ -386,8 +386,8 @@ export default function AdminDashboard() {
     setShowModal(false);
     setEditingParty(null);
     setPartyName('');
-    setPartyEmail('');
-    setPartyPhone('');
+    setPartyEmails(['']);
+    setPartyPhones(['']);
     setPartyFamilySide('');
     setGuests([{ name: '' }]);
   };
@@ -431,18 +431,19 @@ export default function AdminDashboard() {
     try {
       if (editingParty) {
         // ========== UPDATE MODE ==========
-        const oldEmail = editingParty.email?.trim() || '';
-        const oldPhone = editingParty.phone?.trim() || '';
-        const newEmail = partyEmail.trim();
-        const newPhone = partyPhone.trim();
-        const emailChanged = newEmail && newEmail !== oldEmail;
-        const phoneChanged = newPhone && newPhone !== oldPhone;
+        const oldEmails = editingParty.emails || [];
+        const oldPhones = editingParty.phones || [];
+        const newEmails = partyEmails.map(e => e.trim()).filter(Boolean);
+        const newPhones = partyPhones.map(p => p.trim()).filter(Boolean);
+
+        const emailsChanged = newEmails.some(e => !oldEmails.includes(e)) || oldEmails.some(e => !newEmails.includes(e));
+        const phonesChanged = newPhones.some(p => !oldPhones.includes(p)) || oldPhones.some(p => !newPhones.includes(p));
 
         // Collect campaigns that were previously sent on changed channels
         // so we can re-send to the updated contact info after saving.
         const campaignsToResend = new Set<string>();
 
-        if (emailChanged) {
+        if (emailsChanged && newEmails.length > 0) {
           const sentEmailLogs = editingParty.campaign_logs?.filter(
             l => l.channel === 'email' && l.status === 'sent'
           ) || [];
@@ -456,7 +457,7 @@ export default function AdminDashboard() {
             .eq('channel', 'email');
         }
 
-        if (phoneChanged) {
+        if (phonesChanged && newPhones.length > 0) {
           const sentSmsLogs = editingParty.campaign_logs?.filter(
             l => l.channel === 'sms' && l.status === 'sent'
           ) || [];
@@ -475,8 +476,8 @@ export default function AdminDashboard() {
           .from('parties')
           .update({
             party_name: partyName.trim(),
-            email: newEmail || null,
-            phone: newPhone || null,
+            emails: newEmails,
+            phones: newPhones,
             family_side: partyFamilySide || null,
           })
           .eq('id', editingParty.id);
@@ -543,8 +544,8 @@ export default function AdminDashboard() {
           .from('parties')
           .insert({
             party_name: partyName.trim(),
-            email: partyEmail.trim() || null,
-            phone: partyPhone.trim() || null,
+            emails: partyEmails.map(e => e.trim()).filter(Boolean),
+            phones: partyPhones.map(p => p.trim()).filter(Boolean),
             family_side: partyFamilySide || null,
             status: 'pending',
           })
@@ -595,7 +596,7 @@ export default function AdminDashboard() {
             return;
           }
 
-          const partyMap = new Map<string, { email?: string; phone?: string; guests: string[] }>();
+          const partyMap = new Map<string, { emails: string[]; phones: string[]; guests: string[] }>();
 
           rows.forEach(row => {
             const keys = Object.keys(row);
@@ -613,16 +614,12 @@ export default function AdminDashboard() {
             if (!csvPartyName || !guestName) return;
 
             if (!partyMap.has(csvPartyName)) {
-              partyMap.set(csvPartyName, {
-                email: undefined,
-                phone: undefined,
-                guests: [],
-              });
+              partyMap.set(csvPartyName, { emails: [], phones: [], guests: [] });
             }
 
             const entry = partyMap.get(csvPartyName)!;
-            if (rawEmail && !entry.email) entry.email = rawEmail;
-            if (rawPhone && !entry.phone) entry.phone = rawPhone;
+            if (rawEmail && !entry.emails.includes(rawEmail)) entry.emails.push(rawEmail);
+            if (rawPhone && !entry.phones.includes(rawPhone)) entry.phones.push(rawPhone);
             entry.guests.push(guestName);
           });
 
@@ -634,8 +631,8 @@ export default function AdminDashboard() {
               .from('parties')
               .insert({
                 party_name: csvPartyName,
-                email: partyInfo.email || null,
-                phone: partyInfo.phone || null,
+                emails: partyInfo.emails,
+                phones: partyInfo.phones,
                 status: 'pending',
               })
               .select('id')
@@ -1020,10 +1017,11 @@ export default function AdminDashboard() {
                     ).map((party) => {
                       const emailSent = getChannelStatus(party, 'email');
                       const smsSent = getChannelStatus(party, 'sms');
-                      const hasEmail = !!party.email;
-                      const hasPhone = !!party.phone;
-                      const hasUSPhone = isUSPhone(party.phone);
+                      const hasEmail = party.emails?.length > 0;
+                      const hasPhone = party.phones?.length > 0;
+                      const hasUSPhone = party.phones?.some(p => isUSPhone(p)) ?? false;
                       const hasAnyContact = hasEmail || hasPhone;
+                      const primaryPhone = party.phones?.[0];
                       const allSent = (hasEmail ? emailSent : true) && (hasUSPhone ? smsSent : true) && hasAnyContact;
 
                       return (
@@ -1049,31 +1047,37 @@ export default function AdminDashboard() {
                             <div className="flex items-center gap-3">
                               <span
                                 className={hasEmail ? 'opacity-100' : 'opacity-30'}
-                                title={party.email || 'No email'}
+                                title={party.emails?.join(', ') || 'No email'}
                               >
                                 {emailSent ? (
                                   <span className="text-green-600">&#x2709;&#x2713;</span>
                                 ) : (
                                   <span>&#x2709;</span>
                                 )}
+                                {(party.emails?.length ?? 0) > 1 && (
+                                  <span className="text-[10px] text-gray-400 ml-0.5">×{party.emails!.length}</span>
+                                )}
                               </span>
 
                               {hasPhone && !hasUSPhone ? (
                                 <span
                                   className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded font-medium"
-                                  title={`International: ${party.phone}`}
+                                  title={`International: ${primaryPhone}`}
                                 >
-                                  Intl
+                                  Intl{(party.phones?.length ?? 0) > 1 ? ` ×${party.phones!.length}` : ''}
                                 </span>
                               ) : (
                                 <span
                                   className={hasUSPhone ? 'opacity-100' : 'opacity-30'}
-                                  title={party.phone || 'No phone'}
+                                  title={party.phones?.join(', ') || 'No phone'}
                                 >
                                   {smsSent ? (
                                     <span className="text-green-600">&#x1F4F1;&#x2713;</span>
                                   ) : (
                                     <span>&#x1F4F1;</span>
+                                  )}
+                                  {(party.phones?.length ?? 0) > 1 && (
+                                    <span className="text-[10px] text-gray-400 ml-0.5">×{party.phones!.length}</span>
                                   )}
                                 </span>
                               )}
@@ -1326,31 +1330,84 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={partyEmail}
-                    onChange={(e) => setPartyEmail(e.target.value)}
-                    placeholder="email@example.com"
-                    className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
-                  />
+              {/* Emails */}
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
+                  Email Addresses
+                </label>
+                <div className="space-y-2">
+                  {partyEmails.map((email, idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => {
+                          const updated = [...partyEmails];
+                          updated[idx] = e.target.value;
+                          setPartyEmails(updated);
+                        }}
+                        placeholder="email@example.com"
+                        className="flex-1 px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
+                      />
+                      {partyEmails.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => setPartyEmails(partyEmails.filter((_, i) => i !== idx))}
+                          className="px-3 py-2 text-red-500 hover:bg-red-50 rounded"
+                        >
+                          &times;
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    value={partyPhone}
-                    onChange={(e) => setPartyPhone(e.target.value)}
-                    placeholder="+1234567890"
-                    className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
-                  />
+                <button
+                  type="button"
+                  onClick={() => setPartyEmails([...partyEmails, ''])}
+                  className="mt-2 text-sm text-[#D4A845] hover:underline"
+                >
+                  + Add another email
+                </button>
+              </div>
+
+              {/* Phones */}
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
+                  Phone Numbers
+                </label>
+                <div className="space-y-2">
+                  {partyPhones.map((phone, idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => {
+                          const updated = [...partyPhones];
+                          updated[idx] = e.target.value;
+                          setPartyPhones(updated);
+                        }}
+                        placeholder="+1234567890"
+                        className="flex-1 px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
+                      />
+                      {partyPhones.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => setPartyPhones(partyPhones.filter((_, i) => i !== idx))}
+                          className="px-3 py-2 text-red-500 hover:bg-red-50 rounded"
+                        >
+                          &times;
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setPartyPhones([...partyPhones, ''])}
+                  className="mt-2 text-sm text-[#D4A845] hover:underline"
+                >
+                  + Add another phone
+                </button>
               </div>
 
               <div>

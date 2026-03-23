@@ -14,13 +14,29 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
+    // Fetch current contact arrays so we can merge without duplicates
+    const { data: currentParty } = await supabaseAdmin
+      .from('parties')
+      .select('emails, phones')
+      .eq('id', party_id)
+      .single();
+
+    const existingEmails: string[] = currentParty?.emails || [];
+    const existingPhones: string[] = currentParty?.phones || [];
+    const mergedEmails = email && !existingEmails.includes(email)
+      ? [...existingEmails, email]
+      : existingEmails;
+    const mergedPhones = phone && !existingPhones.includes(phone)
+      ? [...existingPhones, phone]
+      : existingPhones;
+
     // Atomic update: only succeeds if has_responded is still false
     // This prevents race conditions where two requests try to submit simultaneously
     const { data: updatedParty, error: partyError } = await supabaseAdmin
       .from('parties')
       .update({
-        email,
-        phone,
+        emails: mergedEmails,
+        phones: mergedPhones,
         status: 'replied',
         has_responded: true,
         admin_notes: message ? `User Message: ${message}` : undefined
