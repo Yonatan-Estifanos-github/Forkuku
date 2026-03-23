@@ -50,6 +50,7 @@ interface CsvRow {
   'Email'?: string;
   'Phone'?: string;
   'Guest Name': string;
+  'Family Side'?: string;
 }
 
 interface CountdownTime {
@@ -613,7 +614,7 @@ export default function AdminDashboard() {
             return;
           }
 
-          const partyMap = new Map<string, { emails: string[]; phones: string[]; guests: string[] }>();
+          const partyMap = new Map<string, { emails: string[]; phones: string[]; guests: string[]; family_side: 'bride' | 'groom' | null }>();
 
           rows.forEach(row => {
             const keys = Object.keys(row);
@@ -621,22 +622,28 @@ export default function AdminDashboard() {
             const emailKey = keys.find(k => k.toLowerCase().includes('email')) || 'Email';
             const phoneKey = keys.find(k => k.toLowerCase().includes('phone')) || 'Phone';
             const guestKey = keys.find(k => k.toLowerCase().includes('guest')) || 'Guest Name';
+            const sideKey = keys.find(k => k.toLowerCase().includes('family') || k.toLowerCase().includes('side')) || 'Family Side';
 
             const rowData = row as unknown as Record<string, string>;
             const csvPartyName = rowData[nameKey]?.trim();
             const guestName = rowData[guestKey]?.trim();
             const rawEmail = rowData[emailKey]?.trim();
             const rawPhone = rowData[phoneKey]?.trim();
+            const rawSide = rowData[sideKey]?.trim().toLowerCase();
+            const familySide: 'bride' | 'groom' | null =
+              rawSide === 'bride' ? 'bride' : rawSide === 'groom' ? 'groom' : null;
 
             if (!csvPartyName || !guestName) return;
 
             if (!partyMap.has(csvPartyName)) {
-              partyMap.set(csvPartyName, { emails: [], phones: [], guests: [] });
+              partyMap.set(csvPartyName, { emails: [], phones: [], guests: [], family_side: familySide });
             }
 
             const entry = partyMap.get(csvPartyName)!;
             if (rawEmail && !entry.emails.includes(rawEmail)) entry.emails.push(rawEmail);
             if (rawPhone && !entry.phones.includes(rawPhone)) entry.phones.push(rawPhone);
+            // First non-null side wins
+            if (!entry.family_side && familySide) entry.family_side = familySide;
             entry.guests.push(guestName);
           });
 
@@ -650,6 +657,7 @@ export default function AdminDashboard() {
                 party_name: csvPartyName,
                 emails: partyInfo.emails,
                 phones: partyInfo.phones,
+                family_side: partyInfo.family_side,
                 status: 'pending',
               })
               .select('id')
@@ -978,9 +986,28 @@ export default function AdminDashboard() {
                 />
               </label>
 
-              <span className="text-xs text-gray-400">
-                CSV format: Party Name, Email, Phone, Guest Name
-              </span>
+              <button
+                onClick={() => {
+                  const header = 'Party Name,Email,Phone,Guest Name,Family Side';
+                  const sample = [
+                    'Gebre Family,gebre@example.com,+12025551234,Yohannes Gebre,groom',
+                    'Gebre Family,,,Tigist Gebre,groom',
+                    'Tadesse Family,tadesse@example.com,+12025555678,Almaz Tadesse,bride',
+                    'Tadesse Family,,,Biruk Tadesse,bride',
+                    'Bekele Family,bekele@example.com,,Dawit Bekele,',
+                  ].join('\n');
+                  const blob = new Blob([header + '\n' + sample], { type: 'text/csv' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'guest-list-template.csv';
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="px-4 py-2 border border-gray-300 text-gray-500 text-sm font-bold rounded hover:bg-gray-50 transition-colors flex items-center gap-2"
+              >
+                ↓ Sample CSV
+              </button>
             </div>
 
             {/* Family Side Filter */}
