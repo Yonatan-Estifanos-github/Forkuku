@@ -123,7 +123,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'June 2025',
     title: 'The Master Plan',
     description:
-      '[Yoni] This is Saturday night \u2014 we\u2019re just enjoying the island, laughing with the few girls who were there, completely in the moment. What she didn\u2019t know is that while we were living it up, everyone back home was quietly getting ready. Sunday noon, elders would be sent to her parents\u2019 house. Sunday night, her whole life was about to change. She had no idea.',
+      '[Yoni] This is Saturday night \u2014 we\u2019re just enjoying the island, laughing with the few friends and family who were there, completely in the moment. What she didn\u2019t know is that while we were living it up, everyone back home was quietly getting ready. Sunday noon, elders would be sent to her parents\u2019 house. Sunday night, her whole life was about to change. She had no idea.',
     image: img('pr2.JPG'),
   },
   {
