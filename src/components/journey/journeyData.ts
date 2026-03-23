@@ -67,7 +67,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'Aug 5, 2023',
     title: 'The Vow Before The Vows',
     description:
-      '[Yoni] I wasn\u2019t going to let her go again. In Philly, with her mother\u2019s blessing, I didn\u2019t just ask to date her. Standing by the LOVE sign, I read 1 Corinthians 13 to her. I made a solemn promise that if we took this step together, we were walking straight toward forever.',
+      '[Yoni] I wasn\u2019t going to let her go again. In Philly, with her mother\u2019s blessing, sitting on the grass in front of the park \u2014 the LOVE sign was just for the photo \u2014 I told her that if we did this, we were doing it intentionally and walking straight toward forever. And for the first time, I told her I loved her. I had made a promise to myself that those words were only for my future wife. She was the first to hear them.',
     image: img('askingheroutPhilly.jpg'),
   },
   {
