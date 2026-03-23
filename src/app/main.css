@@ -254,7 +254,7 @@ body.preloader-active .countdown-container {
   left: 50%;
   width: 0;
   height: 1px;
-  background: #fbbf24; /* amber-400 */
+  background: #D4A845; /* wedding-gold */
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
 }

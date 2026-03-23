@@ -22,30 +22,30 @@ interface PartyMember {
 
 const GROOMSMEN: PartyMember[] = [
   { id: 1,  name: 'Symney Cameron',    role: 'Best Man',  funFact: '' },
-  { id: 2,  name: 'Ziam Jan',          role: 'Groomsman', funFact: '' },
-  { id: 3,  name: 'Yoseph Estifanos',  role: 'Groomsman', funFact: '' },
-  { id: 4,  name: 'Kiran Pandey',      role: 'Groomsman', funFact: '' },
-  { id: 5,  name: 'Amanuel Estifanos', role: 'Groomsman', funFact: '' },
-  { id: 6,  name: 'Fikru Ashenafi',    role: 'Groomsman', funFact: '' },
-  { id: 7,  name: 'Daniel Hodeta',     role: 'Groomsman', funFact: '' },
-  { id: 8,  name: 'Kaleab Mekonen',    role: 'Groomsman', funFact: '' },
-  { id: 9,  name: 'Abel Gebre',        role: 'Groomsman', funFact: '' },
+  { id: 2,  name: 'Yoseph Estifanos',  role: 'Groomsman', funFact: '' },
+  { id: 3,  name: 'Kiran Pandey',      role: 'Groomsman', funFact: '' },
+  { id: 4,  name: 'Fikru Ashenafi',    role: 'Groomsman', funFact: '' },
+  { id: 5,  name: 'Ziam Jan',          role: 'Groomsman', funFact: '' },
+  { id: 6,  name: 'Daniel Hodeta',     role: 'Groomsman', funFact: '' },
+  { id: 7,  name: 'Amanuel Estifanos', role: 'Groomsman', funFact: '' },
+  { id: 8,  name: 'Abel Gebre',        role: 'Groomsman', funFact: '' },
+  { id: 9,  name: 'Kirollos Rezkalla', role: 'Groomsman', funFact: '' },
   { id: 10, name: 'Samuel Guta',       role: 'Groomsman', funFact: '' },
-  { id: 11, name: 'Kirollos Rezkalla', role: 'Groomsman', funFact: '' },
+  { id: 11, name: 'Kaleab Mekonen',    role: 'Groomsman', funFact: '' },
 ];
 
 const BRIDESMAIDS: PartyMember[] = [
   { id: 1,  name: 'Abigael Gebremariam', role: 'Maid of Honor', funFact: '' },
-  { id: 2,  name: 'Tina Teferaehu',      role: 'Bridesmaid',    funFact: '' },
-  { id: 3,  name: 'Hermella Gebre',      role: 'Bridesmaid',    funFact: '' },
+  { id: 2,  name: 'Hermella Gebre',      role: 'Bridesmaid',    funFact: '' },
+  { id: 3,  name: 'Christina Alemayehu', role: 'Bridesmaid',    funFact: '' },
   { id: 4,  name: 'Lydia Dawit',         role: 'Bridesmaid',    funFact: '' },
   { id: 5,  name: 'Edom Wake',           role: 'Bridesmaid',    funFact: '' },
-  { id: 6,  name: 'Sabrina Yohannes',    role: 'Bridesmaid',    funFact: '' },
-  { id: 7,  name: 'Maranatha Haile',     role: 'Bridesmaid',    funFact: '' },
-  { id: 8,  name: 'Ariam Yohannes',      role: 'Bridesmaid',    funFact: '' },
-  { id: 9,  name: 'Elroi Gebre',         role: 'Bridesmaid',    funFact: '' },
-  { id: 10, name: 'Ruth Tefera',         role: 'Bridesmaid',    funFact: '' },
-  { id: 11, name: 'Amen Tefera',         role: 'Bridesmaid',    funFact: '' },
+  { id: 6,  name: 'Ruth Tefera',         role: 'Bridesmaid',    funFact: '' },
+  { id: 7,  name: 'Amen Tefera',         role: 'Bridesmaid',    funFact: '' },
+  { id: 8,  name: 'Maranatha Haile',     role: 'Bridesmaid',    funFact: '' },
+  { id: 9,  name: 'Sabrina Yohannes',    role: 'Bridesmaid',    funFact: '' },
+  { id: 10, name: "El'roi Gebre",        role: 'Bridesmaid',    funFact: '' },
+  { id: 11, name: 'Ariam Yohannes',      role: 'Bridesmaid',    funFact: '' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
