@@ -1327,14 +1327,14 @@ export default function AdminDashboard() {
       {/* Add/Edit Party Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-100">
+          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
+            <div className="p-6 border-b border-gray-100 flex-shrink-0">
               <h2 className="font-serif text-2xl text-[#1B3B28]">
                 {editingParty ? 'Edit Party' : 'Add New Party'}
               </h2>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-4 overflow-y-auto flex-1">
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
                   Party Name *
@@ -1488,7 +1488,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="p-6 border-t border-gray-100 flex justify-end gap-4">
+            <div className="p-6 border-t border-gray-100 flex justify-end gap-4 flex-shrink-0">
               <button
                 onClick={closeModal}
                 className="px-6 py-2 border border-gray-200 rounded hover:bg-gray-50 transition-colors text-sm"
