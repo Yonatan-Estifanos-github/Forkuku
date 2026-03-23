@@ -376,6 +376,9 @@ export default function WeddingPartySection() {
           style={{ color: 'rgba(212,168,69,0.5)', filter: 'drop-shadow(0 0 20px rgba(212,168,69,0.2))' }}>
           The friends who&apos;ve been with us every step of the way
         </p>
+        <p className="font-sans text-xs md:text-sm text-white/30 mt-3 italic">
+          (Yes, there are 22 of them. No, we could not narrow it down. Yes, we tried.)
+        </p>
         <div className="flex items-center justify-center gap-4 mt-8">
           <div className="w-20 md:w-36 h-[1px] bg-gradient-to-r from-transparent to-wedding-gold/35" />
           <div className="w-1.5 h-1.5 rounded-full bg-wedding-gold/55" />
