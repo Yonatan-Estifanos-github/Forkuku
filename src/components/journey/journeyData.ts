@@ -107,7 +107,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'May 2025',
     title: 'Her Turn to Walk',
     description:
-      "[Yoni] Watching her cross that stage was one of the proudest moments of my life. Through all my stressful interviews and our heavy life transitions, she was my absolute anchor. It was finally time to celebrate her resilience, her hard work, and her beautiful dreams.",
+      "[Yoni] Watching her cross that stage was one of the proudest moments of my life. She worked incredibly hard for that degree \u2014 showing up every single day with grace and determination. This was her moment, fully earned, and I couldn\u2019t have been more proud to be in that crowd cheering her on.",
     image: img('hergrad2025.jpg'),
   },
   {
