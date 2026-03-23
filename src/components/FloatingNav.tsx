@@ -97,7 +97,7 @@ export default function FloatingNav() {
       className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-8 pb-[max(2rem,env(safe-area-inset-bottom))]"
       aria-label="Main navigation"
     >
-      <div className="flex items-center gap-1 sm:gap-4 rounded-full border border-white/10 bg-black/50 backdrop-blur-md px-3 sm:px-5 py-2 transition-all">
+      <div className="flex items-center gap-0 sm:gap-2 rounded-full border border-white/10 bg-black/50 backdrop-blur-md px-2 sm:px-5 py-2 transition-all">
         {NAV_ITEMS.map(({ label, href, icon: Icon, sectionId }) => {
           const active = isActive(href, sectionId);
           return (
@@ -106,12 +106,12 @@ export default function FloatingNav() {
               href={href}
               onClick={(e) => handleClick(e, href)}
               aria-current={active ? 'page' : undefined}
-              className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 rounded-full font-serif text-[10px] sm:text-sm transition-colors duration-300 hover:text-[#D4A845] ${
+              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full font-serif text-[10px] sm:text-sm transition-colors duration-300 hover:text-[#D4A845] ${
                 active ? 'text-[#D4A845]' : 'text-white'
               }`}
             >
-              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-              <span>{label}</span>
+              <Icon className="w-4 h-4 sm:w-4 sm:h-4" aria-hidden="true" />
+              <span className="hidden sm:inline">{label}</span>
             </a>
           );
         })}
