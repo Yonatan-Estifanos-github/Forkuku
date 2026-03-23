@@ -31,8 +31,7 @@ export async function POST(req: Request) {
           is_plus_one
         )
       `)
-      .contains('search_tags', [searchTerm])
-      .limit(1);
+      .contains('search_tags', [searchTerm]);
 
     if (error) {
       console.error('Supabase query error:', error);
@@ -43,8 +42,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invitation not found' }, { status: 404 });
     }
 
-    // Return the matched party
-    return NextResponse.json(parties[0]);
+    // Return array of all matching parties (caller handles disambiguation)
+    return NextResponse.json({ parties });
 
   } catch (err) {
     console.error('Search API unhandled error:', err);

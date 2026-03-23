@@ -78,7 +78,13 @@ const btnClass =
 // ============================================================================
 // SEARCH SCREEN
 // ============================================================================
-function SearchScreen({ onFound }: { onFound: (party: Party) => void }) {
+function SearchScreen({
+  onFound,
+  onMultiple,
+}: {
+  onFound: (party: Party) => void;
+  onMultiple: (parties: Party[]) => void;
+}) {
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -117,7 +123,6 @@ function SearchScreen({ onFound }: { onFound: (party: Party) => void }) {
 
     setIsLoading(true);
 
-    // Create abort controller with 15 second timeout
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
@@ -136,19 +141,21 @@ function SearchScreen({ onFound }: { onFound: (party: Party) => void }) {
         throw new Error(data.error || 'Search failed');
       }
 
-      // Validate API response structure
-      if (!data || typeof data.id !== 'string' || typeof data.party_name !== 'string') {
-        throw new Error('Invalid response from server');
-      }
-      if (!Array.isArray(data.guests)) {
-        // Ensure guests is at least an empty array
-        data.guests = [];
-      }
-      if (typeof data.has_responded !== 'boolean') {
-        data.has_responded = false;
+      const matches: Party[] = (data.parties || []).map((p: Party) => ({
+        ...p,
+        guests: Array.isArray(p.guests) ? p.guests : [],
+        has_responded: typeof p.has_responded === 'boolean' ? p.has_responded : false,
+      }));
+
+      if (matches.length === 0) {
+        throw new Error("We couldn't find your invitation. Please try a different spelling or contact the couple.");
       }
 
-      onFound(data);
+      if (matches.length === 1) {
+        onFound(matches[0]);
+      } else {
+        onMultiple(matches);
+      }
     } catch (err: unknown) {
       clearTimeout(timeoutId);
       console.error(err);
@@ -197,6 +204,62 @@ function SearchScreen({ onFound }: { onFound: (party: Party) => void }) {
           {isLoading ? 'Searching...' : 'Find My Invitation'}
         </button>
       </form>
+    </div>
+  );
+}
+
+// ============================================================================
+// SELECT SCREEN — disambiguation when multiple parties match the same name
+// ============================================================================
+function SelectScreen({
+  parties,
+  onSelect,
+  onBack,
+}: {
+  parties: Party[];
+  onSelect: (party: Party) => void;
+  onBack: () => void;
+}) {
+  return (
+    <div className="w-full max-w-lg">
+      <div className="w-full flex justify-start">
+        <button
+          onClick={onBack}
+          className="mb-8 font-serif text-sm tracking-wide flex items-center gap-2 text-stone-500 hover:text-stone-300 transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Search Again
+        </button>
+      </div>
+
+      <p className="font-serif text-base md:text-lg mb-8 leading-relaxed text-stone-400 text-center">
+        We found a few parties that match. Please select the one that includes your name.
+      </p>
+
+      <div className="flex flex-col gap-4">
+        {parties.map((party) => {
+          const guestNames = party.guests
+            .filter(g => g.name?.trim())
+            .map(g => g.name.trim())
+            .join(', ');
+          return (
+            <button
+              key={party.id}
+              onClick={() => onSelect(party)}
+              className="text-left w-full px-6 py-5 rounded-xl border border-white/10 bg-stone-800 hover:border-wedding-gold/50 hover:bg-stone-700 transition-all group"
+            >
+              <p className="font-serif text-lg text-stone-200 group-hover:text-wedding-gold transition-colors mb-1">
+                {party.party_name}
+              </p>
+              {guestNames && (
+                <p className="text-sm text-stone-500 font-serif italic">{guestNames}</p>
+              )}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -620,11 +683,27 @@ function AlreadyRespondedScreen({ partyName, onBack }: { partyName: string; onBa
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
-type View = 'search' | 'form' | 'success' | 'already_responded';
+type View = 'search' | 'select' | 'form' | 'success' | 'already_responded';
 
 export default function Rsvp() {
   const [view, setView] = useState<View>('search');
   const [party, setParty] = useState<Party | null>(null);
+  const [candidates, setCandidates] = useState<Party[]>([]);
+
+  const handleFound = (p: Party) => {
+    setParty(p);
+    if (p.has_responded) {
+      setView('already_responded');
+    } else {
+      setView('form');
+    }
+  };
+
+  const reset = () => {
+    setView('search');
+    setParty(null);
+    setCandidates([]);
+  };
 
   return (
     <section className="relative min-h-screen w-full bg-stone-950">
@@ -650,14 +729,19 @@ export default function Rsvp() {
             {/* View Router */}
             {view === 'search' && (
               <SearchScreen
-                onFound={(p) => {
-                  setParty(p);
-                  if (p.has_responded) {
-                    setView('already_responded');
-                  } else {
-                    setView('form');
-                  }
+                onFound={handleFound}
+                onMultiple={(matches) => {
+                  setCandidates(matches);
+                  setView('select');
                 }}
+              />
+            )}
+
+            {view === 'select' && (
+              <SelectScreen
+                parties={candidates}
+                onSelect={handleFound}
+                onBack={reset}
               />
             )}
 
@@ -665,30 +749,21 @@ export default function Rsvp() {
               <FormScreen
                 party={party}
                 onSubmit={() => setView('success')}
-                onBack={() => {
-                  setView('search');
-                  setParty(null);
-                }}
+                onBack={reset}
               />
             )}
 
             {view === 'success' && party && (
-              <SuccessScreen 
-                partyName={party.party_name} 
-                onBack={() => {
-                  setView('search');
-                  setParty(null);
-                }}
+              <SuccessScreen
+                partyName={party.party_name}
+                onBack={reset}
               />
             )}
 
             {view === 'already_responded' && party && (
-              <AlreadyRespondedScreen 
-                partyName={party.party_name} 
-                onBack={() => {
-                  setView('search');
-                  setParty(null);
-                }}
+              <AlreadyRespondedScreen
+                partyName={party.party_name}
+                onBack={reset}
               />
             )}
           </div>
