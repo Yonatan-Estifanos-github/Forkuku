@@ -323,22 +323,35 @@ function PartyColumn({
         <div className="w-6 h-[1px] bg-wedding-gold/40 mx-auto mt-3" />
       </motion.div>
 
+      {/* Split into rows of 3; last partial row is centered */}
       <motion.div
         ref={ref}
         variants={gridVariants}
         initial="hidden"
         animate={isInView ? 'visible' : 'hidden'}
-        className="grid grid-cols-3 gap-1.5 md:gap-2.5 w-full"
+        className="flex flex-col gap-1.5 md:gap-2.5 w-full"
         style={{ perspective: '1200px' }}
       >
-        {members.map((member) => (
-          <PartyCard
-            key={member.id}
-            member={member}
-            gender={gender}
-            silhouetteIndex={member.id - 1}
-          />
-        ))}
+        {Array.from({ length: Math.ceil(members.length / 3) }, (_, rowIdx) => {
+          const chunk = members.slice(rowIdx * 3, rowIdx * 3 + 3);
+          const isPartial = chunk.length < 3;
+          return (
+            <div
+              key={rowIdx}
+              className={`flex gap-1.5 md:gap-2.5 ${isPartial ? 'justify-center' : ''}`}
+            >
+              {chunk.map((member) => (
+                <div key={member.id} className="w-1/3">
+                  <PartyCard
+                    member={member}
+                    gender={gender}
+                    silhouetteIndex={member.id - 1}
+                  />
+                </div>
+              ))}
+            </div>
+          );
+        })}
       </motion.div>
     </div>
   );

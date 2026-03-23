@@ -190,6 +190,16 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
 
           {/* Description with dual-POV styling */}
           <ParsedDescription text={item.description} alignEnd={!isLeft} />
+
+          {/* Optional callout — e.g. pointer to another section */}
+          {item.callout && (
+            <a
+              href="#hero"
+              className={`mt-4 inline-block font-sans text-xs text-wedding-gold/60 hover:text-wedding-gold tracking-wide italic transition-colors ${!isLeft ? 'md:self-end' : ''}`}
+            >
+              {item.callout}
+            </a>
+          )}
         </motion.div>
       </div>
     </div>

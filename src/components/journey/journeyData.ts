@@ -4,6 +4,7 @@ export interface JourneyItem {
   title: string;
   description: string;
   image?: string;
+  callout?: string;
 }
 
 const CDN_BASE =
@@ -132,6 +133,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     description:
       "[Saron] It was the best birthday trip ever\u2014and it wasn\u2019t even mine. Dropping to one knee took my breath away. But the moment I realized our friends had secretly flown in to pop out and celebrate the \u2018yes\u2019 with us? It was the most beautiful surprise of my life.",
     image: img('pr3.JPG'),
+    callout: '↑ More photos from the proposal at the top of the page',
   },
   {
     id: 16,
