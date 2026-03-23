@@ -22,30 +22,30 @@ interface PartyMember {
 
 const GROOMSMEN: PartyMember[] = [
   { id: 1,  name: 'Symney Cameron',    role: 'Best Man',  funFact: '' },
-  { id: 2,  name: 'Ziam Jan',          role: 'Groomsman', funFact: '' },
-  { id: 3,  name: 'Yoseph Estifanos',  role: 'Groomsman', funFact: '' },
-  { id: 4,  name: 'Kiran Pandey',      role: 'Groomsman', funFact: '' },
-  { id: 5,  name: 'Amanuel Estifanos', role: 'Groomsman', funFact: '' },
-  { id: 6,  name: 'Fikru Ashenafi',    role: 'Groomsman', funFact: '' },
-  { id: 7,  name: 'Daniel Hodeta',     role: 'Groomsman', funFact: '' },
-  { id: 8,  name: 'Kaleab Mekonen',    role: 'Groomsman', funFact: '' },
-  { id: 9,  name: 'Abel Gebre',        role: 'Groomsman', funFact: '' },
+  { id: 2,  name: 'Yoseph Estifanos',  role: 'Groomsman', funFact: '' },
+  { id: 3,  name: 'Kiran Pandey',      role: 'Groomsman', funFact: '' },
+  { id: 4,  name: 'Fikru Ashenafi',    role: 'Groomsman', funFact: '' },
+  { id: 5,  name: 'Ziam Jan',          role: 'Groomsman', funFact: '' },
+  { id: 6,  name: 'Daniel Hodeta',     role: 'Groomsman', funFact: '' },
+  { id: 7,  name: 'Amanuel Estifanos', role: 'Groomsman', funFact: '' },
+  { id: 8,  name: 'Abel Gebre',        role: 'Groomsman', funFact: '' },
+  { id: 9,  name: 'Kirollos Rezkalla', role: 'Groomsman', funFact: '' },
   { id: 10, name: 'Samuel Guta',       role: 'Groomsman', funFact: '' },
-  { id: 11, name: 'Kirollos Rezkalla', role: 'Groomsman', funFact: '' },
+  { id: 11, name: 'Kaleab Mekonen',    role: 'Groomsman', funFact: '' },
 ];
 
 const BRIDESMAIDS: PartyMember[] = [
   { id: 1,  name: 'Abigael Gebremariam', role: 'Maid of Honor', funFact: '' },
-  { id: 2,  name: 'Tina Teferaehu',      role: 'Bridesmaid',    funFact: '' },
-  { id: 3,  name: 'Hermella Gebre',      role: 'Bridesmaid',    funFact: '' },
+  { id: 2,  name: 'Hermella Gebre',      role: 'Bridesmaid',    funFact: '' },
+  { id: 3,  name: 'Christina Alemayehu', role: 'Bridesmaid',    funFact: '' },
   { id: 4,  name: 'Lydia Dawit',         role: 'Bridesmaid',    funFact: '' },
   { id: 5,  name: 'Edom Wake',           role: 'Bridesmaid',    funFact: '' },
-  { id: 6,  name: 'Sabrina Yohannes',    role: 'Bridesmaid',    funFact: '' },
-  { id: 7,  name: 'Maranatha Haile',     role: 'Bridesmaid',    funFact: '' },
-  { id: 8,  name: 'Ariam Yohannes',      role: 'Bridesmaid',    funFact: '' },
-  { id: 9,  name: 'Elroi Gebre',         role: 'Bridesmaid',    funFact: '' },
-  { id: 10, name: 'Ruth Tefera',         role: 'Bridesmaid',    funFact: '' },
-  { id: 11, name: 'Amen Tefera',         role: 'Bridesmaid',    funFact: '' },
+  { id: 6,  name: 'Ruth Tefera',         role: 'Bridesmaid',    funFact: '' },
+  { id: 7,  name: 'Amen Tefera',         role: 'Bridesmaid',    funFact: '' },
+  { id: 8,  name: 'Maranatha Haile',     role: 'Bridesmaid',    funFact: '' },
+  { id: 9,  name: 'Sabrina Yohannes',    role: 'Bridesmaid',    funFact: '' },
+  { id: 10, name: "El'roi Gebre",        role: 'Bridesmaid',    funFact: '' },
+  { id: 11, name: 'Ariam Yohannes',      role: 'Bridesmaid',    funFact: '' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -323,22 +323,35 @@ function PartyColumn({
         <div className="w-6 h-[1px] bg-wedding-gold/40 mx-auto mt-3" />
       </motion.div>
 
+      {/* Split into rows of 3; last partial row is centered */}
       <motion.div
         ref={ref}
         variants={gridVariants}
         initial="hidden"
         animate={isInView ? 'visible' : 'hidden'}
-        className="grid grid-cols-3 gap-1.5 md:gap-2.5 w-full"
+        className="flex flex-col gap-1.5 md:gap-2.5 w-full"
         style={{ perspective: '1200px' }}
       >
-        {members.map((member) => (
-          <PartyCard
-            key={member.id}
-            member={member}
-            gender={gender}
-            silhouetteIndex={member.id - 1}
-          />
-        ))}
+        {Array.from({ length: Math.ceil(members.length / 3) }, (_, rowIdx) => {
+          const chunk = members.slice(rowIdx * 3, rowIdx * 3 + 3);
+          const isPartial = chunk.length < 3;
+          return (
+            <div
+              key={rowIdx}
+              className={`flex gap-1.5 md:gap-2.5 ${isPartial ? 'justify-center' : ''}`}
+            >
+              {chunk.map((member) => (
+                <div key={member.id} className="w-1/3">
+                  <PartyCard
+                    member={member}
+                    gender={gender}
+                    silhouetteIndex={member.id - 1}
+                  />
+                </div>
+              ))}
+            </div>
+          );
+        })}
       </motion.div>
     </div>
   );
@@ -362,6 +375,9 @@ export default function WeddingPartySection() {
         <p className="font-serif text-base md:text-lg italic mt-5"
           style={{ color: 'rgba(212,168,69,0.5)', filter: 'drop-shadow(0 0 20px rgba(212,168,69,0.2))' }}>
           The friends who&apos;ve been with us every step of the way
+        </p>
+        <p className="font-sans text-xs md:text-sm text-white/30 mt-3 italic">
+          (Yes, there are 22 of them. No, we could not narrow it down. Yes, we tried.)
         </p>
         <div className="flex items-center justify-center gap-4 mt-8">
           <div className="w-20 md:w-36 h-[1px] bg-gradient-to-r from-transparent to-wedding-gold/35" />

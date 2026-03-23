@@ -19,8 +19,20 @@ export default function JourneyGallery() {
   return (
     <section id="story" ref={containerRef} className="relative bg-luxury-black py-24 md:py-40">
       {/* Section header */}
-      <div className="text-center mb-20 md:mb-32 px-4">
-        <h2 className="font-serif text-4xl md:text-6xl gold-shimmer">Our Journey</h2>
+      <div className="text-center mb-20 md:mb-32 px-4 max-w-2xl mx-auto">
+        <h2 className="font-serif text-4xl md:text-6xl gold-shimmer mb-8">Our Journey</h2>
+        <div className="w-8 h-[1px] bg-wedding-gold/40 mx-auto mb-8" />
+        <p className="font-serif text-base md:text-lg text-white/60 leading-relaxed italic">
+          What you&apos;re about to see is just a glimpse — a few snapshots of how God quietly
+          wrote this story between two people who had no idea what He was up to.
+          The full testimony is one we&apos;re still in awe of, and Lord willing, we&apos;ll
+          share it with you in full over our wedding weekend.
+          For now, we hope these moments give you a small window into the grace,
+          the patience, and the faithfulness that brought us here.
+        </p>
+        <p className="font-sans text-xs uppercase tracking-[0.35em] text-wedding-gold/50 mt-6">
+          Scroll to walk with us
+        </p>
       </div>
 
       {/* Timeline body */}
@@ -40,7 +52,7 @@ export default function JourneyGallery() {
         {/* Cards */}
         <div className="flex flex-col">
           {JOURNEY_DATA.map((item, index) => (
-            <JourneyCard key={item.year} item={item} index={index} />
+            <JourneyCard key={item.id} item={item} index={index} />
           ))}
         </div>
       </div>

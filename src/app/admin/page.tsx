@@ -23,10 +23,11 @@ interface Party {
   id: number;
   party_name: string;
   status: string;
-  email?: string;
-  phone?: string;
+  emails: string[];
+  phones: string[];
   admin_notes?: string;
   updated_at?: string;
+  family_side?: 'bride' | 'groom' | null;
   guests: Guest[];
   campaign_logs: CampaignLog[];
 }
@@ -49,6 +50,7 @@ interface CsvRow {
   'Email'?: string;
   'Phone'?: string;
   'Guest Name': string;
+  'Family Side'?: string;
 }
 
 interface CountdownTime {
@@ -162,10 +164,16 @@ export default function AdminDashboard() {
   const [showModal, setShowModal] = useState(false);
   const [editingParty, setEditingParty] = useState<Party | null>(null);
   const [partyName, setPartyName] = useState('');
-  const [partyEmail, setPartyEmail] = useState('');
-  const [partyPhone, setPartyPhone] = useState('');
+  const [partyEmails, setPartyEmails] = useState<string[]>(['']);
+  const [partyPhones, setPartyPhones] = useState<string[]>(['']);
   const [guests, setGuests] = useState<EditableGuest[]>([{ name: '' }]);
   const [saving, setSaving] = useState(false);
+
+  // Family Side Filter
+  const [familySideFilter, setFamilySideFilter] = useState<'all' | 'bride' | 'groom' | 'unassigned'>('all');
+
+  // Party family side (modal)
+  const [partyFamilySide, setPartyFamilySide] = useState<'bride' | 'groom' | ''>('');
 
   // CSV Upload State
   const [uploading, setUploading] = useState(false);
@@ -308,6 +316,23 @@ export default function AdminDashboard() {
   };
 
   // ============================================
+  // INLINE FAMILY SIDE TOGGLE
+  // ============================================
+  const handleFamilySideChange = async (party: Party, side: 'bride' | 'groom' | null) => {
+    // Optimistic update
+    setParties(prev => prev.map(p => p.id === party.id ? { ...p, family_side: side } : p));
+    const { error } = await supabase
+      .from('parties')
+      .update({ family_side: side })
+      .eq('id', party.id);
+    if (error) {
+      console.error(error);
+      // Revert on failure
+      setParties(prev => prev.map(p => p.id === party.id ? { ...p, family_side: party.family_side } : p));
+    }
+  };
+
+  // ============================================
   // DELETE PARTY
   // ============================================
   const handleDeleteParty = async (party: Party) => {
@@ -354,8 +379,9 @@ export default function AdminDashboard() {
   const openAddModal = () => {
     setEditingParty(null);
     setPartyName('');
-    setPartyEmail('');
-    setPartyPhone('');
+    setPartyEmails(['']);
+    setPartyPhones(['']);
+    setPartyFamilySide('');
     setGuests([{ name: '' }]);
     setShowModal(true);
   };
@@ -363,8 +389,9 @@ export default function AdminDashboard() {
   const openEditModal = (party: Party) => {
     setEditingParty(party);
     setPartyName(party.party_name);
-    setPartyEmail(party.email || '');
-    setPartyPhone(party.phone || '');
+    setPartyEmails(party.emails?.length > 0 ? party.emails : ['']);
+    setPartyPhones(party.phones?.length > 0 ? party.phones : ['']);
+    setPartyFamilySide(party.family_side || '');
     setGuests(
       party.guests.length > 0
         ? party.guests.map(g => ({ id: g.id, name: g.name || '' }))
@@ -377,8 +404,9 @@ export default function AdminDashboard() {
     setShowModal(false);
     setEditingParty(null);
     setPartyName('');
-    setPartyEmail('');
-    setPartyPhone('');
+    setPartyEmails(['']);
+    setPartyPhones(['']);
+    setPartyFamilySide('');
     setGuests([{ name: '' }]);
   };
 
@@ -421,18 +449,19 @@ export default function AdminDashboard() {
     try {
       if (editingParty) {
         // ========== UPDATE MODE ==========
-        const oldEmail = editingParty.email?.trim() || '';
-        const oldPhone = editingParty.phone?.trim() || '';
-        const newEmail = partyEmail.trim();
-        const newPhone = partyPhone.trim();
-        const emailChanged = newEmail && newEmail !== oldEmail;
-        const phoneChanged = newPhone && newPhone !== oldPhone;
+        const oldEmails = editingParty.emails || [];
+        const oldPhones = editingParty.phones || [];
+        const newEmails = partyEmails.map(e => e.trim()).filter(Boolean);
+        const newPhones = partyPhones.map(p => p.trim()).filter(Boolean);
+
+        const emailsChanged = newEmails.some(e => !oldEmails.includes(e)) || oldEmails.some(e => !newEmails.includes(e));
+        const phonesChanged = newPhones.some(p => !oldPhones.includes(p)) || oldPhones.some(p => !newPhones.includes(p));
 
         // Collect campaigns that were previously sent on changed channels
         // so we can re-send to the updated contact info after saving.
         const campaignsToResend = new Set<string>();
 
-        if (emailChanged) {
+        if (emailsChanged && newEmails.length > 0) {
           const sentEmailLogs = editingParty.campaign_logs?.filter(
             l => l.channel === 'email' && l.status === 'sent'
           ) || [];
@@ -446,7 +475,7 @@ export default function AdminDashboard() {
             .eq('channel', 'email');
         }
 
-        if (phoneChanged) {
+        if (phonesChanged && newPhones.length > 0) {
           const sentSmsLogs = editingParty.campaign_logs?.filter(
             l => l.channel === 'sms' && l.status === 'sent'
           ) || [];
@@ -465,8 +494,9 @@ export default function AdminDashboard() {
           .from('parties')
           .update({
             party_name: partyName.trim(),
-            email: newEmail || null,
-            phone: newPhone || null,
+            emails: newEmails,
+            phones: newPhones,
+            family_side: partyFamilySide || null,
           })
           .eq('id', editingParty.id);
 
@@ -532,8 +562,9 @@ export default function AdminDashboard() {
           .from('parties')
           .insert({
             party_name: partyName.trim(),
-            email: partyEmail.trim() || null,
-            phone: partyPhone.trim() || null,
+            emails: partyEmails.map(e => e.trim()).filter(Boolean),
+            phones: partyPhones.map(p => p.trim()).filter(Boolean),
+            family_side: partyFamilySide || null,
             status: 'pending',
           })
           .select('id')
@@ -583,7 +614,7 @@ export default function AdminDashboard() {
             return;
           }
 
-          const partyMap = new Map<string, { email?: string; phone?: string; guests: string[] }>();
+          const partyMap = new Map<string, { emails: string[]; phones: string[]; guests: string[]; family_side: 'bride' | 'groom' | null }>();
 
           rows.forEach(row => {
             const keys = Object.keys(row);
@@ -591,26 +622,28 @@ export default function AdminDashboard() {
             const emailKey = keys.find(k => k.toLowerCase().includes('email')) || 'Email';
             const phoneKey = keys.find(k => k.toLowerCase().includes('phone')) || 'Phone';
             const guestKey = keys.find(k => k.toLowerCase().includes('guest')) || 'Guest Name';
+            const sideKey = keys.find(k => k.toLowerCase().includes('family') || k.toLowerCase().includes('side')) || 'Family Side';
 
             const rowData = row as unknown as Record<string, string>;
             const csvPartyName = rowData[nameKey]?.trim();
             const guestName = rowData[guestKey]?.trim();
             const rawEmail = rowData[emailKey]?.trim();
             const rawPhone = rowData[phoneKey]?.trim();
+            const rawSide = rowData[sideKey]?.trim().toLowerCase();
+            const familySide: 'bride' | 'groom' | null =
+              rawSide === 'bride' ? 'bride' : rawSide === 'groom' ? 'groom' : null;
 
             if (!csvPartyName || !guestName) return;
 
             if (!partyMap.has(csvPartyName)) {
-              partyMap.set(csvPartyName, {
-                email: undefined,
-                phone: undefined,
-                guests: [],
-              });
+              partyMap.set(csvPartyName, { emails: [], phones: [], guests: [], family_side: familySide });
             }
 
             const entry = partyMap.get(csvPartyName)!;
-            if (rawEmail && !entry.email) entry.email = rawEmail;
-            if (rawPhone && !entry.phone) entry.phone = rawPhone;
+            if (rawEmail && !entry.emails.includes(rawEmail)) entry.emails.push(rawEmail);
+            if (rawPhone && !entry.phones.includes(rawPhone)) entry.phones.push(rawPhone);
+            // First non-null side wins
+            if (!entry.family_side && familySide) entry.family_side = familySide;
             entry.guests.push(guestName);
           });
 
@@ -622,8 +655,9 @@ export default function AdminDashboard() {
               .from('parties')
               .insert({
                 party_name: csvPartyName,
-                email: partyInfo.email || null,
-                phone: partyInfo.phone || null,
+                emails: partyInfo.emails,
+                phones: partyInfo.phones,
+                family_side: partyInfo.family_side,
                 status: 'pending',
               })
               .select('id')
@@ -952,9 +986,58 @@ export default function AdminDashboard() {
                 />
               </label>
 
-              <span className="text-xs text-gray-400">
-                CSV format: Party Name, Email, Phone, Guest Name
-              </span>
+              <button
+                onClick={() => {
+                  const header = 'Party Name,Email,Phone,Guest Name,Family Side';
+                  const sample = [
+                    'Gebre Family,gebre@example.com,+12025551234,Yohannes Gebre,groom',
+                    'Gebre Family,,,Tigist Gebre,groom',
+                    'Tadesse Family,tadesse@example.com,+12025555678,Almaz Tadesse,bride',
+                    'Tadesse Family,,,Biruk Tadesse,bride',
+                    'Bekele Family,bekele@example.com,,Dawit Bekele,',
+                  ].join('\n');
+                  const blob = new Blob([header + '\n' + sample], { type: 'text/csv' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'guest-list-template.csv';
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="px-4 py-2 border border-gray-300 text-gray-500 text-sm font-bold rounded hover:bg-gray-50 transition-colors flex items-center gap-2"
+              >
+                ↓ Sample CSV
+              </button>
+            </div>
+
+            {/* Family Side Filter */}
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
+              {(['all', 'bride', 'groom', 'unassigned'] as const).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setFamilySideFilter(f)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
+                    familySideFilter === f
+                      ? f === 'bride'
+                        ? 'bg-pink-500 text-white'
+                        : f === 'groom'
+                        ? 'bg-blue-600 text-white'
+                        : f === 'unassigned'
+                        ? 'bg-gray-400 text-white'
+                        : 'bg-[#1B3B28] text-white'
+                      : 'bg-white border border-gray-200 text-gray-500 hover:border-gray-400'
+                  }`}
+                >
+                  {f === 'bride' ? "Bride's Side" : f === 'groom' ? "Groom's Side" : f === 'unassigned' ? 'Unassigned' : 'All'}
+                  {f !== 'all' && (
+                    <span className="ml-1 opacity-70">
+                      ({f === 'unassigned'
+                        ? parties.filter(p => !p.family_side).length
+                        : parties.filter(p => p.family_side === f).length})
+                    </span>
+                  )}
+                </button>
+              ))}
             </div>
 
             {/* Data Table */}
@@ -971,18 +1054,60 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 text-sm">
-                    {parties.map((party) => {
+                    {parties.filter(p =>
+                      familySideFilter === 'all' ? true :
+                      familySideFilter === 'unassigned' ? !p.family_side :
+                      p.family_side === familySideFilter
+                    ).map((party) => {
                       const emailSent = getChannelStatus(party, 'email');
                       const smsSent = getChannelStatus(party, 'sms');
-                      const hasEmail = !!party.email;
-                      const hasPhone = !!party.phone;
-                      const hasUSPhone = isUSPhone(party.phone);
+                      const hasEmail = party.emails?.length > 0;
+                      const hasPhone = party.phones?.length > 0;
+                      const hasUSPhone = party.phones?.some(p => isUSPhone(p)) ?? false;
                       const hasAnyContact = hasEmail || hasPhone;
+                      const primaryPhone = party.phones?.[0];
                       const allSent = (hasEmail ? emailSent : true) && (hasUSPhone ? smsSent : true) && hasAnyContact;
 
                       return (
                         <tr key={party.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="p-4 font-medium text-[#1B3B28]">{party.party_name}</td>
+                          <td className="p-4 font-medium text-[#1B3B28]">
+                            <div className="flex flex-col gap-1.5">
+                              {party.party_name}
+                              <div className="flex gap-1">
+                                <button
+                                  onClick={() => handleFamilySideChange(party, 'bride')}
+                                  title="Bride's side"
+                                  className={`text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded transition-colors ${
+                                    party.family_side === 'bride'
+                                      ? 'bg-pink-500 text-white'
+                                      : 'bg-gray-100 text-gray-400 hover:bg-pink-100 hover:text-pink-600'
+                                  }`}
+                                >
+                                  B
+                                </button>
+                                <button
+                                  onClick={() => handleFamilySideChange(party, 'groom')}
+                                  title="Groom's side"
+                                  className={`text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded transition-colors ${
+                                    party.family_side === 'groom'
+                                      ? 'bg-blue-600 text-white'
+                                      : 'bg-gray-100 text-gray-400 hover:bg-blue-100 hover:text-blue-600'
+                                  }`}
+                                >
+                                  G
+                                </button>
+                                {party.family_side && (
+                                  <button
+                                    onClick={() => handleFamilySideChange(party, null)}
+                                    title="Clear assignment"
+                                    className="text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-gray-100 text-gray-400 hover:bg-red-50 hover:text-red-400 transition-colors"
+                                  >
+                                    ×
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </td>
                           <td className="p-4">
                             {party.guests.length}{' '}
                             <span className="text-gray-400">
@@ -993,31 +1118,37 @@ export default function AdminDashboard() {
                             <div className="flex items-center gap-3">
                               <span
                                 className={hasEmail ? 'opacity-100' : 'opacity-30'}
-                                title={party.email || 'No email'}
+                                title={party.emails?.join(', ') || 'No email'}
                               >
                                 {emailSent ? (
                                   <span className="text-green-600">&#x2709;&#x2713;</span>
                                 ) : (
                                   <span>&#x2709;</span>
                                 )}
+                                {(party.emails?.length ?? 0) > 1 && (
+                                  <span className="text-[10px] text-gray-400 ml-0.5">×{party.emails!.length}</span>
+                                )}
                               </span>
 
                               {hasPhone && !hasUSPhone ? (
                                 <span
                                   className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded font-medium"
-                                  title={`International: ${party.phone}`}
+                                  title={`International: ${primaryPhone}`}
                                 >
-                                  Intl
+                                  Intl{(party.phones?.length ?? 0) > 1 ? ` ×${party.phones!.length}` : ''}
                                 </span>
                               ) : (
                                 <span
                                   className={hasUSPhone ? 'opacity-100' : 'opacity-30'}
-                                  title={party.phone || 'No phone'}
+                                  title={party.phones?.join(', ') || 'No phone'}
                                 >
                                   {smsSent ? (
                                     <span className="text-green-600">&#x1F4F1;&#x2713;</span>
                                   ) : (
                                     <span>&#x1F4F1;</span>
+                                  )}
+                                  {(party.phones?.length ?? 0) > 1 && (
+                                    <span className="text-[10px] text-gray-400 ml-0.5">×{party.phones!.length}</span>
                                   )}
                                 </span>
                               )}
@@ -1086,10 +1217,16 @@ export default function AdminDashboard() {
                         </tr>
                       );
                     })}
-                    {parties.length === 0 && (
+                    {parties.filter(p =>
+                      familySideFilter === 'all' ? true :
+                      familySideFilter === 'unassigned' ? !p.family_side :
+                      p.family_side === familySideFilter
+                    ).length === 0 && (
                       <tr>
                         <td colSpan={5} className="p-8 text-center text-gray-400">
-                          No parties found. Add one using the toolbar above.
+                          {familySideFilter === 'all'
+                            ? 'No parties found. Add one using the toolbar above.'
+                            : `No parties assigned to ${familySideFilter === 'unassigned' ? 'unassigned' : familySideFilter === 'bride' ? "bride's side" : "groom's side"}.`}
                         </td>
                       </tr>
                     )}
@@ -1217,14 +1354,21 @@ export default function AdminDashboard() {
       {/* Add/Edit Party Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-100">
+          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
+            <div className="p-6 border-b border-gray-100 flex-shrink-0 flex items-center justify-between">
               <h2 className="font-serif text-2xl text-[#1B3B28]">
                 {editingParty ? 'Edit Party' : 'Add New Party'}
               </h2>
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-gray-600 transition-colors text-2xl leading-none"
+                title="Close"
+              >
+                &times;
+              </button>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-4 overflow-y-auto flex-1">
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
                   Party Name *
@@ -1238,31 +1382,110 @@ export default function AdminDashboard() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={partyEmail}
-                    onChange={(e) => setPartyEmail(e.target.value)}
-                    placeholder="email@example.com"
-                    className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
-                  />
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
+                  Family Side
+                </label>
+                <div className="flex gap-3">
+                  {(['', 'bride', 'groom'] as const).map((side) => (
+                    <button
+                      key={side}
+                      type="button"
+                      onClick={() => setPartyFamilySide(side)}
+                      className={`flex-1 py-2 rounded text-xs font-bold uppercase tracking-widest transition-colors border ${
+                        partyFamilySide === side
+                          ? side === 'bride'
+                            ? 'bg-pink-500 text-white border-pink-500'
+                            : side === 'groom'
+                            ? 'bg-blue-600 text-white border-blue-600'
+                            : 'bg-gray-200 text-gray-600 border-gray-200'
+                          : 'bg-white text-gray-400 border-gray-200 hover:border-gray-400'
+                      }`}
+                    >
+                      {side === '' ? 'Unassigned' : side === 'bride' ? "Bride's Side" : "Groom's Side"}
+                    </button>
+                  ))}
                 </div>
-                <div>
-                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    value={partyPhone}
-                    onChange={(e) => setPartyPhone(e.target.value)}
-                    placeholder="+1234567890"
-                    className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
-                  />
+              </div>
+
+              {/* Emails */}
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
+                  Email Addresses
+                </label>
+                <div className="space-y-2">
+                  {partyEmails.map((email, idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => {
+                          const updated = [...partyEmails];
+                          updated[idx] = e.target.value;
+                          setPartyEmails(updated);
+                        }}
+                        placeholder="email@example.com"
+                        className="flex-1 px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
+                      />
+                      {partyEmails.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => setPartyEmails(partyEmails.filter((_, i) => i !== idx))}
+                          className="px-3 py-2 text-red-500 hover:bg-red-50 rounded"
+                        >
+                          &times;
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setPartyEmails([...partyEmails, ''])}
+                  className="mt-2 text-sm text-[#D4A845] hover:underline"
+                >
+                  + Add another email
+                </button>
+              </div>
+
+              {/* Phones */}
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
+                  Phone Numbers
+                </label>
+                <div className="space-y-2">
+                  {partyPhones.map((phone, idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => {
+                          const updated = [...partyPhones];
+                          updated[idx] = e.target.value;
+                          setPartyPhones(updated);
+                        }}
+                        placeholder="+1234567890"
+                        className="flex-1 px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
+                      />
+                      {partyPhones.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => setPartyPhones(partyPhones.filter((_, i) => i !== idx))}
+                          className="px-3 py-2 text-red-500 hover:bg-red-50 rounded"
+                        >
+                          &times;
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPartyPhones([...partyPhones, ''])}
+                  className="mt-2 text-sm text-[#D4A845] hover:underline"
+                >
+                  + Add another phone
+                </button>
               </div>
 
               <div>
@@ -1299,7 +1522,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="p-6 border-t border-gray-100 flex justify-end gap-4">
+            <div className="p-6 border-t border-gray-100 flex justify-end gap-4 flex-shrink-0">
               <button
                 onClick={closeModal}
                 className="px-6 py-2 border border-gray-200 rounded hover:bg-gray-50 transition-colors text-sm"
