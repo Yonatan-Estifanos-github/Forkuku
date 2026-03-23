@@ -129,6 +129,14 @@ export const JOURNEY_DATA: JourneyItem[] = [
   {
     id: 15,
     year: 'June 2025',
+    title: 'The Blessing Before the Ring',
+    description:
+      '[Yoni] In Ethiopian culture, a man cannot simply propose \u2014 the family must first give their blessing. So before anything else, elders walked through her parents\u2019 door on our behalf to formally ask for her hand. This is the moment the request was made, the tradition honored, and permission given. I was waiting on the other side of the world for one text. It came. It just said \u201cGo.\u201d',
+    image: img('elders.jpg'),
+  },
+  {
+    id: 16,
+    year: 'June 2025',
     title: 'The Ultimate Surprise',
     description:
       "[Saron] It was the best birthday trip ever\u2014and it wasn\u2019t even mine. Dropping to one knee took my breath away. But the moment I realized our friends had secretly flown in to pop out and celebrate the \u2018yes\u2019 with us? It was the most beautiful surprise of my life.",
@@ -136,7 +144,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     callout: '↑ More photos from the proposal at the top of the page',
   },
   {
-    id: 16,
+    id: 17,
     year: 'July 2025',
     title: 'Bringing It Home',
     description:
@@ -144,7 +152,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     image: img('engagagmentparty.JPG'),
   },
   {
-    id: 17,
+    id: 18,
     year: 'Aug 2025',
     title: 'Closing the Chapter',
     description:
