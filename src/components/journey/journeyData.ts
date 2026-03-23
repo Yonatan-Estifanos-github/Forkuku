@@ -131,7 +131,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'June 2025',
     title: 'The Blessing Before the Ring',
     description:
-      '[Yoni] In Ethiopian culture, a man cannot simply propose \u2014 the family must first give their blessing. So before anything else, elders walked through her parents\u2019 door on our behalf to formally ask for her hand. This is the moment the request was made, the tradition honored, and permission given. I was waiting in Puerto Rico for one text. It came. It just said \u201cGo.\u201d',
+      '[Yoni] Before I could do anything, her family had to say yes. That\u2019s how we do it \u2014 elders go first, on your behalf, and ask for her hand the proper way. While she and I were in Puerto Rico, that was happening back home. I just had to wait. One text came through. It said \u201cGo.\u201d And I went.',
     image: img('elders.jpg'),
   },
   {
