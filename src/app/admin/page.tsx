@@ -1328,10 +1328,17 @@ export default function AdminDashboard() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
-            <div className="p-6 border-b border-gray-100 flex-shrink-0">
+            <div className="p-6 border-b border-gray-100 flex-shrink-0 flex items-center justify-between">
               <h2 className="font-serif text-2xl text-[#1B3B28]">
                 {editingParty ? 'Edit Party' : 'Add New Party'}
               </h2>
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-gray-600 transition-colors text-2xl leading-none"
+                title="Close"
+              >
+                &times;
+              </button>
             </div>
 
             <div className="p-6 space-y-4 overflow-y-auto flex-1">
