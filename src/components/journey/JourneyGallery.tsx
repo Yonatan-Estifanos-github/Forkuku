@@ -40,7 +40,7 @@ export default function JourneyGallery() {
         {/* Cards */}
         <div className="flex flex-col">
           {JOURNEY_DATA.map((item, index) => (
-            <JourneyCard key={item.year} item={item} index={index} />
+            <JourneyCard key={item.id} item={item} index={index} />
           ))}
         </div>
       </div>

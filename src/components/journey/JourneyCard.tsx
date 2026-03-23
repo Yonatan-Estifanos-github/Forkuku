@@ -10,6 +10,54 @@ interface JourneyCardProps {
   index: number;
 }
 
+// ── Dual-POV parser ──────────────────────────────────────────────────────────
+// Splits text on [Yoni] and [Saron] tags and renders them in distinct gold styles.
+function ParsedDescription({
+  text,
+  alignEnd,
+}: {
+  text: string;
+  alignEnd: boolean;
+}) {
+  const parts = text.split(/(\[(?:Yoni|Saron)\])/g);
+
+  return (
+    <p
+      className={`font-sans text-sm text-white/55 leading-relaxed max-w-[280px] ${
+        alignEnd ? 'md:text-right' : ''
+      }`}
+    >
+      {parts.map((part, i) => {
+        if (part === '[Yoni]') {
+          return (
+            <span
+              key={i}
+              className="font-semibold tracking-wide"
+              style={{ color: '#D4A845' }}
+            >
+              Yoni ›{' '}
+            </span>
+          );
+        }
+        if (part === '[Saron]') {
+          return (
+            <span
+              key={i}
+              className="font-semibold tracking-wide"
+              style={{ color: '#c8a060' }}
+            >
+              Saron ›{' '}
+            </span>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </p>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+
 export default function JourneyCard({ item, index }: JourneyCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const isLeft = index % 2 === 0;
@@ -55,13 +103,13 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
           className="relative"
           style={{ width: 340, maxWidth: '100%' }}
         >
-          {/* Year watermark — massive, 6% opacity, sits behind the frame */}
+          {/* Year watermark — massive, 7% opacity, sits behind the frame */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0">
             <span
               className="font-serif leading-none text-wedding-gold"
               style={{ fontSize: 170, opacity: 0.07 }}
             >
-              {item.year}
+              {item.year.replace(/[^0-9]/g, '').slice(0, 4)}
             </span>
           </div>
 
@@ -94,7 +142,7 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
                     src={item.image}
                     alt={item.title}
                     fill
-                    sizes="260px"
+                    sizes="340px"
                     // object-top preserves faces; no aggressive center-crop
                     className="object-cover object-top"
                   />
@@ -140,10 +188,8 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
           {/* Gold accent line */}
           <div className={`w-8 h-[1px] bg-wedding-gold/40 mb-4 ${!isLeft ? 'md:ml-auto' : ''}`} />
 
-          {/* Description */}
-          <p className="font-sans text-sm text-white/55 leading-relaxed max-w-[260px]">
-            {item.description}
-          </p>
+          {/* Description with dual-POV styling */}
+          <ParsedDescription text={item.description} alignEnd={!isLeft} />
         </motion.div>
       </div>
     </div>
