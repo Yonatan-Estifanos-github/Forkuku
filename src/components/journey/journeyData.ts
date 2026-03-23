@@ -123,7 +123,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'June 2025',
     title: 'The Master Plan',
     description:
-      '[Yoni] The decoy worked perfectly. She thought she was running the itinerary, but I was quietly setting the stage. While she was taking in the island views, back home, my family was officially sending elders to her parents\u2019 house. The real plan was in motion.',
+      '[Yoni] This is Saturday night \u2014 we\u2019re just enjoying the island, laughing with the few girls who were there, completely in the moment. What she didn\u2019t know is that while we were living it up, everyone back home was quietly getting ready. Sunday noon, elders would be sent to her parents\u2019 house. Sunday night, her whole life was about to change. She had no idea.',
     image: img('pr2.JPG'),
   },
   {
