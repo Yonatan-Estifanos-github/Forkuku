@@ -24,7 +24,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
   {
     id: 2,
     year: 'Late 2021',
-    title: 'Curly Hair & Foot Washing',
+    title: 'The Night It All Shifted',
     description:
       '[Yoni] Seeing her in person at a Christian conference in DC called The Gathering, I just remember that curly hair and thinking how beautiful she was. [Saron] Inspired by Jesus washing his disciples\u2019 feet, the conference ended with a foot-washing service. I hate feet, yet I somehow found myself washing Yoni\u2019s. That night shifted everything. We texted endlessly, leading to a December day where we finally confessed how we felt.',
     image: img('firsttime tellign each other w elike eachother2021.jpg'),
@@ -35,7 +35,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     title: 'The Recon Mission',
     description:
       '[Saron] Knowing how we felt was one thing, but stepping into it was terrifying. After a sneaky \u2018reconnaissance mission\u2019 to see him in his natural habitat, we knew the connection was undeniable. [Yoni] We wanted to do this right, so we started fasting and praying. As we quietly began dating, we gathered our closest friends to throw her a surprise birthday.',
-    image: img('herbirthday2022feb.jpg'),
+    image: img('herbirthday2022feb.jpeg'),
   },
   {
     id: 4,
@@ -75,7 +75,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     title: 'Surviving School',
     description:
       '[Yoni] With the foundation finally set, 2024 became a beautiful blur. I was deep into grad school, and she was finishing undergrad. [Saron] We kept our sanity by just doing life together. There was pure joy in simply surviving school side-by-side, knowing exactly who we were coming home to.',
-    image: img('2024livignlife.jpg'),
+    image: img('2024livignlife.JPG'),
   },
   {
     id: 9,
@@ -83,7 +83,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     title: 'Museum Escapes',
     description:
       '[Yoni] Between intense study sessions and planning for the future, we had to fiercely protect our time. Exploring museums became our sanctuary. These quiet dates were our favorite way to unplug, stop talking about exams, and just be completely present with each other.',
-    image: img('lotsofmuseumdates24.jpg'),
+    image: img('lotsofmuseumdates24.JPEG'),
   },
   {
     id: 10,
@@ -115,7 +115,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     title: 'Blissfully Unaware',
     description:
       '[Saron] I genuinely thought I was the mastermind. I had flawlessly planned his annual birthday trip to Puerto Rico. I was literally joking around the day before, pretending to have a ring on my finger, completely clueless that my life was about to change forever.',
-    image: img('PR1.jpg'),
+    image: img('PR1.JPG'),
   },
   {
     id: 14,
@@ -123,7 +123,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     title: 'The Master Plan',
     description:
       '[Yoni] The decoy worked perfectly. She thought she was running the itinerary, but I was quietly setting the stage. While she was taking in the island views, back home, my family was officially sending elders to her parents\u2019 house. The real plan was in motion.',
-    image: img('pr2.jpg'),
+    image: img('pr2.JPG'),
   },
   {
     id: 15,
@@ -131,7 +131,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     title: 'The Ultimate Surprise',
     description:
       "[Saron] It was the best birthday trip ever\u2014and it wasn\u2019t even mine. Dropping to one knee took my breath away. But the moment I realized our friends had secretly flown in to pop out and celebrate the \u2018yes\u2019 with us? It was the most beautiful surprise of my life.",
-    image: img('pr3.jpg'),
+    image: img('pr3.JPG'),
   },
   {
     id: 16,
@@ -139,7 +139,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     title: 'Bringing It Home',
     description:
       '[Yoni] We brought that overwhelming joy back home to Pennsylvania. Celebrating at our engagement party, surrounded by the incredible community who prayed with us and for us, made the reality of our promise feel incredibly sweet. We were really doing this.',
-    image: img('engagagmentparty.jpg'),
+    image: img('engagagmentparty.JPG'),
   },
   {
     id: 17,
@@ -147,6 +147,6 @@ export const JOURNEY_DATA: JourneyItem[] = [
     title: 'Closing the Chapter',
     description:
       '[Yoni] We capped off the wildest summer of our lives by celebrating my grad school graduation. We conquered school, survived the long distance, and secured the ring. After this, I started my career, and Kuku went on to begin her own grad school journey as we finally prepared for marriage.',
-    image: img('mygraduation2025.jpg'),
+    image: img('mygraduation2025.JPG'),
   },
 ];
