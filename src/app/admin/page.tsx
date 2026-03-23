@@ -315,6 +315,23 @@ export default function AdminDashboard() {
   };
 
   // ============================================
+  // INLINE FAMILY SIDE TOGGLE
+  // ============================================
+  const handleFamilySideChange = async (party: Party, side: 'bride' | 'groom' | null) => {
+    // Optimistic update
+    setParties(prev => prev.map(p => p.id === party.id ? { ...p, family_side: side } : p));
+    const { error } = await supabase
+      .from('parties')
+      .update({ family_side: side })
+      .eq('id', party.id);
+    if (error) {
+      console.error(error);
+      // Revert on failure
+      setParties(prev => prev.map(p => p.id === party.id ? { ...p, family_side: party.family_side } : p));
+    }
+  };
+
+  // ============================================
   // DELETE PARTY
   // ============================================
   const handleDeleteParty = async (party: Party) => {
@@ -1027,14 +1044,41 @@ export default function AdminDashboard() {
                       return (
                         <tr key={party.id} className="hover:bg-gray-50 transition-colors">
                           <td className="p-4 font-medium text-[#1B3B28]">
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-col gap-1.5">
                               {party.party_name}
-                              {party.family_side === 'bride' && (
-                                <span className="text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-pink-100 text-pink-600">Bride</span>
-                              )}
-                              {party.family_side === 'groom' && (
-                                <span className="text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-blue-100 text-blue-600">Groom</span>
-                              )}
+                              <div className="flex gap-1">
+                                <button
+                                  onClick={() => handleFamilySideChange(party, 'bride')}
+                                  title="Bride's side"
+                                  className={`text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded transition-colors ${
+                                    party.family_side === 'bride'
+                                      ? 'bg-pink-500 text-white'
+                                      : 'bg-gray-100 text-gray-400 hover:bg-pink-100 hover:text-pink-600'
+                                  }`}
+                                >
+                                  B
+                                </button>
+                                <button
+                                  onClick={() => handleFamilySideChange(party, 'groom')}
+                                  title="Groom's side"
+                                  className={`text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded transition-colors ${
+                                    party.family_side === 'groom'
+                                      ? 'bg-blue-600 text-white'
+                                      : 'bg-gray-100 text-gray-400 hover:bg-blue-100 hover:text-blue-600'
+                                  }`}
+                                >
+                                  G
+                                </button>
+                                {party.family_side && (
+                                  <button
+                                    onClick={() => handleFamilySideChange(party, null)}
+                                    title="Clear assignment"
+                                    className="text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-gray-100 text-gray-400 hover:bg-red-50 hover:text-red-400 transition-colors"
+                                  >
+                                    ×
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           </td>
                           <td className="p-4">
