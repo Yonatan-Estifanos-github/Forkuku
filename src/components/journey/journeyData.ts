@@ -121,7 +121,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
   {
     id: 14,
     year: 'June 2025',
-    title: 'The Master Plan',
+    title: 'She Had No Idea',
     description:
       '[Yoni] This was Saturday night \u2014 just a good evening with friends and family, nobody suspicious. What she didn\u2019t know was that back home, everything was already in motion. The elders were set to visit her parents the next afternoon. By Sunday night, the question would be asked. She had absolutely no idea.',
     image: img('pr2.JPG'),
