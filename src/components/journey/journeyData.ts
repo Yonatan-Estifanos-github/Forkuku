@@ -27,7 +27,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'Late 2021',
     title: 'The Night It All Shifted',
     description:
-      '[Yoni] Seeing her in person at a Christian conference in DC called The Gathering, I just remember that curly hair and thinking how beautiful she was. [Saron] Inspired by Jesus washing his disciples\u2019 feet, the conference ended with a foot-washing service. I hate feet, yet I somehow found myself washing Yoni\u2019s. That night shifted everything. We texted endlessly, leading to a December day where we finally confessed how we felt.',
+      '[Yoni] Seeing her in person at The Gathering — a conference in DC brought together by multiple different ministries — I just remember that curly hair and thinking how beautiful she was. [Saron] Inspired by Jesus washing his disciples\u2019 feet, the conference ended with a foot-washing service. I hate feet, yet I somehow found myself washing Yoni\u2019s. That night shifted everything. We texted endlessly, leading to a December day where we finally confessed how we felt.',
     image: img('firsttime tellign each other w elike eachother2021.jpg'),
   },
   {
