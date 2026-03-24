@@ -43,7 +43,7 @@ const GROOMSMEN: PartyMember[] = [
 
 const BRIDESMAIDS: PartyMember[] = [
   { id: 1,  name: 'Abigael Gebremariam', role: 'Maid of Honor', funFact: '', photo: img('br1.png')  },
-  { id: 2,  name: 'Hermella Gebre',      role: 'Bridesmaid',    funFact: '', photo: img('br2.png')  },
+  { id: 2,  name: 'Hermella Gebre',      role: 'Bridesmaid',    funFact: '', photo: img('br2.png'),  photoPosition: 'bottom' },
   { id: 3,  name: 'Christina Alemayehu', role: 'Bridesmaid',    funFact: '', photo: img('br3.JPG')  },
   { id: 4,  name: 'Lydia Dawit',         role: 'Bridesmaid',    funFact: '', photo: img('br4.jpg')  },
   { id: 5,  name: 'Edom Wake',           role: 'Bridesmaid',    funFact: '', photo: img('br5.png')  },
