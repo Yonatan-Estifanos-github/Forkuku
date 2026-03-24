@@ -51,7 +51,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'May 2023',
     title: 'There She Was',
     description:
-      '[Yoni] That year of silence wasn\u2019t easy, but it allowed the Lord to do a profound work in our hearts. When I looked out at my Penn State graduation and saw her sitting there...invited by my family...it hit me like a ton of bricks. The wait was over. I was finally ready.',
+      '[Yoni] That year of silence wasn\u2019t easy, but it allowed the Lord to do a profound work in our hearts. When I looked out at my Penn State graduation and saw her sitting there — invited by my family — it hit me like a ton of bricks. The wait was over. I was finally ready.',
     image: img('2023mygrad.jpg'),
   },
   {
