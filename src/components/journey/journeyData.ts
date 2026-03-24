@@ -19,7 +19,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'Early 2021',
     title: 'Zoom Prayer & IG Stalking',
     description:
-      '[Saron] It started on a Covid Zoom prayer line. I was deeply moved by the absolute conviction in the way he prayed. Later, an Instagram request led me to notice this one guy stealing the spotlight in every photo. Turns out, it was Yoni. Those early digital conversations sparked something real, eventually leading to my very first visit to PA.',
+      '[Saron] It started on a Covid Zoom prayer line. I was deeply moved by the absolute conviction in the way he prayed. Later, an Instagram request led me to notice this one guy stealing the spotlight in every photo. Turns out, it was Yoni. Those early DMs sparked something real, eventually leading to my very first trip to Harrisburg, PA.',
     image: img('firstime inPA2021.jpg'),
   },
   {
@@ -27,7 +27,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'Late 2021',
     title: 'The Night It All Shifted',
     description:
-      '[Yoni] Seeing her in person at a Christian conference in DC called The Gathering, I just remember that curly hair and thinking how beautiful she was. [Saron] Inspired by Jesus washing his disciples\u2019 feet, the conference ended with a foot-washing service. I hate feet, yet I somehow found myself washing Yoni\u2019s. That night shifted everything. We texted endlessly, leading to a December day where we finally confessed how we felt.',
+      '[Yoni] Seeing her in person at The Gathering — a conference in DC brought together by multiple different ministries — I just remember that curly hair and thinking how beautiful she was. [Saron] Inspired by Jesus washing his disciples\u2019 feet, the conference ended with a foot-washing service. I hate feet, yet I somehow found myself washing Yoni\u2019s. That night shifted everything. We texted endlessly, leading to a December day where we finally confessed how we felt.',
     image: img('firsttime tellign each other w elike eachother2021.jpg'),
   },
   {
@@ -35,7 +35,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'Feb 2022',
     title: 'The Recon Mission',
     description:
-      '[Saron] Knowing how we felt was one thing, but stepping into it was terrifying. After a sneaky \u2018reconnaissance mission\u2019 to see him in his natural habitat, we knew the connection was undeniable. [Yoni] We wanted to do this right, so we started fasting and praying. As we quietly began dating, we gathered our closest friends to throw her a surprise birthday.',
+      '[Saron] Feelings were one thing — actually driving out to Harrisburg to find out if any of this was real was another. So I did. It was. [Yoni] We didn\'t want to rush it. We started fasting and praying, took things slow, and before long we were quietly dating. We celebrated her birthday that month with a surprise — our first real moment together as something more.',
     image: img('herbirthday2022feb.jpeg'),
   },
   {
@@ -43,15 +43,15 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'Early 2022',
     title: 'Eight Hours & A Pause',
     description:
-      '[Yoni] We went on an epic eight-hour hiking date, and the conversation just never ran dry. But despite the undeniable bond, we were both carrying unfinished business in our own lives. To protect what we had, we made the agonizingly tough call to step back for a year so God could do a real work in both of us.',
+      '[Yoni] We went on an epic eight-hour hiking date, and the conversation just never ran dry. But despite the undeniable bond, we were both carrying unfinished business in our own lives. We stepped back — not with a plan, but with an open hand. If God brought us back together, great. If not, then maybe this was it. It turned out to be a year.',
     image: img('hike_bothofus2022.jpg'),
   },
   {
     id: 5,
     year: 'May 2023',
-    title: 'The Anchor Returns',
+    title: 'There She Was',
     description:
-      '[Yoni] That year of silence wasn\u2019t easy, but it allowed the Lord to do a profound work in our hearts. When I looked out at my Penn State graduation and saw her sitting there\u2014invited by my family\u2014it hit me like a ton of bricks. The wait was over. I was finally ready.',
+      '[Yoni] That year of silence wasn\u2019t easy, but it allowed the Lord to do a profound work in our hearts. When I looked out at my Penn State graduation and saw her sitting there — invited by my family — it hit me like a ton of bricks. The wait was over. I was finally ready.',
     image: img('2023mygrad.jpg'),
   },
   {
@@ -121,7 +121,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
   {
     id: 14,
     year: 'June 2025',
-    title: 'The Master Plan',
+    title: 'She Had No Idea',
     description:
       '[Yoni] This was Saturday night \u2014 just a good evening with friends and family, nobody suspicious. What she didn\u2019t know was that back home, everything was already in motion. The elders were set to visit her parents the next afternoon. By Sunday night, the question would be asked. She had absolutely no idea.',
     image: img('pr2.JPG'),
