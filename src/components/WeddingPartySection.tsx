@@ -561,7 +561,7 @@ export default function WeddingPartySection() {
 
       <div className="relative max-w-5xl mx-auto z-10">
         <div className="flex flex-col md:flex-row gap-10 md:gap-6 lg:gap-10">
-          <PartyColumn title="Yoni's Crew"  members={GROOMSMEN}   side="left"  gender="male"   variant="superlative" />
+          <PartyColumn title="Groomsmen"  members={GROOMSMEN}   side="left"  gender="male"   variant="superlative" />
           <div className="hidden md:flex flex-col items-center self-stretch py-4">
             <div className="flex-1 w-[1px]"
               style={{ background: 'linear-gradient(to bottom, transparent, rgba(212,168,69,0.2) 20%, rgba(212,168,69,0.2) 80%, transparent)' }} />
