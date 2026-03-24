@@ -50,7 +50,7 @@ const GROOMSMEN: PartyMember[] = [
   { id: 10, name: 'Samuel Guta',       role: 'Groomsman', photo: img('gm10.png'),
     funFact: 'Most Likely to Worship Hard Enough to Bring Down the Walls of Jericho' },
   { id: 11, name: 'Kaleab Mekonen',    role: 'Groomsman', photo: img('gm11.jpeg'),
-    funFact: 'Most Likely to Cancel Last Minute with an Excuse So Ridiculous You Can\'t Even Be Mad' },
+    funFact: 'Most Likely to Have You in Tears Laughing and Not Even Know Why' },
 ];
 
 const BRIDESMAIDS: PartyMember[] = [
