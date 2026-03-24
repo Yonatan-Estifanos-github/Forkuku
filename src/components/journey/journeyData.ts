@@ -43,7 +43,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'Early 2022',
     title: 'Eight Hours & A Pause',
     description:
-      '[Yoni] We went on an epic eight-hour hiking date, and the conversation just never ran dry. But despite the undeniable bond, we were both carrying unfinished business in our own lives. To protect what we had, we made the agonizingly tough call to step back for a year so God could do a real work in both of us.',
+      '[Yoni] We went on an epic eight-hour hiking date, and the conversation just never ran dry. But despite the undeniable bond, we were both carrying unfinished business in our own lives. We stepped back — not with a plan, but with an open hand. If God brought us back together, great. If not, then maybe this was it. It turned out to be a year.',
     image: img('hike_bothofus2022.jpg'),
   },
   {
