@@ -233,7 +233,7 @@ function PartyCard({
 
           {/* Headshot — photo if available, else SVG silhouette */}
           {member.photo ? (
-            <div className="absolute inset-x-0 top-0 bottom-[24%] pointer-events-none overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={member.photo}
@@ -241,7 +241,7 @@ function PartyCard({
                 className="w-full h-full object-cover object-top"
               />
               <div className="absolute inset-0"
-                style={{ background: 'linear-gradient(to bottom, transparent 60%, rgba(10,9,8,0.85) 100%)' }} />
+                style={{ background: 'linear-gradient(to bottom, transparent 50%, rgba(10,9,8,0.92) 80%, rgba(10,9,8,1) 100%)' }} />
             </div>
           ) : (
             <div
