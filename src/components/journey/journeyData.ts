@@ -19,7 +19,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'Early 2021',
     title: 'Zoom Prayer & IG Stalking',
     description:
-      '[Saron] It started on a Covid Zoom prayer line. I was deeply moved by the absolute conviction in the way he prayed. Later, an Instagram request led me to notice this one guy stealing the spotlight in every photo. Turns out, it was Yoni. Those early DMs sparked something real, eventually leading to my very first visit to PA.',
+      '[Saron] It started on a Covid Zoom prayer line. I was deeply moved by the absolute conviction in the way he prayed. Later, an Instagram request led me to notice this one guy stealing the spotlight in every photo. Turns out, it was Yoni. Those early DMs sparked something real, eventually leading to my very first trip to Harrisburg, PA.',
     image: img('firstime inPA2021.jpg'),
   },
   {
