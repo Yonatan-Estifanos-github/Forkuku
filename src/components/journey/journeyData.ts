@@ -35,7 +35,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'Feb 2022',
     title: 'The Recon Mission',
     description:
-      '[Saron] Knowing how we felt was one thing, but stepping into it was terrifying. After a sneaky \u2018reconnaissance mission\u2019 to see him in his natural habitat, we knew the connection was undeniable. [Yoni] We wanted to do this right, so we started fasting and praying. As we quietly began dating, we gathered our closest friends to throw her a surprise birthday.',
+      '[Saron] Feelings were one thing — actually showing up was another. So I paid him a visit, partly to see if it was all real. It was. [Yoni] We didn\'t want to rush it. We started fasting and praying, took things slow, and before long we were quietly dating. We celebrated her birthday that month with a surprise — our first real moment together as something more.',
     image: img('herbirthday2022feb.jpeg'),
   },
   {
