@@ -175,9 +175,9 @@ const cardFaceStyle = {
 const SUPERLATIVE_PREFIX = 'Most Likely to ';
 
 function SuperlativeOverlay({ text }: { text: string }) {
-  const punchline = text.startsWith(SUPERLATIVE_PREFIX)
-    ? text.slice(SUPERLATIVE_PREFIX.length)
-    : text;
+  const isSuperlative = text.startsWith(SUPERLATIVE_PREFIX);
+  const label    = isSuperlative ? 'Most Likely to' : 'Fun Fact';
+  const punchline = isSuperlative ? text.slice(SUPERLATIVE_PREFIX.length) : text;
 
   return (
     <motion.div
@@ -198,7 +198,7 @@ function SuperlativeOverlay({ text }: { text: string }) {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.32, delay: 0.06 }}
       >
-        Most Likely to
+        {label}
       </motion.p>
 
       {/* Thin gold rule */}
@@ -566,7 +566,7 @@ export default function WeddingPartySection() {
             <div className="flex-1 w-[1px]"
               style={{ background: 'linear-gradient(to bottom, transparent, rgba(212,168,69,0.2) 20%, rgba(212,168,69,0.2) 80%, transparent)' }} />
           </div>
-          <PartyColumn title="Bridesmaids" members={BRIDESMAIDS} side="right" gender="female" />
+          <PartyColumn title="Bridesmaids" members={BRIDESMAIDS} side="right" gender="female" variant="superlative" />
         </div>
       </div>
     </section>
