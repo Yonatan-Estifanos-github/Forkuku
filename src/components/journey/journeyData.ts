@@ -35,7 +35,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     year: 'Feb 2022',
     title: 'The Recon Mission',
     description:
-      '[Saron] Feelings were one thing — actually showing up was another. So I paid him a visit, partly to see if it was all real. It was. [Yoni] We didn\'t want to rush it. We started fasting and praying, took things slow, and before long we were quietly dating. We celebrated her birthday that month with a surprise — our first real moment together as something more.',
+      '[Saron] Feelings were one thing — actually driving out to Harrisburg to find out if any of this was real was another. So I did. It was. [Yoni] We didn\'t want to rush it. We started fasting and praying, took things slow, and before long we were quietly dating. We celebrated her birthday that month with a surprise — our first real moment together as something more.',
     image: img('herbirthday2022feb.jpeg'),
   },
   {
