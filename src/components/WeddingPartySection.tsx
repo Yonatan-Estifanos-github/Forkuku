@@ -40,15 +40,15 @@ const GROOMSMEN: PartyMember[] = [
 ];
 
 const BRIDESMAIDS: PartyMember[] = [
-  { id: 1,  name: 'Abigael Gebremariam', role: 'Maid of Honor', funFact: '', photo: img('br1.heic')  },
-  { id: 2,  name: 'Hermella Gebre',      role: 'Bridesmaid',    funFact: '', photo: img('br2.heic')  },
-  { id: 3,  name: 'Christina Alemayehu', role: 'Bridesmaid',    funFact: '', photo: img('br3.JPG')   },
-  { id: 4,  name: 'Lydia Dawit',         role: 'Bridesmaid',    funFact: '', photo: img('br4.jpg')   },
-  { id: 5,  name: 'Edom Wake',           role: 'Bridesmaid',    funFact: '', photo: img('br5.heic')  },
-  { id: 6,  name: 'Ruth Tefera',         role: 'Bridesmaid',    funFact: '', photo: img('br6.heic')  },
-  { id: 7,  name: 'Amen Tefera',         role: 'Bridesmaid',    funFact: '', photo: img('br7.heic')  },
-  { id: 8,  name: 'Maranatha Haile',     role: 'Bridesmaid',    funFact: '', photo: img('br8.heic')  },
-  { id: 9,  name: 'Sabrina Yohannes',    role: 'Bridesmaid',    funFact: '', photo: img('br9.HEIC')  },
+  { id: 1,  name: 'Abigael Gebremariam', role: 'Maid of Honor', funFact: '', photo: img('br1.png')  },
+  { id: 2,  name: 'Hermella Gebre',      role: 'Bridesmaid',    funFact: '', photo: img('br2.png')  },
+  { id: 3,  name: 'Christina Alemayehu', role: 'Bridesmaid',    funFact: '', photo: img('br3.JPG')  },
+  { id: 4,  name: 'Lydia Dawit',         role: 'Bridesmaid',    funFact: '', photo: img('br4.jpg')  },
+  { id: 5,  name: 'Edom Wake',           role: 'Bridesmaid',    funFact: '', photo: img('br5.png')  },
+  { id: 6,  name: 'Ruth Tefera',         role: 'Bridesmaid',    funFact: '', photo: img('br6.png')  },
+  { id: 7,  name: 'Amen Tefera',         role: 'Bridesmaid',    funFact: '', photo: img('br7.png')  },
+  { id: 8,  name: 'Maranatha Haile',     role: 'Bridesmaid',    funFact: '', photo: img('br8.png')  },
+  { id: 9,  name: 'Sabrina Yohannes',    role: 'Bridesmaid',    funFact: '', photo: img('br9.png')  },
   { id: 10, name: "El'roi Gebre",        role: 'Bridesmaid',    funFact: '', photo: img('br10.jpeg') },
   { id: 11, name: 'Ariam Yohannes',      role: 'Bridesmaid',    funFact: '', photo: img('br11.JPG')  },
 ];
