@@ -18,6 +18,8 @@ interface PartyMember {
   role: string;
   funFact: string;
   photo?: string;
+  photoFit?: 'cover' | 'contain';
+  photoPosition?: string;
 }
 
 const CDN_BASE =
@@ -26,7 +28,7 @@ const CDN_BASE =
 const img = (filename: string) => `${CDN_BASE}/${encodeURIComponent(filename)}`;
 
 const GROOMSMEN: PartyMember[] = [
-  { id: 1,  name: 'Symney Cameron',    role: 'Best Man',  funFact: '', photo: img('gm1.png')   },
+  { id: 1,  name: 'Symney Cameron',    role: 'Best Man',  funFact: '', photo: img('gm1.png'),  photoFit: 'contain' },
   { id: 2,  name: 'Yoseph Estifanos',  role: 'Groomsman', funFact: '', photo: img('gm2.jpg')   },
   { id: 3,  name: 'Kiran Pandey',      role: 'Groomsman', funFact: '', photo: img('gm3.jpg')   },
   { id: 4,  name: 'Fikru Ashenafi',    role: 'Groomsman', funFact: '', photo: img('gm4.JPG')   },
@@ -238,7 +240,8 @@ function PartyCard({
               <img
                 src={member.photo}
                 alt={member.name}
-                className="w-full h-full object-cover object-center"
+                className={`w-full h-full ${member.photoFit === 'contain' ? 'object-contain' : 'object-cover'}`}
+                style={{ objectPosition: member.photoPosition ?? 'center' }}
               />
               <div className="absolute inset-0"
                 style={{ background: 'linear-gradient(to bottom, transparent 50%, rgba(10,9,8,0.92) 80%, rgba(10,9,8,1) 100%)' }} />
