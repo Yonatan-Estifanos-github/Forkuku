@@ -20,18 +20,23 @@ interface PartyMember {
   photo?: string;
 }
 
+const CDN_BASE =
+  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui';
+
+const img = (filename: string) => `${CDN_BASE}/${encodeURIComponent(filename)}`;
+
 const GROOMSMEN: PartyMember[] = [
-  { id: 1,  name: 'Symney Cameron',    role: 'Best Man',  funFact: '' },
-  { id: 2,  name: 'Yoseph Estifanos',  role: 'Groomsman', funFact: '' },
-  { id: 3,  name: 'Kiran Pandey',      role: 'Groomsman', funFact: '' },
-  { id: 4,  name: 'Fikru Ashenafi',    role: 'Groomsman', funFact: '' },
-  { id: 5,  name: 'Ziam Jan',          role: 'Groomsman', funFact: '' },
-  { id: 6,  name: 'Daniel Hodeta',     role: 'Groomsman', funFact: '' },
-  { id: 7,  name: 'Amanuel Estifanos', role: 'Groomsman', funFact: '' },
-  { id: 8,  name: 'Abel Gebre',        role: 'Groomsman', funFact: '' },
-  { id: 9,  name: 'Kirollos Rezkalla', role: 'Groomsman', funFact: '' },
-  { id: 10, name: 'Samuel Guta',       role: 'Groomsman', funFact: '' },
-  { id: 11, name: 'Kaleab Mekonen',    role: 'Groomsman', funFact: '' },
+  { id: 1,  name: 'Symney Cameron',    role: 'Best Man',  funFact: '', photo: img('gm1.png')   },
+  { id: 2,  name: 'Yoseph Estifanos',  role: 'Groomsman', funFact: '', photo: img('gm2.jpg')   },
+  { id: 3,  name: 'Kiran Pandey',      role: 'Groomsman', funFact: '', photo: img('gm3.jpg')   },
+  { id: 4,  name: 'Fikru Ashenafi',    role: 'Groomsman', funFact: '', photo: img('gm4.JPG')   },
+  { id: 5,  name: 'Ziam Jan',          role: 'Groomsman', funFact: '', photo: img('gm5.png')   },
+  { id: 6,  name: 'Daniel Hodeta',     role: 'Groomsman', funFact: '', photo: img('gm6.jpg')   },
+  { id: 7,  name: 'Amanuel Estifanos', role: 'Groomsman', funFact: '', photo: img('gm7.jpeg')  },
+  { id: 8,  name: 'Abel Gebre',        role: 'Groomsman', funFact: '', photo: img('gm8.png')   },
+  { id: 9,  name: 'Kirollos Rezkalla', role: 'Groomsman', funFact: '', photo: img('gm9.png')   },
+  { id: 10, name: 'Samuel Guta',       role: 'Groomsman', funFact: '', photo: img('gm10.png')  },
+  { id: 11, name: 'Kaleab Mekonen',    role: 'Groomsman', funFact: '', photo: img('gm11.jpeg') },
 ];
 
 const BRIDESMAIDS: PartyMember[] = [
@@ -226,13 +231,26 @@ function PartyCard({
             </span>
           </div>
 
-          {/* Headshot silhouette with gold drop-shadow */}
-          <div
-            className="absolute inset-x-[8%] top-[5%] bottom-[24%] pointer-events-none"
-            style={{ filter: 'drop-shadow(0 0 7px rgba(212,168,69,0.38))' }}
-          >
-            <Silhouette />
-          </div>
+          {/* Headshot — photo if available, else SVG silhouette */}
+          {member.photo ? (
+            <div className="absolute inset-x-0 top-0 bottom-[24%] pointer-events-none overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={member.photo}
+                alt={member.name}
+                className="w-full h-full object-cover object-top"
+              />
+              <div className="absolute inset-0"
+                style={{ background: 'linear-gradient(to bottom, transparent 60%, rgba(10,9,8,0.85) 100%)' }} />
+            </div>
+          ) : (
+            <div
+              className="absolute inset-x-[8%] top-[5%] bottom-[24%] pointer-events-none"
+              style={{ filter: 'drop-shadow(0 0 7px rgba(212,168,69,0.38))' }}
+            >
+              <Silhouette />
+            </div>
+          )}
 
           {/* Glare */}
           <motion.div className="absolute inset-0 pointer-events-none z-20" style={{ background: glareBackground }} />
