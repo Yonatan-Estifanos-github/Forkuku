@@ -8,8 +8,6 @@ import { FormalInvite } from '@/emails/FormalInvite';
 import { SaveTheDate } from '@/emails/SaveTheDate';
 import { GenericTemplate } from '@/emails/GenericTemplate';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const SUBJECTS: Record<string, string> = {
   'save-the-date':       'Save the Date — Yonatan & Saron | September 4, 2026',
   'formal-invitation':   'You are invited to the wedding of Yonatan & Saron',
@@ -55,6 +53,8 @@ export async function POST(req: Request) {
       console.error('RESEND_API_KEY is not set');
       return NextResponse.json({ error: 'Email service not configured' }, { status: 500 });
     }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     // ── Fetch party + guests ──
     const { data: party, error: partyError } = await supabaseAdmin
