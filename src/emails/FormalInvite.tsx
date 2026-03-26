@@ -19,39 +19,47 @@ interface FormalInviteProps {
 export const FormalInvite = ({ guestName = 'Friend' }: FormalInviteProps) => (
   <Html lang="en">
     <Head />
-    <Preview>You are invited to the wedding of Yonatan &amp; Saron — September 4, 2026</Preview>
+    <Preview>You are invited to the wedding of Yonatan & Saron — September 4, 2026</Preview>
 
     <Body style={main}>
       <Container style={container}>
 
-        {/* ── Hero Image ── */}
-        <Section style={heroSection}>
+        {/* ── Matted Hero Image ── */}
+        <Section style={matSection}>
           <Img
             src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_2.jpeg"
-            alt="Yonatan and Saron Engagement"
-            width="560"
+            alt="Yonatan and Saron"
+            width="520"
             style={heroImg}
           />
         </Section>
 
-        {/* ── Est. date ── */}
+        {/* ── Pre-header ── */}
         <Section style={centeredSection}>
-          <Text style={monogramSub}>EST. SEPTEMBER 4, 2026</Text>
+          <Text style={preHeader}>YOU ARE CORDIALLY INVITED</Text>
         </Section>
 
-        <Hr style={goldDivider} />
+        <Hr style={goldRule} />
 
-        {/* ── Header ── */}
+        {/* ── Names ── */}
         <Section style={centeredSection}>
-          <Text style={header}>YOU ARE INVITED</Text>
+          <Text style={namesText}>
+            Yonatan{' '}
+            <span style={{ color: '#D4A845' }}>&amp;</span>
+            {' '}Saron
+          </Text>
         </Section>
 
-        <Hr style={goldDivider} />
+        <Hr style={goldRule} />
 
-        {/* ── Details ── */}
+        {/* ── Date & Location ── */}
         <Section style={centeredSection}>
-          <Text style={detailsText}>September 4, 2026 &nbsp;|&nbsp; Wrightsville, Pennsylvania</Text>
+          <Text style={detailsText}>
+            September 4, 2026&nbsp;&nbsp;·&nbsp;&nbsp;Wrightsville, Pennsylvania
+          </Text>
         </Section>
+
+        <Hr style={softRule} />
 
         {/* ── Body Copy ── */}
         <Section style={bodySection}>
@@ -73,14 +81,14 @@ export const FormalInvite = ({ guestName = 'Friend' }: FormalInviteProps) => (
           </Text>
         </Section>
 
-        {/* ── CTA Button ── */}
+        {/* ── CTA ── */}
         <Section style={btnSection}>
-          <Button style={button} href="https://www.theestifanos.com">
+          <Button style={ghostButton} href="https://www.theestifanos.com">
             RSVP &amp; Explore Our Story
           </Button>
         </Section>
 
-        <Hr style={thinDivider} />
+        <Hr style={softRule} />
 
         {/* ── Sign-off ── */}
         <Section style={signoffSection}>
@@ -88,17 +96,21 @@ export const FormalInvite = ({ guestName = 'Friend' }: FormalInviteProps) => (
             We can&apos;t wait to worship, celebrate, and break bread with you.
           </Text>
           <Text style={signoffWith}>With so much love,</Text>
-          <Text style={signoffNames}>Yonatan &amp; Saron</Text>
+          <Text style={signoffNames}>
+            Yonatan{' '}
+            <span style={{ color: '#D4A845' }}>&amp;</span>
+            {' '}Saron
+          </Text>
         </Section>
 
-        <Hr style={thinDivider} />
+        <Hr style={softRule} />
 
         {/* ── Footer ── */}
         <Section style={footerSection}>
           <Text style={footerText}>
             For travel details, registries, and FAQs, please visit our website.
           </Text>
-          <Text style={footerLink}>
+          <Text style={footerLinkText}>
             <a href="https://www.theestifanos.com" style={footerAnchor}>
               www.theestifanos.com
             </a>
@@ -120,97 +132,99 @@ const main: React.CSSProperties = {
   backgroundColor: '#F9F7F2',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
   margin: '0',
-  padding: '40px 0',
+  padding: '48px 0',
 };
 
 const container: React.CSSProperties = {
   backgroundColor: '#FFFFFF',
-  border: '1px solid #E8E3D9',
-  borderRadius: '4px',
   margin: '0 auto',
   maxWidth: '600px',
   width: '100%',
 };
 
-// Hero
-const heroSection: React.CSSProperties = {
-  padding: '24px 20px 0',
+// Hero — 40px padding on all sides creates the "matted" frame effect
+const matSection: React.CSSProperties = {
+  padding: '40px 40px 32px',
 };
 
 const heroImg: React.CSSProperties = {
-  borderRadius: '8px',
+  border: '0',
+  borderRadius: '4px',
   display: 'block',
   width: '100%',
-  maxWidth: '560px',
-  border: '0',
+  maxWidth: '520px',
 };
 
-// Monogram
+// Centered wrapper used for pre-header, names, and details
 const centeredSection: React.CSSProperties = {
-  padding: '0 20px',
+  padding: '0 40px',
   textAlign: 'center',
 };
 
-const monogramSub: React.CSSProperties = {
-  color: '#1B3B28',
+// "YOU ARE CORDIALLY INVITED"
+const preHeader: React.CSSProperties = {
+  color: '#D4A845',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSize: '9px',
-  fontWeight: '400',
-  letterSpacing: '5px',
-  margin: '28px 0 24px',
-};
-
-// Dividers
-const goldDivider: React.CSSProperties = {
-  borderColor: '#D4A845',
-  borderTopWidth: '1px',
-  borderTopStyle: 'solid',
-  margin: '0 20px',
-  width: 'auto',
-};
-
-const thinDivider: React.CSSProperties = {
-  borderColor: '#E8E3D9',
-  borderTopWidth: '1px',
-  borderTopStyle: 'solid',
-  margin: '0 20px',
-  width: 'auto',
-};
-
-// Header
-const header: React.CSSProperties = {
-  color: '#1B3B28',
-  fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-  fontSize: '10px',
   fontWeight: '400',
   letterSpacing: '6px',
   margin: '20px 0',
   lineHeight: '1',
 };
 
-// Details
-const detailsText: React.CSSProperties = {
-  color: '#4A4A4A',
-  fontFamily: 'Georgia, "Times New Roman", Times, serif',
-  fontSize: '14px',
-  fontStyle: 'italic',
-  letterSpacing: '1px',
-  margin: '20px 0',
-  lineHeight: '1.4',
+// Gold thin rule between pre-header / names / etc.
+const goldRule: React.CSSProperties = {
+  borderColor: '#D4A845',
+  borderTopStyle: 'solid',
+  borderTopWidth: '1px',
+  margin: '0 40px',
+  width: 'auto',
 };
 
-// Body copy
+// Soft neutral rule before/after body sections
+const softRule: React.CSSProperties = {
+  borderColor: '#EDE9E0',
+  borderTopStyle: 'solid',
+  borderTopWidth: '1px',
+  margin: '0 40px',
+  width: 'auto',
+};
+
+// "Yonatan & Saron"
+const namesText: React.CSSProperties = {
+  color: '#1B3B28',
+  fontFamily: 'Georgia, "Times New Roman", Times, serif',
+  fontSize: '42px',
+  fontStyle: 'italic',
+  fontWeight: 'normal',
+  letterSpacing: '1px',
+  lineHeight: '1.15',
+  margin: '20px 0',
+};
+
+// "September 4, 2026 · Wrightsville, Pennsylvania"
+const detailsText: React.CSSProperties = {
+  color: '#6B6B6B',
+  fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+  fontSize: '12px',
+  fontWeight: '300',
+  letterSpacing: '2px',
+  lineHeight: '1.5',
+  margin: '20px 0',
+};
+
+// Body copy section
 const bodySection: React.CSSProperties = {
-  padding: '8px 36px 0',
+  padding: '32px 48px 0',
 };
 
 const salutation: React.CSSProperties = {
   color: '#1B3B28',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
-  fontSize: '17px',
+  fontSize: '18px',
   fontStyle: 'italic',
-  margin: '24px 0 20px',
   lineHeight: '1.4',
+  margin: '0 0 24px',
 };
 
 const paragraph: React.CSSProperties = {
@@ -219,33 +233,33 @@ const paragraph: React.CSSProperties = {
   fontSize: '15px',
   fontWeight: '300',
   lineHeight: '1.8',
-  margin: '0 0 18px',
+  margin: '0 0 20px',
 };
 
-// Button
+// CTA button
 const btnSection: React.CSSProperties = {
-  padding: '28px 36px 32px',
+  padding: '32px 48px 36px',
   textAlign: 'center',
 };
 
-const button: React.CSSProperties = {
+const ghostButton: React.CSSProperties = {
   backgroundColor: '#1B3B28',
   border: '1px solid #D4A845',
   borderRadius: '2px',
   color: '#D4A845',
   display: 'inline-block',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-  fontSize: '11px',
+  fontSize: '10px',
   fontWeight: '600',
-  letterSpacing: '3px',
-  padding: '14px 32px',
+  letterSpacing: '4px',
+  padding: '14px 36px',
   textDecoration: 'none',
   textTransform: 'uppercase' as const,
 };
 
 // Sign-off
 const signoffSection: React.CSSProperties = {
-  padding: '28px 36px 24px',
+  padding: '32px 48px 28px',
   textAlign: 'center',
 };
 
@@ -254,45 +268,47 @@ const signoffLine: React.CSSProperties = {
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
   fontSize: '15px',
   fontStyle: 'italic',
-  fontWeight: 'normal',
-  lineHeight: '1.7',
-  margin: '0 0 20px',
+  lineHeight: '1.8',
+  margin: '0 0 24px',
 };
 
 const signoffWith: React.CSSProperties = {
-  color: '#888888',
+  color: '#9A9A9A',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-  fontSize: '13px',
+  fontSize: '12px',
   fontStyle: 'italic',
-  margin: '0 0 6px',
+  fontWeight: '300',
+  margin: '0 0 8px',
 };
 
 const signoffNames: React.CSSProperties = {
   color: '#1B3B28',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
-  fontSize: '26px',
+  fontSize: '32px',
   fontStyle: 'italic',
   fontWeight: 'normal',
   letterSpacing: '1px',
+  lineHeight: '1.2',
   margin: '0',
 };
 
 // Footer
 const footerSection: React.CSSProperties = {
-  padding: '20px 36px 32px',
+  padding: '24px 48px 40px',
   textAlign: 'center',
 };
 
 const footerText: React.CSSProperties = {
-  color: '#AAAAAA',
+  color: '#BBBBBB',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSize: '11px',
+  fontWeight: '300',
   letterSpacing: '0.5px',
   lineHeight: '1.6',
   margin: '0 0 6px',
 };
 
-const footerLink: React.CSSProperties = {
+const footerLinkText: React.CSSProperties = {
   margin: '0',
 };
 
@@ -300,6 +316,7 @@ const footerAnchor: React.CSSProperties = {
   color: '#D4A845',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSize: '11px',
+  fontWeight: '300',
   letterSpacing: '2px',
   textDecoration: 'none',
 };
