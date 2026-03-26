@@ -34,9 +34,8 @@ export const FormalInvite = ({ guestName = 'Friend' }: FormalInviteProps) => (
           />
         </Section>
 
-        {/* ── Monogram ── */}
+        {/* ── Est. date ── */}
         <Section style={centeredSection}>
-          <Text style={monogram}>Y &amp; S</Text>
           <Text style={monogramSub}>EST. SEPTEMBER 4, 2026</Text>
         </Section>
 
@@ -152,24 +151,13 @@ const centeredSection: React.CSSProperties = {
   textAlign: 'center',
 };
 
-const monogram: React.CSSProperties = {
-  color: '#D4A845',
-  fontFamily: 'Georgia, "Times New Roman", Times, serif',
-  fontSize: '36px',
-  fontStyle: 'italic',
-  fontWeight: 'normal',
-  letterSpacing: '8px',
-  margin: '28px 0 4px',
-  lineHeight: '1',
-};
-
 const monogramSub: React.CSSProperties = {
   color: '#1B3B28',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSize: '9px',
   fontWeight: '400',
   letterSpacing: '5px',
-  margin: '0 0 24px',
+  margin: '28px 0 24px',
 };
 
 // Dividers
