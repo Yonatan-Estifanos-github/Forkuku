@@ -152,7 +152,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [sendingId, setSendingId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [selectedCampaign, setSelectedCampaign] = useState<CampaignId>('save-the-date');
+  const [selectedCampaign, setSelectedCampaign] = useState<CampaignId>('formal-invitation');
   const [stats, setStats] = useState<DashboardStats>({
     totalParties: 0,
     totalGuests: 0,
