@@ -120,9 +120,3 @@ const button = {
   margin: '0 auto',
   letterSpacing: '1px',
 };
-
-const footer = {
-  color: '#888888',
-  fontSize: '12px',
-  marginTop: '40px',
-};
