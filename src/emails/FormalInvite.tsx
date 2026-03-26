@@ -30,7 +30,7 @@ export const FormalInvite = ({
         <Img
           src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_2.jpeg"
           alt="Yonatan and Saron Engagement"
-          width="100%"
+          width={580}
           style={heroImage}
         />
 
@@ -403,4 +403,5 @@ const heroImage: React.CSSProperties = {
   maxWidth: '580px',
   borderRadius: '4px',
   marginBottom: '30px',
+  border: '0',
 };
