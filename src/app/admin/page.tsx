@@ -143,6 +143,16 @@ function isUSPhone(phone: string | undefined): boolean {
 export default function AdminDashboard() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const modalBackdropRef = useRef<HTMLDivElement>(null);
+
+  // Block touchmove on backdrop so iOS doesn't scroll the page behind the modal
+  useEffect(() => {
+    const el = modalBackdropRef.current;
+    if (!el) return;
+    const prevent = (e: TouchEvent) => e.preventDefault();
+    el.addEventListener('touchmove', prevent, { passive: false });
+    return () => el.removeEventListener('touchmove', prevent);
+  }, [showModal, showRegistryModal]);
   const countdown = useCountdown(WEDDING_DATE);
 
   // Tab State
@@ -259,11 +269,27 @@ export default function AdminDashboard() {
     if (!loading) fetchParties();
   }, [selectedCampaign]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Lock body scroll while any modal is open (prevents background page scrolling on mobile)
+  // Lock body scroll while any modal is open — iOS Safari requires position:fixed trick
   useEffect(() => {
     const isOpen = showModal || showRegistryModal;
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    if (isOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.dataset.scrollY = String(scrollY);
+    } else {
+      const scrollY = parseInt(document.body.dataset.scrollY || '0', 10);
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, scrollY);
+    }
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+    };
   }, [showModal, showRegistryModal]);
 
   useEffect(() => {
@@ -1360,7 +1386,7 @@ export default function AdminDashboard() {
 
       {/* Add/Edit Party Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div ref={modalBackdropRef} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
             <div className="p-6 border-b border-gray-100 flex-shrink-0 flex items-center justify-between">
               <h2 className="font-serif text-2xl text-[#1B3B28]">
