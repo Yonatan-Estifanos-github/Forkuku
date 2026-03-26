@@ -42,9 +42,7 @@ export const SaveTheDate = ({
           </Button>
         </Section>
         
-        <Text style={footer}>
-          Made with ♥ by The Estifanos Family
-        </Text>
+
       </Container>
     </Body>
   </Html>
