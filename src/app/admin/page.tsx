@@ -186,7 +186,6 @@ export default function AdminDashboard() {
   // Registry Modal State
   const [showRegistryModal, setShowRegistryModal] = useState(false);
   const [editingItem, setEditingItem] = useState<RegistryItem | null>(null);
-
   const [itemName, setItemName] = useState('');
   const [itemPrice, setItemPrice] = useState('');
   const [itemCategory, setItemCategory] = useState('Kitchen');
@@ -259,29 +258,6 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (!loading) fetchParties();
   }, [selectedCampaign]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Lock body scroll while any modal is open — iOS Safari requires position:fixed trick
-  useEffect(() => {
-    const isOpen = showModal || showRegistryModal;
-    if (isOpen) {
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      document.body.dataset.scrollY = String(scrollY);
-    } else {
-      const scrollY = parseInt(document.body.dataset.scrollY || '0', 10);
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, scrollY);
-    }
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-    };
-  }, [showModal, showRegistryModal]);
 
   useEffect(() => {
     if (activeTab === 'registry' && registryItems.length === 0) {
@@ -1392,7 +1368,7 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <div className="p-6 space-y-4 overflow-y-auto flex-1 min-h-0 overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <div className="p-6 space-y-4 overflow-y-auto flex-1 min-h-0">
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
                   Party Name *
