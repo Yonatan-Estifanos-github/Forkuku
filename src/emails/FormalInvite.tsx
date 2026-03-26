@@ -5,6 +5,7 @@ import {
   Head,
   Hr,
   Html,
+  Img,
   Preview,
   Section,
   Text,
@@ -24,6 +25,14 @@ export const FormalInvite = ({
 
     <Body style={main}>
       <Container style={wrapper}>
+
+        {/* ── Hero image ── */}
+        <Img
+          src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_2.jpeg"
+          alt="Yonatan and Saron Engagement"
+          width="100%"
+          style={heroImage}
+        />
 
         {/* ── Outer border frame ── */}
         <Section style={frame}>
@@ -386,4 +395,12 @@ const footerAnchor: React.CSSProperties = {
   fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif',
   textDecoration: 'none',
   letterSpacing: '2px',
+};
+
+const heroImage: React.CSSProperties = {
+  display: 'block',
+  width: '100%',
+  maxWidth: '580px',
+  borderRadius: '4px',
+  marginBottom: '30px',
 };
