@@ -54,17 +54,28 @@ const GROOMSMEN: PartyMember[] = [
 ];
 
 const BRIDESMAIDS: PartyMember[] = [
-  { id: 1,  name: 'Abigael Gebremariam', role: 'Maid of Honor', funFact: '', photo: img('br1.png')  },
-  { id: 2,  name: 'Hermella Gebre',      role: 'Bridesmaid',    funFact: '', photo: img('br2.png'),  photoPosition: 'bottom' },
-  { id: 3,  name: 'Christina Alemayehu', role: 'Bridesmaid',    funFact: '', photo: img('br3.JPG')  },
-  { id: 4,  name: 'Lydia Dawit',         role: 'Bridesmaid',    funFact: '', photo: img('br4.jpg')  },
-  { id: 5,  name: 'Edom Wake',           role: 'Bridesmaid',    funFact: '', photo: img('br5.png')  },
-  { id: 6,  name: 'Ruth Tefera',         role: 'Bridesmaid',    funFact: '', photo: img('br6.png')  },
-  { id: 7,  name: 'Amen Tefera',         role: 'Bridesmaid',    funFact: '', photo: img('br7.png')  },
-  { id: 8,  name: 'Maranatha Haile',     role: 'Bridesmaid',    funFact: '', photo: img('br8.png')  },
-  { id: 9,  name: 'Sabrina Yohannes',    role: 'Bridesmaid',    funFact: '', photo: img('br9.png')  },
-  { id: 10, name: "El'roi Gebre",        role: 'Bridesmaid',    funFact: '', photo: img('br10.jpeg') },
-  { id: 11, name: 'Ariam Yohannes',      role: 'Bridesmaid',    funFact: '', photo: img('br11.JPG')  },
+  { id: 1,  name: 'Abigael Gebremariam', role: 'Maid of Honor', photo: img('br1.png'),
+    funFact: 'Hidden Talent: Can aggressively negotiate a 70% discount on an item that isn\'t even for sale' },
+  { id: 2,  name: 'Hermella Gebre',      role: 'Bridesmaid',    photo: img('br2.png'),  photoPosition: 'bottom',
+    funFact: 'Hidden Talent: Can interrogate a literal rock and successfully extract its deepest, darkest secrets in under five minutes' },
+  { id: 3,  name: 'Christina Alemayehu', role: 'Bridesmaid',    photo: img('br3.JPG'),
+    funFact: 'Hidden Talent: Can escalate a "quick coffee catch-up" into an unhinged, 12-hour core memory' },
+  { id: 4,  name: 'Lydia Dawit',         role: 'Bridesmaid',    photo: img('br4.jpg'),
+    funFact: 'Hidden Talent: Can stare at three condiments and half an onion and miraculously produce a 5-star meal' },
+  { id: 5,  name: 'Edom Wake',           role: 'Bridesmaid',    photo: img('br5.png'),
+    funFact: 'Hidden Talent: Possesses terrifying FBI-level intuition ... will know you are lying before you even open your mouth' },
+  { id: 6,  name: 'Ruth Tefera',         role: 'Bridesmaid',    photo: img('br6.png'),
+    funFact: 'Hidden Talent: Can sweet-talk her way out of a parking ticket ... and somehow get the cop to apologize to her' },
+  { id: 7,  name: 'Amen Tefera',         role: 'Bridesmaid',    photo: img('br7.png'),
+    funFact: 'Hidden Talent: Can transform a simple "I went to Target" story into a gripping, 45-minute cinematic thriller with three plot twists' },
+  { id: 8,  name: 'Maranatha Haile',     role: 'Bridesmaid',    photo: img('br8.png'),
+    funFact: 'Hidden Talent: Will invite you to run a "quick errand" and accidentally hold you hostage on a 9-hour adventure' },
+  { id: 9,  name: 'Sabrina Yohannes',    role: 'Bridesmaid',    photo: img('br9.png'),
+    funFact: 'Hidden Talent: Can forcefully adopt an introverted stranger in the grocery line and make them her best friend by checkout' },
+  { id: 10, name: "El'roi Gebre",        role: 'Bridesmaid',    photo: img('br10.jpeg'),
+    funFact: '' },
+  { id: 11, name: 'Ariam Yohannes',      role: 'Bridesmaid',    photo: img('br11.JPG'),
+    funFact: 'Hidden Talent: Can walk into a completely silent, awkward room and immediately turn it into a full-blown stand-up special' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -172,12 +183,18 @@ const cardFaceStyle = {
 // ─────────────────────────────────────────────────────────────────────────────
 // SuperlativeOverlay — rendered inside groomsmen cards on hover / tap
 // ─────────────────────────────────────────────────────────────────────────────
-const SUPERLATIVE_PREFIX = 'Most Likely to ';
+const SUPERLATIVE_PREFIX    = 'Most Likely to ';
+const HIDDEN_TALENT_PREFIX  = 'Hidden Talent: ';
 
 function SuperlativeOverlay({ text }: { text: string }) {
-  const isSuperlative = text.startsWith(SUPERLATIVE_PREFIX);
-  const label    = isSuperlative ? 'Most Likely to' : 'Fun Fact';
-  const punchline = isSuperlative ? text.slice(SUPERLATIVE_PREFIX.length) : text;
+  const isSuperlative   = text.startsWith(SUPERLATIVE_PREFIX);
+  const isHiddenTalent  = text.startsWith(HIDDEN_TALENT_PREFIX);
+  const label    = isSuperlative  ? 'Most Likely to'
+                 : isHiddenTalent ? 'Hidden Talent'
+                 : 'Fun Fact';
+  const punchline = isSuperlative  ? text.slice(SUPERLATIVE_PREFIX.length)
+                  : isHiddenTalent ? text.slice(HIDDEN_TALENT_PREFIX.length)
+                  : text;
 
   return (
     <motion.div
