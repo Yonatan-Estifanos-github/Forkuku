@@ -144,15 +144,6 @@ export default function AdminDashboard() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const modalBackdropRef = useRef<HTMLDivElement>(null);
-
-  // Block touchmove on backdrop so iOS doesn't scroll the page behind the modal
-  useEffect(() => {
-    const el = modalBackdropRef.current;
-    if (!el) return;
-    const prevent = (e: TouchEvent) => e.preventDefault();
-    el.addEventListener('touchmove', prevent, { passive: false });
-    return () => el.removeEventListener('touchmove', prevent);
-  }, [showModal, showRegistryModal]);
   const countdown = useCountdown(WEDDING_DATE);
 
   // Tab State
@@ -196,6 +187,15 @@ export default function AdminDashboard() {
   // Registry Modal State
   const [showRegistryModal, setShowRegistryModal] = useState(false);
   const [editingItem, setEditingItem] = useState<RegistryItem | null>(null);
+
+  // Block touchmove on backdrop so iOS doesn't scroll the page behind the modal
+  useEffect(() => {
+    const el = modalBackdropRef.current;
+    if (!el) return;
+    const prevent = (e: TouchEvent) => e.preventDefault();
+    el.addEventListener('touchmove', prevent, { passive: false });
+    return () => el.removeEventListener('touchmove', prevent);
+  }, [showModal, showRegistryModal]);
   const [itemName, setItemName] = useState('');
   const [itemPrice, setItemPrice] = useState('');
   const [itemCategory, setItemCategory] = useState('Kitchen');
