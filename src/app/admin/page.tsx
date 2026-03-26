@@ -259,6 +259,13 @@ export default function AdminDashboard() {
     if (!loading) fetchParties();
   }, [selectedCampaign]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Lock body scroll while any modal is open (prevents background page scrolling on mobile)
+  useEffect(() => {
+    const isOpen = showModal || showRegistryModal;
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [showModal, showRegistryModal]);
+
   useEffect(() => {
     if (activeTab === 'registry' && registryItems.length === 0) {
       fetchRegistryItems();
@@ -1368,7 +1375,7 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <div className="p-6 space-y-4 overflow-y-auto flex-1 min-h-0">
+            <div className="p-6 space-y-4 overflow-y-auto flex-1 min-h-0 overscroll-contain">
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
                   Party Name *
