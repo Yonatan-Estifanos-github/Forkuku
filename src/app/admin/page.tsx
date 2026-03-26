@@ -143,7 +143,6 @@ function isUSPhone(phone: string | undefined): boolean {
 export default function AdminDashboard() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const modalBackdropRef = useRef<HTMLDivElement>(null);
   const countdown = useCountdown(WEDDING_DATE);
 
   // Tab State
@@ -188,14 +187,6 @@ export default function AdminDashboard() {
   const [showRegistryModal, setShowRegistryModal] = useState(false);
   const [editingItem, setEditingItem] = useState<RegistryItem | null>(null);
 
-  // Block touchmove on backdrop so iOS doesn't scroll the page behind the modal
-  useEffect(() => {
-    const el = modalBackdropRef.current;
-    if (!el) return;
-    const prevent = (e: TouchEvent) => e.preventDefault();
-    el.addEventListener('touchmove', prevent, { passive: false });
-    return () => el.removeEventListener('touchmove', prevent);
-  }, [showModal, showRegistryModal]);
   const [itemName, setItemName] = useState('');
   const [itemPrice, setItemPrice] = useState('');
   const [itemCategory, setItemCategory] = useState('Kitchen');
@@ -1386,7 +1377,7 @@ export default function AdminDashboard() {
 
       {/* Add/Edit Party Modal */}
       {showModal && (
-        <div ref={modalBackdropRef} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
             <div className="p-6 border-b border-gray-100 flex-shrink-0 flex items-center justify-between">
               <h2 className="font-serif text-2xl text-[#1B3B28]">
@@ -1401,7 +1392,7 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <div className="p-6 space-y-4 overflow-y-auto flex-1 min-h-0 overscroll-contain">
+            <div className="p-6 space-y-4 overflow-y-auto flex-1 min-h-0 overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
                   Party Name *
