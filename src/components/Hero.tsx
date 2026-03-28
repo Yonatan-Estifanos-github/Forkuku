@@ -351,135 +351,194 @@ const lineExpand = {
 // ============================================================================ 
 function HeroOverlay() {
   return (
-    <div className="absolute inset-0 z-20 pointer-events-none flex flex-col items-center h-full w-full">
-
+    <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between items-center h-full w-full">
       {/* Seamless Vignette Overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
             radial-gradient(ellipse 80% 60% at 50% 40%, transparent 0%, transparent 50%, rgba(10,9,8,0.3) 75%, rgba(10,9,8,0.7) 100%),
-            linear-gradient(to bottom, rgba(10,9,8,0.5) 0%, transparent 20%, transparent 55%, rgba(10,9,8,0.95) 100%)
+            linear-gradient(to bottom, rgba(10,9,8,0.4) 0%, transparent 15%, transparent 60%, rgba(10,9,8,0.95) 100%)
           `
         }}
       />
 
-      {/* ── MAIN CONTENT BLOCK — top-anchored, full width ── */}
+      {/* --- CENTER: DATE BLOCK --- */}
       <motion.div
         initial="hidden"
         animate="visible"
-        className="relative z-10 w-full flex flex-col items-center pt-[10vh] sm:pt-[12vh] px-6"
+        className="absolute inset-0 flex items-center justify-center z-10 pt-[30vh]"
       >
+        {/* Breathing container - activates after reveal */}
         <motion.div
           animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 3.5 }}
-          className="flex flex-col items-center w-full"
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 4 // Start breathing after reveal completes
+          }}
+          className="flex flex-col items-center gap-4"
         >
+            {/* Date Group */}
+          <div className="flex flex-col items-center">
+            <div className="overflow-hidden">
+              <motion.p
+                variants={maskReveal}
+                custom={2.2}
+                className="text-[#FFF5E6] tracking-[0.5em] text-sm sm:text-base md:text-lg font-bold uppercase mb-3 drop-shadow-lg"
+                style={{ textShadow: '0 4px 20px rgba(0,0,0,1)' }}
+              >
+                September
+              </motion.p>
+            </div>
 
-          {/* Scripture — constrained width so it reads as a stanza */}
-          <motion.p
-            variants={maskReveal}
-            custom={0.2}
-            className="font-serif italic text-[#FFF5E6]/75 text-sm sm:text-base md:text-[17px] text-center leading-relaxed mb-8 sm:mb-10"
-            style={{ maxWidth: '480px', textShadow: '0 2px 16px rgba(0,0,0,0.9)' }}
-          >
-            &ldquo;This is the day that the Lord has made;<br />
-            let us rejoice and be glad in it.&rdquo;
-            <span className="block mt-2 text-[#D4A845]/80 text-xs sm:text-sm tracking-[0.2em] not-italic">
-              — Psalm 118:24
-            </span>
-          </motion.p>
+            <div className="flex items-center gap-4 sm:gap-6">
+              <motion.div
+                variants={lineExpand}
+                custom={2.6}
+                className="w-12 sm:w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4A845]/60 origin-right"
+              />
+              <div className="overflow-hidden">
+                <motion.span
+                  variants={maskReveal}
+                  custom={2.4}
+                  className="gold-shimmer font-serif text-6xl sm:text-7xl md:text-8xl italic block"
+                >
+                  4
+                </motion.span>
+              </div>
+              <motion.div
+                variants={lineExpand}
+                custom={2.6}
+                className="w-12 sm:w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D4A845]/60 origin-left"
+              />
+            </div>
 
-          {/* YONATAN */}
-          <div className="overflow-hidden">
-            <motion.h1
-              variants={maskReveal}
-              custom={0.5}
-              className="gold-shimmer font-serif text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-[0.12em]"
-            >
-              Yonatan
-            </motion.h1>
+            <div className="overflow-hidden">
+              <motion.p
+                variants={maskReveal}
+                custom={2.5}
+                className="editorial-label text-[#FFF5E6]/80 tracking-[0.6em] text-xs sm:text-sm md:text-base font-light uppercase mt-3"
+              >
+                2026
+              </motion.p>
+            </div>
           </div>
 
-          {/* Ampersand */}
-          <motion.div
-            variants={fadeIn}
-            custom={1.4}
-            className="flex items-center gap-3 sm:gap-5 my-1 sm:my-2"
-          >
-            <motion.div
-              variants={lineExpand}
-              custom={1.5}
-              className="w-10 sm:w-16 md:w-24 h-[1px] bg-gradient-to-r from-transparent to-[#D4A845]/50 origin-right"
-            />
-            <span className="text-[#D4A845]/90 text-2xl sm:text-3xl md:text-4xl font-serif italic">&</span>
-            <motion.div
-              variants={lineExpand}
-              custom={1.5}
-              className="w-10 sm:w-16 md:w-24 h-[1px] bg-gradient-to-l from-transparent to-[#D4A845]/50 origin-left"
-            />
-          </motion.div>
-
-          {/* SARON */}
-          <div className="overflow-hidden">
-            <motion.h1
-              variants={maskReveal}
-              custom={0.8}
-              className="gold-shimmer font-serif text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-[0.12em]"
-            >
-              Saron
-            </motion.h1>
-          </div>
-
-          {/* Date + Location — single elegant horizontal line */}
-          <div className="overflow-hidden mt-6 sm:mt-8">
+          {/* Location - Editorial Typography */}
+          <div className="overflow-hidden mt-4">
             <motion.p
               variants={maskReveal}
-              custom={1.8}
-              className="editorial-label text-[#D4A845]/85 tracking-[0.35em] text-[10px] sm:text-xs md:text-sm font-light uppercase text-center"
-              style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}
+              custom={2.8}
+              className="editorial-label text-[#D4A845]/90 tracking-[0.4em] text-xs sm:text-sm md:text-base font-light uppercase"
             >
-              September 4, 2026&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Wrightsville, Pennsylvania
+              Wrightsville, Pennsylvania
             </motion.p>
           </div>
-
         </motion.div>
       </motion.div>
 
-      {/* ── SCROLL PROMPT — strictly bottom anchored ── */}
-      <div className="absolute bottom-12 flex flex-col items-center gap-4 w-full z-10">
-        <motion.div
-          variants={fadeIn}
-          initial="hidden"
-          animate="visible"
-          custom={3.2}
-          className="overflow-hidden"
-        >
-          <motion.p
-            animate={{ y: [0, 5, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="gold-shimmer tracking-[0.4em] text-xs sm:text-sm uppercase font-bold"
-          >
-            Scroll
-          </motion.p>
-        </motion.div>
+      {/* Shared Centerline Wrapper */}
+      <div className="relative w-full max-w-[92vw] md:max-w-3xl flex flex-col items-center h-full">
 
+        {/* --- TOP: NAMES BLOCK with Cinematic Reveal --- */}
         <motion.div
-          variants={fadeIn}
           initial="hidden"
           animate="visible"
-          custom={3.5}
-          className="pointer-events-none"
+          className="flex flex-col items-center mt-[15vh] sm:mt-[18vh]"
         >
+          {/* Breathing wrapper - activates after reveal */}
           <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ y: [0, -5, 0] }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 3.5
+            }}
+            className="flex flex-col items-center"
           >
-            <div className="w-[1px] h-12 bg-gradient-to-b from-[#D4A845]/60 to-transparent" />
+            {/* YONATAN - Masked Slide-Up Reveal with Gold Shimmer */}
+            <div className="overflow-hidden">
+              <motion.h1
+                variants={maskReveal}
+                custom={0.5}
+                className="gold-shimmer font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.15em]"
+              >
+                Yonatan
+              </motion.h1>
+            </div>
+
+            {/* Ampersand Divider */}
+            <motion.div
+              variants={fadeIn}
+              custom={1.4}
+              className="flex items-center gap-2 sm:gap-3 my-1 sm:my-2"
+            >
+              <motion.div
+                variants={lineExpand}
+                custom={1.5}
+                className="w-8 sm:w-12 md:w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4A845]/50 origin-right"
+              />
+              <span className="text-[#D4A845]/90 text-xl sm:text-2xl md:text-3xl font-serif italic">&</span>
+              <motion.div
+                variants={lineExpand}
+                custom={1.5}
+                className="w-8 sm:w-12 md:w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D4A845]/50 origin-left"
+              />
+            </motion.div>
+
+            {/* SARON - Masked Slide-Up Reveal with Gold Shimmer */}
+            <div className="overflow-hidden">
+              <motion.h1
+                variants={maskReveal}
+                custom={0.8}
+                className="gold-shimmer font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.15em]"
+              >
+                Saron
+              </motion.h1>
+            </div>
           </motion.div>
         </motion.div>
-      </div>
 
+        {/* --- BOTTOM: SCROLL PROMPT --- */}
+        <div className="absolute bottom-12 flex flex-col items-center gap-4 w-full">
+          {/* SCROLL Text */}
+          <motion.div
+            variants={fadeIn}
+            initial="hidden"
+            animate="visible"
+            custom={3.2}
+            className="overflow-hidden"
+          >
+             <motion.p
+              animate={{ y: [0, 5, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="gold-shimmer tracking-[0.4em] text-xs sm:text-sm uppercase font-bold"
+            >
+              Scroll
+            </motion.p>
+          </motion.div>
+
+          {/* Vertical Line */}
+          <motion.div
+            variants={fadeIn}
+            initial="hidden"
+            animate="visible"
+            custom={3.5}
+            className="pointer-events-none"
+          >
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              className="flex flex-col items-center"
+            >
+              <div className="w-[1px] h-12 bg-gradient-to-b from-[#D4A845]/60 to-transparent" />
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
     </div>
   );
 }
