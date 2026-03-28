@@ -437,15 +437,6 @@ function HeroOverlay() {
             </motion.p>
           </div>
 
-          {/* Scripture */}
-          <motion.p
-            variants={maskReveal}
-            custom={3.1}
-            className="font-serif italic text-[#FFF5E6]/60 text-xs sm:text-sm mt-6 tracking-wide leading-relaxed"
-            style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}
-          >
-            &ldquo;This is the day that the Lord has made&rdquo; — Ps. 118:24
-          </motion.p>
         </motion.div>
       </motion.div>
 
@@ -469,6 +460,23 @@ function HeroOverlay() {
             }}
             className="flex flex-col items-center"
           >
+            {/* Scripture — above the names */}
+            <motion.p
+              variants={maskReveal}
+              custom={0.2}
+              className="font-serif italic text-[#FFF5E6]/75 text-sm sm:text-base md:text-lg text-center leading-relaxed mb-8 sm:mb-10 px-4"
+              style={{
+                maxWidth: '480px',
+                textShadow: '0 2px 16px rgba(0,0,0,0.9)',
+              }}
+            >
+              &ldquo;This is the day that the Lord has made;<br />
+              let us rejoice and be glad in it.&rdquo;
+              <span className="block mt-2 text-[#D4A845]/80 text-xs sm:text-sm tracking-[0.2em] not-italic">
+                — Psalm 118:24
+              </span>
+            </motion.p>
+
             {/* YONATAN - Masked Slide-Up Reveal with Gold Shimmer */}
             <div className="overflow-hidden">
               <motion.h1
