@@ -10,6 +10,7 @@ import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { motion } from 'framer-motion';
 import Preloader from './Preloader';
+import { useLanguage } from '@/context/LanguageContext';
 
 // Slideshow images
 const SLIDESHOW_IMAGES = [
@@ -350,6 +351,7 @@ const lineExpand = {
 // HERO OVERLAY - Cinematic Luxury Design
 // ============================================================================ 
 function HeroOverlay() {
+  const { t } = useLanguage();
   return (
     <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between items-center h-full w-full">
       {/* Seamless Vignette Overlay */}
@@ -517,7 +519,7 @@ function HeroOverlay() {
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               className="gold-shimmer tracking-[0.4em] text-xs sm:text-sm uppercase font-bold"
             >
-              Scroll
+              {t('hero.scroll')}
             </motion.p>
           </motion.div>
 

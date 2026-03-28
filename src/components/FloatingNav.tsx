@@ -3,19 +3,21 @@
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
-const NAV_ITEMS = [
-  { label: 'Home',    href: '/',               icon: HomeIcon,    sectionId: 'home' },
-  { label: 'Story',   href: '/#story',          icon: BookIcon,    sectionId: 'story' },
-  { label: 'Venue',   href: '/#venue',          icon: MapPinIcon,  sectionId: 'venue' },
-  { label: 'Party',   href: '/#wedding-party',  icon: PeopleIcon,  sectionId: 'wedding-party' },
-  { label: 'RSVP',   href: '/#rsvp',           icon: EnvelopeIcon, sectionId: 'rsvp' },
-  { label: 'Registry', href: '/#registry',      icon: GiftIcon,    sectionId: 'registry' },
+const NAV_KEYS = [
+  { key: 'home',     href: '/',               icon: HomeIcon,    sectionId: 'home' },
+  { key: 'story',    href: '/#story',          icon: BookIcon,    sectionId: 'story' },
+  { key: 'venue',    href: '/#venue',          icon: MapPinIcon,  sectionId: 'venue' },
+  { key: 'party',    href: '/#wedding-party',  icon: PeopleIcon,  sectionId: 'wedding-party' },
+  { key: 'rsvp',    href: '/#rsvp',           icon: EnvelopeIcon, sectionId: 'rsvp' },
+  { key: 'registry', href: '/#registry',      icon: GiftIcon,    sectionId: 'registry' },
 ];
 
 export default function FloatingNav() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string>('home');
+  const { t, language } = useLanguage();
 
   // Track which section is in view on the home page.
   // Scroll-based midpoint detection is more reliable than IntersectionObserver
@@ -98,17 +100,18 @@ export default function FloatingNav() {
       aria-label="Main navigation"
     >
       <div className="flex items-center gap-0 sm:gap-1 rounded-full border border-white/10 bg-black/50 backdrop-blur-md px-1.5 sm:px-4 py-1.5 transition-all">
-        {NAV_ITEMS.map(({ label, href, icon: Icon, sectionId }) => {
+        {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }) => {
           const active = isActive(href, sectionId);
+          const label = t(`nav.${key}`);
           return (
             <a
-              key={label}
+              key={key}
               href={href}
               onClick={(e) => handleClick(e, href)}
               aria-current={active ? 'page' : undefined}
-              className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full font-serif text-[9px] sm:text-sm transition-colors duration-300 hover:text-[#D4A845] ${
+              className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-[9px] sm:text-sm transition-colors duration-300 hover:text-[#D4A845] ${
                 active ? 'text-[#D4A845]' : 'text-white'
-              }`}
+              } ${language === 'am' ? 'font-ethiopic' : 'font-serif'}`}
             >
               <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
               <span>{label}</span>
