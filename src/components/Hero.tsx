@@ -436,6 +436,16 @@ function HeroOverlay() {
               Wrightsville, Pennsylvania
             </motion.p>
           </div>
+
+          {/* Scripture */}
+          <motion.p
+            variants={maskReveal}
+            custom={3.1}
+            className="font-serif italic text-[#FFF5E6]/60 text-xs sm:text-sm mt-6 tracking-wide leading-relaxed"
+            style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}
+          >
+            &ldquo;This is the day that the Lord has made&rdquo; — Ps. 118:24
+          </motion.p>
         </motion.div>
       </motion.div>
 
