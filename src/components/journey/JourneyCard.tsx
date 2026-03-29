@@ -11,55 +11,55 @@ interface JourneyCardProps {
   index: number;
 }
 
-function PromptBlock({
+// ── Dual-POV parser ──────────────────────────────────────────────────────────
+// Splits text on [Yoni] and [Saron] tags and renders them in distinct gold styles.
+function ParsedDescription({
   text,
+  alignEnd,
   isAmharic,
 }: {
   text: string;
+  alignEnd: boolean;
   isAmharic: boolean;
 }) {
-  const prompt = text.startsWith('[Yoni]')
-    ? (isAmharic ? 'ዮኒ:' : 'yoni:')
-    : (isAmharic ? 'ሳሮን:' : 'saron:');
-  const body = text.replace(/^\[(?:Yoni|Saron)\]\s*/, '');
+  const parts = text.split(/(\[(?:Yoni|Saron)\])/g);
 
   return (
-    <div className="pl-4">
-      <p className="font-mono text-sm text-wedding-gold">{prompt}</p>
-      <p className={`mt-2 text-sm leading-relaxed text-white/62 md:text-[15px] md:leading-7 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
-        {body}
-      </p>
-    </div>
-  );
-}
-
-function ParsedDescription({ text, isAmharic }: { text: string; isAmharic: boolean }) {
-  const segments = text
-    .split(/(?=\[(?:Yoni|Saron)\])/g)
-    .map((segment) => segment.trim())
-    .filter(Boolean);
-
-  return (
-    <div className="space-y-5">
-      {segments.map((segment, i) => {
-        if (segment.startsWith('[Yoni]') || segment.startsWith('[Saron]')) {
-          return <PromptBlock key={i} text={segment} isAmharic={isAmharic} />;
+    <p
+      className={`text-sm text-white/55 leading-relaxed max-w-[280px] ${
+        isAmharic ? 'font-ethiopic' : 'font-sans'
+      } ${alignEnd ? 'md:text-right' : ''}`}
+    >
+      {parts.map((part, i) => {
+        if (part === '[Yoni]') {
+          return (
+            <span
+              key={i}
+              className="font-semibold tracking-wide"
+              style={{ color: '#D4A845' }}
+            >
+              {isAmharic ? 'ዮኒ › ' : 'Yoni › '}
+            </span>
+          );
         }
-
-        return (
-          <p
-            key={i}
-            className={`pl-4 text-sm leading-relaxed text-white/62 md:text-[15px] md:leading-7 ${
-              isAmharic ? 'font-ethiopic' : 'font-sans'
-            }`}
-          >
-            {segment}
-          </p>
-        );
+        if (part === '[Saron]') {
+          return (
+            <span
+              key={i}
+              className="font-semibold tracking-wide"
+              style={{ color: '#c8a060' }}
+            >
+              {isAmharic ? 'ሳሮን › ' : 'Saron › '}
+            </span>
+          );
+        }
+        return <span key={i}>{part}</span>;
       })}
-    </div>
+    </p>
   );
 }
+
+// ────────────────────────────────────────────────────────────────────────────
 
 export default function JourneyCard({ item, index }: JourneyCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -72,7 +72,6 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
   const displayTitle = isAmharic ? (item.amTitle ?? item.title) : item.title;
   const displayDescription = isAmharic ? (item.amDescription ?? item.description) : item.description;
   const displayCallout = isAmharic ? (item.amCallout ?? item.callout) : item.callout;
-  const lineNumbers = ['01', '02', '03', ...(displayCallout ? ['04'] : [])];
 
   // Per-card scroll: drives image parallax within the museum frame
   const { scrollYProgress } = useScroll({
@@ -184,43 +183,33 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
               : { opacity: 0, filter: 'blur(10px)', x: isLeft ? 30 : -30 }
           }
           transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-          className={`w-full max-w-[380px] ${!isLeft ? 'md:self-end' : ''}`}
+          className={`flex flex-col ${!isLeft ? 'md:items-end md:text-right' : 'items-start'}`}
         >
-          <div className="flex gap-4 border-l border-white/10 pl-4 md:pl-5">
-            <div className="select-none pt-0.5 font-mono text-[11px] leading-8 text-white/20">
-              {lineNumbers.map((line) => (
-                <div key={line}>{line}</div>
-              ))}
-            </div>
+          {/* Year label */}
+          <p className={`text-wedding-gold/60 uppercase tracking-[0.4em] text-xs mb-3 ${isAmharic ? 'font-ethiopic not-italic normal-case tracking-normal' : 'font-sans'}`}>
+            {displayYear}
+          </p>
 
-            <div className="flex-1 space-y-5">
-              <p className="font-mono text-xs italic text-wedding-gold/58">
-                {`// ${displayYear}`}
-              </p>
+          {/* Milestone title */}
+          <h3 className={`text-2xl md:text-3xl text-white mb-3 leading-tight ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+            {displayTitle}
+          </h3>
 
-              <div className="leading-tight">
-                <span className="font-mono text-sm text-white/40">const chapter = </span>
-                <span className={`text-2xl text-wedding-gold md:text-3xl ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
-                  &quot;{displayTitle}&quot;
-                </span>
-                <span className="font-mono text-sm text-white/40">;</span>
-              </div>
+          {/* Gold accent line */}
+          <div className={`w-8 h-[1px] bg-wedding-gold/40 mb-4 ${!isLeft ? 'md:ml-auto' : ''}`} />
 
-              <ParsedDescription text={displayDescription} isAmharic={isAmharic} />
+          {/* Description with dual-POV styling */}
+          <ParsedDescription text={displayDescription} alignEnd={!isLeft} isAmharic={isAmharic} />
 
-              {displayCallout && (
-                <a
-                  href="#home"
-                  className={`inline-flex w-fit items-center gap-3 pl-4 text-xs text-wedding-gold/60 transition-colors hover:text-wedding-gold ${
-                    isAmharic ? 'font-ethiopic' : 'font-mono'
-                  }`}
-                >
-                  <span className="h-px w-6 bg-current/60" />
-                  <span>{displayCallout}</span>
-                </a>
-              )}
-            </div>
-          </div>
+          {/* Optional callout — e.g. pointer to another section */}
+          {displayCallout && (
+            <a
+              href="#home"
+              className={`mt-4 inline-block text-xs text-wedding-gold/60 hover:text-wedding-gold tracking-wide italic transition-colors ${!isLeft ? 'md:self-end' : ''} ${isAmharic ? 'font-ethiopic not-italic' : 'font-sans'}`}
+            >
+              {displayCallout}
+            </a>
+          )}
         </motion.div>
       </div>
     </div>
