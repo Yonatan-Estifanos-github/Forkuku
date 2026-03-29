@@ -66,7 +66,7 @@ export default function FloatingNav() {
       className="fixed bottom-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
       aria-label="Main navigation"
     >
-      <div className="pointer-events-auto flex items-center gap-4 sm:gap-6 rounded-3xl bg-black/50 backdrop-blur-md border border-white/10 px-6 py-3 max-w-full overflow-x-auto scrollbar-hide">
+      <div className="pointer-events-auto flex items-center gap-2 sm:gap-4 rounded-3xl bg-black/50 backdrop-blur-md border border-white/10 px-3 sm:px-6 py-3 max-w-full overflow-x-auto scrollbar-hide">
 
         {/* Nav items */}
         {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }) => {
@@ -78,7 +78,7 @@ export default function FloatingNav() {
               href={href}
               onClick={(e) => handleClick(e, href)}
               aria-current={active ? 'page' : undefined}
-              className={`flex flex-col items-center justify-center gap-1.5 shrink-0 transition-colors duration-300 ${
+              className={`flex flex-col items-center justify-center gap-1 sm:gap-1.5 shrink-0 transition-colors duration-300 ${
                 active ? 'text-[#D4A845]' : 'text-white/50 hover:text-white/90'
               } ${language === 'am' ? 'font-ethiopic' : 'font-sans'}`}
             >
