@@ -8,9 +8,10 @@ import Papa from 'papaparse';
 
 // Types
 interface Guest {
-  id: number;
+  id: string;
   name?: string;
   is_attending: boolean;
+  dietary_notes?: string;
 }
 
 interface CampaignLog {
@@ -20,7 +21,7 @@ interface CampaignLog {
 }
 
 interface Party {
-  id: number;
+  id: string;
   party_name: string;
   status: string;
   emails: string[];
@@ -28,6 +29,7 @@ interface Party {
   admin_notes?: string;
   updated_at?: string;
   family_side?: 'bride' | 'groom' | null;
+  has_responded: boolean;
   guests: Guest[];
   campaign_logs: CampaignLog[];
 }
@@ -42,7 +44,7 @@ interface DashboardStats {
 
 // Extended guest type for editing (includes optional id for new guests)
 interface EditableGuest {
-  id?: number;
+  id?: string;
   name: string;
 }
 
@@ -151,9 +153,9 @@ export default function AdminDashboard() {
 
   const [parties, setParties] = useState<Party[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sendingId, setSendingId] = useState<number | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [expandedPartyId, setExpandedPartyId] = useState<number | null>(null);
+  const [sendingId, setSendingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [expandedPartyId, setExpandedPartyId] = useState<string | null>(null);
   const [selectedCampaign, setSelectedCampaign] = useState<CampaignId>('formal-invitation');
   const [stats, setStats] = useState<DashboardStats>({
     totalParties: 0,
@@ -293,7 +295,7 @@ export default function AdminDashboard() {
     router.push('/admin/login');
   };
 
-  const handleSendNotification = async (partyId: number) => {
+  const handleSendNotification = async (partyId: string) => {
     const party = parties.find(p => p.id === partyId);
     const campaignLabel = CAMPAIGNS.find(c => c.id === selectedCampaign)?.label || selectedCampaign;
     const confirmed = window.confirm(
