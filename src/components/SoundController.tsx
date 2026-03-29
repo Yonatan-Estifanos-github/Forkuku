@@ -79,7 +79,7 @@ export default function SoundController() {
     }
   };
 
-  const utilityPillClass = 'h-10 px-4 rounded-full flex items-center justify-center bg-black/20 backdrop-blur-md border border-white/10 text-[10px] uppercase tracking-widest text-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.18)]';
+  const utilityPillClass = 'h-9 px-2.5 sm:h-10 sm:px-4 rounded-full flex items-center justify-center bg-black/20 backdrop-blur-md border border-white/10 text-[8px] sm:text-[10px] uppercase tracking-[0.22em] sm:tracking-widest text-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.18)]';
   const inlineCountdown = `${formatNumber(timeRemaining.days)}D : ${formatNumber(timeRemaining.hours)}H : ${formatNumber(timeRemaining.minutes)}M : ${formatNumber(timeRemaining.seconds)}S`;
 
   return (
@@ -92,9 +92,9 @@ export default function SoundController() {
         autoPlay={false}
       />
 
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-2">
+      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-1.5 sm:gap-2">
         <div
-          className={`${utilityPillClass} min-w-0 flex-1 justify-start sm:flex-none ${
+          className={`${utilityPillClass} min-w-[74px] px-2 text-[7px] tracking-[0.16em] shrink-0 justify-center sm:min-w-0 sm:px-4 sm:text-[10px] sm:tracking-widest sm:flex-none ${
             language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'
           }`}
         >
@@ -108,7 +108,7 @@ export default function SoundController() {
           >
             EN
           </button>
-          <span className="mx-2 text-white/35">|</span>
+          <span className="mx-1 text-white/35 sm:mx-2">|</span>
           <button
             onClick={() => setLanguage('am')}
             className={`transition-colors duration-300 ${
@@ -123,11 +123,11 @@ export default function SoundController() {
 
         {mounted && (
           <div
-            className={`${utilityPillClass} countdown-container min-w-0 flex-1 ${
+            className={`${utilityPillClass} countdown-container min-w-0 flex-[1.9] px-3 sm:flex-1 sm:px-4 ${
               language === 'am' ? 'font-ethiopic normal-case tracking-normal text-[11px]' : 'font-sans'
             }`}
           >
-            <span className="truncate text-center tabular-nums">
+            <span className="whitespace-nowrap text-center tabular-nums">
               {timeRemaining.isComplete ? '00D : 00H : 00M : 00S' : inlineCountdown}
             </span>
           </div>
@@ -135,13 +135,13 @@ export default function SoundController() {
 
         <button
           onClick={toggleAudio}
-          className={`${utilityPillClass} min-w-0 flex-1 gap-2 transition-colors duration-300 hover:bg-black/30 sm:flex-none ${
+          className={`${utilityPillClass} min-w-0 shrink-0 gap-1.5 sm:gap-2 transition-colors duration-300 hover:bg-black/30 sm:flex-none ${
             language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'
           }`}
           aria-label={isPlaying ? 'Mute music' : 'Unmute music'}
           aria-pressed={isPlaying}
-          >
-            <div className="flex h-4 items-end justify-center gap-[3px] text-[#D4A845]">
+        >
+          <div className="flex h-4 items-end justify-center gap-[3px] text-[#D4A845]">
             {[0, 1, 2, 3].map((i) => (
               <div
                 key={i}
@@ -151,7 +151,7 @@ export default function SoundController() {
               />
             ))}
           </div>
-          <span className="truncate">{t('hero.utilityMusic')}</span>
+          <span className="hidden whitespace-nowrap sm:inline">{t('hero.utilityMusic')}</span>
         </button>
       </div>
     </div>
