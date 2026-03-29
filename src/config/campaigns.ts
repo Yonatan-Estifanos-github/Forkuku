@@ -1,4 +1,5 @@
 export type CampaignId =
+  | 'save-the-date'
   | 'formal-invitation'
   | 'rsvp-reminder'
   | 'logistics-update'
@@ -14,6 +15,13 @@ export interface Campaign {
 }
 
 export const CAMPAIGNS: Campaign[] = [
+  {
+    id: 'save-the-date',
+    label: 'Save the Date',
+    smsBody: 'Save the Date! Yonatan & Saron are getting married on Sept 4, 2026. Details at theestifanos.com',
+    emailTemplate: 'SaveTheDate',
+    priority: 'both',
+  },
   {
     id: 'formal-invitation',
     label: 'Formal Invitation',
