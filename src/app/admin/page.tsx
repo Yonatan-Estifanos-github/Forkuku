@@ -343,6 +343,43 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleResetParty = async (party: Party) => {
+    const confirmed = window.confirm(
+      `Reset all campaign logs and RSVP status for "${party.party_name}"? This allows you to test sending again.`
+    );
+    if (!confirmed) return;
+
+    try {
+      // 1. Delete campaign logs
+      await supabase.from('campaign_logs').delete().eq('party_id', party.id);
+
+      // 2. Reset party status
+      await supabase
+        .from('parties')
+        .update({
+          status: 'pending',
+          has_responded: false,
+          admin_notes: null
+        })
+        .eq('id', party.id);
+
+      // 3. Reset guest attendance
+      await supabase
+        .from('guests')
+        .update({
+          is_attending: false,
+          dietary_notes: null
+        })
+        .eq('party_id', party.id);
+
+      await fetchParties();
+      alert('Party has been reset for testing.');
+    } catch (err) {
+      console.error('Reset error:', err);
+      alert('Failed to reset party');
+    }
+  };
+
   // ============================================
   // DELETE PARTY
   // ============================================
@@ -1121,7 +1158,12 @@ export default function AdminDashboard() {
                                   {isExpanded ? '▼' : '▶'}
                                 </button>
                                 <div className="flex flex-col gap-1.5">
-                                  {party.party_name}
+                                  <div className="flex items-center gap-2">
+                                    {party.party_name}
+                                    {party.party_name.includes('(TEST)') && (
+                                      <span className="bg-blue-100 text-blue-700 text-[10px] font-bold px-1.5 py-0.5 rounded">TEST</span>
+                                    )}
+                                  </div>
                                   <div className="flex gap-1">
                                     <button
                                       onClick={() => handleFamilySideChange(party, 'bride')}
@@ -1228,6 +1270,15 @@ export default function AdminDashboard() {
                             </td>
                             <td className="p-4 text-right">
                               <div className="flex items-center justify-end gap-2">
+                                {/* Reset Button */}
+                                <button
+                                  onClick={() => handleResetParty(party)}
+                                  className="text-gray-400 hover:text-blue-500 transition-colors text-lg"
+                                  title="Reset Logs & RSVP"
+                                >
+                                  🔄
+                                </button>
+
                                 {/* Edit Button */}
                                 <button
                                   onClick={() => openEditModal(party)}
