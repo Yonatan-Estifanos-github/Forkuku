@@ -99,8 +99,8 @@ export default function FloatingNav() {
       className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-8 pb-[max(2rem,env(safe-area-inset-bottom))]"
       aria-label="Main navigation"
     >
-      <div className="w-full max-w-[calc(100vw-2rem)] overflow-x-auto scrollbar-hide rounded-full border border-white/10 bg-black/50 px-1 py-1.5 backdrop-blur-md transition-all sm:w-auto sm:max-w-full sm:px-1.5">
-        <div className="flex min-w-max items-center gap-0 sm:gap-1 sm:px-2">
+      <div className="mx-auto w-fit max-w-[calc(100vw-2rem)] overflow-x-auto scrollbar-hide rounded-full border border-white/10 bg-black/50 px-1 py-1.5 backdrop-blur-md transition-all sm:max-w-full sm:px-1.5">
+        <div className="mx-auto flex min-w-max justify-center items-center gap-0 sm:gap-1 sm:px-2">
           {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }) => {
             const active = isActive(href, sectionId);
             const label = t(`nav.${key}`);
