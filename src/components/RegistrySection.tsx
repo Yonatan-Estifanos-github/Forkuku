@@ -229,6 +229,7 @@ export default function RegistrySection() {
                   {/* Image */}
                   <div className="aspect-square bg-white/5 relative overflow-hidden">
                     {item.image_url ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
                       <img
                         src={item.image_url}
                         alt={item.name}
@@ -292,6 +293,7 @@ export default function RegistrySection() {
                   >
                     <div className="aspect-square bg-white/5 relative">
                       {item.image_url ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
                         <img
                           src={item.image_url}
                           alt={item.name}
@@ -534,6 +536,7 @@ export default function RegistrySection() {
                 {/* Item confirmation */}
                 <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6 flex items-center gap-4">
                   {selectedItem.image_url && (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img
                       src={selectedItem.image_url}
                       alt={selectedItem.name}

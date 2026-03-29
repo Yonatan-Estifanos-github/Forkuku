@@ -5,9 +5,11 @@ import * as React from 'react';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getCampaign } from '@/config/campaigns';
 import { FormalInvite } from '@/emails/FormalInvite';
+import { SaveTheDate } from '@/emails/SaveTheDate';
 import { GenericTemplate } from '@/emails/GenericTemplate';
 
 const SUBJECTS: Record<string, string> = {
+  'save-the-date':       'Save the Date — Yonatan & Saron · September 4, 2026',
   'formal-invitation':   'You are invited to the wedding of Yonatan & Saron',
   'rsvp-reminder':       'Reminder: RSVP by June 1st — Yonatan & Saron',
   'logistics-update':    'Wedding Week Details — Yonatan & Saron',
@@ -84,6 +86,8 @@ export async function POST(req: Request) {
 
       if (campaign.emailTemplate === 'FormalInvite') {
         html = await render(React.createElement(FormalInvite, { guestName }));
+      } else if (campaign.emailTemplate === 'SaveTheDate') {
+        html = await render(React.createElement(SaveTheDate, { guestName }));
       } else {
         const content = GENERIC_CONTENT[campaignId] || {
           heading: 'Update from Yonatan & Saron',

@@ -34,6 +34,8 @@
     "verifying": "በማረጋገጥ ላይ...",
     "incorrectPassword": "የይለፍ ቃሉ ትክክል አይደለም",
     "somethingWentWrong": "ችግር ተፈጥሯል። እንደገና ይሞክሩ።",
+    "vipPasswordFilled": "የእርስዎ ልዩ የይለፍ ቃል አስቀድሞ ተሞልቷል።",
+    "vipClickLogin": "ለመቀጠል በቀላሉ 'ይግቡ' የሚለውን ይጫኑ።",
     "privacyPolicy": "የግላዊነት ፖሊሲ እና የአገልግሎት ውል"
   },
   "nav": {
