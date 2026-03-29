@@ -28,8 +28,22 @@ const notoEthiopic = Noto_Sans_Ethiopic({
 });
 
 export const metadata: Metadata = {
-  title: "Estifanos Wedding",
-  description: "Wedding celebration website",
+  metadataBase: new URL('https://forkuku.vercel.app'),
+  title: "Yonatan & Saron — September 4, 2026",
+  description: "The wedding of Yonatan & Saron · September 4, 2026 · Wrightsville, Pennsylvania.",
+  openGraph: {
+    type: 'website',
+    title: "Yonatan & Saron — September 4, 2026",
+    description: "The wedding of Yonatan & Saron · September 4, 2026 · Wrightsville, Pennsylvania.",
+    images: [
+      {
+        url: 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_3.jpeg',
+        width: 1200,
+        height: 630,
+        alt: 'Yonatan & Saron',
+      },
+    ],
+  },
 };
 
 export const viewport = {
