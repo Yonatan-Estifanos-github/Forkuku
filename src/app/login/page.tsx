@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useLanguage, type Language } from '@/context/LanguageContext';
@@ -19,11 +19,26 @@ const fadeIn = (delay: number) => ({
   transition: { duration: 1.0, delay, ease },
 });
 
+const MUSIC_SRC = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/amlake-keberlnge.mp3';
+
 export default function SiteLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [musicOn, setMusicOn] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const { language, setLanguage, t } = useLanguage();
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    if (musicOn) {
+      audioRef.current.muted = false;
+      audioRef.current.volume = 0.7;
+      audioRef.current.play().catch(() => {});
+    } else {
+      audioRef.current.pause();
+    }
+  }, [musicOn]);
 
   // Auto-fill password from long-lived cookie so returning guests just hit Enter
   useEffect(() => {
@@ -47,6 +62,7 @@ export default function SiteLoginPage() {
       });
 
       if (response.ok) {
+        sessionStorage.setItem('wedding-music-pref', musicOn ? 'on' : 'off');
         window.location.href = '/';
       } else {
         setError(t('login.incorrectPassword'));
@@ -62,6 +78,7 @@ export default function SiteLoginPage() {
 
   return (
     <div className="min-h-[100dvh] bg-[#0a0908] flex items-center justify-center px-6">
+      <audio ref={audioRef} src={MUSIC_SRC} loop muted />
 
       {/* ── Centered focal content ───────────────────────────────── */}
       <div className="flex flex-col items-center gap-10 w-full max-w-xs sm:max-w-sm">
@@ -123,6 +140,25 @@ export default function SiteLoginPage() {
             className={`border border-[#D4A845] text-[#D4A845] bg-transparent hover:bg-[#D4A845]/10 px-12 py-3 rounded-full tracking-widest text-[10px] sm:text-xs uppercase transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
           >
             {loading ? t('login.verifying') : t('login.enter')}
+          </button>
+
+          {/* Music toggle */}
+          <button
+            type="button"
+            onClick={() => setMusicOn(v => !v)}
+            className={`flex items-center gap-2 transition-colors duration-300 ${musicOn ? 'text-[#D4A845]' : 'text-white/30 hover:text-white/60'}`}
+          >
+            <div className="flex items-end gap-[3px] h-3">
+              {[0, 1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className={`w-[2px] rounded-full bg-current transition-all duration-300 ${musicOn ? 'bar-playing' : 'h-[3px]'}`}
+                />
+              ))}
+            </div>
+            <span className={`text-[10px] tracking-widest uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
+              {musicOn ? t('login.worshipping') : t('login.worshipWithUs')}
+            </span>
           </button>
         </motion.form>
 
