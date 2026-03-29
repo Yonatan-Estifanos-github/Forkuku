@@ -35,12 +35,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Require both: a valid long-lived auth token AND a session cookie set when
-  // the user came through the login page this browser session. This ensures
-  // every new browser session always shows the "Before you enter" screen.
-  const sessionEntered = request.cookies.get('site-session-entered')?.value;
-  if (accessToken === sitePassword && sessionEntered === '1') {
-    return NextResponse.next();
+  // Require a valid saved password cookie plus a one-time grant from the
+  // login page. The grant is consumed on the first protected page load so a
+  // browser refresh sends the guest back through the intro screen.
+  const entryGranted = request.cookies.get('site-entry-granted')?.value;
+  if (accessToken === sitePassword && entryGranted === '1') {
+    const response = NextResponse.next();
+    response.cookies.delete('site-entry-granted');
+    return response;
   }
 
   // Redirect to login page
