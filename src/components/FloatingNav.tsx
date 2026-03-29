@@ -59,14 +59,16 @@ export default function FloatingNav() {
   };
 
   return (
-    <div className="fixed right-2 sm:right-6 top-1/2 -translate-y-1/2 z-50">
-      <motion.nav
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1, delay: 2.5, ease: 'easeOut' }}
-        aria-label="Main navigation"
-        className="flex flex-col items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-full border border-white/10 bg-black/20 backdrop-blur-md"
-      >
+    <motion.nav
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1, delay: 2.5, ease: 'easeOut' }}
+      className="fixed bottom-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
+      aria-label="Main navigation"
+    >
+      <div className="pointer-events-auto flex items-center gap-4 sm:gap-6 rounded-3xl bg-black/50 backdrop-blur-md border border-white/10 px-6 py-3 max-w-full overflow-x-auto scrollbar-hide">
+
+        {/* Nav items */}
         {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }) => {
           const active = activeSection === sectionId;
           const label = t(`nav.${key}`);
@@ -76,16 +78,12 @@ export default function FloatingNav() {
               href={href}
               onClick={(e) => handleClick(e, href)}
               aria-current={active ? 'page' : undefined}
-              title={label}
-              className={`relative flex flex-col items-center gap-0.5 px-1 py-0.5 rounded-full transition-colors duration-300 ${
-                active ? 'text-[#D4A845]' : 'text-white/40 hover:text-white/80'
+              className={`flex flex-col items-center justify-center gap-1.5 shrink-0 transition-colors duration-300 ${
+                active ? 'text-[#D4A845]' : 'text-white/50 hover:text-white/90'
               } ${language === 'am' ? 'font-ethiopic' : 'font-sans'}`}
             >
-              {active && (
-                <span className="absolute -left-1 top-1/2 -translate-y-1/2 w-[3px] h-[3px] rounded-full bg-[#D4A845] shadow-[0_0_4px_#D4A845]" />
-              )}
-              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-              <span className={`text-[7px] sm:text-[8px] uppercase tracking-widest leading-none whitespace-nowrap ${language === 'am' ? 'normal-case tracking-normal' : ''}`}>
+              <Icon className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
+              <span className={`text-[9px] sm:text-[10px] uppercase whitespace-nowrap leading-none ${language === 'am' ? 'normal-case' : 'tracking-widest'}`}>
                 {label}
               </span>
             </a>
@@ -93,32 +91,32 @@ export default function FloatingNav() {
         })}
 
         {/* Divider */}
-        <span className="w-4 h-px bg-white/10" />
+        <span className="h-8 w-px bg-white/10 shrink-0" />
 
         {/* Language switcher */}
-        <div className="flex items-center gap-1">
+        <div className="flex flex-col items-center gap-1.5 shrink-0">
           <button
             onClick={() => setLanguage('en')}
             aria-pressed={language === 'en'}
-            className={`text-[8px] font-sans tracking-widest uppercase transition-colors duration-200 ${
-              language === 'en' ? 'text-[#D4A845]' : 'text-white/30 hover:text-white/70'
+            className={`text-[9px] font-sans tracking-widest uppercase transition-colors duration-200 leading-none ${
+              language === 'en' ? 'text-[#D4A845]' : 'text-white/35 hover:text-white/70'
             }`}
           >
             EN
           </button>
-          <span className="text-white/15 text-[8px]">|</span>
           <button
             onClick={() => setLanguage('am')}
             aria-pressed={language === 'am'}
-            className={`text-[8px] font-ethiopic transition-colors duration-200 ${
-              language === 'am' ? 'text-[#D4A845]' : 'text-white/30 hover:text-white/70'
+            className={`text-[9px] font-ethiopic transition-colors duration-200 leading-none ${
+              language === 'am' ? 'text-[#D4A845]' : 'text-white/35 hover:text-white/70'
             }`}
           >
             አማ
           </button>
         </div>
-      </motion.nav>
-    </div>
+
+      </div>
+    </motion.nav>
   );
 }
 
