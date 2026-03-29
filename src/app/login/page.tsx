@@ -29,6 +29,7 @@ function SiteLoginPageInner() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
+  const [isVip, setIsVip] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { language, setLanguage, t } = useLanguage();
   const searchParams = useSearchParams();
@@ -53,46 +54,32 @@ function SiteLoginPageInner() {
     if (saved) setPassword(decodeURIComponent(saved));
   }, []);
 
-  // Magic link: auto-login when ?pwd=Matthew19:6 is present
+  // Magic link: pre-fill password when ?pwd=Matthew19:6 is present
   useEffect(() => {
     const pwd = searchParams.get('pwd');
     const partyId = searchParams.get('partyId');
-    if (pwd !== MAGIC_PASSWORD) return;
+    if (pwd === MAGIC_PASSWORD) {
+      setPassword(MAGIC_PASSWORD);
+      setIsVip(true);
 
-    setLoading(true);
-
-    const run = async () => {
-      try {
-        const res = await fetch('/api/auth/site-login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: MAGIC_PASSWORD }),
-        });
-        if (!res.ok) { setLoading(false); return; }
-
-        // If a partyId is in the URL, track the click and drop the VIP cookie
-        if (partyId) {
+      // If a partyId is in the URL, track the click and drop the VIP cookie
+      if (partyId) {
+        const runTracking = async () => {
           try {
             await fetch('/api/rsvp/track-click', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ partyId }),
             });
-          } catch { /* non-critical — proceed regardless */ }
+          } catch { /* non-critical */ }
 
           const expires = new Date();
           expires.setDate(expires.getDate() + 90);
           document.cookie = `vip_party_id=${encodeURIComponent(partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
-        }
-
-        sessionStorage.setItem('wedding-music-pref', musicOn ? 'on' : 'off');
-        window.location.href = '/';
-      } catch {
-        setLoading(false);
+        };
+        runTracking();
       }
-    };
-
-    run();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -160,6 +147,21 @@ function SiteLoginPageInner() {
           onSubmit={handleSubmit}
           className="flex flex-col items-center gap-6 w-full"
         >
+          {isVip && !error && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center space-y-1"
+            >
+              <p className={`text-[#D4A845] text-xs font-medium ${isAmharic ? 'font-ethiopic' : 'font-sans uppercase tracking-widest'}`}>
+                {t('login.vipPasswordFilled')}
+              </p>
+              <p className={`text-white/40 text-[10px] ${isAmharic ? 'font-ethiopic' : 'font-serif italic'}`}>
+                {t('login.vipClickLogin')}
+              </p>
+            </motion.div>
+          )}
+
           {error && (
             <motion.p
               initial={{ opacity: 0 }}
