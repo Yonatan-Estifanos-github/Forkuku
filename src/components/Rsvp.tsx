@@ -1,9 +1,35 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
+
+// ============================================================================
+// COOKIE HELPERS
+// ============================================================================
+const VIP_COOKIE = 'vip_party_id';
+
+function getVipPartyId(): string | null {
+  if (typeof document === 'undefined') return null;
+  return (
+    document.cookie
+      .split('; ')
+      .find((c) => c.startsWith(`${VIP_COOKIE}=`))
+      ?.split('=')[1]
+      ?.split(';')[0] ?? null
+  );
+}
+
+function setVipPartyId(partyId: string) {
+  const expires = new Date();
+  expires.setDate(expires.getDate() + 90);
+  document.cookie = `${VIP_COOKIE}=${encodeURIComponent(partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+}
+
+function clearVipPartyId() {
+  document.cookie = `${VIP_COOKIE}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
 
 // ============================================================================
 // TYPES
@@ -269,10 +295,12 @@ function FormScreen({
   party,
   onSubmit,
   onBack,
+  onNotMyFamily,
 }: {
   party: Party;
   onSubmit: () => void;
   onBack: () => void;
+  onNotMyFamily?: () => void;
 }) {
   const [guests, setGuests] = useState<Guest[]>(
     party.guests.map((g) => ({ ...g }))
@@ -559,6 +587,19 @@ function FormScreen({
             {isSubmitting ? t('rsvp.submitting') : t('rsvp.submitButton')}
           </button>
         </div>
+
+        {/* Not my family escape hatch */}
+        {onNotMyFamily && (
+          <p className="text-center mt-10">
+            <button
+              type="button"
+              onClick={onNotMyFamily}
+              className="text-[11px] font-sans tracking-widest text-stone-600 hover:text-stone-400 transition-colors duration-300 uppercase border-b border-stone-700 hover:border-stone-500 pb-px"
+            >
+              Not the {party.party_name}? Search for your invitation
+            </button>
+          </p>
+        )}
       </form>
     </div>
   );
@@ -622,7 +663,7 @@ function SuccessScreen({ partyName, onBack }: { partyName: string; onBack: () =>
 // ============================================================================
 // ALREADY RESPONDED SCREEN
 // ============================================================================
-function AlreadyRespondedScreen({ partyName, onBack }: { partyName: string; onBack: () => void }) {
+function AlreadyRespondedScreen({ partyName, onBack, onNotMyFamily }: { partyName: string; onBack: () => void; onNotMyFamily?: () => void }) {
   const { t } = useLanguage();
 
   return (
@@ -665,6 +706,17 @@ function AlreadyRespondedScreen({ partyName, onBack }: { partyName: string; onBa
           >
             {t('rsvp.viewRegistry')}
           </a>
+
+          {onNotMyFamily && (
+            <p className="mt-8">
+              <button
+                onClick={onNotMyFamily}
+                className="text-[11px] font-sans tracking-widest text-stone-600 hover:text-stone-400 transition-colors duration-300 uppercase border-b border-stone-700 hover:border-stone-500 pb-px"
+              >
+                Not the {partyName}? Search for your invitation
+              </button>
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -680,9 +732,36 @@ export default function Rsvp() {
   const [view, setView] = useState<View>('search');
   const [party, setParty] = useState<Party | null>(null);
   const [candidates, setCandidates] = useState<Party[]>([]);
+  const [vipLoading, setVipLoading] = useState(false);
   const { t } = useLanguage();
 
+  // On mount: if a vip_party_id cookie exists, skip search and load the party directly
+  useEffect(() => {
+    const partyId = getVipPartyId();
+    if (!partyId) return;
+
+    setVipLoading(true);
+    fetch('/api/rsvp/lookup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ partyId: decodeURIComponent(partyId) }),
+    })
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then(({ party: p }) => {
+        setParty(p);
+        setView(p.has_responded ? 'already_responded' : 'form');
+      })
+      .catch(() => {
+        // Cookie points to a stale/invalid party — clear it and fall back to search
+        clearVipPartyId();
+      })
+      .finally(() => setVipLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleFound = (p: Party) => {
+    // Drop VIP cookie for organic users who searched manually
+    setVipPartyId(p.id);
     setParty(p);
     if (p.has_responded) {
       setView('already_responded');
@@ -695,6 +774,11 @@ export default function Rsvp() {
     setView('search');
     setParty(null);
     setCandidates([]);
+  };
+
+  const resetAndClearVip = () => {
+    clearVipPartyId();
+    reset();
   };
 
   return (
@@ -716,7 +800,13 @@ export default function Rsvp() {
           </p>
 
           {/* View Router */}
-          {view === 'search' && (
+          {vipLoading && (
+            <p className="font-serif italic text-stone-500 text-sm animate-pulse">
+              {t('rsvp.searching')}
+            </p>
+          )}
+
+          {!vipLoading && view === 'search' && (
             <SearchScreen
               onFound={handleFound}
               onMultiple={(matches) => {
@@ -726,7 +816,7 @@ export default function Rsvp() {
             />
           )}
 
-          {view === 'select' && (
+          {!vipLoading && view === 'select' && (
             <SelectScreen
               parties={candidates}
               onSelect={handleFound}
@@ -734,25 +824,27 @@ export default function Rsvp() {
             />
           )}
 
-          {view === 'form' && party && (
+          {!vipLoading && view === 'form' && party && (
             <FormScreen
               party={party}
               onSubmit={() => setView('success')}
               onBack={reset}
+              onNotMyFamily={resetAndClearVip}
             />
           )}
 
-          {view === 'success' && party && (
+          {!vipLoading && view === 'success' && party && (
             <SuccessScreen
               partyName={party.party_name}
               onBack={reset}
             />
           )}
 
-          {view === 'already_responded' && party && (
+          {!vipLoading && view === 'already_responded' && party && (
             <AlreadyRespondedScreen
               partyName={party.party_name}
               onBack={reset}
+              onNotMyFamily={resetAndClearVip}
             />
           )}
         </motion.div>

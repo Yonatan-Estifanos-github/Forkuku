@@ -56,22 +56,43 @@ function SiteLoginPageInner() {
   // Magic link: auto-login when ?pwd=Matthew19:6 is present
   useEffect(() => {
     const pwd = searchParams.get('pwd');
-    if (pwd === MAGIC_PASSWORD) {
-      setLoading(true);
-      fetch('/api/auth/site-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: MAGIC_PASSWORD }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            window.location.href = '/';
-          } else {
-            setLoading(false);
-          }
-        })
-        .catch(() => setLoading(false));
-    }
+    const partyId = searchParams.get('partyId');
+    if (pwd !== MAGIC_PASSWORD) return;
+
+    setLoading(true);
+
+    const run = async () => {
+      try {
+        const res = await fetch('/api/auth/site-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: MAGIC_PASSWORD }),
+        });
+        if (!res.ok) { setLoading(false); return; }
+
+        // If a partyId is in the URL, track the click and drop the VIP cookie
+        if (partyId) {
+          try {
+            await fetch('/api/rsvp/track-click', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ partyId }),
+            });
+          } catch { /* non-critical — proceed regardless */ }
+
+          const expires = new Date();
+          expires.setDate(expires.getDate() + 90);
+          document.cookie = `vip_party_id=${encodeURIComponent(partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+        }
+
+        sessionStorage.setItem('wedding-music-pref', musicOn ? 'on' : 'off');
+        window.location.href = '/';
+      } catch {
+        setLoading(false);
+      }
+    };
+
+    run();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
