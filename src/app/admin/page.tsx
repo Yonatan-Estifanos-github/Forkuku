@@ -152,7 +152,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [sendingId, setSendingId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [selectedCampaign, setSelectedCampaign] = useState<CampaignId>('save-the-date');
+  const [selectedCampaign, setSelectedCampaign] = useState<CampaignId>('formal-invitation');
   const [stats, setStats] = useState<DashboardStats>({
     totalParties: 0,
     totalGuests: 0,
@@ -1066,7 +1066,10 @@ export default function AdminDashboard() {
                       const hasUSPhone = party.phones?.some(p => isUSPhone(p)) ?? false;
                       const hasAnyContact = hasEmail || hasPhone;
                       const primaryPhone = party.phones?.[0];
-                      const allSent = (hasEmail ? emailSent : true) && (hasUSPhone ? smsSent : true) && hasAnyContact;
+                      const activeCampaign = CAMPAIGNS.find(c => c.id === selectedCampaign);
+                      const campaignNeedsEmail = activeCampaign?.priority !== 'sms';
+                      const campaignNeedsSMS = activeCampaign?.priority !== 'email';
+                      const allSent = (hasEmail && campaignNeedsEmail ? emailSent : true) && (hasUSPhone && campaignNeedsSMS ? smsSent : true) && hasAnyContact;
 
                       return (
                         <tr key={party.id} className="hover:bg-gray-50 transition-colors">

@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/context/LanguageContext';
 
 // ============================================================================
 // TYPES
@@ -88,6 +89,7 @@ function SearchScreen({
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useLanguage();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,12 +114,12 @@ function SearchScreen({
     }
 
     if (!trimmedQuery) {
-      setError('Please enter your name');
+      setError(t('rsvp.errorRequired'));
       return;
     }
 
     if (trimmedQuery.length < 2) {
-      setError('Please enter at least 2 characters');
+      setError(t('rsvp.errorMinLength'));
       return;
     }
 
@@ -148,7 +150,7 @@ function SearchScreen({
       }));
 
       if (matches.length === 0) {
-        throw new Error("We couldn't find your invitation. Please try a different spelling or contact the couple.");
+        throw new Error(t('rsvp.notFound'));
       }
 
       if (matches.length === 1) {
@@ -159,10 +161,10 @@ function SearchScreen({
     } catch (err: unknown) {
       clearTimeout(timeoutId);
       console.error(err);
-      let msg = "We couldn't find your invitation. Please try a different spelling or contact the couple.";
+      let msg = t('rsvp.notFound');
       if (err instanceof Error) {
         if (err.name === 'AbortError') {
-          msg = 'Request timed out. Please check your connection and try again.';
+          msg = t('rsvp.timeout');
         } else {
           msg = err.message;
         }
@@ -176,21 +178,19 @@ function SearchScreen({
   return (
     <div className="w-full max-w-lg text-center">
       <p className="font-serif text-base md:text-lg mb-10 leading-relaxed px-4 text-stone-400">
-        Please enter the first and last name of one member of your party below.
-        If you&apos;re responding for you and a guest (or your family), you&apos;ll
-        be able to RSVP for your entire group on the next page.
+        {t('rsvp.searchPrompt')}
       </p>
 
       <form onSubmit={handleSearch} className="flex flex-col gap-6">
         <div className="text-left">
           <LuxuryInput
-            label="First and Last Name"
+            label={t('rsvp.namePlaceholder')}
             id="search"
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             disabled={isLoading}
-            placeholder="Ex. Sarah Fortune"
+            placeholder={t('rsvp.nameExample')}
           />
         </div>
 
@@ -201,7 +201,7 @@ function SearchScreen({
         )}
 
         <button type="submit" disabled={isLoading} className={btnClass}>
-          {isLoading ? 'Searching...' : 'Find My Invitation'}
+          {isLoading ? t('rsvp.searching') : t('rsvp.findButton')}
         </button>
       </form>
     </div>
@@ -220,6 +220,8 @@ function SelectScreen({
   onSelect: (party: Party) => void;
   onBack: () => void;
 }) {
+  const { t } = useLanguage();
+
   return (
     <div className="w-full max-w-lg">
       <div className="w-full flex justify-start">
@@ -230,12 +232,12 @@ function SelectScreen({
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Search Again
+          {t('rsvp.searchAgain')}
         </button>
       </div>
 
       <p className="font-serif text-base md:text-lg mb-8 leading-relaxed text-stone-400 text-center">
-        We found a few parties that match. Please select the one that includes your name.
+        {t('rsvp.multipleFound')}
       </p>
 
       <div className="flex flex-col gap-4">
@@ -283,6 +285,7 @@ function FormScreen({
   const [smsConsent, setSmsConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const { t } = useLanguage();
 
   // Ref to prevent double-submission (synchronous check before React state updates)
   const isSubmittingRef = useRef(false);
@@ -302,7 +305,7 @@ function FormScreen({
   const validateForm = (): string | null => {
     // Check for empty guest list
     if (!guests || guests.length === 0) {
-      return 'No guests found for this party. Please contact the couple.';
+      return t('rsvp.noGuests');
     }
 
     // Email validation - stricter regex
@@ -310,24 +313,24 @@ function FormScreen({
     const email = contact.email.trim().toLowerCase();
     const emailRegex = /^[a-z0-9._%+-]{2,}@[a-z0-9.-]{2,}\.[a-z]{2,}$/;
     if (!email || !emailRegex.test(email)) {
-      return 'Please enter a valid email address';
+      return t('rsvp.errorEmail');
     }
 
     // Phone validation (10-15 digits for domestic/international)
     const phoneDigits = contact.phone.replace(/\D/g, '');
     if (phoneDigits.length < 10 || phoneDigits.length > 15) {
-      return 'Please enter a valid phone number (10-15 digits)';
+      return t('rsvp.errorPhone');
     }
 
     // SMS Consent validation
     if (!smsConsent) {
-      return 'Please consent to receive updates to complete your RSVP.';
+      return t('rsvp.errorConsent');
     }
 
     // Plus-one name validation: if attending, name is required
     for (const guest of guests) {
       if (guest.is_plus_one && guest.is_attending && !guest.name?.trim()) {
-        return 'Please enter a name for each attending guest';
+        return t('rsvp.errorGuestName');
       }
     }
 
@@ -384,10 +387,10 @@ function FormScreen({
     } catch (err: unknown) {
       clearTimeout(timeoutId);
       console.error('RSVP Submit Error:', err);
-      let msg = 'Failed to submit RSVP. Please try again.';
+      let msg = t('rsvp.submitError');
       if (err instanceof Error) {
         if (err.name === 'AbortError') {
-          msg = 'Request timed out. Please check your connection and try again.';
+          msg = t('rsvp.timeout');
         } else {
           msg = err.message;
         }
@@ -409,16 +412,16 @@ function FormScreen({
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-        Search Again
+        {t('rsvp.searchAgain')}
       </button>
 
       {/* Welcome Header */}
       <div className="text-center mb-10">
         <p className="text-xs tracking-widest uppercase mb-2 text-wedding-gold/80">
-          You&apos;re Invited
+          {t('rsvp.youreInvited')}
         </p>
         <h3 className="font-display text-3xl md:text-4xl tracking-wide text-stone-200">
-          Welcome, {party.party_name}!
+          {t('rsvp.welcome').replace('{name}', party.party_name)}
         </h3>
       </div>
 
@@ -426,17 +429,17 @@ function FormScreen({
         {/* Guest List */}
         <div className="mb-10">
           <p className="text-xs tracking-widest uppercase font-medium text-wedding-gold/80 mb-6">
-            Please respond for each guest
+            {t('rsvp.respondForEach')}
           </p>
 
           {/* Empty guests message */}
           {guests.length === 0 && (
             <div className="text-center py-8 border border-white/10 rounded-lg">
               <p className="font-serif text-stone-400 italic">
-                No guests found for this party.
+                {t('rsvp.noGuests')}
               </p>
               <p className="font-serif text-stone-500 text-sm mt-2">
-                Please contact the couple if this seems incorrect.
+                {t('rsvp.contactCouple')}
               </p>
             </div>
           )}
@@ -462,7 +465,7 @@ function FormScreen({
                           : 'bg-transparent border-white/20 text-white/60 hover:border-wedding-gold/50 hover:text-wedding-gold'
                       }`}
                     >
-                      Accept
+                      {t('rsvp.accept')}
                     </button>
                     <button
                       type="button"
@@ -473,7 +476,7 @@ function FormScreen({
                           : 'bg-transparent border-white/20 text-white/60 hover:border-wedding-gold/50 hover:text-wedding-gold'
                       }`}
                     >
-                      Decline
+                      {t('rsvp.decline')}
                     </button>
                   </div>
                 </div>
@@ -483,7 +486,7 @@ function FormScreen({
                   <div className="luxury-input relative">
                     <input
                       type="text"
-                      placeholder="Guest Full Name"
+                      placeholder={t('rsvp.guestName')}
                       value={guest.name || ''}
                       onChange={(e) => handleNameChange(idx, e.target.value)}
                       className="w-full bg-transparent border-0 text-sm font-serif py-1 outline-none text-stone-200 placeholder:italic placeholder:text-stone-600"
@@ -499,22 +502,22 @@ function FormScreen({
         {/* Contact Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
           <LuxuryInput
-            label="Email Address"
+            label={t('rsvp.emailLabel')}
             id="email"
             type="email"
             value={contact.email}
             onChange={(e) => setContact((p) => ({ ...p, email: e.target.value }))}
             required
-            placeholder="your@email.com"
+            placeholder={t('rsvp.emailPlaceholder')}
           />
           <LuxuryInput
-            label="Phone Number"
+            label={t('rsvp.phoneLabel')}
             id="phone"
             type="tel"
             value={contact.phone}
             onChange={(e) => setContact((p) => ({ ...p, phone: e.target.value }))}
             required
-            placeholder="(555) 123-4567"
+            placeholder={t('rsvp.phonePlaceholder')}
           />
         </div>
 
@@ -528,13 +531,12 @@ function FormScreen({
             className="mt-1 w-4 h-4 rounded border-white/20 bg-transparent text-wedding-gold focus:ring-wedding-gold focus:ring-offset-0"
           />
           <label htmlFor="sms-consent" className="text-xs leading-relaxed text-stone-400 font-sans tracking-wide cursor-pointer">
-            I consent to receive text messages regarding the wedding and future family updates. 
-            Msg & data rates may apply. Reply STOP to opt out.
-            <Link 
-              href="/legal" 
+            {t('rsvp.smsConsent')}
+            <Link
+              href="/legal"
               className="ml-1 text-wedding-gold/80 hover:text-wedding-gold underline transition-colors"
             >
-              Read our Privacy Policy & Terms.
+              {t('rsvp.privacyPolicy')}
             </Link>
           </label>
         </div>
@@ -542,12 +544,12 @@ function FormScreen({
         {/* Message */}
         <div className="mb-10">
           <LuxuryTextarea
-            label="Note to the Couple (Optional)"
+            label={t('rsvp.noteLabel')}
             id="message"
             value={contact.message}
             onChange={(e) => setContact((p) => ({ ...p, message: e.target.value }))}
             rows={3}
-            placeholder="Share a message or well-wishes..."
+            placeholder={t('rsvp.notePlaceholder')}
           />
         </div>
 
@@ -561,7 +563,7 @@ function FormScreen({
         {/* Submit */}
         <div className="flex justify-center">
           <button type="submit" disabled={isSubmitting || guests.length === 0} className={btnClass}>
-            {isSubmitting ? 'Sending...' : 'Submit RSVP'}
+            {isSubmitting ? t('rsvp.submitting') : t('rsvp.submitButton')}
           </button>
         </div>
       </form>
@@ -573,6 +575,8 @@ function FormScreen({
 // SUCCESS SCREEN
 // ============================================================================
 function SuccessScreen({ partyName, onBack }: { partyName: string; onBack: () => void }) {
+  const { t } = useLanguage();
+
   return (
     <div className="w-full max-w-md flex flex-col items-center">
       {/* Back Button */}
@@ -584,7 +588,7 @@ function SuccessScreen({ partyName, onBack }: { partyName: string; onBack: () =>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Go Back
+          {t('rsvp.goBack')}
         </button>
       </div>
 
@@ -598,28 +602,23 @@ function SuccessScreen({ partyName, onBack }: { partyName: string; onBack: () =>
 
         {/* Thank you message */}
         <h3 className="font-display text-3xl md:text-4xl mb-4 text-stone-200">
-          Thank You!
+          {t('rsvp.thankYouTitle')}
         </h3>
         <p className="font-serif text-lg italic leading-relaxed text-stone-400">
-          {partyName}, your response has been recorded.
-          <br />
-          We look forward to celebrating with you!
+          {t('rsvp.thankYouMessage').replace('{name}', partyName)}
         </p>
 
         {/* Registry note */}
         <div className="mt-10 pt-8 border-t border-white/10">
           <p className="font-serif text-base leading-relaxed text-stone-400 mb-6">
-            Your presence at our celebration means the world to us and is truly all we need.
-            For those who have kindly asked about gifts, we&apos;ve put together a{' '}
-            <span className="text-wedding-gold">registry</span> to help with coordination.
+            {t('rsvp.registryNote')}
           </p>
 
-          {/* Registry button - luxury gold-bordered style */}
           <a
             href="/#registry"
             className="inline-block px-8 py-3 font-medium text-sm tracking-widest uppercase transition-all duration-300 border border-wedding-gold/50 text-wedding-gold rounded hover:bg-wedding-gold/10 hover:border-wedding-gold"
           >
-            View Registry
+            {t('rsvp.viewRegistry')}
           </a>
         </div>
       </div>
@@ -631,6 +630,8 @@ function SuccessScreen({ partyName, onBack }: { partyName: string; onBack: () =>
 // ALREADY RESPONDED SCREEN
 // ============================================================================
 function AlreadyRespondedScreen({ partyName, onBack }: { partyName: string; onBack: () => void }) {
+  const { t } = useLanguage();
+
   return (
     <div className="w-full max-w-md flex flex-col items-center">
       {/* Back Button */}
@@ -642,7 +643,7 @@ function AlreadyRespondedScreen({ partyName, onBack }: { partyName: string; onBa
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Go Back
+          {t('rsvp.goBack')}
         </button>
       </div>
 
@@ -654,25 +655,22 @@ function AlreadyRespondedScreen({ partyName, onBack }: { partyName: string; onBa
         </div>
 
         <h3 className="font-display text-3xl md:text-4xl mb-4 text-stone-200">
-          Already Responded
+          {t('rsvp.alreadyRespondedTitle')}
         </h3>
         <p className="font-serif text-lg italic leading-relaxed text-stone-400">
-          {partyName}, we&apos;ve already received your RSVP.
-          <br />
-          Thank you for confirming!
+          {t('rsvp.alreadyRespondedMessage').replace('{name}', partyName)}
         </p>
 
-        {/* Registry note */}
         <div className="mt-10 pt-8 border-t border-white/10">
           <p className="font-serif text-base leading-relaxed text-stone-400 mb-6">
-            If you need to make changes to your response, please contact us directly.
+            {t('rsvp.alreadyRespondedNote')}
           </p>
 
           <a
             href="/#registry"
             className="inline-block px-8 py-3 font-medium text-sm tracking-widest uppercase transition-all duration-300 border border-wedding-gold/50 text-wedding-gold rounded hover:bg-wedding-gold/10 hover:border-wedding-gold"
           >
-            View Registry
+            {t('rsvp.viewRegistry')}
           </a>
         </div>
       </div>
@@ -689,6 +687,7 @@ export default function Rsvp() {
   const [view, setView] = useState<View>('search');
   const [party, setParty] = useState<Party | null>(null);
   const [candidates, setCandidates] = useState<Party[]>([]);
+  const { t } = useLanguage();
 
   const handleFound = (p: Party) => {
     setParty(p);
@@ -720,10 +719,10 @@ export default function Rsvp() {
           <div className="relative z-10 flex flex-col items-center w-full">
             {/* Header */}
             <h2 className="font-display text-6xl tracking-wide mb-4 text-wedding-gold">
-              RSVP
+              {t('rsvp.heading')}
             </h2>
             <p className="font-serif italic text-base md:text-lg tracking-wide mb-12 text-stone-400">
-              Kindly reply by March 1st
+              {t('rsvp.deadline')}
             </p>
 
             {/* View Router */}

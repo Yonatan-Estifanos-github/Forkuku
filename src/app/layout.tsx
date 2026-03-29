@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Cormorant_Garamond, Allura, Playfair_Display } from "next/font/google";
+import { Inter, Cormorant_Garamond, Allura, Playfair_Display, Noto_Sans_Ethiopic } from "next/font/google";
 import "./main.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import ConditionalUI from "@/components/ConditionalUI";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const cormorant = Cormorant_Garamond({
@@ -19,6 +20,11 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-playfair"
+});
+const notoEthiopic = Noto_Sans_Ethiopic({
+  subsets: ["ethiopic"],
+  weight: ["300", "400"],
+  variable: "--font-ethiopic"
 });
 
 export const metadata: Metadata = {
@@ -39,16 +45,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${cormorant.variable} ${allura.variable} ${playfair.variable} font-sans`}>
-        <SmoothScroll>
-          {/* Conditionally render nav/sound (hidden on admin/login) */}
-          <ConditionalUI />
+      <body className={`${inter.variable} ${cormorant.variable} ${allura.variable} ${playfair.variable} ${notoEthiopic.variable} font-sans`}>
+        <LanguageProvider>
+          <SmoothScroll>
+            {/* Conditionally render nav/sound (hidden on admin/login) */}
+            <ConditionalUI />
 
-          {children}
-        </SmoothScroll>
+            {children}
+          </SmoothScroll>
+        </LanguageProvider>
 
-        {/* Global Film Grain Overlay */}
-        <div className="film-grain" aria-hidden="true" />
+          {/* Global Film Grain Overlay */}
+          <div className="film-grain" aria-hidden="true" />
       </body>
     </html>
   );

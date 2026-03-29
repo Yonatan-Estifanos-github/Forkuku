@@ -42,9 +42,7 @@ export const SaveTheDate = ({
           </Button>
         </Section>
         
-        <Text style={footer}>
-          Made with ♥ by The Estifanos Family
-        </Text>
+
       </Container>
     </Body>
   </Html>
@@ -121,10 +119,4 @@ const button = {
   border: '1px solid #D4A845',
   margin: '0 auto',
   letterSpacing: '1px',
-};
-
-const footer = {
-  color: '#888888',
-  fontSize: '12px',
-  marginTop: '40px',
 };

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import FadeIn from '@/components/ui/FadeIn';
 import { supabase } from '@/lib/supabase';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface RegistryItem {
   id: number;
@@ -33,6 +34,7 @@ export default function RegistrySection() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedItem, setSelectedItem] = useState<RegistryItem | null>(null);
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress | null>(null);
+  const { t } = useLanguage();
 
   // Multi-step modal state
   const [modalStep, setModalStep] = useState<ModalStep>('shipping');
@@ -165,10 +167,10 @@ export default function RegistrySection() {
         {/* Page heading */}
         <FadeIn delay={0.1}>
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-wedding-gold text-center mb-4">
-            Registry
+            {t('registry.heading')}
           </h2>
           <p className="font-serif text-white/70 text-center max-w-xl mx-auto mb-12">
-            Sharing this day with you is the only gift we require. For those who have expressed an interest in offering a token of love, we have curated a collection of items for our future home.
+            {t('registry.description')}
           </p>
         </FadeIn>
 
@@ -186,7 +188,7 @@ export default function RegistrySection() {
                       : 'text-white/70 border-white/20 hover:border-wedding-gold/50 hover:text-wedding-gold'
                   }`}
                 >
-                  {category}
+                  {category === 'All' ? t('registry.all') : category}
                 </button>
               ))}
             </div>
@@ -197,7 +199,7 @@ export default function RegistrySection() {
         {loading && (
           <div className="text-center py-12">
             <div className="inline-block w-8 h-8 border-2 border-wedding-gold/30 border-t-wedding-gold rounded-full animate-spin mb-4" />
-            <p className="font-serif text-white/50">Loading registry...</p>
+            <p className="font-serif text-white/50">{t('registry.loading')}</p>
           </div>
         )}
 
@@ -205,7 +207,7 @@ export default function RegistrySection() {
         {!loading && items.length === 0 && (
           <div className="text-center py-12">
             <p className="font-serif text-white/70">
-              Our registry is being prepared. Please check back soon!
+              {t('registry.empty')}
             </p>
           </div>
         )}
@@ -243,7 +245,7 @@ export default function RegistrySection() {
                     {/* Favorite Badge */}
                     {item.is_favorite && (
                       <div className="absolute top-1 left-1 sm:top-3 sm:left-3 bg-wedding-gold text-luxury-black text-[6px] sm:text-[10px] uppercase tracking-wider font-bold px-1 py-0.5 sm:px-2 sm:py-1 rounded">
-                        Must Have
+                        {t('registry.mustHave')}
                       </div>
                     )}
 
@@ -254,7 +256,7 @@ export default function RegistrySection() {
                         className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
                       >
                         <span className="px-6 py-2 border border-wedding-gold text-wedding-gold font-serif text-sm rounded hover:bg-wedding-gold hover:text-luxury-black transition-colors">
-                          Gift This
+                          {t('registry.giftThis')}
                         </span>
                       </button>
                     )}
@@ -280,7 +282,7 @@ export default function RegistrySection() {
           <FadeIn delay={0.3}>
             <div className="mt-16">
               <h3 className="font-serif text-2xl text-white/50 text-center mb-8">
-                Already Gifted
+                {t('registry.alreadyGifted')}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 max-w-5xl mx-auto">
                 {purchasedItems.map((item) => (
@@ -303,7 +305,7 @@ export default function RegistrySection() {
                         </div>
                       )}
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <span className="text-white/70 text-xs font-serif">Gifted</span>
+                        <span className="text-white/70 text-xs font-serif">{t('registry.gifted')}</span>
                       </div>
                     </div>
                     <div className="p-2">
@@ -320,7 +322,7 @@ export default function RegistrySection() {
         <FadeIn delay={0.4}>
           <div className="mt-16 text-center">
             <p className="font-serif text-white/40 text-sm max-w-md mx-auto">
-              Thank you for celebrating this special day with us. Your love and support mean the world to us.
+              {t('registry.thankYouNote')}
             </p>
           </div>
         </FadeIn>
@@ -350,7 +352,7 @@ export default function RegistrySection() {
 
                 {/* Title */}
                 <h3 className="font-serif text-2xl text-wedding-gold text-center mb-2">
-                  You&apos;re Helping Us Build Our Home
+                  {t('registry.modalHeading')}
                 </h3>
 
                 {/* Personal note */}
@@ -363,7 +365,7 @@ export default function RegistrySection() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="font-serif text-white/50 text-sm mb-2">
-                        Please send it to our doorstep:
+                        {t('registry.sendToAddress')}
                       </p>
                       {shippingAddress ? (
                         <p className="font-serif text-white text-lg leading-relaxed">
@@ -371,7 +373,7 @@ export default function RegistrySection() {
                           {shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}
                         </p>
                       ) : (
-                        <p className="font-serif text-white/50 text-sm">Loading address...</p>
+                        <p className="font-serif text-white/50 text-sm">{t('registry.loadingAddress')}</p>
                       )}
                     </div>
                     <button
@@ -392,13 +394,13 @@ export default function RegistrySection() {
                     </button>
                   </div>
                   {copied && (
-                    <p className="text-wedding-gold text-xs mt-2">Address copied!</p>
+                    <p className="text-wedding-gold text-xs mt-2">{t('registry.addressCopied')}</p>
                   )}
                 </div>
 
                 {/* Signature */}
                 <p className="font-script text-wedding-gold/60 text-right text-lg mb-6 pr-4">
-                  — Yonatan & Saron
+                  {t('registry.signature')}
                 </p>
 
                 {/* Buttons */}
@@ -407,7 +409,7 @@ export default function RegistrySection() {
                     onClick={handleGoToStore}
                     className="w-full py-3 bg-wedding-gold text-luxury-black font-serif font-medium rounded-lg hover:bg-wedding-gold/90 transition-colors flex items-center justify-center gap-2"
                   >
-                    Continue to {selectedItem.store}
+                    {t('registry.continueTo').replace('{store}', selectedItem.store)}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
@@ -416,13 +418,13 @@ export default function RegistrySection() {
                     onClick={handlePurchased}
                     className="w-full py-3 border border-wedding-gold/50 text-wedding-gold font-serif rounded-lg hover:bg-wedding-gold/10 transition-colors"
                   >
-                    I&apos;ve Already Purchased This
+                    {t('registry.alreadyPurchased')}
                   </button>
                   <button
                     onClick={handleCloseModal}
                     className="w-full py-2 text-white/50 font-serif text-sm hover:text-white/70 transition-colors"
                   >
-                    Maybe Later
+                    {t('registry.maybeLater')}
                   </button>
                 </div>
               </>
@@ -442,29 +444,29 @@ export default function RegistrySection() {
 
                 {/* Title */}
                 <h3 className="font-serif text-2xl text-wedding-gold text-center mb-2">
-                  May We Thank You?
+                  {t('registry.thankYouStep')}
                 </h3>
                 <p className="font-serif text-white/60 text-center text-sm mb-6">
-                  Kindly leave your details so we may express our gratitude properly.
+                  {t('registry.thankYouDetails')}
                 </p>
 
                 {/* Form */}
                 <div className="space-y-4 mb-6">
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-white/50 mb-2">
-                      Your Name *
+                      {t('registry.yourName')}
                     </label>
                     <input
                       type="text"
                       value={purchaserName}
                       onChange={(e) => setPurchaserName(e.target.value)}
-                      placeholder="Who should we thank?"
+                      placeholder={t('registry.whoToThank')}
                       className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors"
                     />
                   </div>
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-white/50 mb-2">
-                      Your Email <span className="text-white/30">(for our thank you note)</span>
+                      {t('registry.yourEmail')}
                     </label>
                     <input
                       type="email"
@@ -476,12 +478,12 @@ export default function RegistrySection() {
                   </div>
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-white/50 mb-2">
-                      Leave us a note <span className="text-white/30">(optional)</span>
+                      {t('registry.leaveNote')}
                     </label>
                     <textarea
                       value={purchaserMessage}
                       onChange={(e) => setPurchaserMessage(e.target.value)}
-                      placeholder="We'd love to hear from you..."
+                      placeholder={t('registry.loveToHear')}
                       rows={3}
                       className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors resize-none"
                     />
@@ -495,13 +497,13 @@ export default function RegistrySection() {
                     disabled={submitting || !purchaserName.trim()}
                     className="w-full py-3 bg-wedding-gold text-luxury-black font-serif font-medium rounded-lg hover:bg-wedding-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {submitting ? 'Saving...' : 'Confirm Gift'}
+                    {submitting ? t('registry.saving') : t('registry.confirmGift')}
                   </button>
                   <button
                     onClick={() => setModalStep('shipping')}
                     className="w-full py-2 text-white/50 font-serif text-sm hover:text-white/70 transition-colors"
                   >
-                    Go Back
+                    {t('rsvp.goBack')}
                   </button>
                 </div>
               </>
@@ -521,13 +523,12 @@ export default function RegistrySection() {
 
                 {/* Title */}
                 <h3 className="font-serif text-3xl text-wedding-gold text-center mb-3">
-                  {purchaserName}, You&apos;re the Best!
+                  {t('registry.successTitle').replace('{name}', purchaserName)}
                 </h3>
 
                 {/* Message */}
                 <p className="font-serif text-white/70 text-center mb-8 leading-relaxed">
-                  Thank you. We are honored by your generosity.<br />
-                  <span className="text-white/50 text-sm">Can&apos;t wait to celebrate with you!</span>
+                  {t('registry.successMessage')}
                 </p>
 
                 {/* Item confirmation */}
@@ -541,7 +542,7 @@ export default function RegistrySection() {
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="font-serif text-white text-sm line-clamp-2">{selectedItem.name}</p>
-                    <p className="text-white/40 text-xs mt-1">On its way to our home</p>
+                    <p className="text-white/40 text-xs mt-1">{t('registry.onItsWay')}</p>
                   </div>
                   <div className="text-wedding-gold">
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -552,7 +553,7 @@ export default function RegistrySection() {
 
                 {/* Signature */}
                 <p className="font-script text-wedding-gold/60 text-center text-xl mb-6">
-                  With love, Yonatan & Saron
+                  {t('registry.withLove')}
                 </p>
 
                 {/* Close button */}
@@ -560,7 +561,7 @@ export default function RegistrySection() {
                   onClick={handleCloseModal}
                   className="w-full py-3 border border-wedding-gold/50 text-wedding-gold font-serif rounded-lg hover:bg-wedding-gold/10 transition-colors"
                 >
-                  Close
+                  {t('registry.close')}
                 </button>
               </>
             )}

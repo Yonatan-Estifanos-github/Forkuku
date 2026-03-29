@@ -33,19 +33,6 @@ export default function ScriptureSection() {
           </p>
         </FadeIn>
 
-        {/* Golden divider */}
-        <FadeIn delay={0.3}>
-          <div className="w-12 h-px bg-amber-500 mx-auto mb-8" />
-        </FadeIn>
-
-        {/* Amharic Verse — Secondary */}
-        <FadeIn delay={0.4}>
-          <p className="font-serif text-xl md:text-2xl font-light text-stone-400 leading-relaxed">
-            እግዚአብሔር የሠራች ቀን ይህች ናት፤
-            <br />
-            በእርስዋ ሐሴትን እናድርግ፥ ደስም ይበለን።
-          </p>
-        </FadeIn>
       </div>
     </section>
   );

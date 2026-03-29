@@ -3,19 +3,21 @@
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
-const NAV_ITEMS = [
-  { label: 'Home',    href: '/',               icon: HomeIcon,    sectionId: 'home' },
-  { label: 'Story',   href: '/#story',          icon: BookIcon,    sectionId: 'story' },
-  { label: 'Venue',   href: '/#venue',          icon: MapPinIcon,  sectionId: 'venue' },
-  { label: 'Party',   href: '/#wedding-party',  icon: PeopleIcon,  sectionId: 'wedding-party' },
-  { label: 'RSVP',   href: '/#rsvp',           icon: EnvelopeIcon, sectionId: 'rsvp' },
-  { label: 'Registry', href: '/#registry',      icon: GiftIcon,    sectionId: 'registry' },
+const NAV_KEYS = [
+  { key: 'home',     href: '/',               icon: HomeIcon,    sectionId: 'home' },
+  { key: 'story',    href: '/#story',          icon: BookIcon,    sectionId: 'story' },
+  { key: 'venue',    href: '/#venue',          icon: MapPinIcon,  sectionId: 'venue' },
+  { key: 'party',    href: '/#wedding-party',  icon: PeopleIcon,  sectionId: 'wedding-party' },
+  { key: 'rsvp',    href: '/#rsvp',           icon: EnvelopeIcon, sectionId: 'rsvp' },
+  { key: 'registry', href: '/#registry',      icon: GiftIcon,    sectionId: 'registry' },
 ];
 
 export default function FloatingNav() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string>('home');
+  const { t, language, setLanguage } = useLanguage();
 
   // Track which section is in view on the home page.
   // Scroll-based midpoint detection is more reliable than IntersectionObserver
@@ -94,27 +96,73 @@ export default function FloatingNav() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 2.5, ease: 'easeOut' }}
-      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-8 pb-[max(2rem,env(safe-area-inset-bottom))]"
+      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-8 pb-[max(2rem,env(safe-area-inset-bottom))]"
       aria-label="Main navigation"
     >
-      <div className="flex items-center gap-0 sm:gap-1 rounded-full border border-white/10 bg-black/50 backdrop-blur-md px-1.5 sm:px-4 py-1.5 transition-all">
-        {NAV_ITEMS.map(({ label, href, icon: Icon, sectionId }) => {
-          const active = isActive(href, sectionId);
-          return (
-            <a
-              key={label}
-              href={href}
-              onClick={(e) => handleClick(e, href)}
-              aria-current={active ? 'page' : undefined}
-              className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full font-serif text-[9px] sm:text-sm transition-colors duration-300 hover:text-[#D4A845] ${
-                active ? 'text-[#D4A845]' : 'text-white'
+      <div className="flex flex-col items-center gap-2">
+        <div className="flex items-center gap-0 sm:gap-1 rounded-full border border-white/10 bg-black/50 backdrop-blur-md px-1.5 sm:px-4 py-1.5 transition-all">
+          {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }) => {
+            const active = isActive(href, sectionId);
+            const label = t(`nav.${key}`);
+            return (
+              <a
+                key={key}
+                href={href}
+                onClick={(e) => handleClick(e, href)}
+                aria-current={active ? 'page' : undefined}
+                className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-[9px] sm:text-sm transition-colors duration-300 hover:text-[#D4A845] ${
+                  active ? 'text-[#D4A845]' : 'text-white'
+                } ${language === 'am' ? 'font-ethiopic' : 'font-serif'}`}
+              >
+                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
+                <span className="hidden sm:inline">{label}</span>
+              </a>
+            );
+          })}
+
+          {/* Desktop language toggle */}
+          <div className="hidden sm:flex items-center ml-0.5 pl-1.5 sm:pl-2 border-l border-white/15">
+            <button
+              onClick={() => setLanguage('en')}
+              className={`px-1.5 sm:px-2 py-1 text-[9px] sm:text-xs rounded-full transition-colors duration-300 font-sans ${
+                language === 'en' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
               }`}
+              aria-label="Switch to English"
             >
-              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-              <span>{label}</span>
-            </a>
-          );
-        })}
+              EN
+            </button>
+            <button
+              onClick={() => setLanguage('am')}
+              className={`px-1.5 sm:px-2 py-1 text-[9px] sm:text-xs rounded-full transition-colors duration-300 font-ethiopic ${
+                language === 'am' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
+              }`}
+              aria-label="Switch to Amharic"
+            >
+              አማ
+            </button>
+          </div>
+        </div>
+
+        <div className="flex sm:hidden items-center gap-1 rounded-full border border-white/10 bg-black/45 px-2 py-1 backdrop-blur-md">
+          <button
+            onClick={() => setLanguage('en')}
+            className={`px-2 py-1 text-[10px] rounded-full transition-colors duration-300 font-sans ${
+              language === 'en' ? 'text-[#D4A845] font-bold' : 'text-white/45 hover:text-white/70'
+            }`}
+            aria-label="Switch to English"
+          >
+            EN
+          </button>
+          <button
+            onClick={() => setLanguage('am')}
+            className={`px-2 py-1 text-[10px] rounded-full transition-colors duration-300 font-ethiopic ${
+              language === 'am' ? 'text-[#D4A845] font-bold' : 'text-white/45 hover:text-white/70'
+            }`}
+            aria-label="Switch to Amharic"
+          >
+            አማ
+          </button>
+        </div>
       </div>
     </motion.nav>
   );

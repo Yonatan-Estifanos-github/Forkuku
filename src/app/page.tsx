@@ -1,5 +1,4 @@
 import Hero from '@/components/Hero';
-import ScriptureSection from '@/components/ScriptureSection';
 import Rsvp from '@/components/Rsvp';
 import GoogleEarthVideo from '@/components/GoogleEarthVideo';
 import JourneyGallery from '@/components/journey/JourneyGallery';
@@ -29,10 +28,6 @@ export default function Home() {
 
       <Section id="registry">
         <RegistrySection />
-      </Section>
-
-      <Section id="scripture">
-        <ScriptureSection />
       </Section>
 
       <Footer />

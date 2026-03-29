@@ -9,6 +9,7 @@ import {
   useTransform,
   AnimatePresence,
 } from 'framer-motion';
+import { useLanguage } from '@/context/LanguageContext';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA — swap name / role / funFact / photo for any member. Zero layout changes.
@@ -63,19 +64,19 @@ const BRIDESMAIDS: PartyMember[] = [
   { id: 4,  name: 'Lydia Dawit',         role: 'Bridesmaid',    photo: img('br4.jpg'),
     funFact: 'Hidden Talent: Can stare at three condiments and half an onion and miraculously produce a 5-star meal' },
   { id: 5,  name: 'Edom Wake',           role: 'Bridesmaid',    photo: img('br5.png'),
-    funFact: 'Hidden Talent: Possesses terrifying FBI-level intuition ... will know you are lying before you even open your mouth' },
+    funFact: 'Hidden Talent: Possesses terrifying FBI-level intuition ... can always tell when something is up' },
   { id: 6,  name: 'Ruth Tefera',         role: 'Bridesmaid',    photo: img('br6.png'),
     funFact: 'Hidden Talent: Can sweet-talk her way out of a parking ticket ... and somehow get the cop to apologize to her' },
   { id: 7,  name: 'Amen Tefera',         role: 'Bridesmaid',    photo: img('br7.png'),
-    funFact: 'Hidden Talent: Can transform a simple "I went to Target" story into a gripping, 45-minute cinematic thriller with three plot twists' },
+    funFact: 'Hidden Talent: Can transform a simple "I went to Target" story into a 45-minute cinematic thriller with three plot twists' },
   { id: 8,  name: 'Maranatha Haile',     role: 'Bridesmaid',    photo: img('br8.png'),
     funFact: 'Hidden Talent: Will invite you to run a "quick errand" and accidentally hold you hostage on a 9-hour adventure' },
   { id: 9,  name: 'Sabrina Yohannes',    role: 'Bridesmaid',    photo: img('br9.png'),
-    funFact: 'Hidden Talent: Can forcefully adopt an introverted stranger in the grocery line and make them her best friend by checkout' },
+    funFact: 'Hidden Talent: Can forcefully adopt a complete stranger and make them her best friend before they even realize they needed one' },
   { id: 10, name: "El'roi Gebre",        role: 'Bridesmaid',    photo: img('br10.jpeg'),
-    funFact: '' },
+    funFact: 'Hidden Talent: Can laugh for absolutely no reason and somehow make the entire room cry laughing with her top-tier Amharic humor' },
   { id: 11, name: 'Ariam Yohannes',      role: 'Bridesmaid',    photo: img('br11.JPG'),
-    funFact: 'Hidden Talent: Can walk into a completely silent, awkward room and immediately turn it into a full-blown stand-up special' },
+    funFact: 'Hidden Talent: Can make any situation 10 times more fun without even trying' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -493,6 +494,9 @@ function PartyColumn({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
+  const sideLabel = isAmharic ? '' : (side === 'left' ? t('party.his') : t('party.her'));
 
   return (
     <div className="flex-1 flex flex-col items-center min-w-0">
@@ -502,10 +506,12 @@ function PartyColumn({
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="text-center mb-8 md:mb-10"
       >
-        <p className="font-sans text-wedding-gold/45 uppercase tracking-[0.5em] text-[10px] mb-2">
-          {side === 'left' ? 'His' : 'Her'}
-        </p>
-        <h3 className="font-serif text-xl md:text-2xl text-white/90"
+        {sideLabel ? (
+          <p className="font-sans text-wedding-gold/45 uppercase tracking-[0.5em] text-[10px] mb-2">
+            {sideLabel}
+          </p>
+        ) : null}
+        <h3 className={`text-xl md:text-2xl text-white/90 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
           style={{ filter: 'drop-shadow(0 0 12px rgba(212,168,69,0.2))' }}>
           {title}
         </h3>
@@ -551,39 +557,44 @@ function PartyColumn({
 // WeddingPartySection
 // ─────────────────────────────────────────────────────────────────────────────
 export default function WeddingPartySection() {
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
+
   return (
     <section id="wedding-party" className="relative bg-luxury-black py-24 md:py-40 px-4 overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(212,168,69,0.04) 0%, transparent 70%)' }} />
 
-      <div className="text-center mb-16 md:mb-24 relative z-10">
-        <p className="font-sans text-wedding-gold/45 uppercase tracking-[0.55em] text-xs mb-6">Wedding Party</p>
-        <h2 className="font-serif text-5xl md:text-7xl lg:text-8xl gold-shimmer"
-          style={{ filter: 'drop-shadow(0 0 60px rgba(212,168,69,0.28)) drop-shadow(0 2px 24px rgba(212,168,69,0.35))' }}>
-          Yonatan &amp; Saron
+      <div className="text-center mb-20 md:mb-28 relative z-10">
+        <h2
+          className={`text-[2.9rem] md:text-7xl lg:text-[5.4rem] ${isAmharic ? 'font-ethiopic font-light tracking-normal text-stone-200' : 'font-serif italic font-normal tracking-tight text-[#EAE5D9]'}`}
+          style={{ filter: 'drop-shadow(0 0 28px rgba(212,168,69,0.14))' }}
+        >
+          {t('party.heading')}
         </h2>
-        <p className="font-serif text-base md:text-lg italic mt-5"
-          style={{ color: 'rgba(212,168,69,0.5)', filter: 'drop-shadow(0 0 20px rgba(212,168,69,0.2))' }}>
-          The friends who&apos;ve been with us every step of the way
-        </p>
-        <p className="font-sans text-xs md:text-sm text-white/30 mt-3 italic">
-          (Yes, there are 22 of them. No, we could not narrow it down. Yes, we tried.)
-        </p>
-        <div className="flex items-center justify-center gap-4 mt-8">
-          <div className="w-20 md:w-36 h-[1px] bg-gradient-to-r from-transparent to-wedding-gold/35" />
-          <div className="w-1.5 h-1.5 rounded-full bg-wedding-gold/55" />
-          <div className="w-20 md:w-36 h-[1px] bg-gradient-to-l from-transparent to-wedding-gold/35" />
+        <div className="flex items-center justify-center gap-4 mt-8 md:mt-10">
+          <div className="w-16 md:w-28 h-[1px] bg-gradient-to-r from-transparent to-wedding-gold/35" />
+          <div className="w-2 h-2 rounded-full bg-wedding-gold/60" />
+          <div className="w-16 md:w-28 h-[1px] bg-gradient-to-l from-transparent to-wedding-gold/35" />
         </div>
+        <p
+          className={`mt-8 md:mt-10 max-w-3xl mx-auto text-xs md:text-sm leading-relaxed ${isAmharic ? 'font-ethiopic text-wedding-gold/95 tracking-normal' : 'font-sans uppercase tracking-[0.18em] text-wedding-gold'}`}
+        >
+          {t('party.subtitle')}
+        </p>
+        <p className={`mt-5 text-sm md:text-base text-stone-500 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
+          {t('party.count')}
+        </p>
       </div>
 
       <div className="relative max-w-5xl mx-auto z-10">
         <div className="flex flex-col md:flex-row gap-10 md:gap-6 lg:gap-10">
-          <PartyColumn title="Groomsmen"  members={GROOMSMEN}   side="left"  gender="male"   variant="superlative" />
+          <PartyColumn title={t('party.groomsmen')} members={GROOMSMEN}   side="left"  gender="male"   variant="superlative" />
           <div className="hidden md:flex flex-col items-center self-stretch py-4">
             <div className="flex-1 w-[1px]"
               style={{ background: 'linear-gradient(to bottom, transparent, rgba(212,168,69,0.2) 20%, rgba(212,168,69,0.2) 80%, transparent)' }} />
           </div>
-          <PartyColumn title="Bridesmaids" members={BRIDESMAIDS} side="right" gender="female" variant="superlative" />
+          <PartyColumn title={t('party.bridesmaids')} members={BRIDESMAIDS} side="right" gender="female" variant="superlative" />
         </div>
       </div>
     </section>

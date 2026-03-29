@@ -9,6 +9,26 @@ export default function SoundController() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const shouldResumeRef = useRef(false);
 
+  // Auto-start if user opted into music on the login page
+  useEffect(() => {
+    const pref = sessionStorage.getItem('wedding-music-pref');
+    if (pref === 'on') {
+      sessionStorage.removeItem('wedding-music-pref');
+      // Small delay to let the audio element mount and browser allow playback
+      const t = setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.muted = false;
+          audioRef.current.volume = 1;
+          audioRef.current.play().then(() => {
+            setIsPlaying(true);
+            shouldResumeRef.current = true;
+          }).catch(() => {});
+        }
+      }, 300);
+      return () => clearTimeout(t);
+    }
+  }, []);
+
   // Handle visibility change (pause when hidden, resume if playing when shown)
   useEffect(() => {
     const handleVisibilityChange = () => {
