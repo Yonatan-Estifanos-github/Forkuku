@@ -119,20 +119,36 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         </AnimatePresence>
       </div>
 
-      {/* 3. Footer — Language Picker + Countdown */}
-      <div className="shrink-0 w-full flex flex-col items-center pb-14 sm:pb-20 pt-4 z-40 gap-3">
+      {/* 3. Footer — Language Picker + Countdown unified */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+        className="shrink-0 w-full flex flex-col items-center pb-14 sm:pb-20 pt-4 z-40 gap-5"
+        onClick={e => e.stopPropagation()}
+      >
+        {mounted && !timeRemaining.isComplete && (
+          <div className="flex items-end gap-5 sm:gap-8">
+            {countdownItems.map((item, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <span className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-white tabular-nums leading-none">
+                  {formatNumber(item.value)}
+                </span>
+                <span className={`text-[9px] sm:text-xs text-[#D4A845]/70 tracking-[0.2em] uppercase mt-2 ${isAmharic ? 'font-ethiopic not-italic tracking-normal' : ''}`}>
+                  {t(item.labelKey)}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
 
-        {/* Language Picker — above countdown */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-          className="flex items-center gap-1 rounded-full border border-white/15 bg-black/30 backdrop-blur-sm px-2 py-1"
-          onClick={e => e.stopPropagation()}
+        {/* Language Picker — below countdown, same visual weight */}
+        <div
+          className="flex items-center gap-1 rounded-full border border-white/15 bg-black/30 backdrop-blur-sm px-3 py-1.5"
         >
           <button
             onClick={(e) => handleLanguageSelect(e, 'en')}
-            className={`px-2.5 py-0.5 rounded-full text-xs font-sans transition-all duration-300 ${
+            className={`px-3 py-1 rounded-full text-xs font-sans transition-all duration-300 ${
               language === 'en' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
             }`}
           >
@@ -141,34 +157,14 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
           <span className="text-white/20 text-xs select-none">|</span>
           <button
             onClick={(e) => handleLanguageSelect(e, 'am')}
-            className={`px-2.5 py-0.5 rounded-full text-xs font-ethiopic transition-all duration-300 ${
+            className={`px-3 py-1 rounded-full text-xs font-ethiopic transition-all duration-300 ${
               language === 'am' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
             }`}
           >
             አማ
           </button>
-        </motion.div>
-
-        {mounted && !timeRemaining.isComplete && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            className="flex items-center gap-4 sm:gap-8"
-          >
-            {countdownItems.map((item, i) => (
-              <div key={i} className="flex flex-col items-center">
-                <span className="font-serif text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-light text-white tabular-nums">
-                  {formatNumber(item.value)}
-                </span>
-                <span className={`text-[9px] sm:text-xs text-[#D4A845]/70 tracking-[0.2em] uppercase mt-1 sm:mt-2 ${isAmharic ? 'font-ethiopic not-italic' : ''}`}>
-                  {t(item.labelKey)}
-                </span>
-              </div>
-            ))}
-          </motion.div>
-        )}
-      </div>
+        </div>
+      </motion.div>
 
       {/* Skip button — absolute, same as original */}
       <button

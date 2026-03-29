@@ -96,7 +96,7 @@ export default function FloatingNav() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 2.5, ease: 'easeOut' }}
-      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-8 pb-[max(2rem,env(safe-area-inset-bottom))]"
+      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-8 pb-[max(2rem,env(safe-area-inset-bottom))]"
       aria-label="Main navigation"
     >
       <div className="flex items-center gap-0 sm:gap-1 rounded-full border border-white/10 bg-black/50 backdrop-blur-md px-1.5 sm:px-4 py-1.5 transition-all">
@@ -114,7 +114,7 @@ export default function FloatingNav() {
               } ${language === 'am' ? 'font-ethiopic' : 'font-serif'}`}
             >
               <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-              <span>{label}</span>
+              <span className="hidden sm:inline">{label}</span>
             </a>
           );
         })}
