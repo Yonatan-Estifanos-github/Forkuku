@@ -46,7 +46,7 @@ export default function SoundController() {
   const { timeRemaining, mounted } = useCountdown();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const shouldResumeRef = useRef(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   // Auto-start if user opted into music on the login page
   useEffect(() => {
