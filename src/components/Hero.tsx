@@ -391,7 +391,7 @@ function HeroOverlay() {
                 className="text-[#FFF5E6] tracking-[0.5em] text-sm sm:text-base md:text-lg font-bold uppercase mb-3 drop-shadow-lg"
                 style={{ textShadow: '0 4px 20px rgba(0,0,0,1)' }}
               >
-                September
+                {t('hero.month')}
               </motion.p>
             </div>
 
@@ -435,7 +435,7 @@ function HeroOverlay() {
               custom={2.8}
               className="editorial-label text-[#D4A845]/90 tracking-[0.4em] text-xs sm:text-sm md:text-base font-light uppercase"
             >
-              Wrightsville, Pennsylvania
+              {t('hero.location')}
             </motion.p>
           </div>
         </motion.div>

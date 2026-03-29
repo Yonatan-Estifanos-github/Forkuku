@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import Image from 'next/image';
 import { JourneyItem } from './journeyData';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface JourneyCardProps {
   item: JourneyItem;
@@ -15,17 +16,19 @@ interface JourneyCardProps {
 function ParsedDescription({
   text,
   alignEnd,
+  isAmharic,
 }: {
   text: string;
   alignEnd: boolean;
+  isAmharic: boolean;
 }) {
   const parts = text.split(/(\[(?:Yoni|Saron)\])/g);
 
   return (
     <p
-      className={`font-sans text-sm text-white/55 leading-relaxed max-w-[280px] ${
-        alignEnd ? 'md:text-right' : ''
-      }`}
+      className={`text-sm text-white/55 leading-relaxed max-w-[280px] ${
+        isAmharic ? 'font-ethiopic' : 'font-sans'
+      } ${alignEnd ? 'md:text-right' : ''}`}
     >
       {parts.map((part, i) => {
         if (part === '[Yoni]') {
@@ -35,7 +38,7 @@ function ParsedDescription({
               className="font-semibold tracking-wide"
               style={{ color: '#D4A845' }}
             >
-              Yoni ›{' '}
+              {isAmharic ? 'ዮኒ › ' : 'Yoni › '}
             </span>
           );
         }
@@ -46,7 +49,7 @@ function ParsedDescription({
               className="font-semibold tracking-wide"
               style={{ color: '#c8a060' }}
             >
-              Saron ›{' '}
+              {isAmharic ? 'ሳሮን › ' : 'Saron › '}
             </span>
           );
         }
@@ -62,6 +65,13 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const isLeft = index % 2 === 0;
   const isInView = useInView(cardRef, { once: true, amount: 0.25 });
+  const { language } = useLanguage();
+  const isAmharic = language === 'am';
+
+  const displayYear = isAmharic ? (item.amYear ?? item.year) : item.year;
+  const displayTitle = isAmharic ? (item.amTitle ?? item.title) : item.title;
+  const displayDescription = isAmharic ? (item.amDescription ?? item.description) : item.description;
+  const displayCallout = isAmharic ? (item.amCallout ?? item.callout) : item.callout;
 
   // Per-card scroll: drives image parallax within the museum frame
   const { scrollYProgress } = useScroll({
@@ -140,7 +150,7 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
                 >
                   <Image
                     src={item.image}
-                    alt={item.title}
+                    alt={displayTitle}
                     fill
                     sizes="340px"
                     // object-top preserves faces; no aggressive center-crop
@@ -149,7 +159,7 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
                 </motion.div>
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-[#1a1208] to-[#0a0908] flex items-center justify-center">
-                  <span className="font-serif text-wedding-gold/20 text-5xl">{item.year}</span>
+                  <span className="font-serif text-wedding-gold/20 text-5xl">{displayYear}</span>
                 </div>
               )}
             </div>
@@ -176,28 +186,28 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
           className={`flex flex-col ${!isLeft ? 'md:items-end md:text-right' : 'items-start'}`}
         >
           {/* Year label */}
-          <p className="font-sans text-wedding-gold/60 uppercase tracking-[0.4em] text-xs mb-3">
-            {item.year}
+          <p className={`text-wedding-gold/60 uppercase tracking-[0.4em] text-xs mb-3 ${isAmharic ? 'font-ethiopic not-italic normal-case tracking-normal' : 'font-sans'}`}>
+            {displayYear}
           </p>
 
           {/* Milestone title */}
-          <h3 className="font-serif text-2xl md:text-3xl text-white mb-3 leading-tight">
-            {item.title}
+          <h3 className={`text-2xl md:text-3xl text-white mb-3 leading-tight ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+            {displayTitle}
           </h3>
 
           {/* Gold accent line */}
           <div className={`w-8 h-[1px] bg-wedding-gold/40 mb-4 ${!isLeft ? 'md:ml-auto' : ''}`} />
 
           {/* Description with dual-POV styling */}
-          <ParsedDescription text={item.description} alignEnd={!isLeft} />
+          <ParsedDescription text={displayDescription} alignEnd={!isLeft} isAmharic={isAmharic} />
 
           {/* Optional callout — e.g. pointer to another section */}
-          {item.callout && (
+          {displayCallout && (
             <a
               href="#home"
-              className={`mt-4 inline-block font-sans text-xs text-wedding-gold/60 hover:text-wedding-gold tracking-wide italic transition-colors ${!isLeft ? 'md:self-end' : ''}`}
+              className={`mt-4 inline-block text-xs text-wedding-gold/60 hover:text-wedding-gold tracking-wide italic transition-colors ${!isLeft ? 'md:self-end' : ''} ${isAmharic ? 'font-ethiopic not-italic' : 'font-sans'}`}
             >
-              {item.callout}
+              {displayCallout}
             </a>
           )}
         </motion.div>

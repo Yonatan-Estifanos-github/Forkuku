@@ -9,6 +9,7 @@ import {
   useTransform,
   AnimatePresence,
 } from 'framer-motion';
+import { useLanguage } from '@/context/LanguageContext';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA — swap name / role / funFact / photo for any member. Zero layout changes.
@@ -493,6 +494,9 @@ function PartyColumn({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
+  const sideLabel = isAmharic ? '' : (side === 'left' ? t('party.his') : t('party.her'));
 
   return (
     <div className="flex-1 flex flex-col items-center min-w-0">
@@ -502,10 +506,12 @@ function PartyColumn({
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="text-center mb-8 md:mb-10"
       >
-        <p className="font-sans text-wedding-gold/45 uppercase tracking-[0.5em] text-[10px] mb-2">
-          {side === 'left' ? 'His' : 'Her'}
-        </p>
-        <h3 className="font-serif text-xl md:text-2xl text-white/90"
+        {sideLabel ? (
+          <p className="font-sans text-wedding-gold/45 uppercase tracking-[0.5em] text-[10px] mb-2">
+            {sideLabel}
+          </p>
+        ) : null}
+        <h3 className={`text-xl md:text-2xl text-white/90 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
           style={{ filter: 'drop-shadow(0 0 12px rgba(212,168,69,0.2))' }}>
           {title}
         </h3>
@@ -551,23 +557,28 @@ function PartyColumn({
 // WeddingPartySection
 // ─────────────────────────────────────────────────────────────────────────────
 export default function WeddingPartySection() {
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
+
   return (
     <section id="wedding-party" className="relative bg-luxury-black py-24 md:py-40 px-4 overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(212,168,69,0.04) 0%, transparent 70%)' }} />
 
       <div className="text-center mb-16 md:mb-24 relative z-10">
-        <p className="font-sans text-wedding-gold/45 uppercase tracking-[0.55em] text-xs mb-6">Wedding Party</p>
+        <p className={`text-wedding-gold/45 uppercase tracking-[0.55em] text-xs mb-6 ${isAmharic ? 'font-ethiopic not-italic normal-case tracking-normal' : 'font-sans'}`}>
+          {t('party.heading')}
+        </p>
         <h2 className="font-serif text-5xl md:text-7xl lg:text-8xl gold-shimmer"
           style={{ filter: 'drop-shadow(0 0 60px rgba(212,168,69,0.28)) drop-shadow(0 2px 24px rgba(212,168,69,0.35))' }}>
-          Yonatan &amp; Saron
+          {t('party.names')}
         </h2>
-        <p className="font-serif text-base md:text-lg italic mt-5"
+        <p className={`text-base md:text-lg mt-5 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}
           style={{ color: 'rgba(212,168,69,0.5)', filter: 'drop-shadow(0 0 20px rgba(212,168,69,0.2))' }}>
-          The friends who&apos;ve been with us every step of the way
+          {t('party.subtitle')}
         </p>
-        <p className="font-sans text-xs md:text-sm text-white/30 mt-3 italic">
-          (Yes, there are 22 of them. No, we could not narrow it down. Yes, we tried.)
+        <p className={`text-xs md:text-sm text-white/30 mt-3 ${isAmharic ? 'font-ethiopic' : 'font-sans italic'}`}>
+          {t('party.count')}
         </p>
         <div className="flex items-center justify-center gap-4 mt-8">
           <div className="w-20 md:w-36 h-[1px] bg-gradient-to-r from-transparent to-wedding-gold/35" />
@@ -578,12 +589,12 @@ export default function WeddingPartySection() {
 
       <div className="relative max-w-5xl mx-auto z-10">
         <div className="flex flex-col md:flex-row gap-10 md:gap-6 lg:gap-10">
-          <PartyColumn title="Groomsmen"  members={GROOMSMEN}   side="left"  gender="male"   variant="superlative" />
+          <PartyColumn title={t('party.groomsmen')} members={GROOMSMEN}   side="left"  gender="male"   variant="superlative" />
           <div className="hidden md:flex flex-col items-center self-stretch py-4">
             <div className="flex-1 w-[1px]"
               style={{ background: 'linear-gradient(to bottom, transparent, rgba(212,168,69,0.2) 20%, rgba(212,168,69,0.2) 80%, transparent)' }} />
           </div>
-          <PartyColumn title="Bridesmaids" members={BRIDESMAIDS} side="right" gender="female" variant="superlative" />
+          <PartyColumn title={t('party.bridesmaids')} members={BRIDESMAIDS} side="right" gender="female" variant="superlative" />
         </div>
       </div>
     </section>
