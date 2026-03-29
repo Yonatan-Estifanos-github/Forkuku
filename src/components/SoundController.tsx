@@ -80,7 +80,7 @@ export default function SoundController() {
   };
 
   const utilityPillClass = 'h-10 px-4 rounded-full flex items-center justify-center bg-black/20 backdrop-blur-md border border-white/10 text-[10px] uppercase tracking-widest text-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.18)]';
-  const inlineCountdown = `${formatNumber(timeRemaining.days)}D : ${formatNumber(timeRemaining.hours)}H : ${formatNumber(timeRemaining.minutes)}M`;
+  const inlineCountdown = `${formatNumber(timeRemaining.days)}D : ${formatNumber(timeRemaining.hours)}H : ${formatNumber(timeRemaining.minutes)}M : ${formatNumber(timeRemaining.seconds)}S`;
 
   return (
     <div className="fixed left-0 right-0 top-[max(1rem,env(safe-area-inset-top))] z-50 px-4">
@@ -128,7 +128,7 @@ export default function SoundController() {
             }`}
           >
             <span className="truncate text-center tabular-nums">
-              {timeRemaining.isComplete ? '00D : 00H : 00M' : inlineCountdown}
+              {timeRemaining.isComplete ? '00D : 00H : 00M : 00S' : inlineCountdown}
             </span>
           </div>
         )}
