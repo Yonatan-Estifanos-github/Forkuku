@@ -2,12 +2,14 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useCountdown, formatNumber } from '@/hooks/useCountdown';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function SoundController() {
   const [isPlaying, setIsPlaying] = useState(false);
   const { timeRemaining, mounted } = useCountdown();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const shouldResumeRef = useRef(false);
+  const { language, setLanguage, t } = useLanguage();
 
   // Auto-start if user opted into music on the login page
   useEffect(() => {
@@ -77,42 +79,11 @@ export default function SoundController() {
     }
   };
 
-  // Speaker High Icon (with sound waves)
-  const SpeakerHighIcon = () => (
-    <svg
-      className="w-5 h-5"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#D4A845"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="#D4A845" />
-      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-    </svg>
-  );
-
-  // Speaker Muted Icon (with X)
-  const SpeakerMutedIcon = () => (
-    <svg
-      className="w-5 h-5"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#D4A845"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="#D4A845" />
-      <line x1="23" y1="9" x2="17" y2="15" />
-      <line x1="17" y1="9" x2="23" y2="15" />
-    </svg>
-  );
+  const utilityPillClass = 'h-10 px-4 rounded-full flex items-center justify-center bg-black/20 backdrop-blur-md border border-white/10 text-[10px] uppercase tracking-widest text-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.18)]';
+  const inlineCountdown = `${formatNumber(timeRemaining.days)}D : ${formatNumber(timeRemaining.hours)}H : ${formatNumber(timeRemaining.minutes)}M : ${formatNumber(timeRemaining.seconds)}S`;
 
   return (
-    <div className="fixed top-6 right-6 z-[100] flex flex-row-reverse items-center gap-3">
+    <div className="fixed left-0 right-0 top-[max(1rem,env(safe-area-inset-top))] z-50 px-4">
       <audio
         ref={audioRef}
         src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/amlake-keberlnge.mp3"
@@ -121,65 +92,68 @@ export default function SoundController() {
         autoPlay={false}
       />
 
-      <button
-        onClick={toggleAudio}
-        className="group flex items-center gap-3 px-4 py-2 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/10 transition-all duration-300"
-        aria-label={isPlaying ? "Mute music" : "Unmute music"}
-      >
-        {/* Waveform Visualizer */}
-        <div className="flex items-end justify-center gap-[3px] h-5">
-          {[0, 1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className={`w-[2px] bg-[#D4A845] rounded-full transition-all duration-300 ${
-                isPlaying ? 'bar-playing' : 'h-[2px]'
-              }`}
-            />
-          ))}
+      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-2">
+        <div
+          className={`${utilityPillClass} min-w-0 flex-1 justify-start sm:flex-none ${
+            language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'
+          }`}
+        >
+          <button
+            onClick={() => setLanguage('en')}
+            className={`transition-colors duration-300 ${
+              language === 'en' ? 'text-white' : 'text-white/45 hover:text-white/70'
+            }`}
+            aria-label="Switch to English"
+            aria-pressed={language === 'en'}
+          >
+            EN
+          </button>
+          <span className="mx-2 text-white/35">|</span>
+          <button
+            onClick={() => setLanguage('am')}
+            className={`transition-colors duration-300 ${
+              language === 'am' ? 'text-white' : 'text-white/45 hover:text-white/70'
+            }`}
+            aria-label="Switch to Amharic"
+            aria-pressed={language === 'am'}
+          >
+            አማ
+          </button>
         </div>
 
-        {/* Speaker Icon */}
-        {isPlaying ? <SpeakerHighIcon /> : <SpeakerMutedIcon />}
-
-        {/* Encouraging text - only shows when muted */}
-        {!isPlaying && (
-          <span className="text-[10px] sm:text-xs text-white font-medium tracking-widest uppercase animate-pulse">
-            Worship with us
-          </span>
+        {mounted && (
+          <div
+            className={`${utilityPillClass} countdown-container min-w-0 flex-1 ${
+              language === 'am' ? 'font-ethiopic normal-case tracking-normal text-[11px]' : 'font-sans'
+            }`}
+          >
+            <span className="truncate text-center tabular-nums">
+              {timeRemaining.isComplete ? '00D : 00H : 00M : 00S' : inlineCountdown}
+            </span>
+          </div>
         )}
-      </button>
 
-      {/* Countdown Timer */}
-      {mounted && !timeRemaining.isComplete && (
-        <div className="countdown-container flex items-center gap-1 px-3 py-2 rounded-full bg-black/50 backdrop-blur-md border border-white/10">
-          <div className="flex flex-col items-center">
-            <span className="font-serif text-sm sm:text-base font-light text-white tabular-nums">{formatNumber(timeRemaining.days)}</span>
-            <span className="text-[8px] text-[#D4A845]/70 tracking-wider uppercase">Days</span>
+        <button
+          onClick={toggleAudio}
+          className={`${utilityPillClass} min-w-0 flex-1 gap-2 transition-colors duration-300 hover:bg-black/30 sm:flex-none ${
+            language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'
+          }`}
+          aria-label={isPlaying ? 'Mute music' : 'Unmute music'}
+          aria-pressed={isPlaying}
+          >
+            <div className="flex h-4 items-end justify-center gap-[3px] text-[#D4A845]">
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className={`w-[2px] rounded-full bg-current transition-all duration-300 ${
+                  isPlaying ? 'bar-playing' : 'h-[3px]'
+                }`}
+              />
+            ))}
           </div>
-          <span className="text-white/30 text-xs mx-1">:</span>
-          <div className="flex flex-col items-center">
-            <span className="font-serif text-sm sm:text-base font-light text-white tabular-nums">{formatNumber(timeRemaining.hours)}</span>
-            <span className="text-[8px] text-[#D4A845]/70 tracking-wider uppercase">Hrs</span>
-          </div>
-          <span className="text-white/30 text-xs mx-1">:</span>
-          <div className="flex flex-col items-center">
-            <span className="font-serif text-sm sm:text-base font-light text-white tabular-nums">{formatNumber(timeRemaining.minutes)}</span>
-            <span className="text-[8px] text-[#D4A845]/70 tracking-wider uppercase">Min</span>
-          </div>
-          <span className="text-white/30 text-xs mx-1">:</span>
-          <div className="flex flex-col items-center">
-            <span className="font-serif text-sm sm:text-base font-light text-white tabular-nums">{formatNumber(timeRemaining.seconds)}</span>
-            <span className="text-[8px] text-[#D4A845]/70 tracking-wider uppercase">Sec</span>
-          </div>
-        </div>
-      )}
-
-      {/* Celebration message when countdown complete */}
-      {mounted && timeRemaining.isComplete && (
-        <div className="px-3 py-2 rounded-full bg-black/50 backdrop-blur-md border border-white/10">
-          <span className="font-serif text-sm text-[#D4A845] italic">The Celebration Begins</span>
-        </div>
-      )}
+          <span className="truncate">{t('hero.utilityMusic')}</span>
+        </button>
+      </div>
     </div>
   );
 }
