@@ -661,64 +661,69 @@ function SuccessScreen({ partyName, onBack }: { partyName: string; onBack: () =>
 }
 
 // ============================================================================
-// ALREADY RESPONDED SCREEN
+// RESPONDED CONFIRMATION SCREEN
 // ============================================================================
-function AlreadyRespondedScreen({ partyName, onBack, onNotMyFamily }: { partyName: string; onBack: () => void; onNotMyFamily?: () => void }) {
+function RespondedConfirmationScreen({
+  party,
+  onEdit,
+  onNotMyFamily,
+}: {
+  party: Party;
+  onEdit: () => void;
+  onNotMyFamily?: () => void;
+}) {
   const { t } = useLanguage();
 
   return (
-    <div className="w-full max-w-md flex flex-col items-center">
-      {/* Back Button */}
-      <div className="w-full flex justify-start">
+    <div className="w-full max-w-md flex flex-col items-center text-center">
+
+      {/* Gold checkmark ring */}
+      <div className="w-16 h-16 rounded-full border border-[#D4A845]/30 flex items-center justify-center mx-auto mb-8">
+        <svg className="w-7 h-7 text-[#D4A845]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+
+      {/* Pre-header */}
+      <p className="text-[9px] font-sans tracking-[0.4em] uppercase text-[#D4A845]/70 mb-4">
+        {t('rsvp.youreInvited')}
+      </p>
+
+      {/* Party name */}
+      <h3 className="font-serif text-3xl md:text-4xl text-[#E6D2B5] mb-8 leading-snug">
+        {party.party_name}
+      </h3>
+
+      {/* Warm confirmation message */}
+      <p className="font-serif italic text-base md:text-lg leading-relaxed text-stone-400 mb-12 px-2">
+        {t('rsvp.alreadyRespondedConfirmation')}
+      </p>
+
+      {/* Registry link */}
+      <a
+        href="/#registry"
+        className="border border-[#D4A845]/40 text-[#D4A845] bg-transparent hover:bg-[#D4A845]/8 px-8 py-3 rounded-full text-[10px] tracking-widest uppercase font-sans transition-all duration-300 mb-10"
+      >
+        {t('rsvp.viewRegistry')}
+      </a>
+
+      {/* Edit escape hatch */}
+      <button
+        onClick={onEdit}
+        className="text-[10px] font-sans tracking-widest uppercase text-white/35 hover:text-[#D4A845] transition-colors duration-300 border-b border-white/10 hover:border-[#D4A845]/40 pb-px"
+      >
+        {t('rsvp.editResponse')}
+      </button>
+
+      {/* Wrong family escape hatch */}
+      {onNotMyFamily && (
         <button
-          onClick={onBack}
-          className="mb-8 font-serif text-sm tracking-wide flex items-center gap-2 text-stone-500 hover:text-stone-300 transition-colors"
+          onClick={onNotMyFamily}
+          className="mt-6 text-[10px] font-sans tracking-widest uppercase text-stone-700 hover:text-stone-500 transition-colors duration-300"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          {t('rsvp.goBack')}
+          Not the {party.party_name}? Search for your invitation
         </button>
-      </div>
-
-      <div className="text-center">
-        <div className="w-20 h-20 rounded-full border border-wedding-gold/30 flex items-center justify-center mx-auto mb-8">
-          <svg className="w-10 h-10 text-wedding-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-
-        <h3 className="font-display text-3xl md:text-4xl mb-4 text-stone-200">
-          {t('rsvp.alreadyRespondedTitle')}
-        </h3>
-        <p className="font-serif text-lg italic leading-relaxed text-stone-400">
-          {t('rsvp.alreadyRespondedMessage').replace('{name}', partyName)}
-        </p>
-
-        <div className="mt-10 pt-8 border-t border-white/10">
-          <p className="font-serif text-base leading-relaxed text-stone-400 mb-6">
-            {t('rsvp.alreadyRespondedNote')}
-          </p>
-
-          <a
-            href="/#registry"
-            className="inline-block px-8 py-3 font-medium text-sm tracking-widest uppercase transition-all duration-300 border border-wedding-gold/50 text-wedding-gold rounded hover:bg-wedding-gold/10 hover:border-wedding-gold"
-          >
-            {t('rsvp.viewRegistry')}
-          </a>
-
-          {onNotMyFamily && (
-            <p className="mt-8">
-              <button
-                onClick={onNotMyFamily}
-                className="text-[11px] font-sans tracking-widest text-stone-600 hover:text-stone-400 transition-colors duration-300 uppercase border-b border-stone-700 hover:border-stone-500 pb-px"
-              >
-                Not the {partyName}? Search for your invitation
-              </button>
-            </p>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -733,6 +738,7 @@ export default function Rsvp() {
   const [party, setParty] = useState<Party | null>(null);
   const [candidates, setCandidates] = useState<Party[]>([]);
   const [vipLoading, setVipLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const { t } = useLanguage();
 
   // On mount: if a vip_party_id cookie exists, skip search and load the party directly
@@ -841,11 +847,19 @@ export default function Rsvp() {
           )}
 
           {!vipLoading && view === 'already_responded' && party && (
-            <AlreadyRespondedScreen
-              partyName={party.party_name}
-              onBack={reset}
-              onNotMyFamily={resetAndClearVip}
-            />
+            isEditing ? (
+              <FormScreen
+                party={party}
+                onSubmit={() => { setIsEditing(false); setView('success'); }}
+                onBack={() => setIsEditing(false)}
+              />
+            ) : (
+              <RespondedConfirmationScreen
+                party={party}
+                onEdit={() => setIsEditing(true)}
+                onNotMyFamily={resetAndClearVip}
+              />
+            )
           )}
         </motion.div>
       </div>

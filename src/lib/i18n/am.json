@@ -126,7 +126,9 @@
     "viewRegistry": "ስጦታ ዝርዝር ይመልከቱ",
     "alreadyRespondedTitle": "ምላሽ ተሰጥቷል",
     "alreadyRespondedMessage": "{name}፣ መገኘትዎን ያረጋግጡ ቀደም ብሎ ደርሶናል። ለማረጋገጥዎ እናመሰግናለን!",
-    "alreadyRespondedNote": "ምላሽዎን ለመቀየር ከፈለጉ፣ እባክዎ ጥንዶቹን ያነጋግሩ።"
+    "alreadyRespondedNote": "ምላሽዎን ለመቀየር ከፈለጉ፣ እባክዎ ጥንዶቹን ያነጋግሩ።",
+    "alreadyRespondedConfirmation": "ቡድንዎ አስቀድሞ ምላሽ ሰጥቷል። ብዙ ተጨማሪ መረጃ እና የሳምንቱ መጨረሻ ዝርዝሮች ሲዘጋጁ እናነጋግርዎታለን። እንወድዎታለን፣ ከናንተ ጋር አብረን ለማክበር አንጠብቅም!",
+    "editResponse": "ምላሽዎን ለመቀየር ይፈልጋሉ? እዚህ ጠቅ ያድርጉ።"
   },
   "registry": {
     "heading": "ስጦታ ዝርዝር",
