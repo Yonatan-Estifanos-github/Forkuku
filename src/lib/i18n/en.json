@@ -1,4 +1,27 @@
 {
+  "legal": {
+    "compliance": "Compliance",
+    "heading": "Legal & Privacy",
+    "lastUpdated": "Last Updated: February 2026",
+    "privacyPolicy": "Privacy Policy",
+    "dataCollectionTitle": "Data Collection",
+    "dataCollectionBody": "We collect your phone number only when you voluntarily provide it during the RSVP process on this website.",
+    "useOfInfoTitle": "Use of Information",
+    "useOfInfoBody": "We use your number to send transactional wedding updates (such as RSVP reminders or schedule changes) and occasional future family-related announcements, including thank you notes, holiday greetings, or milestone celebrations.",
+    "mobilePrivacyTitle": "Mobile Privacy & Consent",
+    "mobilePrivacyBody": "We do not share, sell, or rent your mobile information or consent data to any third parties or affiliates for marketing or promotional purposes. All text messaging originator opt-in data and consent is excluded from any information sharing.",
+    "smsTerms": "SMS Terms & Conditions",
+    "consentTitle": "Consent",
+    "consentBody": "By providing your phone number during the RSVP process, you consent to receive updates regarding the Yonatan & Saron wedding and future family news.",
+    "frequencyTitle": "Frequency & Disclosures",
+    "frequencyBody": "Message frequency varies based on event updates and announcements.",
+    "frequencyDisclosure": "Message and data rates may apply. Reply STOP to opt out at any time. Reply HELP for assistance.",
+    "carrierTitle": "Carrier Liability",
+    "carrierBody": "Carriers are not liable for delayed or undelivered messages.",
+    "contactTitle": "Contact Us",
+    "contactBody": "If you have any questions regarding privacy or these terms, please contact us at:",
+    "backToInvitation": "← Back to Invitation"
+  },
   "login": {
     "beforeYouEnter": "Before you enter",
     "chooseLanguage": "Choose your language",
