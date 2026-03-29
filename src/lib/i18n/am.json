@@ -1,4 +1,20 @@
 {
+  "login": {
+    "beforeYouEnter": "ከመግባትዎ በፊት",
+    "chooseLanguage": "ቋንቋዎን ይምረጡ",
+    "english": "እንግሊዝኛ",
+    "amharic": "አማርኛ",
+    "worshipMusic": "የአምልኮ መዝሙር",
+    "worshipWithUs": "ከእኛ ጋር ያምልኩ",
+    "worshipping": "በማምለክ ላይ",
+    "privateEvent": "የግል ዝግጅት",
+    "enterPassword": "የይለፍ ቃል ያስገቡ",
+    "enter": "ይግቡ",
+    "verifying": "በማረጋገጥ ላይ...",
+    "incorrectPassword": "የይለፍ ቃሉ ትክክል አይደለም",
+    "somethingWentWrong": "ችግር ተፈጥሯል። እንደገና ይሞክሩ።",
+    "privacyPolicy": "የግላዊነት ፖሊሲ እና የአገልግሎት ውል"
+  },
   "nav": {
     "home": "መነሻ",
     "story": "ታሪካችን",

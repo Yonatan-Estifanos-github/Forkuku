@@ -12,7 +12,7 @@ export default function SiteLoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Keep audio in sync with toggle
@@ -45,11 +45,11 @@ export default function SiteLoginPage() {
       if (response.ok) {
         window.location.href = '/';
       } else {
-        setError('Incorrect password');
+        setError(t('login.incorrectPassword'));
         setLoading(false);
       }
     } catch {
-      setError('Something went wrong. Please try again.');
+      setError(t('login.somethingWentWrong'));
       setLoading(false);
     }
   };
@@ -66,16 +66,16 @@ export default function SiteLoginPage() {
           {/* Title */}
           <div className="flex items-center justify-center gap-4 mb-8">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#D4A845]/40" />
-            <span className="text-[#D4A845] text-[10px] tracking-[0.3em] uppercase font-sans">
-              Before you enter
+            <span className={`text-[#D4A845] text-[10px] tracking-[0.3em] uppercase ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
+              {t('login.beforeYouEnter')}
             </span>
             <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#D4A845]/40" />
           </div>
 
           {/* Language choice */}
           <div className="mb-8">
-            <p className="text-[#E6D2B5]/40 text-[10px] tracking-[0.25em] uppercase text-center mb-4 font-sans">
-              Choose your language
+            <p className={`text-[#E6D2B5]/40 text-[10px] tracking-[0.25em] uppercase text-center mb-4 ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
+              {t('login.chooseLanguage')}
             </p>
             <div className="flex gap-3 justify-center">
               {(['en', 'am'] as Language[]).map((lang) => (
@@ -88,7 +88,7 @@ export default function SiteLoginPage() {
                       : 'border-white/10 text-white/40 hover:border-white/25 hover:text-white/60'
                   } ${lang === 'am' ? 'font-ethiopic' : 'font-sans'}`}
                 >
-                  {lang === 'en' ? 'English' : 'አማርኛ'}
+                  {lang === 'en' ? t('login.english') : t('login.amharic')}
                 </button>
               ))}
             </div>
@@ -99,8 +99,8 @@ export default function SiteLoginPage() {
 
           {/* Music toggle */}
           <div className="mb-2">
-            <p className="text-[#E6D2B5]/40 text-[10px] tracking-[0.25em] uppercase text-center mb-4 font-sans">
-              Worship music
+            <p className={`text-[#E6D2B5]/40 text-[10px] tracking-[0.25em] uppercase text-center mb-4 ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
+              {t('login.worshipMusic')}
             </p>
             <button
               onClick={() => setMusicOn(v => !v)}
@@ -137,8 +137,8 @@ export default function SiteLoginPage() {
                 </svg>
               )}
 
-              <span className="text-sm tracking-widest uppercase font-sans">
-                {musicOn ? 'Worshipping' : 'Worship with us'}
+              <span className={`text-sm tracking-widest uppercase ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
+                {musicOn ? t('login.worshipping') : t('login.worshipWithUs')}
               </span>
             </button>
           </div>
@@ -150,8 +150,8 @@ export default function SiteLoginPage() {
           <h1 className="font-serif text-3xl text-[#E6D2B5] text-center mb-1">
             Yonatan & Saron
           </h1>
-          <p className="text-center text-[#E6D2B5]/40 text-xs tracking-[0.2em] uppercase mb-8">
-            Private Event
+          <p className={`text-center text-[#E6D2B5]/40 text-xs tracking-[0.2em] uppercase mb-8 ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+            {t('login.privateEvent')}
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -166,7 +166,7 @@ export default function SiteLoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-4 bg-[#1a1815] border border-[#D4A845]/30 rounded-xl outline-none focus:border-[#D4A845] transition-colors text-[#E6D2B5] text-center tracking-widest placeholder:text-[#E6D2B5]/30"
-              placeholder="Enter Password"
+              placeholder={t('login.enterPassword')}
               required
             />
 
@@ -175,7 +175,7 @@ export default function SiteLoginPage() {
               disabled={loading}
               className="w-full py-4 bg-[#D4A845] text-[#0a0908] font-serif text-base tracking-widest uppercase hover:bg-[#E6D2B5] transition-colors duration-300 disabled:opacity-70 disabled:cursor-not-allowed rounded-xl"
             >
-              {loading ? 'Verifying...' : 'Enter'}
+              {loading ? t('login.verifying') : t('login.enter')}
             </button>
           </form>
 
@@ -185,7 +185,7 @@ export default function SiteLoginPage() {
               href="/legal"
               className="text-[10px] text-[#E6D2B5]/20 hover:text-[#D4A845] transition-colors tracking-widest uppercase"
             >
-              Privacy Policy & Terms
+              {t('login.privacyPolicy')}
             </Link>
           </div>
         </div>

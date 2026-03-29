@@ -1,4 +1,20 @@
 {
+  "login": {
+    "beforeYouEnter": "Before you enter",
+    "chooseLanguage": "Choose your language",
+    "english": "English",
+    "amharic": "አማርኛ",
+    "worshipMusic": "Worship music",
+    "worshipWithUs": "Worship with us",
+    "worshipping": "Worshipping",
+    "privateEvent": "Private Event",
+    "enterPassword": "Enter Password",
+    "enter": "Enter",
+    "verifying": "Verifying...",
+    "incorrectPassword": "Incorrect password",
+    "somethingWentWrong": "Something went wrong. Please try again.",
+    "privacyPolicy": "Privacy Policy & Terms"
+  },
   "nav": {
     "home": "Home",
     "story": "Story",
