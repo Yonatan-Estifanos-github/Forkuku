@@ -112,7 +112,7 @@ export default function SoundController() {
     'h-10 rounded-full flex items-center justify-center bg-black/20 backdrop-blur-md border border-white/10 text-[10px] sm:text-xs uppercase tracking-widest text-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.18)] tabular-nums font-sans whitespace-nowrap shrink-0';
 
   return (
-    <div className="fixed left-0 right-0 top-[max(1rem,env(safe-area-inset-top))] z-50 px-4">
+    <div className="fixed left-0 right-0 top-[max(1rem,env(safe-area-inset-top))] z-50 flex justify-center px-4">
       <audio
         ref={audioRef}
         src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/amlake-keberlnge.mp3"
@@ -121,11 +121,28 @@ export default function SoundController() {
         autoPlay={false}
       />
 
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3">
+      {/* ── Single combined pill ─────────────────────────────────── */}
+      <div className={`${pillBase} px-4 sm:px-6 gap-0 relative overflow-visible`}>
 
-        {/* ── Countdown — left-anchored, never shrinks ──────────────── */}
+        {/* Pulsing glow rings when playing */}
+        {isPlaying && (
+          <>
+            <motion.span
+              className="absolute inset-0 rounded-full border border-[#D4A845]/50 pointer-events-none"
+              animate={{ scale: [1, 1.45], opacity: [0.5, 0] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }}
+            />
+            <motion.span
+              className="absolute inset-0 rounded-full border border-[#D4A845]/25 pointer-events-none"
+              animate={{ scale: [1, 1.75], opacity: [0.35, 0] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut', delay: 0.45 }}
+            />
+          </>
+        )}
+
+        {/* Countdown */}
         {mounted && (
-          <div className={`${pillBase} px-4 sm:px-6 gap-0`}>
+          <span className="inline-flex items-center gap-0">
             {timeRemaining.isComplete ? (
               <span>00D : 00H : 00M : 00S</span>
             ) : (
@@ -136,32 +153,19 @@ export default function SoundController() {
                 <CountdownUnit value={formatNumber(timeRemaining.seconds)} suffix="S" />
               </>
             )}
-          </div>
+          </span>
         )}
 
-        {/* ── Music button — right-anchored ────────────────────────── */}
+        {/* Divider */}
+        <span className="mx-4 sm:mx-5 h-4 w-px bg-white/15 shrink-0" />
+
+        {/* Music toggle */}
         <motion.button
           onClick={toggleAudio}
           aria-label={isPlaying ? 'Mute music' : 'Unmute music'}
           aria-pressed={isPlaying}
-          className={`${pillBase} px-4 sm:px-5 relative gap-2 overflow-visible transition-colors duration-300 hover:bg-black/30`}
+          className="flex items-center gap-2 relative"
         >
-          {/* Pulsing glow rings when playing */}
-          {isPlaying && (
-            <>
-              <motion.span
-                className="absolute inset-0 rounded-full border border-[#D4A845]/50 pointer-events-none"
-                animate={{ scale: [1, 1.45], opacity: [0.5, 0] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }}
-              />
-              <motion.span
-                className="absolute inset-0 rounded-full border border-[#D4A845]/25 pointer-events-none"
-                animate={{ scale: [1, 1.75], opacity: [0.35, 0] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut', delay: 0.45 }}
-              />
-            </>
-          )}
-
           {/* Waveform bars */}
           <div className="flex h-4 items-end justify-center gap-[3px] text-[#D4A845]">
             {[0, 1, 2, 3].map((i) => (
@@ -174,7 +178,7 @@ export default function SoundController() {
             ))}
           </div>
 
-          {/* Label — always visible, shimmers gold when playing */}
+          {/* Label */}
           <motion.span
             animate={isPlaying ? { opacity: [0.8, 1, 0.8] } : { opacity: 0.9 }}
             transition={isPlaying ? { duration: 2.5, repeat: Infinity, ease: 'easeInOut' } : {}}
