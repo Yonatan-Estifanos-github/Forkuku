@@ -15,6 +15,15 @@ export default function SiteLoginPage() {
   const { language, setLanguage, t } = useLanguage();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Auto-fill password from long-lived cookie so returning guests just hit Enter
+  useEffect(() => {
+    const saved = document.cookie
+      .split('; ')
+      .find((c) => c.startsWith('site-access-token='))
+      ?.split('=')[1];
+    if (saved) setPassword(decodeURIComponent(saved));
+  }, []);
+
   // Keep audio in sync with toggle
   useEffect(() => {
     if (!audioRef.current) return;

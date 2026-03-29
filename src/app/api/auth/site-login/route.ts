@@ -21,15 +21,25 @@ export async function POST(request: Request) {
       );
     }
 
-    // Password is correct - create response with cookie
+    // Password is correct - create response with cookies
     const response = NextResponse.json({ success: true });
 
+    // Long-lived auth token (30 days) — used to auto-fill password on next visit
     response.cookies.set('site-access-token', sitePassword, {
       path: '/',
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 30, // 30 days
+    });
+
+    // Session cookie — expires when the browser closes, gates entry to the main site
+    response.cookies.set('site-session-entered', '1', {
+      path: '/',
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      // no maxAge → session cookie, cleared on browser close
     });
 
     return response;

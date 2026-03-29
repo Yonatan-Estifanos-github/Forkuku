@@ -35,8 +35,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // If cookie matches password, allow access
-  if (accessToken === sitePassword) {
+  // Require both: a valid long-lived auth token AND a session cookie set when
+  // the user came through the login page this browser session. This ensures
+  // every new browser session always shows the "Before you enter" screen.
+  const sessionEntered = request.cookies.get('site-session-entered')?.value;
+  if (accessToken === sitePassword && sessionEntered === '1') {
     return NextResponse.next();
   }
 
