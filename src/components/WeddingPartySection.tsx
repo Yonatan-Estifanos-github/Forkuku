@@ -565,25 +565,24 @@ export default function WeddingPartySection() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(212,168,69,0.04) 0%, transparent 70%)' }} />
 
-      <div className="text-center mb-16 md:mb-24 relative z-10">
+      <div className="text-center mb-20 md:mb-28 relative z-10">
         <h2
-          className={`text-5xl md:text-7xl lg:text-8xl text-white ${isAmharic ? 'font-ethiopic font-light tracking-normal' : 'font-serif font-semibold tracking-[0.06em] uppercase'}`}
-          style={{ filter: 'drop-shadow(0 0 36px rgba(212,168,69,0.18))' }}
+          className={`text-[2.9rem] md:text-7xl lg:text-[5.4rem] ${isAmharic ? 'font-ethiopic font-light tracking-normal text-stone-200' : 'font-serif italic font-normal tracking-tight text-[#EAE5D9]'}`}
+          style={{ filter: 'drop-shadow(0 0 28px rgba(212,168,69,0.14))' }}
         >
           {t('party.heading')}
         </h2>
-        <div className="flex items-center justify-center gap-4 mt-6">
-          <div className="w-16 md:w-28 h-[1px] bg-gradient-to-r from-transparent to-wedding-gold/45" />
-          <div className="w-2 h-2 rounded-full bg-wedding-gold/70" />
-          <div className="w-16 md:w-28 h-[1px] bg-gradient-to-l from-transparent to-wedding-gold/45" />
+        <div className="flex items-center justify-center gap-4 mt-8 md:mt-10">
+          <div className="w-16 md:w-28 h-[1px] bg-gradient-to-r from-transparent to-wedding-gold/35" />
+          <div className="w-2 h-2 rounded-full bg-wedding-gold/60" />
+          <div className="w-16 md:w-28 h-[1px] bg-gradient-to-l from-transparent to-wedding-gold/35" />
         </div>
         <p
-          className={`text-base md:text-lg mt-6 max-w-2xl mx-auto ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}
-          style={{ color: 'rgba(212,168,69,0.62)', filter: 'drop-shadow(0 0 20px rgba(212,168,69,0.16))' }}
+          className={`mt-8 md:mt-10 max-w-3xl mx-auto text-xs md:text-sm leading-relaxed ${isAmharic ? 'font-ethiopic text-wedding-gold/95 tracking-normal' : 'font-sans uppercase tracking-[0.18em] text-wedding-gold'}`}
         >
           {t('party.subtitle')}
         </p>
-        <p className={`text-xs md:text-sm text-white/30 mt-3 ${isAmharic ? 'font-ethiopic' : 'font-sans italic'}`}>
+        <p className={`mt-5 text-sm md:text-base text-stone-500 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
           {t('party.count')}
         </p>
       </div>
