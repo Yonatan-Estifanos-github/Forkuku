@@ -99,9 +99,14 @@ export async function POST(req: Request) {
 
     // 3. Send Internal Alert and Guest Confirmation
     if (resend) {
-      const attending = guests.filter((g: any) => g.is_attending).map((g: any) => g.name);
-      const declined = guests.filter((g: any) => !g.is_attending).map((g: any) => g.name);
-      const dietary = guests.filter((g: any) => g.dietary_notes).map((g: any) => `${g.name}: ${g.dietary_notes}`);
+      interface GuestResponse {
+        name: string;
+        is_attending: boolean;
+        dietary_notes?: string;
+      }
+      const attending = (guests as GuestResponse[]).filter(g => g.is_attending).map(g => g.name);
+      const declined = (guests as GuestResponse[]).filter(g => !g.is_attending).map(g => g.name);
+      const dietary = (guests as GuestResponse[]).filter(g => g.dietary_notes).map(g => `${g.name}: ${g.dietary_notes}`);
 
       // Internal Alert
       await resend.emails.send({
@@ -127,7 +132,6 @@ export async function POST(req: Request) {
             to: guestEmail,
             subject: 'RSVP Confirmed — Yonatan & Saron',
             react: RSVPConfirmation({
-              partyName: updatedParty.party_name,
               guests: guests
             })
           }).catch(err => console.error(`Guest Confirmation Error (${guestEmail}):`, err));

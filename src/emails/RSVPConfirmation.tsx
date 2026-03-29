@@ -12,14 +12,12 @@ import {
 import * as React from 'react';
 
 interface RSVPConfirmationProps {
-  partyName: string;
   guests: { name: string; is_attending: boolean }[];
 }
 
 const PRAY_IMAGE_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.png';
 
 export const RSVPConfirmation = ({ 
-  partyName = 'The Guest',
   guests = []
 }: RSVPConfirmationProps) => {
   const attendingGuests = guests.filter(g => g.is_attending);
