@@ -24,26 +24,24 @@ interface Party {
 }
 
 // ============================================================================
-// LUXURY INPUT — animated center-expand underline
+// LUXURY INPUT — bottom-border only
 // ============================================================================
 function LuxuryInput({
   label,
   id,
+  className,
   ...props
 }: { label: string; id: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-wedding-gold/80">
+      <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-wedding-gold/80 text-center">
         {label}
       </label>
-      <div className="luxury-input relative">
-        <input
-          id={id}
-          className="w-full bg-transparent border-0 py-3 text-lg font-serif tracking-wide outline-none text-stone-200 placeholder:text-stone-600 placeholder:italic"
-          {...props}
-        />
-        <span className="luxury-input-line" />
-      </div>
+      <input
+        id={id}
+        className={`w-full bg-transparent border-b border-white/20 py-3 text-lg font-serif tracking-wide outline-none text-stone-200 placeholder:text-stone-600 placeholder:italic focus:border-white/50 transition-colors duration-300 text-center${className ? ` ${className}` : ''}`}
+        {...props}
+      />
     </div>
   );
 }
@@ -58,14 +56,11 @@ function LuxuryTextarea({
       <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-wedding-gold/80">
         {label}
       </label>
-      <div className="luxury-input relative">
-        <textarea
-          id={id}
-          className="w-full bg-transparent border-0 py-3 text-lg font-serif tracking-wide outline-none text-stone-200 resize-none placeholder:text-stone-600 placeholder:italic"
-          {...props}
-        />
-        <span className="luxury-input-line" />
-      </div>
+      <textarea
+        id={id}
+        className="w-full bg-transparent border-b border-white/20 py-3 text-lg font-serif tracking-wide outline-none text-stone-200 resize-none placeholder:text-stone-600 placeholder:italic focus:border-white/50 transition-colors duration-300"
+        {...props}
+      />
     </div>
   );
 }
@@ -74,7 +69,7 @@ function LuxuryTextarea({
 // BUTTON
 // ============================================================================
 const btnClass =
-  'px-10 py-4 font-serif text-sm tracking-widest uppercase transition-all duration-300 bg-wedding-gold hover:bg-harvest-wheat text-luxury-black rounded disabled:opacity-50 disabled:cursor-not-allowed';
+  'border border-[#D4A845] text-[#D4A845] bg-transparent hover:bg-[#D4A845]/10 px-10 py-3 rounded-full text-[10px] tracking-widest uppercase font-sans transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed';
 
 // ============================================================================
 // SEARCH SCREEN
@@ -176,13 +171,13 @@ function SearchScreen({
   };
 
   return (
-    <div className="w-full max-w-lg text-center">
-      <p className="font-serif text-base md:text-lg mb-10 leading-relaxed px-4 text-stone-400">
+    <div className="w-full max-w-md mx-auto text-center">
+      <p className="font-serif text-base md:text-lg mb-10 leading-relaxed px-4 text-stone-400 text-center mx-auto">
         {t('rsvp.searchPrompt')}
       </p>
 
       <form onSubmit={handleSearch} className="flex flex-col gap-6">
-        <div className="text-left">
+        <div className="text-center">
           <LuxuryInput
             label={t('rsvp.namePlaceholder')}
             id="search"
@@ -191,11 +186,12 @@ function SearchScreen({
             onChange={(e) => setQuery(e.target.value)}
             disabled={isLoading}
             placeholder={t('rsvp.nameExample')}
+            className="text-center"
           />
         </div>
 
         {error && (
-          <p className="text-sm font-serif italic text-left text-red-500">
+          <p className="text-sm font-serif italic text-center text-red-500">
             {error}
           </p>
         )}
@@ -250,9 +246,9 @@ function SelectScreen({
             <button
               key={party.id}
               onClick={() => onSelect(party)}
-              className="text-left w-full px-6 py-5 rounded-xl border border-white/10 bg-stone-800 hover:border-wedding-gold/50 hover:bg-stone-700 transition-all group"
+              className="text-left w-full px-2 py-4 border-b border-white/10 hover:border-[#D4A845]/40 transition-all group"
             >
-              <p className="font-serif text-lg text-stone-200 group-hover:text-wedding-gold transition-colors mb-1">
+              <p className="font-serif text-lg text-stone-200 group-hover:text-[#D4A845] transition-colors mb-1">
                 {party.party_name}
               </p>
               {guestNames && (
@@ -459,10 +455,10 @@ function FormScreen({
                     <button
                       type="button"
                       onClick={() => toggleGuest(idx, true)}
-                      className={`px-4 py-2 text-xs tracking-widest uppercase border rounded-full transition-all duration-300 ${
+                      className={`px-4 py-2 text-[10px] tracking-widest uppercase border rounded-full transition-all duration-300 font-sans ${
                         guest.is_attending
-                          ? 'bg-wedding-gold text-luxury-black border-wedding-gold'
-                          : 'bg-transparent border-white/20 text-white/60 hover:border-wedding-gold/50 hover:text-wedding-gold'
+                          ? 'border-[#D4A845] text-[#D4A845] bg-[#D4A845]/10'
+                          : 'bg-transparent border-white/20 text-white/60 hover:border-[#D4A845]/50 hover:text-[#D4A845]'
                       }`}
                     >
                       {t('rsvp.accept')}
@@ -470,10 +466,10 @@ function FormScreen({
                     <button
                       type="button"
                       onClick={() => toggleGuest(idx, false)}
-                      className={`px-4 py-2 text-xs tracking-widest uppercase border rounded-full transition-all duration-300 ${
+                      className={`px-4 py-2 text-[10px] tracking-widest uppercase border rounded-full transition-all duration-300 font-sans ${
                         !guest.is_attending
-                          ? 'bg-wedding-gold text-luxury-black border-wedding-gold'
-                          : 'bg-transparent border-white/20 text-white/60 hover:border-wedding-gold/50 hover:text-wedding-gold'
+                          ? 'border-[#D4A845] text-[#D4A845] bg-[#D4A845]/10'
+                          : 'bg-transparent border-white/20 text-white/60 hover:border-[#D4A845]/50 hover:text-[#D4A845]'
                       }`}
                     >
                       {t('rsvp.decline')}
@@ -483,16 +479,13 @@ function FormScreen({
 
                 {/* Edit Plus One Name */}
                 {guest.is_plus_one && (
-                  <div className="luxury-input relative">
-                    <input
-                      type="text"
-                      placeholder={t('rsvp.guestName')}
-                      value={guest.name || ''}
-                      onChange={(e) => handleNameChange(idx, e.target.value)}
-                      className="w-full bg-transparent border-0 text-sm font-serif py-1 outline-none text-stone-200 placeholder:italic placeholder:text-stone-600"
-                    />
-                    <span className="luxury-input-line" />
-                  </div>
+                  <input
+                    type="text"
+                    placeholder={t('rsvp.guestName')}
+                    value={guest.name || ''}
+                    onChange={(e) => handleNameChange(idx, e.target.value)}
+                    className="w-full bg-transparent border-b border-white/20 text-sm font-serif py-1 outline-none text-stone-200 placeholder:italic placeholder:text-stone-600 focus:border-white/50 transition-colors duration-300"
+                  />
                 )}
               </div>
             ))}
@@ -522,7 +515,7 @@ function FormScreen({
         </div>
 
         {/* SMS Consent */}
-        <div className="mb-8 flex items-start gap-3 bg-white/5 p-4 rounded-lg border border-white/5">
+        <div className="mb-8 flex items-start gap-3">
           <input
             type="checkbox"
             id="sms-consent"
@@ -705,67 +698,63 @@ export default function Rsvp() {
   };
 
   return (
-    <section className="relative min-h-screen w-full bg-stone-950">
-      <div className="relative z-10 flex flex-col items-center pt-60 md:pt-64 pb-20 px-6 min-h-screen">
-        {/* Card container — fades in on scroll */}
+    <section className="relative min-h-screen w-full">
+      <div className="relative z-10 flex flex-col items-center pt-60 md:pt-64 pb-48 px-6 min-h-screen">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="rsvp-card-noise relative max-w-xl w-full mx-auto bg-stone-900 border border-white/10 rounded-2xl p-8 md:p-12 flex flex-col items-center overflow-hidden"
+          className="max-w-2xl w-full mx-auto flex flex-col items-center"
         >
-          {/* Content sits above the noise pseudo-element */}
-          <div className="relative z-10 flex flex-col items-center w-full">
-            {/* Header */}
-            <h2 className="font-display text-6xl tracking-wide mb-4 text-wedding-gold">
-              {t('rsvp.heading')}
-            </h2>
-            <p className="font-serif italic text-base md:text-lg tracking-wide mb-12 text-stone-400">
-              {t('rsvp.deadline')}
-            </p>
+          {/* Header */}
+          <h2 className="font-display text-6xl tracking-wide mb-4 text-wedding-gold text-center">
+            {t('rsvp.heading')}
+          </h2>
+          <p className="font-serif italic text-base md:text-lg tracking-wide mb-12 text-stone-400 text-center">
+            {t('rsvp.deadline')}
+          </p>
 
-            {/* View Router */}
-            {view === 'search' && (
-              <SearchScreen
-                onFound={handleFound}
-                onMultiple={(matches) => {
-                  setCandidates(matches);
-                  setView('select');
-                }}
-              />
-            )}
+          {/* View Router */}
+          {view === 'search' && (
+            <SearchScreen
+              onFound={handleFound}
+              onMultiple={(matches) => {
+                setCandidates(matches);
+                setView('select');
+              }}
+            />
+          )}
 
-            {view === 'select' && (
-              <SelectScreen
-                parties={candidates}
-                onSelect={handleFound}
-                onBack={reset}
-              />
-            )}
+          {view === 'select' && (
+            <SelectScreen
+              parties={candidates}
+              onSelect={handleFound}
+              onBack={reset}
+            />
+          )}
 
-            {view === 'form' && party && (
-              <FormScreen
-                party={party}
-                onSubmit={() => setView('success')}
-                onBack={reset}
-              />
-            )}
+          {view === 'form' && party && (
+            <FormScreen
+              party={party}
+              onSubmit={() => setView('success')}
+              onBack={reset}
+            />
+          )}
 
-            {view === 'success' && party && (
-              <SuccessScreen
-                partyName={party.party_name}
-                onBack={reset}
-              />
-            )}
+          {view === 'success' && party && (
+            <SuccessScreen
+              partyName={party.party_name}
+              onBack={reset}
+            />
+          )}
 
-            {view === 'already_responded' && party && (
-              <AlreadyRespondedScreen
-                partyName={party.party_name}
-                onBack={reset}
-              />
-            )}
-          </div>
+          {view === 'already_responded' && party && (
+            <AlreadyRespondedScreen
+              partyName={party.party_name}
+              onBack={reset}
+            />
+          )}
         </motion.div>
       </div>
     </section>
