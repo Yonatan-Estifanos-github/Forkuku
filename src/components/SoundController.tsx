@@ -35,8 +35,8 @@ function CountdownUnit({
           </motion.span>
         </AnimatePresence>
       </span>
-      <span className="opacity-50 ml-px">{suffix}</span>
-      {showSep && <span className="opacity-20 mx-1.5">·</span>}
+      <span className="opacity-60 ml-1">{suffix}</span>
+      {showSep && <span className="opacity-25 mx-2.5 sm:mx-3">•</span>}
     </span>
   );
 }
@@ -107,7 +107,7 @@ export default function SoundController() {
   };
 
   const pillBase =
-    'h-9 px-3 sm:h-10 sm:px-4 rounded-full flex items-center justify-center bg-black/20 backdrop-blur-md border border-white/10 text-[8px] sm:text-[10px] uppercase tracking-[0.22em] sm:tracking-widest text-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.18)]';
+    'h-10 px-6 sm:h-10 sm:px-10 rounded-full flex items-center justify-center bg-black/20 backdrop-blur-md border border-white/10 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.18)] tabular-nums font-sans';
 
   return (
     <div className="fixed left-0 right-0 top-[max(1rem,env(safe-area-inset-top))] z-50 px-4">
@@ -127,9 +127,9 @@ export default function SoundController() {
 
         {/* ── Countdown ────────────────────────────────────────────── */}
         {mounted && (
-          <div className={`${pillBase} gap-0 font-sans shrink-0`}>
+          <div className={`${pillBase} gap-0 shrink-0`}>
             {timeRemaining.isComplete ? (
-              <span className="tabular-nums">00D · 00H · 00M · 00S</span>
+              <span>00 D&nbsp;&nbsp;•&nbsp;&nbsp;00 H&nbsp;&nbsp;•&nbsp;&nbsp;00 M&nbsp;&nbsp;•&nbsp;&nbsp;00 S</span>
             ) : (
               <>
                 <CountdownUnit value={formatNumber(timeRemaining.days)}    suffix="D" showSep />
@@ -147,7 +147,7 @@ export default function SoundController() {
             onClick={toggleAudio}
             aria-label={isPlaying ? 'Mute music' : 'Unmute music'}
             aria-pressed={isPlaying}
-            className={`${pillBase} relative shrink-0 gap-1.5 sm:gap-2 overflow-visible transition-colors duration-300 hover:bg-black/30 font-sans`}
+            className={`${pillBase} relative shrink-0 gap-1.5 sm:gap-2 overflow-visible transition-colors duration-300 hover:bg-black/30`}
           >
             {/* Pulsing glow rings when playing */}
             {isPlaying && (

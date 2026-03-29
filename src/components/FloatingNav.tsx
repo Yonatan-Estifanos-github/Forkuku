@@ -1,8 +1,8 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 
 const NAV_KEYS = [
@@ -17,8 +17,6 @@ const NAV_KEYS = [
 export default function FloatingNav() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string>('home');
-  const [isExpanded, setIsExpanded] = useState(false);
-  const collapseTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { t, language, setLanguage } = useLanguage();
 
   useEffect(() => {
@@ -26,10 +24,6 @@ export default function FloatingNav() {
     const sectionIds = ['home', 'story', 'venue', 'wedding-party', 'rsvp', 'registry'];
 
     const handleScroll = () => {
-      // Collapse nav on scroll so it gets out of the way immediately
-      clearTimeout(collapseTimer.current);
-      setIsExpanded(false);
-
       const midpoint = window.scrollY + window.innerHeight * 0.4;
       let active = sectionIds[0];
       for (const id of sectionIds) {
@@ -49,15 +43,6 @@ export default function FloatingNav() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [pathname]);
-
-  const expand = () => {
-    clearTimeout(collapseTimer.current);
-    setIsExpanded(true);
-  };
-
-  const scheduleCollapse = () => {
-    collapseTimer.current = setTimeout(() => setIsExpanded(false), 700);
-  };
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (pathname !== '/') return;
@@ -79,116 +64,59 @@ export default function FloatingNav() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1, delay: 2.5, ease: 'easeOut' }}
-        // Desktop: hover to expand. onMouse* does NOT fire on touch,
-        // so mobile users see the dots and tap them to expand.
-        onMouseEnter={expand}
-        onMouseLeave={scheduleCollapse}
         aria-label="Main navigation"
+        className="flex flex-col items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-full border border-white/10 bg-black/20 backdrop-blur-md"
       >
-        <AnimatePresence mode="popLayout" initial={false}>
-
-          {/* ── MINIMIZED: column of tiny dots ─────────────────────────── */}
-          {!isExpanded && (
-            <motion.div
-              key="dots"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 0.15 } }}
-              transition={{ duration: 0.2 }}
-              // onClick lets mobile users tap to expand
-              onClick={expand}
-              className="flex flex-col items-center gap-4 py-3 px-2 cursor-pointer"
-              aria-hidden="true"
+        {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }) => {
+          const active = activeSection === sectionId;
+          const label = t(`nav.${key}`);
+          return (
+            <a
+              key={key}
+              href={href}
+              onClick={(e) => handleClick(e, href)}
+              aria-current={active ? 'page' : undefined}
+              title={label}
+              className={`relative flex flex-col items-center gap-0.5 px-1 py-0.5 rounded-full transition-colors duration-300 ${
+                active ? 'text-[#D4A845]' : 'text-white/40 hover:text-white/80'
+              } ${language === 'am' ? 'font-ethiopic' : 'font-sans'}`}
             >
-              {NAV_KEYS.map(({ sectionId }) => {
-                const active = activeSection === sectionId;
-                return (
-                  <motion.span
-                    key={sectionId}
-                    animate={{
-                      opacity: active ? 1 : 0.25,
-                      scale:   active ? 1   : 0.6,
-                    }}
-                    transition={{ duration: 0.4 }}
-                    className="block w-1.5 h-1.5 rounded-full bg-[#D4A845]"
-                  />
-                );
-              })}
-
-              {/* Current language hint */}
-              <span className="mt-1 pt-2 border-t border-white/10 text-[7px] tracking-widest text-[#D4A845]/60 uppercase leading-none">
-                {language === 'en' ? 'EN' : 'አማ'}
+              {active && (
+                <span className="absolute -left-1 top-1/2 -translate-y-1/2 w-[3px] h-[3px] rounded-full bg-[#D4A845] shadow-[0_0_4px_#D4A845]" />
+              )}
+              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
+              <span className={`text-[7px] sm:text-[8px] uppercase tracking-widest leading-none whitespace-nowrap ${language === 'am' ? 'normal-case tracking-normal' : ''}`}>
+                {label}
               </span>
-            </motion.div>
-          )}
+            </a>
+          );
+        })}
 
-          {/* ── EXPANDED: frosted glass pill with icons + labels ────────── */}
-          {isExpanded && (
-            <motion.div
-              key="expanded"
-              initial={{ opacity: 0, scale: 0.88, x: 8 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.88, x: 8, transition: { duration: 0.2 } }}
-              transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-              className="flex flex-col items-center gap-3 sm:gap-4 p-2 sm:p-3 rounded-full border border-white/10 bg-black/20 backdrop-blur-md"
-            >
-              {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }, i) => {
-                const active = activeSection === sectionId;
-                const label = t(`nav.${key}`);
-                return (
-                  <motion.a
-                    key={key}
-                    href={href}
-                    onClick={(e) => { handleClick(e, href); scheduleCollapse(); }}
-                    aria-current={active ? 'page' : undefined}
-                    title={label}
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.2, delay: i * 0.03 }}
-                    className={`relative flex flex-col items-center gap-1 p-1 rounded-full transition-colors duration-200 ${
-                      active ? 'text-[#D4A845]' : 'text-white/50 hover:text-white/90'
-                    } ${language === 'am' ? 'font-ethiopic' : 'font-serif'}`}
-                  >
-                    {active && (
-                      <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-[#D4A845] shadow-[0_0_4px_#D4A845]" />
-                    )}
-                    <Icon className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
-                    <span className="text-[8px] sm:text-[10px] whitespace-nowrap leading-none">{label}</span>
-                  </motion.a>
-                );
-              })}
+        {/* Divider */}
+        <span className="w-4 h-px bg-white/10" />
 
-              {/* Language switcher */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.2, delay: NAV_KEYS.length * 0.03 + 0.05 }}
-                className="mt-1 pt-2 border-t border-white/10 flex items-center gap-1.5"
-              >
-                <button
-                  onClick={() => setLanguage('en')}
-                  aria-pressed={language === 'en'}
-                  className={`text-[9px] sm:text-[10px] tracking-widest uppercase transition-colors duration-200 font-sans ${
-                    language === 'en' ? 'text-[#D4A845]' : 'text-white/35 hover:text-white/70'
-                  }`}
-                >
-                  EN
-                </button>
-                <span className="text-white/20 text-[9px]">|</span>
-                <button
-                  onClick={() => setLanguage('am')}
-                  aria-pressed={language === 'am'}
-                  className={`text-[9px] sm:text-[10px] font-ethiopic transition-colors duration-200 ${
-                    language === 'am' ? 'text-[#D4A845]' : 'text-white/35 hover:text-white/70'
-                  }`}
-                >
-                  አማ
-                </button>
-              </motion.div>
-            </motion.div>
-          )}
-
-        </AnimatePresence>
+        {/* Language switcher */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setLanguage('en')}
+            aria-pressed={language === 'en'}
+            className={`text-[8px] font-sans tracking-widest uppercase transition-colors duration-200 ${
+              language === 'en' ? 'text-[#D4A845]' : 'text-white/30 hover:text-white/70'
+            }`}
+          >
+            EN
+          </button>
+          <span className="text-white/15 text-[8px]">|</span>
+          <button
+            onClick={() => setLanguage('am')}
+            aria-pressed={language === 'am'}
+            className={`text-[8px] font-ethiopic transition-colors duration-200 ${
+              language === 'am' ? 'text-[#D4A845]' : 'text-white/30 hover:text-white/70'
+            }`}
+          >
+            አማ
+          </button>
+        </div>
       </motion.nav>
     </div>
   );
