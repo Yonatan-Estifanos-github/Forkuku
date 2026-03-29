@@ -963,7 +963,7 @@ export default function AdminDashboard() {
           >
             {CAMPAIGNS.map(c => (
               <option key={c.id} value={c.id}>
-                {c.label}
+                {c.label} {c.disabled ? '(Locked)' : ''}
               </option>
             ))}
           </select>
@@ -1308,6 +1308,10 @@ export default function AdminDashboard() {
                                 ) : allSent ? (
                                   <span className="text-xs font-bold text-gray-400 cursor-not-allowed uppercase px-2">
                                     Sent
+                                  </span>
+                                ) : activeCampaign?.disabled ? (
+                                  <span className="text-xs font-bold text-gray-300 cursor-not-allowed uppercase px-2 italic">
+                                    Locked
                                   </span>
                                 ) : (
                                   <button

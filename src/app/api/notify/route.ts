@@ -73,6 +73,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Campaign not found' }, { status: 404 });
     }
 
+    if (campaign.disabled) {
+      return NextResponse.json({ error: 'This campaign is currently locked' }, { status: 403 });
+    }
+
     const emails: string[] = (party.emails || []).filter(Boolean);
     const guestName: string =
       (party.guests as { name?: string }[])?.[0]?.name || party.party_name || 'Friend';
