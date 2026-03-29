@@ -54,7 +54,7 @@ function ParsedDescription({
   );
 }
 
-function SideArrow({
+function NavArrow({
   direction,
   onClick,
   label,
@@ -70,11 +70,19 @@ function SideArrow({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={`absolute top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-[#D4A845]/18 bg-black/45 text-[#D4A845]/82 backdrop-blur-md transition-all duration-300 hover:border-[#D4A845]/42 hover:text-[#F0D99F] xl:flex ${
-        isPrev ? '-left-6' : '-right-6'
-      }`}
+      className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D4A845]/18 bg-white/[0.03] text-[#D4A845]/82 backdrop-blur-md transition-all duration-300 hover:border-[#D4A845]/42 hover:text-[#F0D99F]"
     >
-      <span className="text-lg leading-none">{isPrev ? '<' : '>'}</span>
+      <svg
+        className={`h-4 w-4 ${isPrev ? '' : 'rotate-180'}`}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M15 6l-6 6 6 6" />
+      </svg>
     </button>
   );
 }
@@ -103,30 +111,46 @@ export default function JourneyGallery() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,168,69,0.10),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.05),transparent_28%)]" />
 
       <div className="relative mx-auto max-w-6xl">
-        <div className="mb-12 flex flex-col gap-6 md:mb-14 md:flex-row md:items-end md:justify-between">
+        <div className="mb-12 grid gap-8 md:mb-16 md:grid-cols-[1.05fr_0.95fr] md:gap-12">
           <div className="max-w-2xl">
-            <p
-              className={`mb-5 text-[11px] uppercase text-[#D4A845]/75 ${
-                isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans tracking-[0.32em]'
-              }`}
-            >
-              {t('journey.scrollPrompt')}
-            </p>
-            <h2 className={`text-4xl text-[#EAE5D9] md:text-6xl ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
+            <div className="mb-6 flex items-center gap-4">
+              <div className="h-px w-12 bg-gradient-to-r from-[#D4A845] to-transparent" />
+              <p
+                className={`text-[11px] text-[#D4A845]/78 ${
+                  isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans uppercase tracking-[0.32em]'
+                }`}
+              >
+                {t('journey.scrollPrompt')}
+              </p>
+            </div>
+
+            <h2 className={`max-w-xl text-[2.8rem] leading-[0.95] text-[#EAE5D9] md:text-[4.75rem] ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
               {t('journey.heading')}
             </h2>
           </div>
 
-          <p className={`max-w-xl text-sm leading-7 text-stone-400 md:text-base ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
-            {t('journey.subtitle')}
-          </p>
+          <div className="flex flex-col justify-end">
+            <div className="rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-6 backdrop-blur-sm md:p-7">
+              <p className={`text-sm leading-7 text-stone-400 md:text-[15px] md:leading-8 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+                {t('journey.subtitle')}
+              </p>
+            </div>
+
+            <div className="mt-5 flex items-center justify-between gap-5">
+              <p className="text-[11px] uppercase tracking-[0.34em] text-[#D4A845]/75">
+                {String(currentIndex + 1).padStart(2, '0')} / {String(JOURNEY_DATA.length).padStart(2, '0')}
+              </p>
+
+              <div className="flex items-center gap-3">
+                <NavArrow direction="prev" label={t('journey.prev')} onClick={() => paginate(-1)} />
+                <NavArrow direction="next" label={t('journey.next')} onClick={() => paginate(1)} />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="flex justify-center">
           <div className="relative w-full max-w-6xl">
-            <SideArrow direction="prev" label={t('journey.prev')} onClick={() => paginate(-1)} />
-            <SideArrow direction="next" label={t('journey.next')} onClick={() => paginate(1)} />
-
             <div className="relative overflow-hidden rounded-[2rem] border border-white/8 bg-[#111111] shadow-[0_34px_120px_rgba(0,0,0,0.5)] min-h-[760px] md:h-[68vh] md:max-h-[760px] md:min-h-0">
             <AnimatePresence initial={false} custom={direction} mode="wait">
               <motion.article
@@ -207,33 +231,7 @@ export default function JourneyGallery() {
             </div>
 
             <div className="mt-6 flex flex-col items-center gap-3">
-              <div className="flex items-center gap-5 rounded-full border border-white/8 bg-white/[0.03] px-5 py-3 backdrop-blur-sm">
-                <button
-                  type="button"
-                  onClick={() => paginate(-1)}
-                  className={`text-[11px] text-[#D4A845]/88 transition-colors hover:text-[#F0D99F] ${
-                    isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans uppercase tracking-[0.28em]'
-                  }`}
-                >
-                  [ {t('journey.prev')} ]
-                </button>
-
-                <p className="text-[11px] uppercase tracking-[0.34em] text-[#D4A845]/75">
-                  {String(currentIndex + 1).padStart(2, '0')} / {String(JOURNEY_DATA.length).padStart(2, '0')}
-                </p>
-
-                <button
-                  type="button"
-                  onClick={() => paginate(1)}
-                  className={`text-[11px] text-[#D4A845]/88 transition-colors hover:text-[#F0D99F] ${
-                    isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans uppercase tracking-[0.28em]'
-                  }`}
-                >
-                  [ {t('journey.next')} ]
-                </button>
-              </div>
-
-              <p className={`text-center text-[10px] text-stone-400 xl:hidden ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+              <p className={`text-center text-[10px] text-stone-400 md:hidden ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
                 {t('journey.swipeHint')}
               </p>
             </div>
