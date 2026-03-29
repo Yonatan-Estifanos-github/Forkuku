@@ -566,25 +566,26 @@ export default function WeddingPartySection() {
         style={{ background: 'radial-gradient(circle, rgba(212,168,69,0.04) 0%, transparent 70%)' }} />
 
       <div className="text-center mb-16 md:mb-24 relative z-10">
-        <p className={`text-wedding-gold/45 uppercase tracking-[0.55em] text-xs mb-6 ${isAmharic ? 'font-ethiopic not-italic normal-case tracking-normal' : 'font-sans'}`}>
+        <h2
+          className={`text-5xl md:text-7xl lg:text-8xl text-white ${isAmharic ? 'font-ethiopic font-light tracking-normal' : 'font-serif font-semibold tracking-[0.06em] uppercase'}`}
+          style={{ filter: 'drop-shadow(0 0 36px rgba(212,168,69,0.18))' }}
+        >
           {t('party.heading')}
-        </p>
-        <h2 className="font-serif text-5xl md:text-7xl lg:text-8xl gold-shimmer"
-          style={{ filter: 'drop-shadow(0 0 60px rgba(212,168,69,0.28)) drop-shadow(0 2px 24px rgba(212,168,69,0.35))' }}>
-          {t('party.names')}
         </h2>
-        <p className={`text-base md:text-lg mt-5 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}
-          style={{ color: 'rgba(212,168,69,0.5)', filter: 'drop-shadow(0 0 20px rgba(212,168,69,0.2))' }}>
+        <div className="flex items-center justify-center gap-4 mt-6">
+          <div className="w-16 md:w-28 h-[1px] bg-gradient-to-r from-transparent to-wedding-gold/45" />
+          <div className="w-2 h-2 rounded-full bg-wedding-gold/70" />
+          <div className="w-16 md:w-28 h-[1px] bg-gradient-to-l from-transparent to-wedding-gold/45" />
+        </div>
+        <p
+          className={`text-base md:text-lg mt-6 max-w-2xl mx-auto ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}
+          style={{ color: 'rgba(212,168,69,0.62)', filter: 'drop-shadow(0 0 20px rgba(212,168,69,0.16))' }}
+        >
           {t('party.subtitle')}
         </p>
         <p className={`text-xs md:text-sm text-white/30 mt-3 ${isAmharic ? 'font-ethiopic' : 'font-sans italic'}`}>
           {t('party.count')}
         </p>
-        <div className="flex items-center justify-center gap-4 mt-8">
-          <div className="w-20 md:w-36 h-[1px] bg-gradient-to-r from-transparent to-wedding-gold/35" />
-          <div className="w-1.5 h-1.5 rounded-full bg-wedding-gold/55" />
-          <div className="w-20 md:w-36 h-[1px] bg-gradient-to-l from-transparent to-wedding-gold/35" />
-        </div>
       </div>
 
       <div className="relative max-w-5xl mx-auto z-10">
