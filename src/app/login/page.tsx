@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useSearchParams } from 'next/navigation';
 import { useLanguage, type Language } from '@/context/LanguageContext';
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -21,13 +22,16 @@ const fadeIn = (delay: number) => ({
 
 const MUSIC_SRC = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/amlake-keberlnge.mp3';
 
-export default function SiteLoginPage() {
+const MAGIC_PASSWORD = 'Matthew19:6';
+
+function SiteLoginPageInner() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { language, setLanguage, t } = useLanguage();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -47,6 +51,28 @@ export default function SiteLoginPage() {
       .find((c) => c.startsWith('site-access-token='))
       ?.split('=')[1];
     if (saved) setPassword(decodeURIComponent(saved));
+  }, []);
+
+  // Magic link: auto-login when ?pwd=Matthew19:6 is present
+  useEffect(() => {
+    const pwd = searchParams.get('pwd');
+    if (pwd === MAGIC_PASSWORD) {
+      setLoading(true);
+      fetch('/api/auth/site-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: MAGIC_PASSWORD }),
+      })
+        .then((res) => {
+          if (res.ok) {
+            window.location.href = '/';
+          } else {
+            setLoading(false);
+          }
+        })
+        .catch(() => setLoading(false));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -203,5 +229,13 @@ export default function SiteLoginPage() {
       </motion.div>
 
     </div>
+  );
+}
+
+export default function SiteLoginPage() {
+  return (
+    <Suspense>
+      <SiteLoginPageInner />
+    </Suspense>
   );
 }
