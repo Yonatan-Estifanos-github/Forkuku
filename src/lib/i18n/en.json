@@ -126,7 +126,9 @@
     "viewRegistry": "View Registry",
     "alreadyRespondedTitle": "Already Responded",
     "alreadyRespondedMessage": "{name}, we've already received your RSVP. Thank you for confirming!",
-    "alreadyRespondedNote": "If you need to make changes to your response, please contact us directly."
+    "alreadyRespondedNote": "If you need to make changes to your response, please contact us directly.",
+    "alreadyRespondedConfirmation": "Your party has already responded. We will contact you soon with more information and final weekend details. We love you and can't wait to celebrate together!",
+    "editResponse": "Need to change your response? Click here to edit."
   },
   "registry": {
     "heading": "Registry",

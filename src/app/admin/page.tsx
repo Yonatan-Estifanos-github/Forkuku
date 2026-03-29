@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { CAMPAIGNS, CampaignId } from '@/config/campaigns';
@@ -8,9 +8,10 @@ import Papa from 'papaparse';
 
 // Types
 interface Guest {
-  id: number;
+  id: string;
   name?: string;
   is_attending: boolean;
+  dietary_notes?: string;
 }
 
 interface CampaignLog {
@@ -20,7 +21,7 @@ interface CampaignLog {
 }
 
 interface Party {
-  id: number;
+  id: string;
   party_name: string;
   status: string;
   emails: string[];
@@ -28,6 +29,7 @@ interface Party {
   admin_notes?: string;
   updated_at?: string;
   family_side?: 'bride' | 'groom' | null;
+  has_responded: boolean;
   guests: Guest[];
   campaign_logs: CampaignLog[];
 }
@@ -36,12 +38,13 @@ interface DashboardStats {
   totalParties: number;
   totalGuests: number;
   confirmedAttending: number;
+  confirmedRSVPs: number;
   campaignSentCount: number;
 }
 
 // Extended guest type for editing (includes optional id for new guests)
 interface EditableGuest {
-  id?: number;
+  id?: string;
   name: string;
 }
 
@@ -150,13 +153,15 @@ export default function AdminDashboard() {
 
   const [parties, setParties] = useState<Party[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sendingId, setSendingId] = useState<number | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [sendingId, setSendingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [expandedPartyId, setExpandedPartyId] = useState<string | null>(null);
   const [selectedCampaign, setSelectedCampaign] = useState<CampaignId>('formal-invitation');
   const [stats, setStats] = useState<DashboardStats>({
     totalParties: 0,
     totalGuests: 0,
     confirmedAttending: 0,
+    confirmedRSVPs: 0,
     campaignSentCount: 0,
   });
 
@@ -200,7 +205,7 @@ export default function AdminDashboard() {
       .from('parties')
       .select(`
         *,
-        guests (id, name, is_attending),
+        guests (id, name, is_attending, dietary_notes),
         campaign_logs (campaign_id, channel, status)
       `)
       .order('updated_at', { ascending: false });
@@ -214,12 +219,17 @@ export default function AdminDashboard() {
       const allParties = data as Party[];
       let guestCount = 0;
       let attendingCount = 0;
+      let rsvpCount = 0;
       let sentCount = 0;
 
       allParties.forEach(party => {
         if (party.guests) {
           guestCount += party.guests.length;
           attendingCount += party.guests.filter(g => g.is_attending).length;
+        }
+
+        if (party.has_responded) {
+          rsvpCount++;
         }
 
         const isSent = party.campaign_logs?.some(
@@ -232,6 +242,7 @@ export default function AdminDashboard() {
         totalParties: allParties.length,
         totalGuests: guestCount,
         confirmedAttending: attendingCount,
+        confirmedRSVPs: rsvpCount,
         campaignSentCount: sentCount,
       });
 
@@ -284,7 +295,7 @@ export default function AdminDashboard() {
     router.push('/admin/login');
   };
 
-  const handleSendNotification = async (partyId: number) => {
+  const handleSendNotification = async (partyId: string) => {
     const party = parties.find(p => p.id === partyId);
     const campaignLabel = CAMPAIGNS.find(c => c.id === selectedCampaign)?.label || selectedCampaign;
     const confirmed = window.confirm(
@@ -712,6 +723,24 @@ export default function AdminDashboard() {
     );
   };
 
+  // Helper: Get RSVP Status for a party
+  const getRSVPStatus = (party: Party) => {
+    if (!party.has_responded) return 'Pending';
+    const attendingCount = party.guests.filter(g => g.is_attending).length;
+    if (attendingCount === 0) return 'Declined';
+    if (attendingCount === party.guests.length) return 'Attending';
+    return 'Partial';
+  };
+
+  const getRSVPStatusColor = (status: string) => {
+    switch (status) {
+      case 'Attending': return 'bg-green-100 text-green-700';
+      case 'Declined': return 'bg-red-100 text-red-600';
+      case 'Partial': return 'bg-yellow-100 text-yellow-700';
+      default: return 'bg-gray-100 text-gray-500';
+    }
+  };
+
   // ============================================
   // REGISTRY HANDLERS
   // ============================================
@@ -913,10 +942,16 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto">
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <div className="bg-white p-6 rounded shadow-sm border-t-4 border-[#D4A845]">
             <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Total Parties</p>
             <p className="font-serif text-3xl md:text-4xl">{stats.totalParties}</p>
+          </div>
+          <div className="bg-white p-6 rounded shadow-sm border-t-4 border-purple-500">
+            <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">RSVPs (Parties)</p>
+            <p className="font-serif text-3xl md:text-4xl">
+              {stats.confirmedRSVPs} <span className="text-base text-gray-400">/ {stats.totalParties}</span>
+            </p>
           </div>
           <div className="bg-white p-6 rounded shadow-sm border-t-4 border-[#1B3B28]">
             <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Total Guests</p>
@@ -1048,8 +1083,9 @@ export default function AdminDashboard() {
                     <tr>
                       <th className="p-4 font-medium">Party Name</th>
                       <th className="p-4 font-medium">Guests</th>
+                      <th className="p-4 font-medium">RSVP Status</th>
                       <th className="p-4 font-medium">Contact</th>
-                      <th className="p-4 font-medium">Status</th>
+                      <th className="p-4 font-medium">Campaign</th>
                       <th className="p-4 font-medium text-right">Actions</th>
                     </tr>
                   </thead>
@@ -1070,154 +1106,239 @@ export default function AdminDashboard() {
                       const campaignNeedsEmail = activeCampaign?.priority !== 'sms';
                       const campaignNeedsSMS = activeCampaign?.priority !== 'email';
                       const allSent = (hasEmail && campaignNeedsEmail ? emailSent : true) && (hasUSPhone && campaignNeedsSMS ? smsSent : true) && hasAnyContact;
+                      const rsvpStatus = getRSVPStatus(party);
+                      const isExpanded = expandedPartyId === party.id;
 
                       return (
-                        <tr key={party.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="p-4 font-medium text-[#1B3B28]">
-                            <div className="flex flex-col gap-1.5">
-                              {party.party_name}
-                              <div className="flex gap-1">
+                        <React.Fragment key={party.id}>
+                          <tr className={`hover:bg-gray-50 transition-colors ${isExpanded ? 'bg-gray-50/80' : ''}`}>
+                            <td className="p-4 font-medium text-[#1B3B28]">
+                              <div className="flex items-center gap-3">
                                 <button
-                                  onClick={() => handleFamilySideChange(party, 'bride')}
-                                  title="Bride's side"
-                                  className={`text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded transition-colors ${
-                                    party.family_side === 'bride'
-                                      ? 'bg-pink-500 text-white'
-                                      : 'bg-gray-100 text-gray-400 hover:bg-pink-100 hover:text-pink-600'
-                                  }`}
+                                  onClick={() => setExpandedPartyId(isExpanded ? null : party.id)}
+                                  className="text-gray-400 hover:text-[#D4A845] transition-colors"
                                 >
-                                  B
+                                  {isExpanded ? '▼' : '▶'}
                                 </button>
-                                <button
-                                  onClick={() => handleFamilySideChange(party, 'groom')}
-                                  title="Groom's side"
-                                  className={`text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded transition-colors ${
-                                    party.family_side === 'groom'
-                                      ? 'bg-blue-600 text-white'
-                                      : 'bg-gray-100 text-gray-400 hover:bg-blue-100 hover:text-blue-600'
-                                  }`}
+                                <div className="flex flex-col gap-1.5">
+                                  {party.party_name}
+                                  <div className="flex gap-1">
+                                    <button
+                                      onClick={() => handleFamilySideChange(party, 'bride')}
+                                      title="Bride's side"
+                                      className={`text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded transition-colors ${
+                                        party.family_side === 'bride'
+                                          ? 'bg-pink-500 text-white'
+                                          : 'bg-gray-100 text-gray-400 hover:bg-pink-100 hover:text-pink-600'
+                                      }`}
+                                    >
+                                      B
+                                    </button>
+                                    <button
+                                      onClick={() => handleFamilySideChange(party, 'groom')}
+                                      title="Groom's side"
+                                      className={`text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded transition-colors ${
+                                        party.family_side === 'groom'
+                                          ? 'bg-blue-600 text-white'
+                                          : 'bg-gray-100 text-gray-400 hover:bg-blue-100 hover:text-blue-600'
+                                      }`}
+                                    >
+                                      G
+                                    </button>
+                                    {party.family_side && (
+                                      <button
+                                        onClick={() => handleFamilySideChange(party, null)}
+                                        title="Clear assignment"
+                                        className="text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-gray-100 text-gray-400 hover:bg-red-50 hover:text-red-400 transition-colors"
+                                      >
+                                        ×
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="p-4">
+                              {party.guests.length}{' '}
+                              <span className="text-gray-400">Guests</span>
+                            </td>
+                            <td className="p-4">
+                              <span className={`inline-block px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${getRSVPStatusColor(rsvpStatus)}`}>
+                                {rsvpStatus}
+                              </span>
+                            </td>
+                            <td className="p-4">
+                              <div className="flex items-center gap-3">
+                                <span
+                                  className={hasEmail ? 'opacity-100' : 'opacity-30'}
+                                  title={party.emails?.join(', ') || 'No email'}
                                 >
-                                  G
-                                </button>
-                                {party.family_side && (
-                                  <button
-                                    onClick={() => handleFamilySideChange(party, null)}
-                                    title="Clear assignment"
-                                    className="text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-gray-100 text-gray-400 hover:bg-red-50 hover:text-red-400 transition-colors"
+                                  {emailSent ? (
+                                    <span className="text-green-600">&#x2709;&#x2713;</span>
+                                  ) : (
+                                    <span>&#x2709;</span>
+                                  )}
+                                  {(party.emails?.length ?? 0) > 1 && (
+                                    <span className="text-[10px] text-gray-400 ml-0.5">×{party.emails!.length}</span>
+                                  )}
+                                </span>
+
+                                {hasPhone && !hasUSPhone ? (
+                                  <span
+                                    className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded font-medium"
+                                    title={`International: ${primaryPhone}`}
                                   >
-                                    ×
-                                  </button>
+                                    Intl{(party.phones?.length ?? 0) > 1 ? ` ×${party.phones!.length}` : ''}
+                                  </span>
+                                ) : (
+                                  <span
+                                    className={hasUSPhone ? 'opacity-100' : 'opacity-30'}
+                                    title={party.phones?.join(', ') || 'No phone'}
+                                  >
+                                    {smsSent ? (
+                                      <span className="text-green-600">&#x1F4F1;&#x2713;</span>
+                                    ) : (
+                                      <span>&#x1F4F1;</span>
+                                    )}
+                                    {(party.phones?.length ?? 0) > 1 && (
+                                      <span className="text-[10px] text-gray-400 ml-0.5">×{party.phones!.length}</span>
+                                    )}
+                                  </span>
                                 )}
                               </div>
-                            </div>
-                          </td>
-                          <td className="p-4">
-                            {party.guests.length}{' '}
-                            <span className="text-gray-400">
-                              ({party.guests.filter(g => g.is_attending).length} yes)
-                            </span>
-                          </td>
-                          <td className="p-4">
-                            <div className="flex items-center gap-3">
-                              <span
-                                className={hasEmail ? 'opacity-100' : 'opacity-30'}
-                                title={party.emails?.join(', ') || 'No email'}
-                              >
-                                {emailSent ? (
-                                  <span className="text-green-600">&#x2709;&#x2713;</span>
-                                ) : (
-                                  <span>&#x2709;</span>
-                                )}
-                                {(party.emails?.length ?? 0) > 1 && (
-                                  <span className="text-[10px] text-gray-400 ml-0.5">×{party.emails!.length}</span>
-                                )}
-                              </span>
-
-                              {hasPhone && !hasUSPhone ? (
-                                <span
-                                  className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded font-medium"
-                                  title={`International: ${primaryPhone}`}
-                                >
-                                  Intl{(party.phones?.length ?? 0) > 1 ? ` ×${party.phones!.length}` : ''}
-                                </span>
-                              ) : (
-                                <span
-                                  className={hasUSPhone ? 'opacity-100' : 'opacity-30'}
-                                  title={party.phones?.join(', ') || 'No phone'}
-                                >
-                                  {smsSent ? (
-                                    <span className="text-green-600">&#x1F4F1;&#x2713;</span>
-                                  ) : (
-                                    <span>&#x1F4F1;</span>
-                                  )}
-                                  {(party.phones?.length ?? 0) > 1 && (
-                                    <span className="text-[10px] text-gray-400 ml-0.5">×{party.phones!.length}</span>
-                                  )}
-                                </span>
-                              )}
-                            </div>
-                          </td>
-                          <td className="p-4">
-                            {!hasAnyContact ? (
-                              <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-red-100 text-red-600">
-                                No Contact
-                              </span>
-                            ) : allSent ? (
-                              <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-green-100 text-green-700">
-                                Sent
-                              </span>
-                            ) : emailSent || (hasUSPhone && smsSent) ? (
-                              <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-yellow-100 text-yellow-700">
-                                Partial
-                              </span>
-                            ) : (
-                              <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-gray-100 text-gray-500">
-                                Not Sent
-                              </span>
-                            )}
-                          </td>
-                          <td className="p-4 text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              {/* Edit Button */}
-                              <button
-                                onClick={() => openEditModal(party)}
-                                className="text-[#D4A845] hover:text-[#b88f35] transition-colors text-lg"
-                                title="Edit Party"
-                              >
-                                ✏️
-                              </button>
-
-                              {/* Delete Button */}
-                              <button
-                                onClick={() => handleDeleteParty(party)}
-                                disabled={deletingId === party.id}
-                                className="text-red-500 hover:text-red-700 transition-colors text-lg disabled:opacity-50"
-                                title="Delete Party"
-                              >
-                                {deletingId === party.id ? '...' : '🗑️'}
-                              </button>
-
-                              {/* Send Button */}
+                            </td>
+                            <td className="p-4">
                               {!hasAnyContact ? (
-                                <span className="text-xs font-bold text-red-300 cursor-not-allowed uppercase px-2">
+                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-red-100 text-red-600">
                                   No Contact
                                 </span>
                               ) : allSent ? (
-                                <span className="text-xs font-bold text-gray-400 cursor-not-allowed uppercase px-2">
+                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-green-100 text-green-700">
                                   Sent
                                 </span>
+                              ) : emailSent || (hasUSPhone && smsSent) ? (
+                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-yellow-100 text-yellow-700">
+                                  Partial
+                                </span>
                               ) : (
-                                <button
-                                  onClick={() => handleSendNotification(party.id)}
-                                  disabled={sendingId === party.id}
-                                  className="px-3 py-1 bg-[#D4A845] text-white text-xs font-bold uppercase rounded hover:bg-[#b88f35] transition-colors disabled:opacity-50 ml-2"
-                                >
-                                  {sendingId === party.id ? 'Sending...' : 'Send'}
-                                </button>
+                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-gray-100 text-gray-500">
+                                  Not Sent
+                                </span>
                               )}
-                            </div>
-                          </td>
-                        </tr>
+                            </td>
+                            <td className="p-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                {/* Edit Button */}
+                                <button
+                                  onClick={() => openEditModal(party)}
+                                  className="text-[#D4A845] hover:text-[#b88f35] transition-colors text-lg"
+                                  title="Edit Party"
+                                >
+                                  ✏️
+                                </button>
+
+                                {/* Delete Button */}
+                                <button
+                                  onClick={() => handleDeleteParty(party)}
+                                  disabled={deletingId === party.id}
+                                  className="text-red-500 hover:text-red-700 transition-colors text-lg disabled:opacity-50"
+                                  title="Delete Party"
+                                >
+                                  {deletingId === party.id ? '...' : '🗑️'}
+                                </button>
+
+                                {/* Send Button */}
+                                {!hasAnyContact ? (
+                                  <span className="text-xs font-bold text-red-300 cursor-not-allowed uppercase px-2">
+                                    No Contact
+                                  </span>
+                                ) : allSent ? (
+                                  <span className="text-xs font-bold text-gray-400 cursor-not-allowed uppercase px-2">
+                                    Sent
+                                  </span>
+                                ) : (
+                                  <button
+                                    onClick={() => handleSendNotification(party.id)}
+                                    disabled={sendingId === party.id}
+                                    className="px-3 py-1 bg-[#D4A845] text-white text-xs font-bold uppercase rounded hover:bg-[#b88f35] transition-colors disabled:opacity-50 ml-2"
+                                  >
+                                    {sendingId === party.id ? 'Sending...' : 'Send'}
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                          {isExpanded && (
+                            <tr className="bg-white">
+                              <td colSpan={6} className="p-6 border-b border-gray-100">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                  {/* Guest Attendance */}
+                                  <div>
+                                    <h4 className="text-xs uppercase tracking-widest text-gray-500 font-bold mb-4">Guest Attendance</h4>
+                                    <div className="space-y-3">
+                                      {party.guests.map(guest => (
+                                        <div key={guest.id} className="flex items-center justify-between p-3 border border-gray-100 rounded">
+                                          <span className="font-medium">{guest.name}</span>
+                                          <div className="flex items-center gap-2">
+                                            {party.has_responded ? (
+                                              guest.is_attending ? (
+                                                <span className="text-green-600 text-xs font-bold uppercase tracking-wider">✓ Attending</span>
+                                              ) : (
+                                                <span className="text-red-500 text-xs font-bold uppercase tracking-wider">× Declined</span>
+                                              )
+                                            ) : (
+                                              <span className="text-gray-400 text-xs font-bold uppercase tracking-wider italic">No Response</span>
+                                            )}
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+
+                                  {/* RSVP Details */}
+                                  <div>
+                                    <h4 className="text-xs uppercase tracking-widest text-gray-500 font-bold mb-4">Response Details</h4>
+                                    {party.has_responded ? (
+                                      <div className="space-y-4">
+                                        <div className="bg-gray-50 p-4 rounded border border-gray-100">
+                                          <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">Response Received</p>
+                                          <p className="text-sm font-medium">
+                                            {new Date(party.updated_at!).toLocaleString(undefined, {
+                                              dateStyle: 'long',
+                                              timeStyle: 'short'
+                                            })}
+                                          </p>
+                                        </div>
+                                        {party.admin_notes && (
+                                          <div className="bg-gray-50 p-4 rounded border border-gray-100">
+                                            <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">Message from Guest</p>
+                                            <p className="text-sm italic text-gray-700">&quot;{party.admin_notes.replace('User Message: ', '')}&quot;</p>
+                                          </div>
+                                        )}
+                                        {party.guests.some(g => g.dietary_notes) && (
+                                          <div className="bg-red-50 p-4 rounded border border-red-100">
+                                            <p className="text-xs text-red-500 uppercase tracking-widest mb-1 font-bold">Dietary Restrictions</p>
+                                            <div className="space-y-1">
+                                              {party.guests.filter(g => g.dietary_notes).map(g => (
+                                                <p key={g.id} className="text-sm">
+                                                  <span className="font-bold">{g.name}:</span> {g.dietary_notes}
+                                                </p>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <div className="h-full flex items-center justify-center border border-dashed border-gray-200 rounded p-8">
+                                        <p className="text-gray-400 text-sm italic">Waiting for party to respond...</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
                       );
                     })}
                     {parties.filter(p =>
@@ -1280,6 +1401,7 @@ export default function AdminDashboard() {
                     {/* Image */}
                     <div className="aspect-square bg-gray-100 relative">
                       {item.image_url ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
                         <img
                           src={item.image_url}
                           alt={item.name}
@@ -1652,6 +1774,7 @@ export default function AdminDashboard() {
                 />
                 {itemImageUrl && (
                   <div className="mt-2 w-20 h-20 rounded overflow-hidden border border-gray-200">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={itemImageUrl}
                       alt="Preview"
