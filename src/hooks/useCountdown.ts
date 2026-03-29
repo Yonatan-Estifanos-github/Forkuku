@@ -32,7 +32,7 @@ function calculateTimeRemaining(): TimeRemaining {
 
 export function useCountdown() {
   const [timeRemaining, setTimeRemaining] = useState<TimeRemaining>({
-    days: 0, hours: 0, minutes: 0, seconds: 0, isComplete: false,
+    days: 0, hours: 0, minutes: 0, seconds: 0, centiseconds: 0, isComplete: false,
   });
   const [mounted, setMounted] = useState(false);
 
