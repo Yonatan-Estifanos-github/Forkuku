@@ -34,7 +34,11 @@ export const SaveTheDate = ({ guestName = 'Dear Friend' }: SaveTheDateProps) => 
         <Hr style={rule} />
 
         {/* ── Names ── */}
-        <Text style={names}>Yonatan &amp; Saron</Text>
+        <Text style={names}>
+          Yonatan
+          <span style={ampersand}>&amp;</span>
+          Saron
+        </Text>
 
         {/* ── Date & Location ── */}
         <Text style={dateLine}>September 4, 2026</Text>
@@ -137,11 +141,19 @@ const rule: React.CSSProperties = {
 const names: React.CSSProperties = {
   color: '#E6D2B5',
   fontSize: '54px',
-  fontStyle: 'italic',
+  fontStyle: 'normal',
   fontWeight: '400',
   margin: '0 0 16px',
-  lineHeight: '1.15',
+  lineHeight: '1.2',
   letterSpacing: '1px',
+  fontFamily: "'Playfair Display', Didot, Georgia, 'Times New Roman', serif",
+};
+
+const ampersand: React.CSSProperties = {
+  color: '#D4A845',
+  fontSize: '0.7em',
+  margin: '10px 0',
+  display: 'block',
 };
 
 const dateLine: React.CSSProperties = {
