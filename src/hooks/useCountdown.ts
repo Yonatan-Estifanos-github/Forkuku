@@ -8,6 +8,7 @@ export interface TimeRemaining {
   hours: number;
   minutes: number;
   seconds: number;
+  centiseconds: number; // 0-99, updates 10x/second
   isComplete: boolean;
 }
 
@@ -17,15 +18,16 @@ function calculateTimeRemaining(): TimeRemaining {
   const difference = target - now;
 
   if (difference <= 0) {
-    return { days: 0, hours: 0, minutes: 0, seconds: 0, isComplete: true };
+    return { days: 0, hours: 0, minutes: 0, seconds: 0, centiseconds: 0, isComplete: true };
   }
 
   const days = Math.floor(difference / (1000 * 60 * 60 * 24));
   const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+  const centiseconds = Math.floor((difference % 1000) / 10);
 
-  return { days, hours, minutes, seconds, isComplete: false };
+  return { days, hours, minutes, seconds, centiseconds, isComplete: false };
 }
 
 export function useCountdown() {
@@ -40,7 +42,7 @@ export function useCountdown() {
 
     const interval = setInterval(() => {
       setTimeRemaining(calculateTimeRemaining());
-    }, 1000);
+    }, 100);
 
     return () => clearInterval(interval);
   }, []);

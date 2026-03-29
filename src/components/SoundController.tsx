@@ -10,10 +10,12 @@ function CountdownUnit({
   value,
   suffix,
   showSep,
+  duration = 0.18,
 }: {
   value: string;
   suffix: string;
   showSep?: boolean;
+  duration?: number;
 }) {
   return (
     <span className="inline-flex items-center leading-none">
@@ -25,10 +27,10 @@ function CountdownUnit({
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={value}
-            initial={{ y: '110%' }}
+            initial={{ y: '-110%' }}
             animate={{ y: '0%' }}
-            exit={{ y: '-110%' }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ y: '110%' }}
+            transition={{ duration, ease: [0.22, 1, 0.36, 1] }}
             className="absolute inset-0 flex items-center justify-center tabular-nums tracking-normal"
           >
             {value}
@@ -125,13 +127,14 @@ export default function SoundController() {
         {mounted && (
           <div className={`${pillBase} px-4 sm:px-6 gap-0`}>
             {timeRemaining.isComplete ? (
-              <span>00D : 00H : 00M : 00S</span>
+              <span>00D : 00H : 00M : 00S : 00MS</span>
             ) : (
               <>
                 <CountdownUnit value={formatNumber(timeRemaining.days)}    suffix="D" showSep />
                 <CountdownUnit value={formatNumber(timeRemaining.hours)}   suffix="H" showSep />
                 <CountdownUnit value={formatNumber(timeRemaining.minutes)} suffix="M" showSep />
-                <CountdownUnit value={formatNumber(timeRemaining.seconds)} suffix="S" />
+                <CountdownUnit value={formatNumber(timeRemaining.seconds)} suffix="S" showSep />
+                <CountdownUnit value={formatNumber(timeRemaining.centiseconds)} suffix="MS" duration={0.07} />
               </>
             )}
           </div>
