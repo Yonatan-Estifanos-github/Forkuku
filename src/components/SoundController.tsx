@@ -17,10 +17,10 @@ function CountdownUnit({
 }) {
   return (
     <span className="inline-flex items-center leading-none">
-      {/* Fixed-size box clips the sliding digit */}
+      {/* Bounding box — wide enough for 3-digit days, tall enough to never clip */}
       <span
         className="relative inline-block overflow-hidden"
-        style={{ height: '1.15em', minWidth: '2ch', verticalAlign: 'middle' }}
+        style={{ height: '1.4em', minWidth: '3.5ch', verticalAlign: 'middle' }}
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
@@ -29,14 +29,14 @@ function CountdownUnit({
             animate={{ y: '0%' }}
             exit={{ y: '-110%' }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-0 flex items-center justify-center tabular-nums"
+            className="absolute inset-0 flex items-center justify-center tabular-nums tracking-normal"
           >
             {value}
           </motion.span>
         </AnimatePresence>
       </span>
-      <span className="opacity-60 ml-0.5">{suffix}</span>
-      {showSep && <span className="opacity-30 mx-1.5"> : </span>}
+      <span className="opacity-60 ml-1 text-[10px]">{suffix}</span>
+      {showSep && <span className="opacity-30 mx-3 sm:mx-4"> : </span>}
     </span>
   );
 }
