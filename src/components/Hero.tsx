@@ -388,8 +388,8 @@ function HeroOverlay() {
               <motion.p
                 variants={maskReveal}
                 custom={2.2}
-                className="text-[#FFF5E6] tracking-[0.5em] text-sm sm:text-base md:text-lg font-bold uppercase mb-3 drop-shadow-lg"
-                style={{ textShadow: '0 4px 20px rgba(0,0,0,1)' }}
+                className="text-[#FFFFFF] tracking-[0.5em] text-sm sm:text-base md:text-lg font-extrabold uppercase mb-3 drop-shadow-lg"
+                style={{ textShadow: '0 4px 30px rgba(0,0,0,1), 0 2px 10px rgba(0,0,0,1)' }}
               >
                 {t('hero.month')}
               </motion.p>
@@ -399,7 +399,7 @@ function HeroOverlay() {
               <motion.div
                 variants={lineExpand}
                 custom={2.6}
-                className="w-12 sm:w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4A845]/60 origin-right"
+                className="w-12 sm:w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4A845]/80 origin-right"
               />
               <div className="overflow-hidden">
                 <motion.span
@@ -413,7 +413,7 @@ function HeroOverlay() {
               <motion.div
                 variants={lineExpand}
                 custom={2.6}
-                className="w-12 sm:w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D4A845]/60 origin-left"
+                className="w-12 sm:w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D4A845]/80 origin-left"
               />
             </div>
 
@@ -421,7 +421,7 @@ function HeroOverlay() {
               <motion.p
                 variants={maskReveal}
                 custom={2.5}
-                className="editorial-label text-[#FFF5E6]/80 tracking-[0.6em] text-xs sm:text-sm md:text-base font-light uppercase mt-3"
+                className="editorial-label text-[#FFFFFF] tracking-[0.6em] text-xs sm:text-sm md:text-base font-bold uppercase mt-3"
               >
                 2026
               </motion.p>
@@ -433,7 +433,7 @@ function HeroOverlay() {
             <motion.p
               variants={maskReveal}
               custom={2.8}
-              className="editorial-label text-[#D4A845]/90 tracking-[0.4em] text-xs sm:text-sm md:text-base font-light uppercase"
+              className="editorial-label text-[#D4A845] tracking-[0.4em] text-xs sm:text-sm md:text-base font-bold uppercase"
             >
               {t('hero.location')}
             </motion.p>
@@ -517,7 +517,7 @@ function HeroOverlay() {
              <motion.p
               animate={{ y: [0, 5, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="gold-shimmer tracking-[0.4em] text-xs sm:text-sm uppercase font-bold"
+              className="gold-shimmer tracking-[0.4em] text-xs sm:text-sm uppercase font-black"
             >
               {t('hero.scroll')}
             </motion.p>

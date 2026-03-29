@@ -12,6 +12,7 @@ export interface Campaign {
   smsBody: string;
   emailTemplate: string;
   priority: 'email' | 'sms' | 'both';
+  disabled?: boolean;
 }
 
 export const CAMPAIGNS: Campaign[] = [
@@ -28,6 +29,7 @@ export const CAMPAIGNS: Campaign[] = [
     smsBody: 'You are invited to Yonatan & Saron\'s wedding! RSVP at theestifanos.com',
     emailTemplate: 'FormalInvite',
     priority: 'both',
+    disabled: true,
   },
   {
     id: 'rsvp-reminder',
@@ -35,6 +37,7 @@ export const CAMPAIGNS: Campaign[] = [
     smsBody: 'Reminder: Please RSVP for Yonatan & Saron\'s wedding by June 1st at theestifanos.com',
     emailTemplate: 'GenericTemplate',
     priority: 'both',
+    disabled: true,
   },
   {
     id: 'logistics-update',
@@ -42,6 +45,7 @@ export const CAMPAIGNS: Campaign[] = [
     smsBody: 'Wedding logistics update! See parking, hotel & schedule details at theestifanos.com',
     emailTemplate: 'GenericTemplate',
     priority: 'both',
+    disabled: true,
   },
   {
     id: 'day-of-alert',
@@ -49,6 +53,7 @@ export const CAMPAIGNS: Campaign[] = [
     smsBody: 'Wedding day update: Shuttle leaving in 10 mins from hotel lobby!',
     emailTemplate: 'GenericTemplate',
     priority: 'sms',
+    disabled: true,
   },
   {
     id: 'thank-you',
@@ -56,6 +61,7 @@ export const CAMPAIGNS: Campaign[] = [
     smsBody: 'Thank you for celebrating with us! View photos at theestifanos.com/photos',
     emailTemplate: 'GenericTemplate',
     priority: 'email',
+    disabled: true,
   },
 ];
 
