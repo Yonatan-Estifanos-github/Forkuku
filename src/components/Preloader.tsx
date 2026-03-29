@@ -118,8 +118,36 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         </AnimatePresence>
       </div>
 
-      {/* 3. Footer — Countdown only, same as original */}
-      <div className="shrink-0 w-full flex flex-col items-center pb-24 sm:pb-32 pt-8 z-40">
+      {/* 3. Footer — Language Picker + Countdown */}
+      <div className="shrink-0 w-full flex flex-col items-center pb-24 sm:pb-32 pt-8 z-40 gap-6">
+
+        {/* Language Picker — above countdown */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.6 }}
+          className="flex items-center gap-1 rounded-full border border-white/15 bg-black/30 backdrop-blur-sm px-2 py-1"
+          onClick={e => e.stopPropagation()}
+        >
+          <button
+            onClick={(e) => handleLanguageSelect(e, 'en')}
+            className={`px-2.5 py-0.5 rounded-full text-xs font-sans transition-all duration-300 ${
+              language === 'en' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
+            }`}
+          >
+            EN
+          </button>
+          <span className="text-white/20 text-xs select-none">|</span>
+          <button
+            onClick={(e) => handleLanguageSelect(e, 'am')}
+            className={`px-2.5 py-0.5 rounded-full text-xs font-ethiopic transition-all duration-300 ${
+              language === 'am' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
+            }`}
+          >
+            አማ
+          </button>
+        </motion.div>
+
         {mounted && !timeRemaining.isComplete && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -148,33 +176,6 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       >
         {t('preloader.skip')}
       </button>
-
-      {/* Language Picker — absolute top-right, zero impact on layout */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8, duration: 0.6 }}
-        className="absolute top-6 right-6 z-50 flex items-center gap-1 rounded-full border border-white/15 bg-black/30 backdrop-blur-sm px-2 py-1"
-        onClick={e => e.stopPropagation()}
-      >
-        <button
-          onClick={(e) => handleLanguageSelect(e, 'en')}
-          className={`px-2.5 py-0.5 rounded-full text-xs font-sans transition-all duration-300 ${
-            language === 'en' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
-          }`}
-        >
-          EN
-        </button>
-        <span className="text-white/20 text-xs select-none">|</span>
-        <button
-          onClick={(e) => handleLanguageSelect(e, 'am')}
-          className={`px-2.5 py-0.5 rounded-full text-xs font-ethiopic transition-all duration-300 ${
-            language === 'am' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
-          }`}
-        >
-          አማ
-        </button>
-      </motion.div>
 
       {/* Progress Bar */}
       <div className="absolute bottom-0 left-0 w-full h-[3px] bg-[#D4A845]/20 z-50">
