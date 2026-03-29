@@ -23,6 +23,12 @@ export default function JourneyGallery() {
     <section id="story" ref={containerRef} className="relative bg-luxury-black py-24 md:py-40">
       {/* Section header */}
       <div className="text-center mb-20 md:mb-32 px-4 max-w-2xl mx-auto">
+        <div className="mb-8 overflow-hidden rounded-t-xl border-b border-white/10 bg-white/[0.02]">
+          <div className="flex items-center justify-between px-4 py-3 text-[11px] text-white/30">
+            <span className="font-mono">src/journey/timeline.tsx</span>
+            <span className="font-mono text-white/20">x</span>
+          </div>
+        </div>
         <h2 className="font-serif text-4xl md:text-6xl gold-shimmer mb-8">{t('journey.heading')}</h2>
         <div className="w-8 h-[1px] bg-wedding-gold/40 mx-auto mb-8" />
         <p className={`text-base md:text-lg text-white/60 leading-relaxed ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
