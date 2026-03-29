@@ -92,11 +92,11 @@ export default function FloatingNav() {
   };
 
   return (
+    <div className="fixed right-2 sm:right-6 top-1/2 -translate-y-1/2 z-50">
     <motion.nav
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 1, delay: 2.5, ease: 'easeOut' }}
-      className="fixed right-2 sm:right-6 top-1/2 -translate-y-1/2 z-50"
       aria-label="Main navigation"
     >
       <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 p-2 sm:p-3 rounded-full border border-white/10 bg-black/20 backdrop-blur-md">
@@ -126,6 +126,7 @@ export default function FloatingNav() {
         })}
       </div>
     </motion.nav>
+    </div>
   );
 }
 
