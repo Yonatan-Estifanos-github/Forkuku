@@ -23,7 +23,9 @@
   },
   "footer": {
     "returnToTop": "Return to Top",
-    "copyright": "The Estifanos"
+    "madeWith": "Made with ♥ by Yonatan",
+    "copyright": "The Estifanos",
+    "sourceCode": "Source Code"
   },
   "rsvp": {
     "heading": "RSVP",
@@ -73,6 +75,7 @@
   },
   "registry": {
     "heading": "Registry",
+    "all": "All",
     "description": "Sharing this day with you is the only gift we require. For those who have expressed an interest in offering a token of love, we have curated a collection of items for our future home.",
     "loading": "Loading registry...",
     "empty": "Our registry is being prepared. Please check back soon!",

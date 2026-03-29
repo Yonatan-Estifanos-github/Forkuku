@@ -17,7 +17,7 @@ const NAV_KEYS = [
 export default function FloatingNav() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string>('home');
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
 
   // Track which section is in view on the home page.
   // Scroll-based midpoint detection is more reliable than IntersectionObserver
@@ -118,6 +118,28 @@ export default function FloatingNav() {
             </a>
           );
         })}
+
+        {/* Language toggle */}
+        <div className="flex items-center ml-0.5 pl-1.5 sm:pl-2 border-l border-white/15">
+          <button
+            onClick={() => setLanguage('en')}
+            className={`px-1.5 sm:px-2 py-1 text-[9px] sm:text-xs rounded-full transition-colors duration-300 font-sans ${
+              language === 'en' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
+            }`}
+            aria-label="Switch to English"
+          >
+            EN
+          </button>
+          <button
+            onClick={() => setLanguage('am')}
+            className={`px-1.5 sm:px-2 py-1 text-[9px] sm:text-xs rounded-full transition-colors duration-300 font-ethiopic ${
+              language === 'am' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
+            }`}
+            aria-label="Switch to Amharic"
+          >
+            አማ
+          </button>
+        </div>
       </div>
     </motion.nav>
   );

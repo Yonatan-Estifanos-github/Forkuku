@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 import en from '@/lib/i18n/en.json';
 import am from '@/lib/i18n/am.json';
 
@@ -23,17 +23,8 @@ const LanguageContext = createContext<LanguageContextType>({
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>('en');
 
-  // Hydrate from localStorage once on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('wedding-language');
-    if (saved === 'en' || saved === 'am') {
-      setLanguageState(saved);
-    }
-  }, []);
-
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('wedding-language', lang);
   }, []);
 
   const t = useCallback((key: string): string => {

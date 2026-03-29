@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCountdown, formatNumber } from '@/hooks/useCountdown';
 import { useLanguage, type Language } from '@/context/LanguageContext';
@@ -12,16 +12,8 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const { timeRemaining, mounted } = useCountdown();
   const { language, setLanguage, t } = useLanguage();
 
-  // Key changes when language switches so the character animation restarts
+  // Key incremented on language switch so the character animation restarts
   const [animKey, setAnimKey] = useState(0);
-  const prevLang = useRef(language);
-
-  useEffect(() => {
-    if (prevLang.current !== language) {
-      prevLang.current = language;
-      setAnimKey(k => k + 1);
-    }
-  }, [language]);
 
   // Hide scrollbar during preloader
   useEffect(() => {
@@ -50,7 +42,10 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
 
   const handleLanguageSelect = (e: React.MouseEvent, lang: Language) => {
     e.stopPropagation();
-    setLanguage(lang);
+    if (lang !== language) {
+      setLanguage(lang);
+      setAnimKey(k => k + 1);
+    }
   };
 
   const paragraphs = [
@@ -98,7 +93,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       {/* 1. Header Spacer */}
       <div className="w-full shrink-0 h-20 relative z-50" />
 
-      {/* 2. Animated Message */}
+      {/* 2. Animated Message — identical to original */}
       <div className="flex-1 w-full max-w-[600px] px-6 flex items-center justify-center overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
@@ -107,9 +102,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
             initial="hidden"
             animate="show"
             className={`text-base sm:text-xl md:text-2xl text-[#D4A845] leading-relaxed text-center ${
-              isAmharic
-                ? 'font-ethiopic font-light'
-                : 'font-serif italic'
+              isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'
             }`}
           >
             {paragraphs.map((paragraph, pIndex) => (
@@ -125,10 +118,8 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         </AnimatePresence>
       </div>
 
-      {/* 3. Footer — Countdown + Language Picker */}
-      <div className="shrink-0 w-full flex flex-col items-center pb-24 sm:pb-32 pt-8 z-40 gap-8">
-
-        {/* Countdown */}
+      {/* 3. Footer — Countdown only, same as original */}
+      <div className="shrink-0 w-full flex flex-col items-center pb-24 sm:pb-32 pt-8 z-40">
         {mounted && !timeRemaining.isComplete && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -148,42 +139,42 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
             ))}
           </motion.div>
         )}
-
-        {/* Language Picker */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-          className="flex items-center gap-3"
-          onClick={e => e.stopPropagation()}
-        >
-          {(['en', 'am'] as Language[]).map((lang) => {
-            const isSelected = language === lang;
-            return (
-              <button
-                key={lang}
-                onClick={(e) => handleLanguageSelect(e, lang)}
-                className={`px-4 py-1.5 rounded-full text-xs tracking-[0.2em] uppercase transition-all duration-300 border ${
-                  isSelected
-                    ? 'border-[#D4A845] text-[#D4A845] bg-[#D4A845]/10'
-                    : 'border-white/20 text-white/40 hover:border-white/40 hover:text-white/60'
-                } ${lang === 'am' ? 'font-ethiopic not-italic normal-case tracking-normal text-sm' : 'font-sans'}`}
-              >
-                {lang === 'en' ? 'English' : 'አማርኛ'}
-              </button>
-            );
-          })}
-        </motion.div>
-
       </div>
 
-      {/* Skip button */}
+      {/* Skip button — absolute, same as original */}
       <button
         onClick={handleSkip}
         className={`absolute bottom-12 left-1/2 -translate-x-1/2 text-[#D4A845]/50 hover:text-[#D4A845] text-xs tracking-[0.3em] uppercase transition-colors duration-300 z-50 ${isAmharic ? 'font-ethiopic not-italic normal-case tracking-normal' : ''}`}
       >
         {t('preloader.skip')}
       </button>
+
+      {/* Language Picker — absolute top-right, zero impact on layout */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8, duration: 0.6 }}
+        className="absolute top-6 right-6 z-50 flex items-center gap-1 rounded-full border border-white/15 bg-black/30 backdrop-blur-sm px-2 py-1"
+        onClick={e => e.stopPropagation()}
+      >
+        <button
+          onClick={(e) => handleLanguageSelect(e, 'en')}
+          className={`px-2.5 py-0.5 rounded-full text-xs font-sans transition-all duration-300 ${
+            language === 'en' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
+          }`}
+        >
+          EN
+        </button>
+        <span className="text-white/20 text-xs select-none">|</span>
+        <button
+          onClick={(e) => handleLanguageSelect(e, 'am')}
+          className={`px-2.5 py-0.5 rounded-full text-xs font-ethiopic transition-all duration-300 ${
+            language === 'am' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
+          }`}
+        >
+          አማ
+        </button>
+      </motion.div>
 
       {/* Progress Bar */}
       <div className="absolute bottom-0 left-0 w-full h-[3px] bg-[#D4A845]/20 z-50">

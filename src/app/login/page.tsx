@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function SiteLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { language, setLanguage } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +39,27 @@ export default function SiteLoginPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0908] flex items-center justify-center p-4">
+      {/* Language picker — top right */}
+      <div className="fixed top-4 right-4 flex items-center gap-1 rounded-full border border-white/10 bg-black/40 backdrop-blur-sm px-2 py-1">
+        <button
+          onClick={() => setLanguage('en')}
+          className={`px-2 py-0.5 text-xs rounded-full transition-colors duration-300 font-sans ${
+            language === 'en' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
+          }`}
+        >
+          EN
+        </button>
+        <span className="text-white/20 text-xs">|</span>
+        <button
+          onClick={() => setLanguage('am')}
+          className={`px-2 py-0.5 text-xs rounded-full transition-colors duration-300 font-ethiopic ${
+            language === 'am' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
+          }`}
+        >
+          አማ
+        </button>
+      </div>
+
       <div className="bg-[#0a0908] p-10 rounded-lg w-full max-w-md border border-[#D4A845]/30 shadow-2xl">
         {/* Decorative top accent */}
         <div className="flex items-center justify-center gap-4 mb-8">
