@@ -17,7 +17,7 @@ const NAV_KEYS = [
 export default function FloatingNav() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string>('home');
-  const { t, language, setLanguage } = useLanguage();
+  const { t, language } = useLanguage();
 
   // Track which section is in view on the home page.
   // Scroll-based midpoint detection is more reliable than IntersectionObserver
@@ -99,8 +99,8 @@ export default function FloatingNav() {
       className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-8 pb-[max(2rem,env(safe-area-inset-bottom))]"
       aria-label="Main navigation"
     >
-      <div className="flex flex-col items-center gap-2">
-        <div className="flex items-center gap-0 sm:gap-1 rounded-full border border-white/10 bg-black/50 backdrop-blur-md px-1.5 sm:px-4 py-1.5 transition-all">
+      <div className="max-w-full overflow-x-auto scrollbar-hide rounded-full border border-white/10 bg-black/50 px-1.5 py-1.5 backdrop-blur-md transition-all">
+        <div className="flex min-w-max items-center gap-0 sm:gap-1 sm:px-2">
           {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }) => {
             const active = isActive(href, sectionId);
             const label = t(`nav.${key}`);
@@ -110,58 +110,15 @@ export default function FloatingNav() {
                 href={href}
                 onClick={(e) => handleClick(e, href)}
                 aria-current={active ? 'page' : undefined}
-              className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-[9px] sm:text-sm transition-colors duration-300 hover:text-[#D4A845] ${
-                active ? 'text-[#D4A845]' : 'text-white'
-              } ${language === 'am' ? 'font-ethiopic' : 'font-serif'}`}
-            >
-              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-              <span>{label}</span>
-            </a>
-          );
-        })}
-
-          {/* Desktop language toggle */}
-          <div className="hidden sm:flex items-center ml-0.5 pl-1.5 sm:pl-2 border-l border-white/15">
-            <button
-              onClick={() => setLanguage('en')}
-              className={`px-1.5 sm:px-2 py-1 text-[9px] sm:text-xs rounded-full transition-colors duration-300 font-sans ${
-                language === 'en' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
-              }`}
-              aria-label="Switch to English"
-            >
-              EN
-            </button>
-            <button
-              onClick={() => setLanguage('am')}
-              className={`px-1.5 sm:px-2 py-1 text-[9px] sm:text-xs rounded-full transition-colors duration-300 font-ethiopic ${
-                language === 'am' ? 'text-[#D4A845] font-bold' : 'text-white/40 hover:text-white/70'
-              }`}
-              aria-label="Switch to Amharic"
-            >
-              አማ
-            </button>
-          </div>
-        </div>
-
-        <div className="flex sm:hidden items-center gap-1 rounded-full border border-white/10 bg-black/45 px-2 py-1 backdrop-blur-md">
-          <button
-            onClick={() => setLanguage('en')}
-            className={`px-2 py-1 text-[10px] rounded-full transition-colors duration-300 font-sans ${
-              language === 'en' ? 'text-[#D4A845] font-bold' : 'text-white/45 hover:text-white/70'
-            }`}
-            aria-label="Switch to English"
-          >
-            EN
-          </button>
-          <button
-            onClick={() => setLanguage('am')}
-            className={`px-2 py-1 text-[10px] rounded-full transition-colors duration-300 font-ethiopic ${
-              language === 'am' ? 'text-[#D4A845] font-bold' : 'text-white/45 hover:text-white/70'
-            }`}
-            aria-label="Switch to Amharic"
-          >
-            አማ
-          </button>
+                className={`shrink-0 flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-[9px] sm:text-sm transition-colors duration-300 hover:text-[#D4A845] ${
+                  active ? 'text-[#D4A845]' : 'text-white'
+                } ${language === 'am' ? 'font-ethiopic' : 'font-serif'}`}
+              >
+                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
+                <span>{label}</span>
+              </a>
+            );
+          })}
         </div>
       </div>
     </motion.nav>
