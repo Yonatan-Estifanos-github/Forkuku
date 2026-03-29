@@ -119,7 +119,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       </div>
 
       {/* 3. Footer — Language Picker + Countdown */}
-      <div className="shrink-0 w-full flex flex-col items-center pb-24 sm:pb-32 pt-8 z-40 gap-6">
+      <div className="shrink-0 w-full flex flex-col items-center pb-14 sm:pb-20 pt-4 z-40 gap-3">
 
         {/* Language Picker — above countdown */}
         <motion.div
@@ -172,7 +172,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       {/* Skip button — absolute, same as original */}
       <button
         onClick={handleSkip}
-        className={`absolute bottom-12 left-1/2 -translate-x-1/2 text-[#D4A845]/50 hover:text-[#D4A845] text-xs tracking-[0.3em] uppercase transition-colors duration-300 z-50 ${isAmharic ? 'font-ethiopic not-italic normal-case tracking-normal' : ''}`}
+        className={`absolute bottom-4 left-1/2 -translate-x-1/2 text-[#D4A845]/50 hover:text-[#D4A845] text-xs tracking-[0.3em] uppercase transition-colors duration-300 z-50 ${isAmharic ? 'font-ethiopic not-italic normal-case tracking-normal' : ''}`}
       >
         {t('preloader.skip')}
       </button>
