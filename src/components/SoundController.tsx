@@ -127,14 +127,13 @@ export default function SoundController() {
         {mounted && (
           <div className={`${pillBase} px-4 sm:px-6 gap-0`}>
             {timeRemaining.isComplete ? (
-              <span>00D : 00H : 00M : 00S : 00MS</span>
+              <span>00D : 00H : 00M : 00S</span>
             ) : (
               <>
                 <CountdownUnit value={formatNumber(timeRemaining.days)}    suffix="D" showSep />
                 <CountdownUnit value={formatNumber(timeRemaining.hours)}   suffix="H" showSep />
                 <CountdownUnit value={formatNumber(timeRemaining.minutes)} suffix="M" showSep />
-                <CountdownUnit value={formatNumber(timeRemaining.seconds)} suffix="S" showSep />
-                <CountdownUnit value={formatNumber(timeRemaining.centiseconds)} suffix="MS" duration={0.07} />
+                <CountdownUnit value={formatNumber(timeRemaining.seconds)} suffix="S" />
               </>
             )}
           </div>
