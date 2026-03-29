@@ -1270,14 +1270,16 @@ export default function AdminDashboard() {
                             </td>
                             <td className="p-4 text-right">
                               <div className="flex items-center justify-end gap-2">
-                                {/* Reset Button */}
-                                <button
-                                  onClick={() => handleResetParty(party)}
-                                  className="text-gray-400 hover:text-blue-500 transition-colors text-lg"
-                                  title="Reset Logs & RSVP"
-                                >
-                                  🔄
-                                </button>
+                                {/* Reset Button (Test only) */}
+                                {party.party_name.includes('(TEST)') && (
+                                  <button
+                                    onClick={() => handleResetParty(party)}
+                                    className="text-gray-400 hover:text-blue-500 transition-colors text-lg"
+                                    title="Reset Logs & RSVP"
+                                  >
+                                    🔄
+                                  </button>
+                                )}
 
                                 {/* Edit Button */}
                                 <button
