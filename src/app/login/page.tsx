@@ -64,16 +64,16 @@ export default function SiteLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0908] flex items-center justify-center p-4">
+    <div className="min-h-screen min-h-dvh bg-[#0a0908] flex items-start sm:items-center justify-center overflow-y-auto p-2.5 sm:p-4">
       <audio ref={audioRef} src={MUSIC_SRC} loop muted />
 
-      <div className="w-full max-w-md flex flex-col gap-0">
+      <div className="w-full max-w-[20rem] sm:max-w-md my-2 sm:my-0 sm:max-h-[calc(100dvh-2rem)] sm:overflow-y-auto flex flex-col gap-0">
 
         {/* ── Step 1: Preferences card ───────────────────────────── */}
-        <div className="bg-[#0f0e0c] border border-[#D4A845]/20 rounded-t-2xl px-8 pt-10 pb-8">
+        <div className="bg-[#0f0e0c] border border-[#D4A845]/20 rounded-t-2xl px-4 pt-5 pb-4 sm:px-8 sm:pt-10 sm:pb-8">
 
           {/* Title */}
-          <div className="flex items-center justify-center gap-4 mb-8">
+          <div className="flex items-center justify-center gap-2.5 sm:gap-4 mb-4 sm:mb-8">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#D4A845]/40" />
             <span className={`text-[#D4A845] text-[10px] tracking-[0.3em] uppercase ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
               {t('login.beforeYouEnter')}
@@ -82,16 +82,16 @@ export default function SiteLoginPage() {
           </div>
 
           {/* Language choice */}
-          <div className="mb-8">
-            <p className={`text-[#E6D2B5]/40 text-[10px] tracking-[0.25em] uppercase text-center mb-4 ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
+          <div className="mb-4 sm:mb-8">
+            <p className={`text-[#E6D2B5]/40 text-[9px] sm:text-[10px] tracking-[0.25em] uppercase text-center mb-2.5 sm:mb-4 ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
               {t('login.chooseLanguage')}
             </p>
-            <div className="flex gap-3 justify-center">
+            <div className="flex gap-2 sm:gap-3 justify-center">
               {(['en', 'am'] as Language[]).map((lang) => (
                 <button
                   key={lang}
                   onClick={() => setLanguage(lang)}
-                  className={`flex-1 py-3 rounded-xl border text-sm font-medium tracking-wide transition-all duration-300 ${
+                  className={`flex-1 py-2 sm:py-3 rounded-xl border text-[13px] sm:text-sm font-medium tracking-wide transition-all duration-300 ${
                     language === lang
                       ? 'border-[#D4A845] text-[#D4A845] bg-[#D4A845]/10'
                       : 'border-white/10 text-white/40 hover:border-white/25 hover:text-white/60'
@@ -104,23 +104,23 @@ export default function SiteLoginPage() {
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-[#D4A845]/10 mb-8" />
+          <div className="h-px bg-[#D4A845]/10 mb-4 sm:mb-8" />
 
           {/* Music toggle */}
           <div className="mb-2">
-            <p className={`text-[#E6D2B5]/40 text-[10px] tracking-[0.25em] uppercase text-center mb-4 ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
+            <p className={`text-[#E6D2B5]/40 text-[9px] sm:text-[10px] tracking-[0.25em] uppercase text-center mb-2.5 sm:mb-4 ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
               {t('login.worshipMusic')}
             </p>
             <button
               onClick={() => setMusicOn(v => !v)}
-              className={`w-full py-4 rounded-xl border flex items-center justify-center gap-3 transition-all duration-300 ${
+              className={`w-full py-3 sm:py-4 rounded-xl border flex items-center justify-center gap-2.5 sm:gap-3 transition-all duration-300 ${
                 musicOn
                   ? 'border-[#D4A845]/60 bg-[#D4A845]/10 text-[#D4A845]'
                   : 'border-white/10 text-white/40 hover:border-white/25 hover:text-white/60'
               }`}
             >
               {/* Waveform bars */}
-              <div className="flex items-end gap-[3px] h-5">
+              <div className="flex items-end gap-[3px] h-4 sm:h-5">
                 {[0, 1, 2, 3].map((i) => (
                   <div
                     key={i}
@@ -133,20 +133,20 @@ export default function SiteLoginPage() {
 
               {/* Speaker icon */}
               {musicOn ? (
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
                   <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
                   <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
                 </svg>
               ) : (
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
                   <line x1="23" y1="9" x2="17" y2="15" />
                   <line x1="17" y1="9" x2="23" y2="15" />
                 </svg>
               )}
 
-              <span className={`text-sm tracking-widest uppercase ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
+              <span className={`text-[12px] sm:text-sm tracking-[0.2em] sm:tracking-widest uppercase ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
                 {musicOn ? t('login.worshipping') : t('login.worshipWithUs')}
               </span>
             </button>
@@ -154,16 +154,16 @@ export default function SiteLoginPage() {
         </div>
 
         {/* ── Step 2: Password card ──────────────────────────────── */}
-        <div className="bg-[#0a0908] border-x border-b border-[#D4A845]/20 rounded-b-2xl px-8 pt-8 pb-10 shadow-2xl">
+        <div className="bg-[#0a0908] border-x border-b border-[#D4A845]/20 rounded-b-2xl px-4 pt-4 pb-5 sm:px-8 sm:pt-8 sm:pb-10 shadow-2xl">
 
-          <h1 className="font-serif text-3xl text-[#E6D2B5] text-center mb-1">
+          <h1 className="font-serif text-[1.45rem] sm:text-3xl text-[#E6D2B5] text-center mb-1">
             Yonatan & Saron
           </h1>
-          <p className={`text-center text-[#E6D2B5]/40 text-xs tracking-[0.2em] uppercase mb-8 ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+          <p className={`text-center text-[#E6D2B5]/40 text-[11px] sm:text-xs tracking-[0.16em] sm:tracking-[0.2em] uppercase mb-4 sm:mb-8 ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
             {t('login.privateEvent')}
           </p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:gap-4">
             {error && (
               <div className="bg-red-900/20 text-red-400 p-3 rounded text-sm text-center border border-red-900/30">
                 {error}
@@ -174,7 +174,7 @@ export default function SiteLoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-4 bg-[#1a1815] border border-[#D4A845]/30 rounded-xl outline-none focus:border-[#D4A845] transition-colors text-[#E6D2B5] text-center tracking-widest placeholder:text-[#E6D2B5]/30"
+              className="w-full p-3 sm:p-4 bg-[#1a1815] border border-[#D4A845]/30 rounded-xl outline-none focus:border-[#D4A845] transition-colors text-[#E6D2B5] text-center tracking-[0.15em] sm:tracking-widest placeholder:text-[#E6D2B5]/30"
               placeholder={t('login.enterPassword')}
               required
             />
@@ -182,13 +182,13 @@ export default function SiteLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-[#D4A845] text-[#0a0908] font-serif text-base tracking-widest uppercase hover:bg-[#E6D2B5] transition-colors duration-300 disabled:opacity-70 disabled:cursor-not-allowed rounded-xl"
+              className="w-full py-3 sm:py-4 bg-[#D4A845] text-[#0a0908] font-serif text-[15px] sm:text-base tracking-[0.18em] sm:tracking-widest uppercase hover:bg-[#E6D2B5] transition-colors duration-300 disabled:opacity-70 disabled:cursor-not-allowed rounded-xl"
             >
               {loading ? t('login.verifying') : t('login.enter')}
             </button>
           </form>
 
-          <div className="mt-8 flex flex-col items-center gap-4">
+          <div className="mt-4 sm:mt-8 flex flex-col items-center gap-2.5 sm:gap-4">
             <div className="h-px w-24 bg-gradient-to-r from-transparent via-[#D4A845]/30 to-transparent" />
             <Link
               href="/legal"
