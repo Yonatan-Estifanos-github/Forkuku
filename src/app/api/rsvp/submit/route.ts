@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
+import { Resend } from 'resend';
+import RSVPConfirmation from '@/emails/RSVPConfirmation';
 
 export async function POST(req: Request) {
   try {
@@ -14,10 +16,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
+    const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
     // Fetch current contact arrays so we can merge without duplicates
     const { data: currentParty } = await supabaseAdmin
       .from('parties')
-      .select('emails, phones')
+      .select('emails, phones, party_name')
       .eq('id', party_id)
       .single();
 
@@ -43,7 +47,7 @@ export async function POST(req: Request) {
       })
       .eq('id', party_id)
       .eq('has_responded', false)
-      .select('id')
+      .select('id, party_name, emails')
       .maybeSingle();
 
     if (partyError) {
@@ -79,10 +83,11 @@ export async function POST(req: Request) {
 
       const { error: guestError } = await supabaseAdmin.rpc('update_guests_for_party', {
         p_party_id: party_id,
-        p_guests: guests.map((g: { id: string; is_attending: boolean; name: string }) => ({
+        p_guests: guests.map((g: { id: string; is_attending: boolean; name: string; dietary_notes?: string }) => ({
           id: g.id,
           is_attending: g.is_attending,
-          name: g.name
+          name: g.name,
+          dietary_notes: g.dietary_notes
         }))
       });
 
@@ -92,7 +97,45 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. Create Audit Log
+    // 3. Send Internal Alert and Guest Confirmation
+    if (resend) {
+      const attending = guests.filter((g: any) => g.is_attending).map((g: any) => g.name);
+      const declined = guests.filter((g: any) => !g.is_attending).map((g: any) => g.name);
+      const dietary = guests.filter((g: any) => g.dietary_notes).map((g: any) => `${g.name}: ${g.dietary_notes}`);
+
+      // Internal Alert
+      await resend.emails.send({
+        from: 'RSVP Alert <notifications@theestifanos.com>',
+        to: 'theestifanos@gmail.com',
+        subject: `New RSVP: The ${updatedParty.party_name} Family`,
+        html: `
+          <h1>New RSVP Submission</h1>
+          <p><strong>Party:</strong> ${updatedParty.party_name}</p>
+          <p><strong>Attending:</strong> ${attending.length > 0 ? attending.join(', ') : 'None'}</p>
+          <p><strong>Declined:</strong> ${declined.length > 0 ? declined.join(', ') : 'None'}</p>
+          ${dietary.length > 0 ? `<p><strong>Dietary Restrictions:</strong><br/>${dietary.join('<br/>')}</p>` : ''}
+          ${message ? `<p><strong>Message for Couple:</strong><br/>"${message}"</p>` : ''}
+          <p><a href="https://theestifanos.com/admin">View in Dashboard</a></p>
+        `
+      }).catch(err => console.error('Internal Alert Error:', err));
+
+      // Guest Confirmation (send to all emails in party)
+      if (updatedParty.emails && updatedParty.emails.length > 0) {
+        for (const guestEmail of updatedParty.emails) {
+          await resend.emails.send({
+            from: 'Yonatan & Saron <hello@theestifanos.com>',
+            to: guestEmail,
+            subject: 'RSVP Confirmed — Yonatan & Saron',
+            react: RSVPConfirmation({
+              partyName: updatedParty.party_name,
+              guests: guests
+            })
+          }).catch(err => console.error(`Guest Confirmation Error (${guestEmail}):`, err));
+        }
+      }
+    }
+
+    // 4. Create Audit Log
     const { error: auditError } = await supabaseAdmin
       .from('audit_logs')
       .insert({

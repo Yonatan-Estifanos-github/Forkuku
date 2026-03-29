@@ -74,7 +74,7 @@ export const SaveTheDate = ({ guestName = 'Dear Friend' }: SaveTheDateProps) => 
 
         {/* ── Scripture note ── */}
         <Text style={scripture}>
-          "What therefore God has joined together, let no man separate."
+          &quot;What therefore God has joined together, let no man separate.&quot;
           <br />
           <span style={scriptureRef}>— Matthew 19:6</span>
         </Text>
