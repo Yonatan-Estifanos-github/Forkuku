@@ -146,7 +146,11 @@ export default function SiteLoginPage() {
           <button
             type="button"
             onClick={() => setMusicOn(v => !v)}
-            className={`flex items-center gap-2 transition-colors duration-300 ${musicOn ? 'text-[#D4A845]' : 'text-white/30 hover:text-white/60'}`}
+            className={`flex items-center gap-2.5 border rounded-full px-5 py-2 transition-all duration-300 ${
+              musicOn
+                ? 'border-[#D4A845]/60 text-[#D4A845] bg-[#D4A845]/5'
+                : 'border-white/20 text-white/60 hover:border-white/40 hover:text-white/90'
+            }`}
           >
             <div className="flex items-end gap-[3px] h-3">
               {[0, 1, 2, 3].map((i) => (
