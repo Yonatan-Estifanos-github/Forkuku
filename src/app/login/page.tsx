@@ -64,10 +64,10 @@ export default function SiteLoginPage() {
   };
 
   return (
-    <div className="min-h-screen min-h-dvh bg-[#0a0908] flex items-start sm:items-center justify-center overflow-y-auto p-2.5 sm:p-4">
+    <div className="min-h-[100dvh] bg-[#0a0908] flex items-center justify-center p-4">
       <audio ref={audioRef} src={MUSIC_SRC} loop muted />
 
-      <div className="w-full max-w-[20rem] sm:max-w-md my-2 sm:my-0 sm:max-h-[calc(100dvh-2rem)] sm:overflow-y-auto flex flex-col gap-0">
+      <div className="w-full max-w-[20rem] sm:max-w-md flex flex-col gap-0">
 
         {/* ── Step 1: Preferences card ───────────────────────────── */}
         <div className="bg-[#0f0e0c] border border-[#D4A845]/20 rounded-t-2xl px-4 pt-5 pb-4 sm:px-8 sm:pt-10 sm:pb-8">
