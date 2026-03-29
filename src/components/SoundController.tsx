@@ -94,7 +94,7 @@ export default function SoundController() {
 
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-1.5 sm:gap-2">
         <div
-          className={`${utilityPillClass} min-w-0 shrink-0 justify-start sm:flex-none ${
+          className={`${utilityPillClass} min-w-[74px] px-2 text-[7px] tracking-[0.16em] shrink-0 justify-center sm:min-w-0 sm:px-4 sm:text-[10px] sm:tracking-widest sm:flex-none ${
             language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'
           }`}
         >
@@ -108,7 +108,7 @@ export default function SoundController() {
           >
             EN
           </button>
-          <span className="mx-2 text-white/35">|</span>
+          <span className="mx-1 text-white/35 sm:mx-2">|</span>
           <button
             onClick={() => setLanguage('am')}
             className={`transition-colors duration-300 ${
