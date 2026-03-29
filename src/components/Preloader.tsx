@@ -26,13 +26,14 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
   }, []);
 
   useEffect(() => {
+    setIsFadingOut(false);
     const fadeTimer = setTimeout(() => setIsFadingOut(true), PRELOADER_DURATION - 1000);
     const completeTimer = setTimeout(onComplete, PRELOADER_DURATION);
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(completeTimer);
     };
-  }, [onComplete]);
+  }, [onComplete, animKey]);
 
   const handleSkip = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -180,6 +181,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       {/* Progress Bar */}
       <div className="absolute bottom-0 left-0 w-full h-[3px] bg-[#D4A845]/20 z-50">
         <motion.div
+          key={animKey}
           className="h-full bg-[#D4A845]"
           initial={{ width: '0%' }}
           animate={{ width: '100%' }}
