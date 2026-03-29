@@ -54,31 +54,6 @@ function ParsedDescription({
   );
 }
 
-function SideArrow({
-  direction,
-  onClick,
-  label,
-}: {
-  direction: 'prev' | 'next';
-  onClick: () => void;
-  label: string;
-}) {
-  const isPrev = direction === 'prev';
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={label}
-      className={`absolute top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-[#D4A845]/18 bg-black/45 text-[#D4A845]/82 backdrop-blur-md transition-all duration-300 hover:border-[#D4A845]/42 hover:text-[#F0D99F] xl:flex ${
-        isPrev ? '-left-6' : '-right-6'
-      }`}
-    >
-      <span className="text-lg leading-none">{isPrev ? '<' : '>'}</span>
-    </button>
-  );
-}
-
 export default function JourneyGallery() {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -99,11 +74,11 @@ export default function JourneyGallery() {
   };
 
   return (
-    <section id="story" className="relative overflow-hidden bg-[#0A0A0A] px-4 py-20 pb-40 md:px-6 md:py-24 md:pb-48">
+    <section id="story" className="relative overflow-hidden bg-[#0A0A0A] px-4 py-20 pb-36 md:px-6 md:py-24 md:pb-44">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,168,69,0.10),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.05),transparent_28%)]" />
 
       <div className="relative mx-auto max-w-6xl">
-        <div className="mb-12 flex flex-col gap-6 md:mb-14 md:flex-row md:items-end md:justify-between">
+        <div className="mb-10 flex flex-col gap-6 md:mb-12 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
             <p
               className={`mb-5 text-[11px] uppercase text-[#D4A845]/75 ${
@@ -123,11 +98,7 @@ export default function JourneyGallery() {
         </div>
 
         <div className="flex justify-center">
-          <div className="relative w-full max-w-5xl">
-            <SideArrow direction="prev" label={t('journey.prev')} onClick={() => paginate(-1)} />
-            <SideArrow direction="next" label={t('journey.next')} onClick={() => paginate(1)} />
-
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/8 bg-[#111111] shadow-[0_34px_120px_rgba(0,0,0,0.5)] min-h-[700px] md:h-[62vh] md:max-h-[680px] md:min-h-0">
+          <div className="relative w-full max-w-5xl overflow-hidden rounded-[2rem] border border-white/8 bg-[#111111] shadow-[0_34px_120px_rgba(0,0,0,0.5)] min-h-[720px] md:h-[65vh] md:max-h-[700px] md:min-h-0">
             <AnimatePresence initial={false} custom={direction} mode="wait">
               <motion.article
                 key={item.id}
@@ -150,9 +121,9 @@ export default function JourneyGallery() {
                 }}
                 className="absolute inset-0"
               >
-                <div className="grid h-full grid-cols-1 md:grid-cols-[1.02fr_0.98fr]">
-                  <div className="relative h-[37vh] min-h-[280px] md:h-full">
-                    <div className="absolute inset-4 overflow-hidden rounded-[1.35rem] border border-white/10 md:inset-5">
+                <div className="grid h-full grid-cols-1 md:grid-cols-[1fr_1fr]">
+                  <div className="relative h-[38vh] min-h-[300px] md:h-full">
+                    <div className="absolute inset-4 overflow-hidden rounded-[1.35rem] border border-white/10 md:inset-6">
                       {item.image ? (
                         <Image
                           src={item.image}
@@ -170,7 +141,7 @@ export default function JourneyGallery() {
                     </div>
                   </div>
 
-                  <div className="flex h-full flex-col justify-center px-7 py-7 md:px-10 md:py-10 lg:px-12">
+                  <div className="flex h-full flex-col px-7 pb-7 pt-6 md:px-10 md:pb-8 md:pt-8 lg:px-12">
                     <div className="flex flex-1 flex-col justify-center">
                       <p
                         className={`mb-4 text-[11px] uppercase text-[#D4A845]/80 ${
@@ -180,7 +151,7 @@ export default function JourneyGallery() {
                         {displayYear}
                       </p>
 
-                      <h3 className={`max-w-md text-[2rem] leading-tight text-[#EAE5D9] md:text-[2.65rem] ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+                      <h3 className={`max-w-md text-[2rem] leading-tight text-[#EAE5D9] md:text-[2.8rem] ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
                         {displayTitle}
                       </h3>
 
@@ -200,43 +171,42 @@ export default function JourneyGallery() {
                         </a>
                       ) : null}
                     </div>
+
+                    <div className="mt-7 border-t border-white/8 pt-5">
+                      <div className="flex items-center justify-between gap-4">
+                        <button
+                          type="button"
+                          onClick={() => paginate(-1)}
+                          className={`text-[11px] text-[#D4A845]/88 transition-colors hover:text-[#F0D99F] ${
+                            isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans uppercase tracking-[0.28em]'
+                          }`}
+                        >
+                          [ {t('journey.prev')} ]
+                        </button>
+
+                        <p className="text-[11px] uppercase tracking-[0.34em] text-[#D4A845]/75">
+                          {String(currentIndex + 1).padStart(2, '0')} / {String(JOURNEY_DATA.length).padStart(2, '0')}
+                        </p>
+
+                        <button
+                          type="button"
+                          onClick={() => paginate(1)}
+                          className={`text-[11px] text-[#D4A845]/88 transition-colors hover:text-[#F0D99F] ${
+                            isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans uppercase tracking-[0.28em]'
+                          }`}
+                        >
+                          [ {t('journey.next')} ]
+                        </button>
+                      </div>
+
+                      <p className={`mt-3 text-center text-[10px] text-stone-400 md:hidden ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+                        {t('journey.swipeHint')}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </motion.article>
             </AnimatePresence>
-            </div>
-
-            <div className="mt-6 flex flex-col items-center gap-3">
-              <div className="flex items-center gap-5 rounded-full border border-white/8 bg-white/[0.03] px-5 py-3 backdrop-blur-sm">
-                <button
-                  type="button"
-                  onClick={() => paginate(-1)}
-                  className={`text-[11px] text-[#D4A845]/88 transition-colors hover:text-[#F0D99F] ${
-                    isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans uppercase tracking-[0.28em]'
-                  }`}
-                >
-                  [ {t('journey.prev')} ]
-                </button>
-
-                <p className="text-[11px] uppercase tracking-[0.34em] text-[#D4A845]/75">
-                  {String(currentIndex + 1).padStart(2, '0')} / {String(JOURNEY_DATA.length).padStart(2, '0')}
-                </p>
-
-                <button
-                  type="button"
-                  onClick={() => paginate(1)}
-                  className={`text-[11px] text-[#D4A845]/88 transition-colors hover:text-[#F0D99F] ${
-                    isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans uppercase tracking-[0.28em]'
-                  }`}
-                >
-                  [ {t('journey.next')} ]
-                </button>
-              </div>
-
-              <p className={`text-center text-[10px] text-stone-400 xl:hidden ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
-                {t('journey.swipeHint')}
-              </p>
-            </div>
           </div>
         </div>
       </div>
