@@ -123,11 +123,11 @@ export default function JourneyGallery() {
         </div>
 
         <div className="flex justify-center">
-          <div className="relative w-full max-w-6xl">
+          <div className="relative w-full max-w-5xl">
             <SideArrow direction="prev" label={t('journey.prev')} onClick={() => paginate(-1)} />
             <SideArrow direction="next" label={t('journey.next')} onClick={() => paginate(1)} />
 
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/8 bg-[#111111] shadow-[0_34px_120px_rgba(0,0,0,0.5)] min-h-[760px] md:h-[68vh] md:max-h-[760px] md:min-h-0">
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/8 bg-[#111111] shadow-[0_34px_120px_rgba(0,0,0,0.5)] min-h-[700px] md:h-[62vh] md:max-h-[680px] md:min-h-0">
             <AnimatePresence initial={false} custom={direction} mode="wait">
               <motion.article
                 key={item.id}
@@ -150,9 +150,9 @@ export default function JourneyGallery() {
                 }}
                 className="absolute inset-0"
               >
-                <div className="grid h-full grid-cols-1 md:grid-cols-[1.04fr_0.96fr]">
-                  <div className="relative h-[40vh] min-h-[320px] md:h-full">
-                    <div className="absolute inset-4 overflow-hidden rounded-[1.35rem] border border-white/10 md:inset-6">
+                <div className="grid h-full grid-cols-1 md:grid-cols-[1.02fr_0.98fr]">
+                  <div className="relative h-[37vh] min-h-[280px] md:h-full">
+                    <div className="absolute inset-4 overflow-hidden rounded-[1.35rem] border border-white/10 md:inset-5">
                       {item.image ? (
                         <Image
                           src={item.image}
@@ -170,7 +170,7 @@ export default function JourneyGallery() {
                     </div>
                   </div>
 
-                  <div className="flex h-full flex-col justify-center px-7 py-8 md:px-12 md:py-12 lg:px-14">
+                  <div className="flex h-full flex-col justify-center px-7 py-7 md:px-10 md:py-10 lg:px-12">
                     <div className="flex flex-1 flex-col justify-center">
                       <p
                         className={`mb-4 text-[11px] uppercase text-[#D4A845]/80 ${
