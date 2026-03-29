@@ -93,33 +93,37 @@ export default function FloatingNav() {
 
   return (
     <motion.nav
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 1, delay: 2.5, ease: 'easeOut' }}
-      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-8 pb-[max(2rem,env(safe-area-inset-bottom))]"
+      className="fixed right-2 sm:right-6 top-1/2 -translate-y-1/2 z-50"
       aria-label="Main navigation"
     >
-      <div className="mx-auto w-fit max-w-[calc(100vw-2rem)] overflow-x-auto scrollbar-hide rounded-full border border-white/10 bg-black/50 px-1.5 py-2 backdrop-blur-md transition-all sm:max-w-full sm:px-1.5 sm:py-1.5">
-        <div className="mx-auto flex min-w-max justify-center items-center gap-0 sm:gap-1 sm:px-2">
-          {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }) => {
-            const active = isActive(href, sectionId);
-            const label = t(`nav.${key}`);
-            return (
-              <a
-                key={key}
-                href={href}
-                onClick={(e) => handleClick(e, href)}
-                aria-current={active ? 'page' : undefined}
-                className={`shrink-0 flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-1 rounded-full text-[10px] sm:text-sm transition-colors duration-300 hover:text-[#D4A845] ${
-                  active ? 'text-[#D4A845]' : 'text-white'
-                } ${language === 'am' ? 'font-ethiopic' : 'font-serif'}`}
-              >
-                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                <span className="whitespace-nowrap">{label}</span>
-              </a>
-            );
-          })}
-        </div>
+      <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 p-2 sm:p-3 rounded-full border border-white/10 bg-black/20 backdrop-blur-md">
+        {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }) => {
+          const active = isActive(href, sectionId);
+          const label = t(`nav.${key}`);
+          return (
+            <a
+              key={key}
+              href={href}
+              onClick={(e) => handleClick(e, href)}
+              aria-current={active ? 'page' : undefined}
+              title={label}
+              className={`relative flex flex-col items-center justify-center gap-1 p-1 rounded-full transition-colors duration-300 ${
+                active
+                  ? 'text-[#D4A845]'
+                  : 'text-white/50 hover:text-white/90'
+              } ${language === 'am' ? 'font-ethiopic' : 'font-serif'}`}
+            >
+              {active && (
+                <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-[#D4A845] shadow-[0_0_4px_#D4A845]" />
+              )}
+              <Icon className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
+              <span className="text-[8px] sm:text-[10px] whitespace-nowrap leading-none">{label}</span>
+            </a>
+          );
+        })}
       </div>
     </motion.nav>
   );
