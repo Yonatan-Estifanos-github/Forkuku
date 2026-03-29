@@ -65,37 +65,17 @@ export default function LegalPage() {
             {t('legal.smsTerms')}
           </h2>
           <div className={`space-y-6 text-[#E6D2B5]/80 leading-relaxed tracking-wide ${am ? 'font-ethiopic' : 'font-sans'}`}>
-            <div>
-              <h3 className={`text-[#E6D2B5] font-serif text-lg mb-2 ${am ? 'font-ethiopic not-italic' : 'italic'}`}>
-                {t('legal.consentTitle')}
-              </h3>
-              <p>{t('legal.consentBody')}</p>
-            </div>
-
-            <div>
-              <h3 className={`text-[#E6D2B5] font-serif text-lg mb-2 ${am ? 'font-ethiopic not-italic' : 'italic'}`}>
-                {t('legal.frequencyTitle')}
-              </h3>
-              <p>{t('legal.frequencyBody')}</p>
-              <p className="mt-4 font-medium">{t('legal.frequencyDisclosure')}</p>
-            </div>
-
-            <div>
-              <h3 className={`text-[#E6D2B5] font-serif text-lg mb-2 ${am ? 'font-ethiopic not-italic' : 'italic'}`}>
-                {t('legal.carrierTitle')}
-              </h3>
-              <p>{t('legal.carrierBody')}</p>
-            </div>
-
-            <div>
-              <h3 className={`text-[#E6D2B5] font-serif text-lg mb-2 ${am ? 'font-ethiopic not-italic' : 'italic'}`}>
-                {t('legal.contactTitle')}
-              </h3>
-              <p>
-                {t('legal.contactBody')}{' '}
-                <span className="text-[#D4A845]">theestifanos@gmail.com</span>
-              </p>
-            </div>
+            <p className={`text-[#E6D2B5] text-lg ${am ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
+              {t('legal.smsProgramName')}
+            </p>
+            <ol className="list-decimal list-outside space-y-4 pl-6">
+              <li>{t('legal.smsItem1')}</li>
+              <li>{t('legal.smsItem2')}</li>
+              <li>{t('legal.smsItem3')}</li>
+              <li>{t('legal.smsItem4')}</li>
+              <li>{t('legal.smsItem5')}</li>
+              <li>{t('legal.smsItem6')}</li>
+            </ol>
           </div>
         </section>
 
