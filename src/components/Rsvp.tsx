@@ -29,17 +29,18 @@ interface Party {
 function LuxuryInput({
   label,
   id,
+  className,
   ...props
 }: { label: string; id: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-wedding-gold/80">
+      <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-wedding-gold/80 text-center">
         {label}
       </label>
       <div className="luxury-input relative">
         <input
           id={id}
-          className="w-full bg-transparent border-0 py-3 text-lg font-serif tracking-wide outline-none text-stone-200 placeholder:text-stone-600 placeholder:italic"
+          className={`w-full bg-transparent border-0 py-3 text-lg font-serif tracking-wide outline-none text-stone-200 placeholder:text-stone-600 placeholder:italic text-center${className ? ` ${className}` : ''}`}
           {...props}
         />
         <span className="luxury-input-line" />
@@ -176,13 +177,13 @@ function SearchScreen({
   };
 
   return (
-    <div className="w-full max-w-lg text-center">
-      <p className="font-serif text-base md:text-lg mb-10 leading-relaxed px-4 text-stone-400">
+    <div className="w-full max-w-md mx-auto text-center">
+      <p className="font-serif text-base md:text-lg mb-10 leading-relaxed px-4 text-stone-400 text-center mx-auto">
         {t('rsvp.searchPrompt')}
       </p>
 
       <form onSubmit={handleSearch} className="flex flex-col gap-6">
-        <div className="text-left">
+        <div className="text-center">
           <LuxuryInput
             label={t('rsvp.namePlaceholder')}
             id="search"
@@ -191,11 +192,12 @@ function SearchScreen({
             onChange={(e) => setQuery(e.target.value)}
             disabled={isLoading}
             placeholder={t('rsvp.nameExample')}
+            className="text-center"
           />
         </div>
 
         {error && (
-          <p className="text-sm font-serif italic text-left text-red-500">
+          <p className="text-sm font-serif italic text-center text-red-500">
             {error}
           </p>
         )}
@@ -718,10 +720,10 @@ export default function Rsvp() {
           {/* Content sits above the noise pseudo-element */}
           <div className="relative z-10 flex flex-col items-center w-full">
             {/* Header */}
-            <h2 className="font-display text-6xl tracking-wide mb-4 text-wedding-gold">
+            <h2 className="font-display text-6xl tracking-wide mb-4 text-wedding-gold text-center">
               {t('rsvp.heading')}
             </h2>
-            <p className="font-serif italic text-base md:text-lg tracking-wide mb-12 text-stone-400">
+            <p className="font-serif italic text-base md:text-lg tracking-wide mb-12 text-stone-400 text-center">
               {t('rsvp.deadline')}
             </p>
 
