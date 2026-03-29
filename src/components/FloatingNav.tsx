@@ -110,15 +110,15 @@ export default function FloatingNav() {
                 href={href}
                 onClick={(e) => handleClick(e, href)}
                 aria-current={active ? 'page' : undefined}
-                className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-[9px] sm:text-sm transition-colors duration-300 hover:text-[#D4A845] ${
-                  active ? 'text-[#D4A845]' : 'text-white'
-                } ${language === 'am' ? 'font-ethiopic' : 'font-serif'}`}
-              >
-                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                <span className="hidden sm:inline">{label}</span>
-              </a>
-            );
-          })}
+              className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-[9px] sm:text-sm transition-colors duration-300 hover:text-[#D4A845] ${
+                active ? 'text-[#D4A845]' : 'text-white'
+              } ${language === 'am' ? 'font-ethiopic' : 'font-serif'}`}
+            >
+              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
+              <span>{label}</span>
+            </a>
+          );
+        })}
 
           {/* Desktop language toggle */}
           <div className="hidden sm:flex items-center ml-0.5 pl-1.5 sm:pl-2 border-l border-white/15">
