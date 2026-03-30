@@ -147,7 +147,7 @@ const rule: React.CSSProperties = {
 };
 
 const names: React.CSSProperties = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontSize: '54px',
   fontStyle: 'normal',
   fontWeight: '400',
@@ -174,7 +174,7 @@ const dateLine: React.CSSProperties = {
 };
 
 const locationLine: React.CSSProperties = {
-  color: '#9C8C78',
+  color: '#F2EFE9',
   fontSize: '11px',
   letterSpacing: '3px',
   textTransform: 'uppercase',
@@ -183,14 +183,14 @@ const locationLine: React.CSSProperties = {
 };
 
 const salutation: React.CSSProperties = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontSize: '18px',
   fontStyle: 'italic',
   margin: '0 0 12px',
 };
 
 const bodyText: React.CSSProperties = {
-  color: '#9C8C78',
+  color: '#F2EFE9',
   fontSize: '15px',
   lineHeight: '1.8',
   margin: '0 0 36px',
@@ -198,7 +198,7 @@ const bodyText: React.CSSProperties = {
 };
 
 const emphasis: React.CSSProperties = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontStyle: 'italic',
 };
 
@@ -221,7 +221,7 @@ const passwordLabel: React.CSSProperties = {
 };
 
 const passwordValue: React.CSSProperties = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontSize: '18px',
   fontStyle: 'italic',
   margin: '0',
@@ -248,7 +248,7 @@ const ctaButton: React.CSSProperties = {
 };
 
 const scripture: React.CSSProperties = {
-  color: '#6B5D4F',
+  color: '#9C8C78',
   fontSize: '13px',
   fontStyle: 'italic',
   lineHeight: '1.7',
@@ -259,7 +259,7 @@ const scriptureRef: React.CSSProperties = {
   fontSize: '11px',
   letterSpacing: '1px',
   fontStyle: 'normal',
-  color: '#5A4E43',
+  color: '#6B5D4F',
 };
 
 const photo: React.CSSProperties = {
@@ -272,7 +272,7 @@ const photo: React.CSSProperties = {
 };
 
 const footer: React.CSSProperties = {
-  color: '#3D342C',
+  color: '#6B5D4F',
   fontSize: '10px',
   letterSpacing: '2px',
   textTransform: 'uppercase',

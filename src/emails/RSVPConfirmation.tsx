@@ -123,7 +123,7 @@ const headerLabel: React.CSSProperties = {
 };
 
 const title: React.CSSProperties = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontSize: '32px',
   lineHeight: '1.2',
   margin: '0 0 40px',
@@ -151,7 +151,7 @@ const guestStatusLabel: React.CSSProperties = {
 };
 
 const guestStatusLabelDeclined: React.CSSProperties = {
-  color: '#9C8C78',
+  color: '#F2EFE9',
   fontSize: '9px',
   letterSpacing: '3px',
   textTransform: 'uppercase',
@@ -160,7 +160,7 @@ const guestStatusLabelDeclined: React.CSSProperties = {
 };
 
 const guestName: React.CSSProperties = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontSize: '18px',
   margin: '4px 0',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
@@ -168,7 +168,7 @@ const guestName: React.CSSProperties = {
 };
 
 const guestNameDeclined: React.CSSProperties = {
-  color: '#6B5D4F',
+  color: '#9C8C78',
   fontSize: '16px',
   margin: '4px 0',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
@@ -177,7 +177,7 @@ const guestNameDeclined: React.CSSProperties = {
 };
 
 const messageText: React.CSSProperties = {
-  color: '#9C8C78',
+  color: '#F2EFE9',
   fontSize: '15px',
   lineHeight: '1.8',
   margin: '0 auto 48px',
@@ -203,7 +203,7 @@ const prayerTitle: React.CSSProperties = {
 };
 
 const prayerText: React.CSSProperties = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontSize: '16px',
   lineHeight: '1.6',
   fontStyle: 'italic',
@@ -226,14 +226,14 @@ const caption: React.CSSProperties = {
   fontFamily: "'Playfair Display', Georgia, serif",
   fontStyle: 'italic',
   fontSize: '12px',
-  color: '#888888',
+  color: '#9C8C78',
   textAlign: 'center',
   margin: '0 auto 40px',
   maxWidth: '440px',
 };
 
 const footer: React.CSSProperties = {
-  color: '#3D342C',
+  color: '#6B5D4F',
   fontSize: '10px',
   letterSpacing: '2px',
   textTransform: 'uppercase',
