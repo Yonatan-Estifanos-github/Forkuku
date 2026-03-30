@@ -6,7 +6,6 @@ import {
   Preview,
   Section,
   Text,
-  Hr,
 } from '@react-email/components';
 import * as React from 'react';
 
@@ -20,7 +19,6 @@ export const RSVPConfirmation = ({
   guests = []
 }: RSVPConfirmationProps) => {
   const attendingGuests = guests.filter(g => g.is_attending);
-  const declinedGuests = guests.filter(g => !g.is_attending);
 
   return (
     <Html lang="en">
@@ -28,76 +26,62 @@ export const RSVPConfirmation = ({
       <Preview>RSVP Confirmed — Yonatan &amp; Saron</Preview>
 
       <Body style={mainBody}>
-        {/* ── Header ── */}
+        {/* ── 1. Pre-header ── */}
         <Text style={preHeader}>RSVP CONFIRMED</Text>
 
-        {/* ── Framing ── */}
-        <Hr style={hairline} />
+        {/* ── 2. Main Title ── */}
+        <Text style={mainTitle}>We can&apos;t wait to celebrate with you.</Text>
 
-        {/* ── Title ── */}
-        <Text style={title}>We can&apos;t wait to celebrate with you.</Text>
-
-        {/* ── Dynamic Guest List ── */}
-        <Section style={guestListSection}>
-          {attendingGuests.length > 0 && (
-            <div style={guestGroup}>
-              <Text style={guestStatusLabel}>ATTENDING</Text>
-              {attendingGuests.map((g, i) => (
-                <Text key={i} style={guestName}>{g.name}</Text>
-              ))}
-            </div>
-          )}
-          
-          {declinedGuests.length > 0 && (
-            <div style={guestGroup}>
-              <Text style={guestStatusLabelDeclined}>DECLINED</Text>
-              {declinedGuests.map((g, i) => (
-                <Text key={i} style={guestNameDeclined}>{g.name}</Text>
-              ))}
-            </div>
-          )}
-        </Section>
-
-        {/* ── Framing ── */}
-        <Hr style={hairline} />
-
-        {/* ── Message ── */}
-        <Text style={messageText}>
+        {/* ── 3. Main Body Paragraph ── */}
+        <Text style={bodyParagraph}>
           Thank you for confirming your attendance. We are currently preparing 
           your formal invitation suite, which will include the venue location, 
           day-of details, and our full weekend itinerary. We will reach out 
           to your party soon with these final details.
         </Text>
 
-        {/* ── Prayer Request ── */}
-        <Text style={prayerTitle}>THE PRAYER REQUEST</Text>
-        <Text style={prayerText}>
-          More than anything, as we prepare to enter into this marriage covenant, 
-          our greatest request is your continued prayers. Please join us in 
-          praying over our relationship, our future together, and the beautiful 
-          day ahead.
-        </Text>
+        {/* ── 4. Guest List Section ── */}
+        {attendingGuests.length > 0 && (
+          <Section style={guestListSection}>
+            <Text style={attendingHeader}>ATTENDING</Text>
+            {attendingGuests.map((g, i) => (
+              <Text key={i} style={guestName}>{g.name}</Text>
+            ))}
+          </Section>
+        )}
 
-        {/* ── Hero Image ── */}
+        {/* ── 5. The Prayer Request ── */}
+        <Section style={prayerSection}>
+          <Text style={prayerHeader}>THE PRAYER REQUEST</Text>
+          <Text style={prayerBody}>
+            More than anything, as we prepare to enter into this marriage covenant, 
+            our greatest request is your continued prayers. Please join us in 
+            praying over our relationship, our future together, and the beautiful 
+            day ahead.
+          </Text>
+        </Section>
+
+        {/* ── 6. Image & Caption ── */}
         <Img
           src={PRAY_IMAGE_URL}
-          alt="Praying over Yonatan and Saron"
-          width="440"
+          alt="Yonatan and Saron"
+          width="500"
           style={heroImage}
         />
         <Text style={caption}>
           Pastor Ashenafi praying over our upcoming marriage at our engagement celebration.
         </Text>
 
-        {/* ── Monogram ── */}
-        <Text style={monogram}>Y &amp; S</Text>
-
-        {/* ── Footer ── */}
-        <Text style={footer}>
-          Yonatan &amp; Saron · September 4, 2026
-          <br />
-          (Please do not reply to this email)
-        </Text>
+        {/* ── 7. Footer ── */}
+        <Section style={footerSection}>
+          <Text style={monogram}>Y &amp; S</Text>
+          <Text style={footerNames}>
+            Yonatan &amp; Saron · September 4, 2026
+          </Text>
+          <Text style={noReplyNote}>
+            (Please do not reply to this email)
+          </Text>
+        </Section>
       </Body>
     </Html>
   );
@@ -112,139 +96,132 @@ const mainBody: React.CSSProperties = {
   margin: '0 auto',
   padding: '60px 20px',
   textAlign: 'center',
-  fontFamily: "Georgia, 'Times New Roman', serif",
   maxWidth: '600px',
 };
 
 const preHeader: React.CSSProperties = {
-  color: '#D4A845',
+  color: '#A3A3A3',
   fontSize: '10px',
-  letterSpacing: '6px',
+  letterSpacing: '0.2em',
   textTransform: 'uppercase',
-  margin: '0 0 10px',
-  fontFamily: "Georgia, 'Times New Roman', serif",
+  textAlign: 'center',
+  margin: '0 0 24px',
+  fontFamily: 'Helvetica, Arial, sans-serif',
 };
 
-const hairline: React.CSSProperties = {
-  border: 'none',
-  borderTop: '1px solid #332911',
-  margin: '30px auto',
-  width: '40px',
+const mainTitle: React.CSSProperties = {
+  color: '#D4A845',
+  fontFamily: "'Playfair Display', Georgia, serif",
+  fontSize: '28px',
+  textAlign: 'center',
+  margin: '0 0 32px',
+  fontWeight: 'normal',
 };
 
-const title: React.CSSProperties = {
-  color: '#F9FAFB',
-  fontSize: '32px',
-  lineHeight: '1.2',
-  margin: '0 0 40px',
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontWeight: '400',
+const bodyParagraph: React.CSSProperties = {
+  color: '#E5E5E5',
+  fontFamily: 'Georgia, serif',
+  fontSize: '14px',
+  lineHeight: '1.8',
+  textAlign: 'center',
+  maxWidth: '500px',
+  margin: '0 auto 40px auto',
 };
 
 const guestListSection: React.CSSProperties = {
+  textAlign: 'center',
   margin: '0 0 40px',
 };
 
-const guestGroup: React.CSSProperties = {
-  margin: '0 0 20px',
-};
-
-const guestStatusLabel: React.CSSProperties = {
+const attendingHeader: React.CSSProperties = {
   color: '#D4A845',
-  fontSize: '9px',
-  letterSpacing: '3px',
+  fontSize: '10px',
+  letterSpacing: '0.2em',
   textTransform: 'uppercase',
-  margin: '0 0 8px',
-  fontFamily: "Georgia, 'Times New Roman', serif",
-};
-
-const guestStatusLabelDeclined: React.CSSProperties = {
-  color: '#F2EFE9',
-  fontSize: '9px',
-  letterSpacing: '3px',
-  textTransform: 'uppercase',
-  margin: '0 0 8px',
-  fontFamily: "Georgia, 'Times New Roman', serif",
+  textAlign: 'center',
+  margin: '0 0 16px',
+  fontFamily: 'Helvetica, Arial, sans-serif',
 };
 
 const guestName: React.CSSProperties = {
   color: '#FFFFFF',
+  fontFamily: "'Playfair Display', Georgia, serif",
   fontSize: '18px',
-  margin: '4px 0',
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontStyle: 'italic',
-};
-
-const guestNameDeclined: React.CSSProperties = {
-  color: '#6B5D4F',
-  fontSize: '16px',
-  margin: '4px 0',
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontStyle: 'italic',
-  textDecoration: 'line-through',
-};
-
-const messageText: React.CSSProperties = {
-  color: '#D1D5DB',
-  fontSize: '14px',
+  textAlign: 'center',
   lineHeight: '1.6',
-  margin: '0 auto 40px',
-  maxWidth: '440px',
-  fontFamily: "Georgia, 'Times New Roman', serif",
+  margin: '0 0 8px',
 };
 
-const prayerTitle: React.CSSProperties = {
-  color: '#D4A845',
+const prayerSection: React.CSSProperties = {
+  textAlign: 'center',
+  margin: '0 0 40px',
+};
+
+const prayerHeader: React.CSSProperties = {
+  color: '#A3A3A3',
   fontSize: '10px',
-  letterSpacing: '4px',
+  letterSpacing: '0.2em',
   textTransform: 'uppercase',
+  textAlign: 'center',
   margin: '0 0 16px',
-  fontFamily: "Georgia, 'Times New Roman', serif",
+  fontFamily: 'Helvetica, Arial, sans-serif',
 };
 
-const prayerText: React.CSSProperties = {
-  color: '#FFFFFF',
-  fontSize: '15px',
-  lineHeight: '1.6',
+const prayerBody: React.CSSProperties = {
+  color: '#E5E5E5',
+  fontFamily: 'Georgia, serif',
+  fontSize: '14px',
   fontStyle: 'italic',
-  margin: '0 auto 40px',
-  maxWidth: '400px',
-  fontFamily: "Georgia, 'Times New Roman', serif",
+  lineHeight: '1.8',
+  textAlign: 'center',
+  maxWidth: '500px',
+  margin: '0 auto',
 };
 
 const heroImage: React.CSSProperties = {
+  borderRadius: '4px',
   width: '100%',
-  maxWidth: '440px',
-  height: 'auto',
+  maxWidth: '500px',
+  margin: '0 auto',
   display: 'block',
-  margin: '0 auto 12px',
-  borderRadius: '8px',
 };
 
 const caption: React.CSSProperties = {
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontStyle: 'italic',
-  fontSize: '12px',
   color: '#888888',
+  fontFamily: 'Helvetica, Arial, sans-serif',
+  fontSize: '11px',
   textAlign: 'center',
-  margin: '0 auto 40px',
-  maxWidth: '400px',
+  marginTop: '12px',
+  marginBottom: '48px',
+  fontStyle: 'italic',
+};
+
+const footerSection: React.CSSProperties = {
+  textAlign: 'center',
 };
 
 const monogram: React.CSSProperties = {
   color: '#D4A845',
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontStyle: 'italic',
+  fontFamily: "'Playfair Display', Georgia, serif",
   fontSize: '24px',
-  marginTop: '60px',
-  marginBottom: '20px',
+  textAlign: 'center',
+  margin: '0 0 16px',
 };
 
-const footer: React.CSSProperties = {
-  color: '#3D3D3D',
+const footerNames: React.CSSProperties = {
+  color: '#888888',
   fontSize: '10px',
-  letterSpacing: '1px',
+  letterSpacing: '0.1em',
   textTransform: 'uppercase',
+  textAlign: 'center',
+  margin: '0 0 8px',
+  fontFamily: 'Helvetica, Arial, sans-serif',
+};
+
+const noReplyNote: React.CSSProperties = {
+  color: '#555555',
+  fontSize: '10px',
+  textAlign: 'center',
   margin: '0',
-  fontFamily: "Georgia, 'Times New Roman', serif",
+  fontFamily: 'Helvetica, Arial, sans-serif',
 };
