@@ -13,93 +13,101 @@ import * as React from 'react';
 
 interface SaveTheDateProps {
   guestName?: string;
+  partyId?: string;
 }
 
-const MAGIC_LINK = 'https://theestifanos.com/?pwd=Matthew19:6';
+const BASE_URL = 'https://theestifanos.com';
+const PWD = 'Matthew19:6';
 const PHOTO_URL =
   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_3.jpeg';
 
-export const SaveTheDate = ({ guestName = 'Dear Friend' }: SaveTheDateProps) => (
-  <Html lang="en">
-    <Head />
-    <Preview>Save the Date — Yonatan &amp; Saron · September 4, 2026</Preview>
+export const SaveTheDate = ({ 
+  guestName = 'Dear Friend',
+  partyId
+}: SaveTheDateProps) => {
+  const magicLink = partyId 
+    ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
+    : `${BASE_URL}/?pwd=${PWD}`;
 
-    <Body style={body}>
-      <Container style={container}>
+  return (
+    <Html lang="en">
+      <Head />
+      <Preview>Save the Date — Yonatan &amp; Saron · September 4, 2026</Preview>
 
-        {/* ── Pre-header label ── */}
-        <Text style={preHeader}>SAVE THE DATE</Text>
+      <Body style={body}>
+        <Container style={container}>
 
-        {/* ── Decorative rule ── */}
-        <Hr style={rule} />
+          {/* ── Pre-header label ── */}
+          <Text style={preHeader}>SAVE THE DATE</Text>
 
-        {/* ── Names ── */}
-        <Text style={names}>
-          Yonatan
-          <span style={ampersand}>&amp;</span>
-          Saron
-        </Text>
+          {/* ── Decorative rule ── */}
+          <Hr style={rule} />
 
-        {/* ── Date & Location ── */}
-        <Text style={dateLine}>September 4, 2026</Text>
-        <Text style={locationLine}>Wrightsville, Pennsylvania</Text>
+          {/* ── Names ── */}
+          <Text style={names}>
+            Yonatan
+            <span style={ampersand}>&amp;</span>
+            Saron
+          </Text>
 
-        {/* ── Decorative rule ── */}
-        <Hr style={rule} />
+          {/* ── Date & Location ── */}
+          <Text style={dateLine}>September 4, 2026</Text>
+          <Text style={locationLine}>Wrightsville, Pennsylvania</Text>
 
-        {/* ── Salutation ── */}
-        <Text style={salutation}>{guestName},</Text>
+          {/* ── Decorative rule ── */}
+          <Hr style={rule} />
 
-        {/* ── Body copy ── */}
-        <Text style={bodyText}>
-          Please join us as we celebrate the beginning of our forever.
-          To receive your official formal invitation — which will include
-          venue details and weekend itineraries — please register your
-          attendance on our website by <span style={emphasis}>May 1st, 2026</span>.
-        </Text>
+          {/* ── Salutation ── */}
+          <Text style={salutation}>{guestName},</Text>
 
-        {/* ── Password notice ── */}
-        <Section style={passwordBox}>
-          <Text style={passwordLabel}>WEBSITE ACCESS</Text>
-          <Text style={passwordValue}>Matthew19:6</Text>
-        </Section>
+          {/* ── Body copy ── */}
+          <Text style={bodyText}>
+            Please join us as we celebrate the beginning of our forever.
+            To receive your official formal invitation — which will include
+            venue details and weekend itineraries — please register your
+            attendance on our website by <span style={emphasis}>May 1st, 2026</span>.
+          </Text>
 
-        {/* ── CTA ── */}
-        <Section style={ctaSection}>
-          {/*
-            React Email's <Button> forces solid background.
-            Use a plain <a> via dangerouslySetInnerHTML workaround
-            or just an anchor styled inline.
-          */}
-          <a href={MAGIC_LINK} style={ctaButton} target="_blank" rel="noopener noreferrer">
-            RSVP NOW
-          </a>
-        </Section>
+          {/* ── Password notice ── */}
+          <Section style={passwordBox}>
+            <Text style={passwordLabel}>WEBSITE ACCESS</Text>
+            <Text style={passwordValue}>Matthew19:6</Text>
+          </Section>
 
-        {/* ── Scripture note ── */}
-        <Text style={scripture}>
-          &quot;What therefore God has joined together, let no man separate.&quot;
-          <br />
-          <span style={scriptureRef}>— Matthew 19:6</span>
-        </Text>
+          {/* ── CTA ── */}
+          <Section style={ctaSection}>
+            <a href={magicLink} style={ctaButton} target="_blank" rel="noopener noreferrer">
+              RSVP NOW
+            </a>
+          </Section>
 
-        {/* ── Engagement photo ── */}
-        <Img
-          src={PHOTO_URL}
-          alt="Yonatan and Saron"
-          width="560"
-          style={photo}
-        />
+          {/* ── Scripture note ── */}
+          <Text style={scripture}>
+            &quot;What therefore God has joined together, let no man separate.&quot;
+            <br />
+            <span style={scriptureRef}>— Matthew 19:6</span>
+          </Text>
 
-        {/* ── Footer ── */}
-        <Text style={footer}>
-          Yonatan &amp; Saron · September 4, 2026 · Wrightsville, PA
-        </Text>
+          {/* ── Engagement photo ── */}
+          <Img
+            src={PHOTO_URL}
+            alt="Yonatan and Saron"
+            width="560"
+            style={photo}
+          />
 
-      </Container>
-    </Body>
-  </Html>
-);
+          {/* ── Footer ── */}
+          <Text style={footer}>
+            Yonatan &amp; Saron · September 4, 2026 · Wrightsville, PA
+            <br />
+            (Please do not reply to this email)
+          </Text>
+
+        </Container>
+      </Body>
+    </Html>
+  );
+};
 
 export default SaveTheDate;
 

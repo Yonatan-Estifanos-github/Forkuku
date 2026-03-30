@@ -128,7 +128,7 @@ export async function POST(req: Request) {
       if (updatedParty.emails && updatedParty.emails.length > 0) {
         for (const guestEmail of updatedParty.emails) {
           await resend.emails.send({
-            from: 'Yonatan & Saron <hello@theestifanos.com>',
+            from: 'Yonatan & Saron (No Reply) <hello@theestifanos.com>',
             to: guestEmail,
             subject: 'RSVP Confirmed — Yonatan & Saron',
             react: RSVPConfirmation({

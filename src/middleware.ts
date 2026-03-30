@@ -1,39 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const COOKIE_OPTS = (maxAge: number) => ({
-  path: '/',
-  httpOnly: false,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
-  maxAge,
-});
-
 export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
   const sitePassword = process.env.SITE_PASSWORD;
 
-  // ── Magic Link: intercept ?pwd= on ANY path ──────────────────────────────
-  // Must run before excluded-path checks so guests aren't bounced to /login
-  // with their params stripped.
+  // ── Magic Link: intercept ?pwd= or ?partyId on any path ──────────────────
+  // If magic params are present, we want to ensure the user ends up on /login
+  // so they can see the "VIP" welcome message and intentionally enter.
   const magicPwd = searchParams.get('pwd');
   const partyId  = searchParams.get('partyId');
 
-  if (sitePassword && magicPwd === sitePassword) {
-    const cleanUrl = new URL('/', request.url);
-    const res = NextResponse.redirect(cleanUrl);
-
-    // Auth cookies
-    res.cookies.set('site-access-token', sitePassword, COOKIE_OPTS(60 * 60 * 24 * 30));
-    res.cookies.set('site-entry-granted', '1',          COOKIE_OPTS(60));
-
-    // VIP party cookies
-    if (partyId) {
-      res.cookies.set('vip_party_id',     partyId, COOKIE_OPTS(60 * 60 * 24 * 90));
-      // Short-lived signal so ConditionalUI can fire the Supabase click tracker
-      res.cookies.set('track_magic_click', partyId, COOKIE_OPTS(120));
+  if (magicPwd || partyId) {
+    if (pathname !== '/login') {
+      const loginUrl = new URL('/login', request.url);
+      if (magicPwd) loginUrl.searchParams.set('pwd', magicPwd);
+      if (partyId) loginUrl.searchParams.set('partyId', partyId);
+      return NextResponse.redirect(loginUrl);
     }
-
-    return res;
+    // If already on /login, just let it through (will be handled by excludedPaths)
   }
 
   // ── Paths excluded from password protection ──────────────────────────────
@@ -53,12 +37,9 @@ export function middleware(request: NextRequest) {
 
   // ── Standard cookie-based auth ───────────────────────────────────────────
   const accessToken  = request.cookies.get('site-access-token')?.value;
-  const entryGranted = request.cookies.get('site-entry-granted')?.value;
 
-  if (accessToken === sitePassword && entryGranted === '1') {
-    const res = NextResponse.next();
-    res.cookies.delete('site-entry-granted');
-    return res;
+  if (accessToken === sitePassword) {
+    return NextResponse.next();
   }
 
   return NextResponse.redirect(new URL('/login', request.url));
