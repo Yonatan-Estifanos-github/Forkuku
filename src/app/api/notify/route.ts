@@ -83,11 +83,15 @@ export async function POST(req: Request) {
       email: string;
       name: string;
     }
+    interface GuestInfo {
+      name?: string;
+      email?: string;
+    }
     const recipients: Recipient[] = [];
 
     // 1. Add guests with specific emails
     if (party.guests && Array.isArray(party.guests)) {
-      party.guests.forEach((g: any) => {
+      (party.guests as GuestInfo[]).forEach((g) => {
         if (g.email && g.email.includes('@')) {
           recipients.push({ email: g.email, name: g.name || party.party_name });
         }
@@ -96,7 +100,7 @@ export async function POST(req: Request) {
 
     // 2. Fallback to party-level emails if no guest-specific emails found
     if (recipients.length === 0 && party.emails && Array.isArray(party.emails)) {
-      const fallbackName = (party.guests as any[])?.[0]?.name || party.party_name || 'Friend';
+      const fallbackName = (party.guests as GuestInfo[])?.[0]?.name || party.party_name || 'Friend';
       party.emails.forEach((e: string) => {
         if (e && e.includes('@')) {
           recipients.push({ email: e, name: fallbackName });

@@ -127,7 +127,11 @@ export async function POST(req: Request) {
       // Guest Confirmation (send to all unique emails in party and guests)
       const allEmails = new Set<string>();
       if (updatedParty.emails) updatedParty.emails.forEach(e => e && e.includes('@') && allEmails.add(e.toLowerCase()));
-      if (updatedParty.guests) (updatedParty.guests as any[]).forEach(g => g.email && g.email.includes('@') && allEmails.add(g.email.toLowerCase()));
+      
+      interface GuestWithEmail {
+        email?: string;
+      }
+      if (updatedParty.guests) (updatedParty.guests as GuestWithEmail[]).forEach(g => g.email && g.email.includes('@') && allEmails.add(g.email.toLowerCase()));
 
       for (const guestEmail of Array.from(allEmails)) {
         await resend.emails.send({

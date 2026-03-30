@@ -1314,6 +1314,7 @@ export default function AdminDashboard() {
                                   <div>
                                     <h4 className="text-xs uppercase tracking-widest text-gray-500 font-bold mb-4">Guest Attendance</h4>
                                     <div className="space-y-3">
+                                      {party.guests.map(guest => (
                                         <div key={guest.id} className="flex items-center justify-between p-3 border border-gray-100 rounded">
                                           <div className="flex flex-col">
                                             <span className="font-medium">{guest.name}</span>
