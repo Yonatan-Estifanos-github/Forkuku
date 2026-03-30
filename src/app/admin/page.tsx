@@ -919,6 +919,19 @@ export default function AdminDashboard() {
   }
 
   useEffect(() => {
+    if (!loading) {
+      fetchParties();
+      fetchRegistryItems();
+    }
+  }, [selectedCampaign, loading]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (activeTab === 'registry') {
+      fetchRegistryItems();
+    }
+  }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     const checkAuthAndFetch = async () => {
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError || !user) {
@@ -926,6 +939,7 @@ export default function AdminDashboard() {
         return;
       }
       await fetchParties();
+      await fetchRegistryItems();
       setLoading(false);
     };
 
