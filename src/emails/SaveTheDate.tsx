@@ -31,84 +31,79 @@ export const SaveTheDate = ({
 
   return (
     <Html lang="en">
-    <Head />
-    <Preview>Save the Date — Yonatan &amp; Saron · September 4, 2026</Preview>
+      <Head />
+      <Preview>Save the Date — Yonatan &amp; Saron · September 4, 2026</Preview>
 
-    <Body style={body}>
-      <Container style={container}>
+      <Body style={body}>
+        <Container style={container}>
 
-        {/* ── Pre-header label ── */}
-        <Text style={preHeader}>SAVE THE DATE</Text>
+          {/* ── Pre-header label ── */}
+          <Text style={preHeader}>SAVE THE DATE</Text>
 
-        {/* ── Decorative rule ── */}
-        <Hr style={rule} />
+          {/* ── Decorative rule ── */}
+          <Hr style={rule} />
 
-        {/* ── Names ── */}
-        <Text style={names}>
-          Yonatan
-          <span style={ampersand}>&amp;</span>
-          Saron
-        </Text>
+          {/* ── Names ── */}
+          <Text style={names}>
+            Yonatan
+            <span style={ampersand}>&amp;</span>
+            Saron
+          </Text>
 
-        {/* ── Date & Location ── */}
-        <Text style={dateLine}>September 4, 2026</Text>
-        <Text style={locationLine}>Wrightsville, Pennsylvania</Text>
+          {/* ── Date & Location ── */}
+          <Text style={dateLine}>September 4, 2026</Text>
+          <Text style={locationLine}>Wrightsville, Pennsylvania</Text>
 
-        {/* ── Decorative rule ── */}
-        <Hr style={rule} />
+          {/* ── Decorative rule ── */}
+          <Hr style={rule} />
 
-        {/* ── Salutation ── */}
-        <Text style={salutation}>{guestName},</Text>
+          {/* ── Salutation ── */}
+          <Text style={salutation}>{guestName},</Text>
 
-        {/* ── Body copy ── */}
-        <Text style={bodyText}>
-          Please join us as we celebrate the beginning of our forever.
-          To receive your official formal invitation — which will include
-          venue details and weekend itineraries — please register your
-          attendance on our website by <span style={emphasis}>May 1st, 2026</span>.
-        </Text>
+          {/* ── Body copy ── */}
+          <Text style={bodyText}>
+            Please join us as we celebrate the beginning of our forever.
+            To receive your official formal invitation — which will include
+            venue details and weekend itineraries — please register your
+            attendance on our website by <span style={emphasis}>May 1st, 2026</span>.
+          </Text>
 
-        {/* ── Password notice ── */}
-        <Section style={passwordBox}>
-          <Text style={passwordLabel}>WEBSITE ACCESS</Text>
-          <Text style={passwordValue}>Matthew19:6</Text>
-        </Section>
+          {/* ── Password notice ── */}
+          <Section style={passwordBox}>
+            <Text style={passwordLabel}>WEBSITE ACCESS</Text>
+            <Text style={passwordValue}>Matthew19:6</Text>
+          </Section>
 
-        {/* ── CTA ── */}
-        <Section style={ctaSection}>
-          {/*
-            React Email's <Button> forces solid background.
-            Use a plain <a> via dangerouslySetInnerHTML workaround
-            or just an anchor styled inline.
-          */}
-          <a href={magicLink} style={ctaButton} target="_blank" rel="noopener noreferrer">
-            RSVP NOW
-          </a>
-        </Section>
+          {/* ── CTA ── */}
+          <Section style={ctaSection}>
+            <a href={magicLink} style={ctaButton} target="_blank" rel="noopener noreferrer">
+              RSVP NOW
+            </a>
+          </Section>
 
-        {/* ── Scripture note ── */}
-        <Text style={scripture}>
-          &quot;What therefore God has joined together, let no man separate.&quot;
-          <br />
-          <span style={scriptureRef}>— Matthew 19:6</span>
-        </Text>
+          {/* ── Scripture note ── */}
+          <Text style={scripture}>
+            &quot;What therefore God has joined together, let no man separate.&quot;
+            <br />
+            <span style={scriptureRef}>— Matthew 19:6</span>
+          </Text>
 
-        {/* ── Engagement photo ── */}
-        <Img
-          src={PHOTO_URL}
-          alt="Yonatan and Saron"
-          width="560"
-          style={photo}
-        />
+          {/* ── Engagement photo ── */}
+          <Img
+            src={PHOTO_URL}
+            alt="Yonatan and Saron"
+            width="560"
+            style={photo}
+          />
 
-        {/* ── Footer ── */}
-        <Text style={footer}>
-          Yonatan &amp; Saron · September 4, 2026 · Wrightsville, PA
-        </Text>
+          {/* ── Footer ── */}
+          <Text style={footer}>
+            Yonatan &amp; Saron · September 4, 2026 · Wrightsville, PA
+          </Text>
 
-      </Container>
-    </Body>
-  </Html>
+        </Container>
+      </Body>
+    </Html>
   );
 };
 

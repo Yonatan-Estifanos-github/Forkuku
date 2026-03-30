@@ -30,108 +30,108 @@ export const FormalInvite = ({
 
   return (
     <Html lang="en">
-    <Head />
-    <Preview>You are invited to the wedding of Yonatan & Saron — September 4, 2026</Preview>
+      <Head />
+      <Preview>You are invited to the wedding of Yonatan & Saron — September 4, 2026</Preview>
 
-    <Body style={main}>
-      <Container style={container}>
+      <Body style={main}>
+        <Container style={container}>
 
-        {/* ── Matted Hero Image ── */}
-        <Section style={matSection}>
-          <Img
-            src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_2.jpeg"
-            alt="Yonatan and Saron"
-            width="520"
-            style={heroImg}
-          />
-        </Section>
+          {/* ── Matted Hero Image ── */}
+          <Section style={matSection}>
+            <Img
+              src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_2.jpeg"
+              alt="Yonatan and Saron"
+              width="520"
+              style={heroImg}
+            />
+          </Section>
 
-        {/* ── Pre-header ── */}
-        <Section style={centeredSection}>
-          <Text style={preHeader}>YOU ARE CORDIALLY INVITED</Text>
-        </Section>
+          {/* ── Pre-header ── */}
+          <Section style={centeredSection}>
+            <Text style={preHeader}>YOU ARE CORDIALLY INVITED</Text>
+          </Section>
 
-        <Hr style={goldRule} />
+          <Hr style={goldRule} />
 
-        {/* ── Names ── */}
-        <Section style={centeredSection}>
-          <Text style={namesText}>
-            Yonatan{' '}
-            <span style={{ color: '#D4A845' }}>&amp;</span>
-            {' '}Saron
-          </Text>
-        </Section>
+          {/* ── Names ── */}
+          <Section style={centeredSection}>
+            <Text style={namesText}>
+              Yonatan{' '}
+              <span style={{ color: '#D4A845' }}>&amp;</span>
+              {' '}Saron
+            </Text>
+          </Section>
 
-        <Hr style={goldRule} />
+          <Hr style={goldRule} />
 
-        {/* ── Date & Location ── */}
-        <Section style={centeredSection}>
-          <Text style={detailsText}>
-            September 4, 2026&nbsp;&nbsp;·&nbsp;&nbsp;Wrightsville, Pennsylvania
-          </Text>
-        </Section>
+          {/* ── Date & Location ── */}
+          <Section style={centeredSection}>
+            <Text style={detailsText}>
+              September 4, 2026&nbsp;&nbsp;·&nbsp;&nbsp;Wrightsville, Pennsylvania
+            </Text>
+          </Section>
 
-        <Hr style={softRule} />
+          <Hr style={softRule} />
 
-        {/* ── Body Copy ── */}
-        <Section style={bodySection}>
-          <Text style={salutation}>Dear {guestName},</Text>
-          <Text style={paragraph}>
-            With joyful hearts and overwhelming gratitude for what the Lord has done,
-            we are so excited to invite you to celebrate our marriage.
-          </Text>
-          <Text style={paragraph}>
-            Your love, prayers, and support have deeply shaped our story. From the
-            long-distance days to the quiet moments of faith that brought us here,
-            you have been our village. We truly cannot imagine stepping into this
-            next chapter without you by our side.
-          </Text>
-          <Text style={paragraph}>
-            We have put together a website to share our journey, introduce our
-            incredible wedding party, and provide all the details you need for
-            the big day.
-          </Text>
-        </Section>
+          {/* ── Body Copy ── */}
+          <Section style={bodySection}>
+            <Text style={salutation}>Dear {guestName},</Text>
+            <Text style={paragraph}>
+              With joyful hearts and overwhelming gratitude for what the Lord has done,
+              we are so excited to invite you to celebrate our marriage.
+            </Text>
+            <Text style={paragraph}>
+              Your love, prayers, and support have deeply shaped our story. From the
+              long-distance days to the quiet moments of faith that brought us here,
+              you have been our village. We truly cannot imagine stepping into this
+              next chapter without you by our side.
+            </Text>
+            <Text style={paragraph}>
+              We have put together a website to share our journey, introduce our
+              incredible wedding party, and provide all the details you need for
+              the big day.
+            </Text>
+          </Section>
 
-        {/* ── CTA ── */}
-        <Section style={btnSection}>
-          <Button style={ghostButton} href={magicLink}>
-            RSVP &amp; Explore Our Story
-          </Button>
-        </Section>
+          {/* ── CTA ── */}
+          <Section style={btnSection}>
+            <Button style={ghostButton} href={magicLink}>
+              RSVP &amp; Explore Our Story
+            </Button>
+          </Section>
 
-        <Hr style={softRule} />
+          <Hr style={softRule} />
 
-        {/* ── Sign-off ── */}
-        <Section style={signoffSection}>
-          <Text style={signoffLine}>
-            We can&apos;t wait to worship, celebrate, and break bread with you.
-          </Text>
-          <Text style={signoffWith}>With so much love,</Text>
-          <Text style={signoffNames}>
-            Yonatan{' '}
-            <span style={{ color: '#D4A845' }}>&amp;</span>
-            {' '}Saron
-          </Text>
-        </Section>
+          {/* ── Sign-off ── */}
+          <Section style={signoffSection}>
+            <Text style={signoffLine}>
+              We can&apos;t wait to worship, celebrate, and break bread with you.
+            </Text>
+            <Text style={signoffWith}>With so much love,</Text>
+            <Text style={signoffNames}>
+              Yonatan{' '}
+              <span style={{ color: '#D4A845' }}>&amp;</span>
+              {' '}Saron
+            </Text>
+          </Section>
 
-        <Hr style={softRule} />
+          <Hr style={softRule} />
 
-        {/* ── Footer ── */}
-        <Section style={footerSection}>
-          <Text style={footerText}>
-            For travel details, registries, and FAQs, please visit our website.
-          </Text>
-          <Text style={footerLinkText}>
-            <a href={magicLink} style={footerAnchor}>
-              www.theestifanos.com
-            </a>
-          </Text>
-        </Section>
+          {/* ── Footer ── */}
+          <Section style={footerSection}>
+            <Text style={footerText}>
+              For travel details, registries, and FAQs, please visit our website.
+            </Text>
+            <Text style={footerLinkText}>
+              <a href={magicLink} style={footerAnchor}>
+                www.theestifanos.com
+              </a>
+            </Text>
+          </Section>
 
-      </Container>
-    </Body>
-  </Html>
+        </Container>
+      </Body>
+    </Html>
   );
 };
 
