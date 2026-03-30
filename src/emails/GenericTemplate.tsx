@@ -8,6 +8,7 @@ import {
   Preview,
   Section,
   Text,
+  Hr,
 } from '@react-email/components';
 import * as React from 'react';
 
@@ -34,17 +35,42 @@ export const GenericTemplate = ({
     : `${BASE_URL}/?pwd=${PWD}`);
 
   return (
-    <Html>
+    <Html lang="en">
       <Head />
       <Preview>{heading}</Preview>
-      <Body style={main}>
-        <Container style={container}>
-          <Text style={header}>ESTIFANOS WEDDING</Text>
+      <Body style={mainBody}>
+        <Container style={mainContainer}>
+          {/* ── Pre-header ── */}
+          <Text style={preHeader}>ESTIFANOS WEDDING</Text>
+
+          {/* ── Framing ── */}
+          <Hr style={hairline} />
+
+          {/* ── Heading ── */}
           <Heading style={title}>{heading}</Heading>
+
+          {/* ── Body ── */}
           <Text style={paragraph}>{body}</Text>
-          <Section style={btnContainer}>
-            <Button style={button} href={magicLink}>{ctaText}</Button>
+
+          {/* ── Framing ── */}
+          <Hr style={hairline} />
+
+          {/* ── CTA ── */}
+          <Section style={ctaSection}>
+            <Button style={ctaButton} href={magicLink}>
+              {ctaText}
+            </Button>
           </Section>
+
+          {/* ── Monogram ── */}
+          <Text style={monogram}>Y &amp; S</Text>
+
+          {/* ── Footer ── */}
+          <Text style={footer}>
+            Yonatan &amp; Saron · September 4, 2026
+            <br />
+            (Please do not reply to this email)
+          </Text>
         </Container>
       </Body>
     </Html>
@@ -53,55 +79,86 @@ export const GenericTemplate = ({
 
 export default GenericTemplate;
 
-const main = {
-  backgroundColor: '#0A0908',
-  fontFamily: '"Times New Roman", Times, serif',
+// ── Styles ────────────────────────────────────────────────────────────────────
+
+const mainBody: React.CSSProperties = {
+  backgroundColor: '#000000',
+  margin: '0',
+  padding: '40px 0',
+  fontFamily: 'Helvetica, Arial, sans-serif',
 };
 
-const container = {
+const mainContainer: React.CSSProperties = {
+  maxWidth: '520px',
   margin: '0 auto',
-  padding: '64px 20px',
-  maxWidth: '600px',
-  textAlign: 'center' as const,
-  backgroundColor: '#0A0908',
+  backgroundColor: '#0A0A0A',
+  border: '1px solid #1A1A1A',
+  padding: '60px 40px',
+  textAlign: 'center',
 };
 
-const header = {
+const preHeader: React.CSSProperties = {
   color: '#D4A845',
-  fontSize: '11px',
+  fontSize: '10px',
   letterSpacing: '6px',
-  marginBottom: '32px',
-  textTransform: 'uppercase' as const,
+  textTransform: 'uppercase',
+  margin: '0 0 10px',
 };
 
-const title = {
-  color: '#FFFFFF',
+const hairline: React.CSSProperties = {
+  border: 'none',
+  borderTop: '1px solid #332911',
+  margin: '30px auto',
+  width: '40px',
+};
+
+const title: React.CSSProperties = {
+  color: '#F9FAFB',
   fontSize: '32px',
-  margin: '0 0 24px',
+  lineHeight: '1.2',
+  margin: '0 0 30px',
+  fontFamily: "Georgia, serif",
   fontWeight: '400',
-  fontFamily: 'Georgia, "Times New Roman", Times, serif',
+  textAlign: 'center',
 };
 
-const paragraph = {
-  color: '#F2EFE9',
-  fontSize: '16px',
+const paragraph: React.CSSProperties = {
+  color: '#D1D5DB',
+  fontSize: '15px',
   lineHeight: '1.8',
-  margin: '0 0 32px',
+  margin: '0 0 30px',
+  textAlign: 'center',
 };
 
-const btnContainer = {
-  textAlign: 'center' as const,
-  marginTop: '40px',
+const ctaSection: React.CSSProperties = {
+  margin: '20px 0 60px',
 };
 
-const button = {
-  backgroundColor: 'transparent',
-  color: '#D4A845',
-  fontSize: '11px',
-  letterSpacing: '4px',
-  textTransform: 'uppercase' as const,
-  textDecoration: 'none',
-  padding: '14px 40px',
+const ctaButton: React.CSSProperties = {
   border: '1px solid #D4A845',
+  color: '#D4A845',
+  padding: '14px 40px',
+  textTransform: 'uppercase',
+  letterSpacing: '0.2em',
+  fontSize: '10px',
+  textDecoration: 'none',
+  display: 'inline-block',
   borderRadius: '100px',
+};
+
+const monogram: React.CSSProperties = {
+  color: '#D4A845',
+  fontFamily: 'Georgia, serif',
+  fontStyle: 'italic',
+  fontSize: '24px',
+  marginTop: '60px',
+  marginBottom: '20px',
+};
+
+const footer: React.CSSProperties = {
+  color: '#3D3D3D',
+  fontSize: '10px',
+  letterSpacing: '1px',
+  textTransform: 'uppercase',
+  margin: '0',
 };
