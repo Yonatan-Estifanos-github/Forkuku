@@ -887,6 +887,7 @@ export default function AdminDashboard() {
     const confirmed = window.confirm(`Delete "${item.name}" from registry?`);
     if (!confirmed) return;
 
+    setDeletingItemId(item.id);
     try {
       const { error } = await supabase
         .from('registry_items')
@@ -897,6 +898,8 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error('Delete error:', err);
       alert('Error deleting item');
+    } finally {
+      setDeletingItemId(null);
     }
   }
 
