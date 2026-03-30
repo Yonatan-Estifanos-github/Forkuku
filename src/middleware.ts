@@ -37,11 +37,18 @@ export function middleware(request: NextRequest) {
 
   // ── Standard cookie-based auth ───────────────────────────────────────────
   const accessToken  = request.cookies.get('site-access-token')?.value;
+  const entryGranted = request.cookies.get('site-entry-granted')?.value;
 
-  if (accessToken === sitePassword) {
-    return NextResponse.next();
+  // If we have the token AND just logged in (entryGranted), let them in
+  // but delete the entry-granted signal so a refresh bounces them back to login.
+  if (accessToken === sitePassword && entryGranted === '1') {
+    const res = NextResponse.next();
+    res.cookies.delete('site-entry-granted');
+    return res;
   }
 
+  // Otherwise, bounce to login. 
+  // The login page will see 'site-access-token' and pre-fill the password.
   return NextResponse.redirect(new URL('/login', request.url));
 }
 

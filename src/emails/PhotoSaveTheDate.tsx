@@ -121,7 +121,7 @@ const headline: React.CSSProperties = {
 };
 
 const names: React.CSSProperties = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontSize: '42px',
   fontStyle: 'italic',
   fontWeight: 'normal',
@@ -147,7 +147,7 @@ const divider: React.CSSProperties = {
 };
 
 const paragraph: React.CSSProperties = {
-  color: '#9C8C78',
+  color: '#F2EFE9',
   fontSize: '16px',
   lineHeight: '1.8',
   margin: '0 0 24px',
@@ -155,7 +155,7 @@ const paragraph: React.CSSProperties = {
 };
 
 const locationText: React.CSSProperties = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontSize: '14px',
   textTransform: 'uppercase',
   letterSpacing: '3px',
@@ -167,7 +167,7 @@ const subNote: React.CSSProperties = {
   fontSize: '12px',
   letterSpacing: '1px',
   textTransform: 'none',
-  color: '#6B5D4F',
+  color: '#9C8C78',
   fontStyle: 'italic',
 };
 
@@ -192,7 +192,7 @@ const button: React.CSSProperties = {
 };
 
 const footer: React.CSSProperties = {
-  color: '#3D342C',
+  color: '#6B5D4F',
   fontSize: '10px',
   letterSpacing: '2px',
   textTransform: 'uppercase',

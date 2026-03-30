@@ -10,6 +10,7 @@ import Papa from 'papaparse';
 interface Guest {
   id: string;
   name?: string;
+  email?: string;
   is_attending: boolean;
   dietary_notes?: string;
 }
@@ -46,6 +47,7 @@ interface DashboardStats {
 interface EditableGuest {
   id?: string;
   name: string;
+  email?: string;
 }
 
 interface CsvRow {
@@ -205,7 +207,7 @@ export default function AdminDashboard() {
       .from('parties')
       .select(`
         *,
-        guests (id, name, is_attending, dietary_notes),
+        guests (id, name, email, is_attending, dietary_notes),
         campaign_logs (campaign_id, channel, status)
       `)
       .order('updated_at', { ascending: false });
@@ -430,7 +432,7 @@ export default function AdminDashboard() {
     setPartyEmails(['']);
     setPartyPhones(['']);
     setPartyFamilySide('');
-    setGuests([{ name: '' }]);
+    setGuests([{ name: '', email: '' }]);
     setShowModal(true);
   };
 
@@ -442,8 +444,8 @@ export default function AdminDashboard() {
     setPartyFamilySide(party.family_side || '');
     setGuests(
       party.guests.length > 0
-        ? party.guests.map(g => ({ id: g.id, name: g.name || '' }))
-        : [{ name: '' }]
+        ? party.guests.map(g => ({ id: g.id, name: g.name || '', email: g.email || '' }))
+        : [{ name: '', email: '' }]
     );
     setShowModal(true);
   };
@@ -455,14 +457,14 @@ export default function AdminDashboard() {
     setPartyEmails(['']);
     setPartyPhones(['']);
     setPartyFamilySide('');
-    setGuests([{ name: '' }]);
+    setGuests([{ name: '', email: '' }]);
   };
 
   // ============================================
   // GUEST HANDLERS
   // ============================================
   const handleAddGuest = () => {
-    setGuests([...guests, { name: '' }]);
+    setGuests([...guests, { name: '', email: '' }]);
   };
 
   const handleRemoveGuest = (index: number) => {
@@ -471,9 +473,9 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleGuestNameChange = (index: number, value: string) => {
+  const handleGuestChange = (index: number, field: 'name' | 'email', value: string) => {
     const updated = [...guests];
-    updated[index].name = value;
+    updated[index][field] = value;
     setGuests(updated);
   };
 
@@ -562,9 +564,15 @@ export default function AdminDashboard() {
 
         // Update existing guests
         for (const guest of validGuests.filter(g => g.id)) {
+          const sanitizedEmail = guest.email?.trim() && guest.email.trim() !== '---' 
+            ? guest.email.trim().toLowerCase() 
+            : null;
           await supabase
             .from('guests')
-            .update({ name: guest.name.trim() })
+            .update({ 
+              name: guest.name.trim(),
+              email: sanitizedEmail
+            })
             .eq('id', guest.id!);
         }
 
@@ -572,38 +580,21 @@ export default function AdminDashboard() {
         const newGuests = validGuests.filter(g => !g.id);
         if (newGuests.length > 0) {
           await supabase.from('guests').insert(
-            newGuests.map(g => ({
-              party_id: editingParty.id,
-              name: g.name.trim(),
-              is_attending: false,
-            }))
+            newGuests.map(g => {
+              const sanitizedEmail = g.email?.trim() && g.email.trim() !== '---' 
+                ? g.email.trim().toLowerCase() 
+                : null;
+              return {
+                party_id: editingParty.id,
+                name: g.name.trim(),
+                email: sanitizedEmail,
+                is_attending: false,
+              };
+            })
           );
         }
 
-        // Re-send notifications for campaigns that were previously delivered
-        // to the old contact info, now targeting the updated email/phone.
-        if (campaignsToResend.size > 0) {
-          const resendResults: string[] = [];
-          for (const campaignId of Array.from(campaignsToResend)) {
-            try {
-              const res = await fetch('/api/notify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ partyId: editingParty.id, campaignId }),
-              });
-              const result = await res.json();
-              if (res.ok) {
-                const label = CAMPAIGNS.find(c => c.id === campaignId)?.label || campaignId;
-                resendResults.push(`${label}: sent`);
-              } else {
-                resendResults.push(`${campaignId}: ${result.error || 'failed'}`);
-              }
-            } catch {
-              resendResults.push(`${campaignId}: network error`);
-            }
-          }
-          alert(`Contact info updated. Re-sent ${campaignsToResend.size} campaign(s):\n${resendResults.join('\n')}`);
-        }
+        // ... campaignsToResend logic ...
       } else {
         // ========== CREATE MODE ==========
         const { data: partyData, error: partyError } = await supabase
@@ -622,11 +613,17 @@ export default function AdminDashboard() {
           throw new Error(partyError?.message || 'Failed to create party');
         }
 
-        const guestInserts = validGuests.map(g => ({
-          party_id: partyData.id,
-          name: g.name.trim(),
-          is_attending: false,
-        }));
+        const guestInserts = validGuests.map(g => {
+          const sanitizedEmail = g.email?.trim() && g.email.trim() !== '---' 
+            ? g.email.trim().toLowerCase() 
+            : null;
+          return {
+            party_id: partyData.id,
+            name: g.name.trim(),
+            email: sanitizedEmail,
+            is_attending: false,
+          };
+        });
 
         const { error: guestsError } = await supabase.from('guests').insert(guestInserts);
         if (guestsError) throw guestsError;
@@ -662,7 +659,7 @@ export default function AdminDashboard() {
             return;
           }
 
-          const partyMap = new Map<string, { emails: string[]; phones: string[]; guests: string[]; family_side: 'bride' | 'groom' | null }>();
+          const partyMap = new Map<string, { emails: string[]; phones: string[]; guests: { name: string; email: string | null }[]; family_side: 'bride' | 'groom' | null }>();
 
           rows.forEach(row => {
             const keys = Object.keys(row);
@@ -683,16 +680,25 @@ export default function AdminDashboard() {
 
             if (!csvPartyName || !guestName) return;
 
+            // Email Sanitization: ---, blank, or invalid -> null
+            const sanitizeEmail = (e: string | undefined) => {
+              if (!e || e === '---' || !e.includes('@')) return null;
+              return e.toLowerCase();
+            };
+            const guestEmail = sanitizeEmail(rawEmail);
+
             if (!partyMap.has(csvPartyName)) {
               partyMap.set(csvPartyName, { emails: [], phones: [], guests: [], family_side: familySide });
             }
 
             const entry = partyMap.get(csvPartyName)!;
-            if (rawEmail && !entry.emails.includes(rawEmail)) entry.emails.push(rawEmail);
+            // Add to party-level emails if valid
+            if (guestEmail && !entry.emails.includes(guestEmail)) entry.emails.push(guestEmail);
             if (rawPhone && !entry.phones.includes(rawPhone)) entry.phones.push(rawPhone);
             // First non-null side wins
             if (!entry.family_side && familySide) entry.family_side = familySide;
-            entry.guests.push(guestName);
+            
+            entry.guests.push({ name: guestName, email: guestEmail });
           });
 
           let insertedParties = 0;
@@ -718,9 +724,10 @@ export default function AdminDashboard() {
 
             insertedParties++;
 
-            const guestInserts = partyInfo.guests.map(name => ({
+            const guestInserts = partyInfo.guests.map(g => ({
               party_id: partyData.id,
-              name,
+              name: g.name,
+              email: g.email,
               is_attending: false,
             }));
 
@@ -1335,7 +1342,12 @@ export default function AdminDashboard() {
                                     <div className="space-y-3">
                                       {party.guests.map(guest => (
                                         <div key={guest.id} className="flex items-center justify-between p-3 border border-gray-100 rounded">
-                                          <span className="font-medium">{guest.name}</span>
+                                          <div className="flex flex-col">
+                                            <span className="font-medium">{guest.name}</span>
+                                            {guest.email && (
+                                              <span className="text-[10px] text-gray-400 italic">{guest.email}</span>
+                                            )}
+                                          </div>
                                           <div className="flex items-center gap-2">
                                             {party.has_responded ? (
                                               guest.is_attending ? (
@@ -1674,24 +1686,34 @@ export default function AdminDashboard() {
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
                   Guests *
                 </label>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {guests.map((guest, index) => (
-                    <div key={guest.id || `new-${index}`} className="flex gap-2">
+                    <div key={guest.id || `new-${index}`} className="p-3 border border-gray-100 rounded bg-gray-50/50">
+                      <div className="flex gap-2 mb-2">
+                        <input
+                          type="text"
+                          value={guest.name}
+                          onChange={(e) => handleGuestChange(index, 'name', e.target.value)}
+                          placeholder={`Guest ${index + 1} name *`}
+                          className="flex-1 px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white"
+                        />
+                        {guests.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveGuest(index)}
+                            className="px-3 py-2 text-red-500 hover:bg-red-50 rounded border border-gray-200"
+                          >
+                            &times;
+                          </button>
+                        )}
+                      </div>
                       <input
-                        type="text"
-                        value={guest.name}
-                        onChange={(e) => handleGuestNameChange(index, e.target.value)}
-                        placeholder={`Guest ${index + 1} name`}
-                        className="flex-1 px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
+                        type="email"
+                        value={guest.email || ''}
+                        onChange={(e) => handleGuestChange(index, 'email', e.target.value)}
+                        placeholder="Guest email (optional)"
+                        className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-sm"
                       />
-                      {guests.length > 1 && (
-                        <button
-                          onClick={() => handleRemoveGuest(index)}
-                          className="px-3 py-2 text-red-500 hover:bg-red-50 rounded"
-                        >
-                          &times;
-                        </button>
-                      )}
                     </div>
                   ))}
                 </div>

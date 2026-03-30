@@ -75,7 +75,7 @@ const header = {
 };
 
 const title = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontSize: '32px',
   margin: '0 0 24px',
   fontWeight: '400',
@@ -83,7 +83,7 @@ const title = {
 };
 
 const paragraph = {
-  color: '#9C8C78',
+  color: '#F2EFE9',
   fontSize: '16px',
   lineHeight: '1.8',
   margin: '0 0 32px',

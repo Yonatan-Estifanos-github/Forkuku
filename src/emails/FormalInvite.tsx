@@ -209,7 +209,7 @@ const softRule: React.CSSProperties = {
 
 // "Yonatan & Saron"
 const namesText: React.CSSProperties = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
   fontSize: '42px',
   fontStyle: 'italic',
@@ -221,7 +221,7 @@ const namesText: React.CSSProperties = {
 
 // "September 4, 2026 · Wrightsville, Pennsylvania"
 const detailsText: React.CSSProperties = {
-  color: '#9C8C78',
+  color: '#F2EFE9',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSize: '12px',
   fontWeight: '300',
@@ -236,7 +236,7 @@ const bodySection: React.CSSProperties = {
 };
 
 const salutation: React.CSSProperties = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
   fontSize: '18px',
   fontStyle: 'italic',
@@ -245,7 +245,7 @@ const salutation: React.CSSProperties = {
 };
 
 const paragraph: React.CSSProperties = {
-  color: '#9C8C78',
+  color: '#F2EFE9',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSize: '15px',
   fontWeight: '300',
@@ -281,7 +281,7 @@ const signoffSection: React.CSSProperties = {
 };
 
 const signoffLine: React.CSSProperties = {
-  color: '#9C8C78',
+  color: '#F2EFE9',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
   fontSize: '15px',
   fontStyle: 'italic',
@@ -290,7 +290,7 @@ const signoffLine: React.CSSProperties = {
 };
 
 const signoffWith: React.CSSProperties = {
-  color: '#6B5D4F',
+  color: '#9C8C78',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSize: '12px',
   fontStyle: 'italic',
@@ -299,7 +299,7 @@ const signoffWith: React.CSSProperties = {
 };
 
 const signoffNames: React.CSSProperties = {
-  color: '#E6D2B5',
+  color: '#FFFFFF',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
   fontSize: '32px',
   fontStyle: 'italic',
@@ -316,7 +316,7 @@ const footerSection: React.CSSProperties = {
 };
 
 const footerText: React.CSSProperties = {
-  color: '#3D342C',
+  color: '#6B5D4F',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSize: '11px',
   fontWeight: '300',

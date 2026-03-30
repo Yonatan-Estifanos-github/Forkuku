@@ -35,6 +35,7 @@
     "incorrectPassword": "Incorrect password",
     "somethingWentWrong": "Something went wrong. Please try again.",
     "vipPasswordFilled": "Your VIP password has been pre-filled.",
+    "welcomeBack": "Welcome back! Your password is pre-filled.",
     "vipClickLogin": "Simply click enter to continue.",
     "privacyPolicy": "Privacy Policy & Terms"
   },

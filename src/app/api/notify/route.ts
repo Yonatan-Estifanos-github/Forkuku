@@ -60,7 +60,7 @@ export async function POST(req: Request) {
     // ── Fetch party + guests ──
     const { data: party, error: partyError } = await supabaseAdmin
       .from('parties')
-      .select('id, party_name, emails, phones, guests(id, name)')
+      .select('id, party_name, emails, phones, guests(id, name, email)')
       .eq('id', partyId)
       .single();
 
@@ -78,65 +78,97 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'This campaign is currently locked' }, { status: 403 });
     }
 
-    const emails: string[] = (party.emails || []).filter(Boolean);
-    const guestName: string =
-      (party.guests as { name?: string }[])?.[0]?.name || party.party_name || 'Friend';
-    const subject = SUBJECTS[campaignId] || 'An update from Yonatan & Saron';
+    // Identify all recipients
+    interface Recipient {
+      email: string;
+      name: string;
+    }
+    interface GuestInfo {
+      name?: string;
+      email?: string;
+    }
+    const recipients: Recipient[] = [];
 
+    // 1. Add guests with specific emails
+    if (party.guests && Array.isArray(party.guests)) {
+      (party.guests as GuestInfo[]).forEach((g) => {
+        if (g.email && g.email.includes('@')) {
+          recipients.push({ email: g.email, name: g.name || party.party_name });
+        }
+      });
+    }
+
+    // 2. Fallback to party-level emails if no guest-specific emails found
+    if (recipients.length === 0 && party.emails && Array.isArray(party.emails)) {
+      const fallbackName = (party.guests as GuestInfo[])?.[0]?.name || party.party_name || 'Friend';
+      party.emails.forEach((e: string) => {
+        if (e && e.includes('@')) {
+          recipients.push({ email: e, name: fallbackName });
+        }
+      });
+    }
+
+    const subject = SUBJECTS[campaignId] || 'An update from Yonatan & Saron';
     const logEntries: { channel: string; status: string }[] = [];
 
     // ── Email ──
-    if (emails.length > 0 && campaign.priority !== 'sms') {
-      let html = '';
+    if (recipients.length > 0 && campaign.priority !== 'sms') {
+      let sentCount = 0;
+      let failCount = 0;
 
-      if (campaign.emailTemplate === 'FormalInvite') {
-        html = await render(React.createElement(FormalInvite, { guestName, partyId }));
-      } else if (campaign.emailTemplate === 'SaveTheDate') {
-        html = await render(React.createElement(SaveTheDate, { guestName, partyId }));
-      } else if (campaign.emailTemplate === 'PhotoSaveTheDate') {
-        html = await render(React.createElement(PhotoSaveTheDate, { guestName, partyId }));
-      } else {
-        const content = GENERIC_CONTENT[campaignId] || {
-          heading: 'Update from Yonatan & Saron',
-          body: 'Visit our website for the latest details.',
-        };
-        html = await render(
-          React.createElement(GenericTemplate, {
-            heading: content.heading,
-            body: `Dear ${guestName}, ${content.body}`,
-            partyId,
-          })
-        );
-      }
+      for (const recipient of recipients) {
+        const guestName = recipient.name;
+        let html = '';
 
-      const { error: emailError } = await resend.emails.send({
-        from: 'Yonatan & Saron (No Reply) <wedding@theestifanos.com>',
-        to: emails,
-        subject,
-        html,
-      });
+        if (campaign.emailTemplate === 'FormalInvite') {
+          html = await render(React.createElement(FormalInvite, { guestName, partyId }));
+        } else if (campaign.emailTemplate === 'SaveTheDate') {
+          html = await render(React.createElement(SaveTheDate, { guestName, partyId }));
+        } else if (campaign.emailTemplate === 'PhotoSaveTheDate') {
+          html = await render(React.createElement(PhotoSaveTheDate, { guestName, partyId }));
+        } else {
+          const content = GENERIC_CONTENT[campaignId] || {
+            heading: 'Update from Yonatan & Saron',
+            body: 'Visit our website for the latest details.',
+          };
+          html = await render(
+            React.createElement(GenericTemplate, {
+              heading: content.heading,
+              body: `Dear ${guestName}, ${content.body}`,
+              partyId,
+            })
+          );
+        }
 
-      if (emailError) {
-        console.error('Resend error:', emailError);
-        logEntries.push({ channel: 'email', status: 'failed' });
-        await supabaseAdmin.from('campaign_logs').insert({
-          party_id: partyId,
-          campaign_id: campaignId,
-          channel: 'email',
-          status: 'failed',
-          sent_at: new Date().toISOString(),
+        const { error: emailError } = await resend.emails.send({
+          from: 'Yonatan & Saron (No Reply) <wedding@theestifanos.com>',
+          to: recipient.email,
+          subject,
+          html,
         });
-        return NextResponse.json({ error: (emailError as { message?: string }).message || 'Email send failed' }, { status: 500 });
+
+        if (emailError) {
+          console.error(`Resend error for ${recipient.email}:`, emailError);
+          failCount++;
+        } else {
+          sentCount++;
+        }
       }
 
-      logEntries.push({ channel: 'email', status: 'sent' });
+      const finalStatus = failCount === 0 ? 'sent' : sentCount > 0 ? 'partial' : 'failed';
+      logEntries.push({ channel: 'email', status: finalStatus });
+
       await supabaseAdmin.from('campaign_logs').insert({
         party_id: partyId,
         campaign_id: campaignId,
         channel: 'email',
-        status: 'sent',
+        status: finalStatus,
         sent_at: new Date().toISOString(),
       });
+
+      if (finalStatus === 'failed') {
+        return NextResponse.json({ error: 'Email send failed for all recipients' }, { status: 500 });
+      }
     }
 
     return NextResponse.json({ success: true, results: logEntries });

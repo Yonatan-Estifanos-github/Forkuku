@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       })
       .eq('id', party_id)
       .eq('has_responded', false)
-      .select('id, party_name, emails')
+      .select('id, party_name, emails, guests(email)')
       .maybeSingle();
 
     if (partyError) {
@@ -124,18 +124,24 @@ export async function POST(req: Request) {
         `
       }).catch(err => console.error('Internal Alert Error:', err));
 
-      // Guest Confirmation (send to all emails in party)
-      if (updatedParty.emails && updatedParty.emails.length > 0) {
-        for (const guestEmail of updatedParty.emails) {
-          await resend.emails.send({
-            from: 'Yonatan & Saron (No Reply) <hello@theestifanos.com>',
-            to: guestEmail,
-            subject: 'RSVP Confirmed — Yonatan & Saron',
-            react: RSVPConfirmation({
-              guests: guests
-            })
-          }).catch(err => console.error(`Guest Confirmation Error (${guestEmail}):`, err));
-        }
+      // Guest Confirmation (send to all unique emails in party and guests)
+      const allEmails = new Set<string>();
+      if (updatedParty.emails) updatedParty.emails.forEach(e => e && e.includes('@') && allEmails.add(e.toLowerCase()));
+      
+      interface GuestWithEmail {
+        email?: string;
+      }
+      if (updatedParty.guests) (updatedParty.guests as GuestWithEmail[]).forEach(g => g.email && g.email.includes('@') && allEmails.add(g.email.toLowerCase()));
+
+      for (const guestEmail of Array.from(allEmails)) {
+        await resend.emails.send({
+          from: 'Yonatan & Saron (No Reply) <hello@theestifanos.com>',
+          to: guestEmail,
+          subject: 'RSVP Confirmed — Yonatan & Saron',
+          react: RSVPConfirmation({
+            guests: guests
+          })
+        }).catch(err => console.error(`Guest Confirmation Error (${guestEmail}):`, err));
       }
     }
 
