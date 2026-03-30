@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { CAMPAIGNS, CampaignId } from '@/config/campaigns';
@@ -150,35 +150,38 @@ export default function AdminDashboard() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const countdown = useCountdown(WEDDING_DATE);
 
-  // Tab State
+  // 1. Initial State
   const [activeTab, setActiveTab] = useState<ActiveTab>('guests');
-
   const [parties, setParties] = useState<Party[]>([]);
   const [loading, setLoading] = useState(true);
   const [adminSearchQuery, setAdminSearchQuery] = useState('');
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [expandedPartyId, setExpandedPartyId] = useState<string | null>(null);
-  
-  // Memoized filtered parties list
-  const filteredParties = parties.filter(p => {
-    // 1. Family Side Filter
-    const sideMatch = familySideFilter === 'all' ? true :
-                     familySideFilter === 'unassigned' ? !p.family_side :
-                     p.family_side === familySideFilter;
-    
-    if (!sideMatch) return false;
-
-    // 2. Search Query Filter (Party name or Guest names)
-    if (!adminSearchQuery.trim()) return true;
-    
-    const query = adminSearchQuery.toLowerCase().trim();
-    const partyNameMatch = p.party_name.toLowerCase().includes(query);
-    const guestNamesMatch = p.guests.some(g => g.name?.toLowerCase().includes(query));
-    
-    return partyNameMatch || guestNamesMatch;
-  });
   const [selectedCampaign, setSelectedCampaign] = useState<CampaignId>('save-the-date');
+  const [familySideFilter, setFamilySideFilter] = useState<'all' | 'bride' | 'groom' | 'unassigned'>('all');
+
+  // 2. Memoized filtered parties list (Safe from TDZ)
+  const filteredParties = useMemo(() => {
+    return parties.filter(p => {
+      // Family Side Filter
+      const sideMatch = familySideFilter === 'all' ? true :
+                       familySideFilter === 'unassigned' ? !p.family_side :
+                       p.family_side === familySideFilter;
+      
+      if (!sideMatch) return false;
+
+      // Search Query Filter (Party name or Guest names)
+      if (!adminSearchQuery.trim()) return true;
+      
+      const query = adminSearchQuery.toLowerCase().trim();
+      const partyNameMatch = p.party_name.toLowerCase().includes(query);
+      const guestNamesMatch = p.guests.some(g => g.name?.toLowerCase().includes(query));
+      
+      return partyNameMatch || guestNamesMatch;
+    });
+  }, [parties, familySideFilter, adminSearchQuery]);
+
   const [stats, setStats] = useState<DashboardStats>({
     totalParties: 0,
     totalGuests: 0,
@@ -193,13 +196,8 @@ export default function AdminDashboard() {
   const [partyName, setPartyName] = useState('');
   const [partyEmails, setPartyEmails] = useState<string[]>(['']);
   const [partyPhones, setPartyPhones] = useState<string[]>(['']);
-  const [guests, setGuests] = useState<EditableGuest[]>([{ name: '' }]);
+  const [guests, setGuests] = useState<EditableGuest[]>([{ name: '', email: '' }]);
   const [saving, setSaving] = useState(false);
-
-  // Family Side Filter
-  const [familySideFilter, setFamilySideFilter] = useState<'all' | 'bride' | 'groom' | 'unassigned'>('all');
-
-  // Party family side (modal)
   const [partyFamilySide, setPartyFamilySide] = useState<'bride' | 'groom' | ''>('');
 
   // CSV Upload State
@@ -222,7 +220,11 @@ export default function AdminDashboard() {
   const [itemIsFavorite, setItemIsFavorite] = useState(false);
   const [savingItem, setSavingItem] = useState(false);
 
-  const fetchParties = async () => {
+  // ============================================
+  // HOISTED HANDLERS (function declarations)
+  // ============================================
+
+  async function fetchParties() {
     const { data, error } = await supabase
       .from('parties')
       .select(`
@@ -270,9 +272,9 @@ export default function AdminDashboard() {
 
       setParties(allParties);
     }
-  };
+  }
 
-  const fetchRegistryItems = async () => {
+  async function fetchRegistryItems() {
     setRegistryLoading(true);
     const { data, error } = await supabase
       .from('registry_items')
@@ -286,38 +288,14 @@ export default function AdminDashboard() {
       setRegistryItems(data as RegistryItem[]);
     }
     setRegistryLoading(false);
-  };
+  }
 
-  useEffect(() => {
-    if (!loading) fetchParties();
-  }, [selectedCampaign]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (activeTab === 'registry' && registryItems.length === 0) {
-      fetchRegistryItems();
-    }
-  }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    const checkAuthAndFetch = async () => {
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError || !user) {
-        router.push('/admin/login');
-        return;
-      }
-      await fetchParties();
-      setLoading(false);
-    };
-
-    checkAuthAndFetch();
-  }, [router]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleLogout = async () => {
+  async function handleLogout() {
     await supabase.auth.signOut();
     router.push('/admin/login');
-  };
+  }
 
-  const handleSendNotification = async (partyId: string) => {
+  async function handleSendNotification(partyId: string) {
     const party = parties.find(p => p.id === partyId);
     const campaignLabel = CAMPAIGNS.find(c => c.id === selectedCampaign)?.label || selectedCampaign;
     const confirmed = window.confirm(
@@ -346,12 +324,9 @@ export default function AdminDashboard() {
     } finally {
       setSendingId(null);
     }
-  };
+  }
 
-  // ============================================
-  // INLINE FAMILY SIDE TOGGLE
-  // ============================================
-  const handleFamilySideChange = async (party: Party, side: 'bride' | 'groom' | null) => {
+  async function handleFamilySideChange(party: Party, side: 'bride' | 'groom' | null) {
     // Optimistic update
     setParties(prev => prev.map(p => p.id === party.id ? { ...p, family_side: side } : p));
     const { error } = await supabase
@@ -363,9 +338,9 @@ export default function AdminDashboard() {
       // Revert on failure
       setParties(prev => prev.map(p => p.id === party.id ? { ...p, family_side: party.family_side } : p));
     }
-  };
+  }
 
-  const handleResetParty = async (party: Party) => {
+  async function handleResetParty(party: Party) {
     const confirmed = window.confirm(
       `Reset all campaign logs and RSVP status for "${party.party_name}"? This allows you to test sending again.`
     );
@@ -400,12 +375,9 @@ export default function AdminDashboard() {
       console.error('Reset error:', err);
       alert('Failed to reset party');
     }
-  };
+  }
 
-  // ============================================
-  // DELETE PARTY
-  // ============================================
-  const handleDeleteParty = async (party: Party) => {
+  async function handleDeleteParty(party: Party) {
     const confirmed = window.confirm(
       `Are you sure you want to delete "${party.party_name}" and all ${party.guests.length} guest(s)? This cannot be undone.`
     );
@@ -441,12 +413,9 @@ export default function AdminDashboard() {
     } finally {
       setDeletingId(null);
     }
-  };
+  }
 
-  // ============================================
-  // OPEN MODAL (Add or Edit Party)
-  // ============================================
-  const openAddModal = () => {
+  function openAddModal() {
     setEditingParty(null);
     setPartyName('');
     setPartyEmails(['']);
@@ -454,9 +423,9 @@ export default function AdminDashboard() {
     setPartyFamilySide('');
     setGuests([{ name: '', email: '' }]);
     setShowModal(true);
-  };
+  }
 
-  const openEditModal = (party: Party) => {
+  function openEditModal(party: Party) {
     setEditingParty(party);
     setPartyName(party.party_name);
     setPartyEmails(party.emails?.length > 0 ? party.emails : ['']);
@@ -468,9 +437,9 @@ export default function AdminDashboard() {
         : [{ name: '', email: '' }]
     );
     setShowModal(true);
-  };
+  }
 
-  const closeModal = () => {
+  function closeModal() {
     setShowModal(false);
     setEditingParty(null);
     setPartyName('');
@@ -478,31 +447,25 @@ export default function AdminDashboard() {
     setPartyPhones(['']);
     setPartyFamilySide('');
     setGuests([{ name: '', email: '' }]);
-  };
+  }
 
-  // ============================================
-  // GUEST HANDLERS
-  // ============================================
-  const handleAddGuest = () => {
+  function handleAddGuest() {
     setGuests([...guests, { name: '', email: '' }]);
-  };
+  }
 
-  const handleRemoveGuest = (index: number) => {
+  function handleRemoveGuest(index: number) {
     if (guests.length > 1) {
       setGuests(guests.filter((_, i) => i !== index));
     }
-  };
+  }
 
-  const handleGuestChange = (index: number, field: 'name' | 'email', value: string) => {
+  function handleGuestChange(index: number, field: 'name' | 'email', value: string) {
     const updated = [...guests];
     updated[index][field] = value;
     setGuests(updated);
-  };
+  }
 
-  // ============================================
-  // SAVE PARTY (Create or Update)
-  // ============================================
-  const handleSaveParty = async () => {
+  async function handleSaveParty() {
     if (!partyName.trim()) {
       alert('Party name is required');
       return;
@@ -527,8 +490,6 @@ export default function AdminDashboard() {
         const emailsChanged = newEmails.some(e => !oldEmails.includes(e)) || oldEmails.some(e => !newEmails.includes(e));
         const phonesChanged = newPhones.some(p => !oldPhones.includes(p)) || oldPhones.some(p => !newPhones.includes(p));
 
-        // Collect campaigns that were previously sent on changed channels
-        // so we can re-send to the updated contact info after saving.
         const campaignsToResend = new Set<string>();
 
         if (emailsChanged && newEmails.length > 0) {
@@ -537,7 +498,6 @@ export default function AdminDashboard() {
           ) || [];
           sentEmailLogs.forEach(l => campaignsToResend.add(l.campaign_id));
 
-          // Clear stale email logs so status resets to "Not Sent"
           await supabase
             .from('campaign_logs')
             .delete()
@@ -551,7 +511,6 @@ export default function AdminDashboard() {
           ) || [];
           sentSmsLogs.forEach(l => campaignsToResend.add(l.campaign_id));
 
-          // Clear stale SMS logs so status resets to "Not Sent"
           await supabase
             .from('campaign_logs')
             .delete()
@@ -559,7 +518,6 @@ export default function AdminDashboard() {
             .eq('channel', 'sms');
         }
 
-        // Update party info
         const { error: partyError } = await supabase
           .from('parties')
           .update({
@@ -572,17 +530,14 @@ export default function AdminDashboard() {
 
         if (partyError) throw partyError;
 
-        // Handle guests: Update existing, insert new, delete removed
         const existingGuestIds = editingParty.guests.map(g => g.id);
         const currentGuestIds = validGuests.filter(g => g.id).map(g => g.id!);
 
-        // Delete removed guests
         const guestsToDelete = existingGuestIds.filter(id => !currentGuestIds.includes(id));
         if (guestsToDelete.length > 0) {
           await supabase.from('guests').delete().in('id', guestsToDelete);
         }
 
-        // Update existing guests
         for (const guest of validGuests.filter(g => g.id)) {
           const sanitizedEmail = guest.email?.trim() && guest.email.trim() !== '---' 
             ? guest.email.trim().toLowerCase() 
@@ -596,7 +551,6 @@ export default function AdminDashboard() {
             .eq('id', guest.id!);
         }
 
-        // Insert new guests
         const newGuests = validGuests.filter(g => !g.id);
         if (newGuests.length > 0) {
           await supabase.from('guests').insert(
@@ -614,7 +568,28 @@ export default function AdminDashboard() {
           );
         }
 
-        // ... campaignsToResend logic ...
+        if (campaignsToResend.size > 0) {
+          const resendResults: string[] = [];
+          for (const campaignId of Array.from(campaignsToResend)) {
+            try {
+              const res = await fetch('/api/notify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ partyId: editingParty.id, campaignId }),
+              });
+              const result = await res.json();
+              if (res.ok) {
+                const label = CAMPAIGNS.find(c => c.id === campaignId)?.label || campaignId;
+                resendResults.push(`${label}: sent`);
+              } else {
+                resendResults.push(`${campaignId}: ${result.error || 'failed'}`);
+              }
+            } catch {
+              resendResults.push(`${campaignId}: network error`);
+            }
+          }
+          alert(`Contact info updated. Re-sent ${campaignsToResend.size} campaign(s):\n${resendResults.join('\n')}`);
+        }
       } else {
         // ========== CREATE MODE ==========
         const { data: partyData, error: partyError } = await supabase
@@ -657,12 +632,9 @@ export default function AdminDashboard() {
     } finally {
       setSaving(false);
     }
-  };
+  }
 
-  // ============================================
-  // CSV UPLOAD
-  // ============================================
-  const handleCsvUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function handleCsvUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -683,7 +655,7 @@ export default function AdminDashboard() {
           const skippedRows: { row: number; guest: string; reason: string }[] = [];
 
           rows.forEach((row, index) => {
-            const rowNumber = index + 2; // +1 for header, +1 for 0-indexing
+            const rowNumber = index + 2;
             const keys = Object.keys(row);
             const nameKey = keys.find(k => k.toLowerCase().includes('party')) || 'Party Name';
             const emailKey = keys.find(k => k.toLowerCase().includes('email')) || 'Email';
@@ -705,32 +677,18 @@ export default function AdminDashboard() {
               return;
             }
 
-            // Email Sanitization: ---, blank, or invalid -> null
             const sanitizeEmail = (e: string | undefined) => {
               if (!e || e === '---' || !e.includes('@')) return null;
               return e.toLowerCase();
             };
             const guestEmail = sanitizeEmail(rawEmail);
 
-            // Phone Sanitization: Standardize to E.164 (+1XXXXXXXXXX)
             const formatPhoneNumber = (p: string | undefined) => {
               if (!p || p === '---') return null;
-              
-              // Remove all non-numeric characters
               const digits = p.replace(/\D/g, '');
-              
-              if (digits.length === 10) {
-                // Standard 10-digit US number
-                return `+1${digits}`;
-              } else if (digits.length === 11 && digits.startsWith('1')) {
-                // 11-digit number starting with country code 1
-                return `+${digits}`;
-              } else if (p.startsWith('+1') && p.replace(/\D/g, '').length === 11) {
-                // Already starts with +1, just clean formatting
-                return `+${p.replace(/\D/g, '')}`;
-              }
-              
-              // Invalid length or format for US-based assumption
+              if (digits.length === 10) return `+1${digits}`;
+              if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+              if (p.startsWith('+1') && p.replace(/\D/g, '').length === 11) return `+${p.replace(/\D/g, '')}`;
               return null;
             };
             const sanitizedPhone = formatPhoneNumber(rawPhone);
@@ -740,12 +698,9 @@ export default function AdminDashboard() {
             }
 
             const entry = partyMap.get(csvPartyName)!;
-            // Add to party-level emails/phones if valid
             if (guestEmail && !entry.emails.includes(guestEmail)) entry.emails.push(guestEmail);
             if (sanitizedPhone && !entry.phones.includes(sanitizedPhone)) entry.phones.push(sanitizedPhone);
-            // First non-null side wins
             if (!entry.family_side && familySide) entry.family_side = familySide;
-            
             entry.guests.push({ name: guestName, email: guestEmail });
           });
 
@@ -753,7 +708,6 @@ export default function AdminDashboard() {
           let newGuestsInserted = 0;
 
           for (const [csvPartyName, partyInfo] of Array.from(partyMap.entries())) {
-            // Upsert Party based on party_name
             const { data: partyData, error: partyError } = await supabase
               .from('parties')
               .upsert({
@@ -773,7 +727,6 @@ export default function AdminDashboard() {
 
             upsertedParties++;
 
-            // Fetch existing guests for this party to prevent duplicates
             const { data: existingGuests } = await supabase
               .from('guests')
               .select('name')
@@ -812,9 +765,7 @@ export default function AdminDashboard() {
           alert('Failed to process CSV');
         } finally {
           setUploading(false);
-          if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-          }
+          if (fileInputRef.current) fileInputRef.current.value = '';
         }
       },
       error: (err) => {
@@ -823,37 +774,32 @@ export default function AdminDashboard() {
         setUploading(false);
       },
     });
-  };
+  }
 
-  // Helper: Check campaign status per channel
-  const getChannelStatus = (party: Party, channel: 'email' | 'sms') => {
+  function getChannelStatus(party: Party, channel: 'email' | 'sms') {
     return party.campaign_logs?.some(
       l => l.campaign_id === selectedCampaign && l.channel === channel && l.status === 'sent'
     );
-  };
+  }
 
-  // Helper: Get RSVP Status for a party
-  const getRSVPStatus = (party: Party) => {
+  function getRSVPStatus(party: Party) {
     if (!party.has_responded) return 'Pending';
     const attendingCount = party.guests.filter(g => g.is_attending).length;
     if (attendingCount === 0) return 'Declined';
     if (attendingCount === party.guests.length) return 'Attending';
     return 'Partial';
-  };
+  }
 
-  const getRSVPStatusColor = (status: string) => {
+  function getRSVPStatusColor(status: string) {
     switch (status) {
       case 'Attending': return 'bg-green-100 text-green-700';
       case 'Declined': return 'bg-red-100 text-red-600';
       case 'Partial': return 'bg-yellow-100 text-yellow-700';
       default: return 'bg-gray-100 text-gray-500';
     }
-  };
+  }
 
-  // ============================================
-  // REGISTRY HANDLERS
-  // ============================================
-  const openAddItemModal = () => {
+  function openAddItemModal() {
     setEditingItem(null);
     setItemName('');
     setItemPrice('');
@@ -863,9 +809,9 @@ export default function AdminDashboard() {
     setItemImageUrl('');
     setItemIsFavorite(false);
     setShowRegistryModal(true);
-  };
+  }
 
-  const openEditItemModal = (item: RegistryItem) => {
+  function openEditItemModal(item: RegistryItem) {
     setEditingItem(item);
     setItemName(item.name);
     setItemPrice(item.price.toString());
@@ -875,9 +821,9 @@ export default function AdminDashboard() {
     setItemImageUrl(item.image_url || '');
     setItemIsFavorite(item.is_favorite);
     setShowRegistryModal(true);
-  };
+  }
 
-  const closeRegistryModal = () => {
+  function closeRegistryModal() {
     setShowRegistryModal(false);
     setEditingItem(null);
     setItemName('');
@@ -887,9 +833,9 @@ export default function AdminDashboard() {
     setItemProductUrl('');
     setItemImageUrl('');
     setItemIsFavorite(false);
-  };
+  }
 
-  const handleSaveItem = async () => {
+  async function handleSaveItem() {
     if (!itemName.trim()) {
       alert('Item name is required');
       return;
@@ -919,13 +865,11 @@ export default function AdminDashboard() {
           .from('registry_items')
           .update(itemData)
           .eq('id', editingItem.id);
-
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from('registry_items')
           .insert(itemData);
-
         if (error) throw error;
       }
 
@@ -937,35 +881,26 @@ export default function AdminDashboard() {
     } finally {
       setSavingItem(false);
     }
-  };
+  }
 
-  const handleDeleteItem = async (item: RegistryItem) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete "${item.name}"? This cannot be undone.`
-    );
-
+  async function handleDeleteItem(item: RegistryItem) {
+    const confirmed = window.confirm(`Delete "${item.name}" from registry?`);
     if (!confirmed) return;
-
-    setDeletingItemId(item.id);
 
     try {
       const { error } = await supabase
         .from('registry_items')
         .delete()
         .eq('id', item.id);
-
       if (error) throw error;
-
       await fetchRegistryItems();
     } catch (err) {
       console.error('Delete error:', err);
-      alert('Failed to delete item');
-    } finally {
-      setDeletingItemId(null);
+      alert('Error deleting item');
     }
-  };
+  }
 
-  const handleTogglePurchased = async (item: RegistryItem) => {
+  async function handleTogglePurchased(item: RegistryItem) {
     try {
       const { error } = await supabase
         .from('registry_items')
@@ -973,13 +908,26 @@ export default function AdminDashboard() {
         .eq('id', item.id);
 
       if (error) throw error;
-
       await fetchRegistryItems();
     } catch (err) {
       console.error('Toggle error:', err);
       alert('Failed to update item');
     }
-  };
+  }
+
+  useEffect(() => {
+    const checkAuthAndFetch = async () => {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        router.push('/admin/login');
+        return;
+      }
+      await fetchParties();
+      setLoading(false);
+    };
+
+    checkAuthAndFetch();
+  }, [router]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) {
     return (
@@ -1484,19 +1432,6 @@ export default function AdminDashboard() {
                         </React.Fragment>
                       );
                     })}
-                    {parties.filter(p =>
-                      familySideFilter === 'all' ? true :
-                      familySideFilter === 'unassigned' ? !p.family_side :
-                      p.family_side === familySideFilter
-                    ).length === 0 && (
-                      <tr>
-                        <td colSpan={5} className="p-8 text-center text-gray-400">
-                          {familySideFilter === 'all'
-                            ? 'No parties found. Add one using the toolbar above.'
-                            : `No parties assigned to ${familySideFilter === 'unassigned' ? 'unassigned' : familySideFilter === 'bride' ? "bride's side" : "groom's side"}.`}
-                        </td>
-                      </tr>
-                    )}
                   </tbody>
                 </table>
               </div>
@@ -1507,38 +1442,32 @@ export default function AdminDashboard() {
         {/* REGISTRY TAB */}
         {activeTab === 'registry' && (
           <>
-            {/* Registry Toolbar */}
-            <div className="bg-white rounded shadow-sm p-4 mb-4 flex flex-wrap items-center gap-4 border border-gray-100">
+            {/* Registry Management Toolbar */}
+            <div className="bg-white rounded shadow-sm p-4 mb-8 flex items-center justify-between border border-gray-100">
               <span className="text-xs uppercase tracking-widest text-gray-500 font-bold">Registry Management:</span>
-
               <button
                 onClick={openAddItemModal}
                 className="px-4 py-2 bg-[#1B3B28] text-white text-sm font-bold rounded hover:bg-[#2a5a3f] transition-colors flex items-center gap-2"
               >
                 <span className="text-lg leading-none">+</span> Add Gift
               </button>
-
-              <span className="text-xs text-gray-400">
-                {registryItems.length} item{registryItems.length !== 1 ? 's' : ''} in registry
-              </span>
             </div>
 
-            {/* Registry Items Grid */}
             {registryLoading ? (
-              <div className="bg-white rounded shadow-sm p-8 text-center border border-gray-100">
-                <p className="text-gray-400 animate-pulse">Loading registry items...</p>
+              <div className="py-20 text-center">
+                <p className="font-serif text-[#1B3B28] animate-pulse italic">Loading registry items...</p>
               </div>
             ) : registryItems.length === 0 ? (
-              <div className="bg-white rounded shadow-sm p-8 text-center border border-gray-100">
-                <p className="text-gray-400">No registry items yet. Add your first gift above.</p>
+              <div className="py-20 text-center bg-white rounded border border-dashed border-gray-200">
+                <p className="text-gray-400 italic">No items in the registry yet.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {registryItems.map((item) => (
                   <div
                     key={item.id}
-                    className={`bg-white rounded shadow-sm border overflow-hidden transition-all hover:shadow-md ${
-                      item.is_purchased ? 'opacity-60' : ''
+                    className={`bg-white rounded shadow-sm overflow-hidden border transition-all ${
+                      item.is_purchased ? 'opacity-60 grayscale-[0.5]' : 'hover:shadow-md'
                     } ${item.is_favorite ? 'border-[#D4A845] border-2' : 'border-gray-100'}`}
                   >
                     {/* Image */}
@@ -1552,30 +1481,28 @@ export default function AdminDashboard() {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-300">
-                          <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
+                          <span className="text-4xl">🎁</span>
                         </div>
                       )}
-                      {/* Favorite Badge */}
                       {item.is_favorite && (
-                        <div className="absolute top-2 left-2 bg-[#D4A845] text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded">
+                        <div className="absolute top-2 right-2 bg-[#D4A845] text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest shadow-sm">
                           Must Have
                         </div>
                       )}
-                      {/* Purchased Overlay */}
                       {item.is_purchased && (
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                          <span className="bg-green-600 text-white text-xs uppercase tracking-wider font-bold px-3 py-1 rounded">
+                        <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
+                          <span className="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">
                             Purchased
                           </span>
                         </div>
                       )}
                     </div>
 
-                    {/* Content */}
+                    {/* Details */}
                     <div className="p-4">
-                      <h3 className="font-serif text-lg text-[#1B3B28] mb-1 line-clamp-1">{item.name}</h3>
+                      <h3 className="font-serif text-lg text-[#1B3B28] truncate mb-1" title={item.name}>
+                        {item.name}
+                      </h3>
                       <p className="font-serif text-xl text-[#D4A845] mb-2">${Number(item.price).toFixed(2)}</p>
                       <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
                         <span className="bg-gray-100 px-2 py-0.5 rounded">{item.category}</span>
@@ -1791,15 +1718,16 @@ export default function AdminDashboard() {
                   ))}
                 </div>
                 <button
+                  type="button"
                   onClick={handleAddGuest}
-                  className="mt-2 text-sm text-[#D4A845] hover:underline"
+                  className="mt-3 text-sm text-[#D4A845] hover:underline"
                 >
                   + Add another guest
                 </button>
               </div>
             </div>
 
-            <div className="p-6 border-t border-gray-100 flex justify-end gap-4 flex-shrink-0">
+            <div className="p-6 border-t border-gray-100 flex-shrink-0 flex justify-end gap-4">
               <button
                 onClick={closeModal}
                 className="px-6 py-2 border border-gray-200 rounded hover:bg-gray-50 transition-colors text-sm"
@@ -1818,7 +1746,7 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Add/Edit Registry Item Modal */}
+      {/* Registry Item Modal */}
       {showRegistryModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
@@ -1829,10 +1757,9 @@ export default function AdminDashboard() {
             </div>
 
             <div className="p-6 space-y-4">
-              {/* Name */}
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
-                  Gift Name *
+                  Item Name *
                 </label>
                 <input
                   type="text"
@@ -1846,7 +1773,7 @@ export default function AdminDashboard() {
               {/* Price */}
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
-                  Price *
+                  Price ($) *
                 </label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
