@@ -65,12 +65,17 @@ function SiteLoginPageInner() {
       // If a partyId is in the URL, track the click and drop the VIP cookie
       if (partyId) {
         const runTracking = async () => {
+          // Prevent duplicate tracking in the same session
+          const alreadyTracked = sessionStorage.getItem(`tracked_${partyId}`);
+          if (alreadyTracked) return;
+
           try {
             await fetch('/api/rsvp/track-click', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ partyId }),
             });
+            sessionStorage.setItem(`tracked_${partyId}`, 'true');
           } catch { /* non-critical */ }
 
           const expires = new Date();

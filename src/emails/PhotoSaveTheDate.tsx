@@ -13,62 +13,73 @@ import * as React from 'react';
 
 interface PhotoSaveTheDateProps {
   guestName?: string;
+  partyId?: string;
 }
+
+const BASE_URL = 'https://theestifanos.com';
+const PWD = 'Matthew19:6';
 
 export const PhotoSaveTheDate = ({
   guestName = 'Guest',
-}: PhotoSaveTheDateProps) => (
-  <Html>
-    <Head />
-    <Preview>Save the Date — Saron & Yonatan · September 4, 2026</Preview>
-    <Body style={main}>
-      <Container style={container}>
-        {/* Hero image — full-width, responsive */}
-        <Img
-          src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_4.jpeg"
-          alt="Yonatan & Saron"
-          width="600"
-          style={heroImage}
-        />
+  partyId,
+}: PhotoSaveTheDateProps) => {
+  const magicLink = partyId 
+    ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
+    : `${BASE_URL}/?pwd=${PWD}`;
 
-        {/* Content area with padding */}
-        <Section style={content}>
-          <Text style={headline}>SAVE THE DATE</Text>
+  return (
+    <Html>
+      <Head />
+      <Preview>Save the Date — Yonatan & Saron · September 4, 2026</Preview>
+      <Body style={main}>
+        <Container style={container}>
+          {/* Hero image — full-width, responsive */}
+          <Img
+            src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_4.jpeg"
+            alt="Yonatan & Saron"
+            width="600"
+            style={heroImage}
+          />
 
-          <Text style={names}>Saron & Yonatan</Text>
+          {/* Content area with padding */}
+          <Section style={content}>
+            <Text style={headline}>SAVE THE DATE</Text>
 
-          <Text style={date}>Friday · September 4, 2026</Text>
+            <Text style={names}>Yonatan & Saron</Text>
 
-          {/* Gold divider */}
-          <div style={divider} />
+            <Text style={date}>Friday · September 4, 2026</Text>
 
-          <Text style={paragraph}>Dear {guestName},</Text>
-          <Text style={paragraph}>
-            With grateful hearts, we&apos;re excited to share that we&apos;ll be getting
-            married. God has been so faithful in bringing our paths together, and
-            we&apos;re looking forward to beginning this next chapter surrounded by
-            the people we love. We hope you&apos;ll save the date and celebrate with
-            us as we step into all that God has prepared.
-          </Text>
+            {/* Gold divider */}
+            <div style={divider} />
 
-          <Text style={locationText}>
-            Wrightsville, Pennsylvania
-            <br />
-            <span style={subNote}>(Formal invitation to follow)</span>
-          </Text>
+            <Text style={paragraph}>Dear {guestName},</Text>
+            <Text style={paragraph}>
+              With grateful hearts, we&apos;re excited to share that we&apos;ll be getting
+              married. God has been so faithful in bringing our paths together, and
+              we&apos;re looking forward to beginning this next chapter surrounded by
+              the people we love. We hope you&apos;ll save the date and celebrate with
+              us as we step into all that God has prepared.
+            </Text>
 
-          <Section style={btnContainer}>
-            <Button style={button} href="https://theestifanos.com">
-              Visit Wedding Website
-            </Button>
+            <Text style={locationText}>
+              Wrightsville, Pennsylvania
+              <br />
+              <span style={subNote}>(Formal invitation to follow)</span>
+            </Text>
+
+            <Section style={btnContainer}>
+              <Button style={button} href={magicLink}>
+                Visit Wedding Website
+              </Button>
+            </Section>
+
+            <Text style={footer}>The Estifanos Family</Text>
           </Section>
-
-          <Text style={footer}>The Estifanos Family</Text>
-        </Section>
-      </Container>
-    </Body>
-  </Html>
-);
+        </Container>
+      </Body>
+    </Html>
+  );
+};
 
 export default PhotoSaveTheDate;
 

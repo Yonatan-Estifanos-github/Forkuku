@@ -14,10 +14,22 @@ import * as React from 'react';
 
 interface FormalInviteProps {
   guestName?: string;
+  partyId?: string;
 }
 
-export const FormalInvite = ({ guestName = 'Friend' }: FormalInviteProps) => (
-  <Html lang="en">
+const BASE_URL = 'https://theestifanos.com';
+const PWD = 'Matthew19:6';
+
+export const FormalInvite = ({ 
+  guestName = 'Friend',
+  partyId
+}: FormalInviteProps) => {
+  const magicLink = partyId 
+    ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
+    : `${BASE_URL}/?pwd=${PWD}`;
+
+  return (
+    <Html lang="en">
     <Head />
     <Preview>You are invited to the wedding of Yonatan & Saron — September 4, 2026</Preview>
 
@@ -83,7 +95,7 @@ export const FormalInvite = ({ guestName = 'Friend' }: FormalInviteProps) => (
 
         {/* ── CTA ── */}
         <Section style={btnSection}>
-          <Button style={ghostButton} href="https://www.theestifanos.com">
+          <Button style={ghostButton} href={magicLink}>
             RSVP &amp; Explore Our Story
           </Button>
         </Section>
@@ -111,7 +123,7 @@ export const FormalInvite = ({ guestName = 'Friend' }: FormalInviteProps) => (
             For travel details, registries, and FAQs, please visit our website.
           </Text>
           <Text style={footerLinkText}>
-            <a href="https://www.theestifanos.com" style={footerAnchor}>
+            <a href={magicLink} style={footerAnchor}>
               www.theestifanos.com
             </a>
           </Text>

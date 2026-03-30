@@ -16,29 +16,40 @@ interface GenericTemplateProps {
   body: string;
   ctaText?: string;
   ctaLink?: string;
+  partyId?: string;
 }
+
+const BASE_URL = 'https://theestifanos.com';
+const PWD = 'Matthew19:6';
 
 export const GenericTemplate = ({
   heading,
   body,
   ctaText = 'Visit Website',
-  ctaLink = 'https://www.theestifanos.com',
-}: GenericTemplateProps) => (
-  <Html>
-    <Head />
-    <Preview>{heading}</Preview>
-    <Body style={main}>
-      <Container style={container}>
-        <Text style={header}>ESTIFANOS WEDDING</Text>
-        <Heading style={title}>{heading}</Heading>
-        <Text style={paragraph}>{body}</Text>
-        <Section style={btnContainer}>
-          <Button style={button} href={ctaLink}>{ctaText}</Button>
-        </Section>
-      </Container>
-    </Body>
-  </Html>
-);
+  ctaLink,
+  partyId,
+}: GenericTemplateProps) => {
+  const magicLink = ctaLink || (partyId 
+    ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
+    : `${BASE_URL}/?pwd=${PWD}`);
+
+  return (
+    <Html>
+      <Head />
+      <Preview>{heading}</Preview>
+      <Body style={main}>
+        <Container style={container}>
+          <Text style={header}>ESTIFANOS WEDDING</Text>
+          <Heading style={title}>{heading}</Heading>
+          <Text style={paragraph}>{body}</Text>
+          <Section style={btnContainer}>
+            <Button style={button} href={magicLink}>{ctaText}</Button>
+          </Section>
+        </Container>
+      </Body>
+    </Html>
+  );
+};
 
 export default GenericTemplate;
 

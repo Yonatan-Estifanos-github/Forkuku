@@ -13,14 +13,24 @@ import * as React from 'react';
 
 interface SaveTheDateProps {
   guestName?: string;
+  partyId?: string;
 }
 
-const MAGIC_LINK = 'https://theestifanos.com/?pwd=Matthew19:6';
+const BASE_URL = 'https://theestifanos.com';
+const PWD = 'Matthew19:6';
 const PHOTO_URL =
   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_3.jpeg';
 
-export const SaveTheDate = ({ guestName = 'Dear Friend' }: SaveTheDateProps) => (
-  <Html lang="en">
+export const SaveTheDate = ({ 
+  guestName = 'Dear Friend',
+  partyId
+}: SaveTheDateProps) => {
+  const magicLink = partyId 
+    ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
+    : `${BASE_URL}/?pwd=${PWD}`;
+
+  return (
+    <Html lang="en">
     <Head />
     <Preview>Save the Date — Yonatan &amp; Saron · September 4, 2026</Preview>
 
@@ -71,7 +81,7 @@ export const SaveTheDate = ({ guestName = 'Dear Friend' }: SaveTheDateProps) => 
             Use a plain <a> via dangerouslySetInnerHTML workaround
             or just an anchor styled inline.
           */}
-          <a href={MAGIC_LINK} style={ctaButton} target="_blank" rel="noopener noreferrer">
+          <a href={magicLink} style={ctaButton} target="_blank" rel="noopener noreferrer">
             RSVP NOW
           </a>
         </Section>

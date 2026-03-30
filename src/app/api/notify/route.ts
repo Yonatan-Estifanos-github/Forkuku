@@ -6,6 +6,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { getCampaign } from '@/config/campaigns';
 import { FormalInvite } from '@/emails/FormalInvite';
 import { SaveTheDate } from '@/emails/SaveTheDate';
+import { PhotoSaveTheDate } from '@/emails/PhotoSaveTheDate';
 import { GenericTemplate } from '@/emails/GenericTemplate';
 
 const SUBJECTS: Record<string, string> = {
@@ -89,9 +90,11 @@ export async function POST(req: Request) {
       let html = '';
 
       if (campaign.emailTemplate === 'FormalInvite') {
-        html = await render(React.createElement(FormalInvite, { guestName }));
+        html = await render(React.createElement(FormalInvite, { guestName, partyId }));
       } else if (campaign.emailTemplate === 'SaveTheDate') {
-        html = await render(React.createElement(SaveTheDate, { guestName }));
+        html = await render(React.createElement(SaveTheDate, { guestName, partyId }));
+      } else if (campaign.emailTemplate === 'PhotoSaveTheDate') {
+        html = await render(React.createElement(PhotoSaveTheDate, { guestName, partyId }));
       } else {
         const content = GENERIC_CONTENT[campaignId] || {
           heading: 'Update from Yonatan & Saron',
@@ -101,6 +104,7 @@ export async function POST(req: Request) {
           React.createElement(GenericTemplate, {
             heading: content.heading,
             body: `Dear ${guestName}, ${content.body}`,
+            partyId,
           })
         );
       }
