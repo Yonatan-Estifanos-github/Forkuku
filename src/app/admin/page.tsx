@@ -1550,9 +1550,9 @@ export default function AdminDashboard() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[95vh] flex flex-col my-auto">
-            <div className="p-6 border-b border-gray-100 flex-shrink-0 flex items-center justify-between">
+        <div className="fixed inset-0 bg-black/60 flex items-start sm:items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full my-8 flex flex-col relative">
+            <div className="p-6 border-b border-gray-100 flex-shrink-0 flex items-center justify-between sticky top-0 bg-white rounded-t-lg z-10">
               <h2 className="font-serif text-2xl text-[#1B3B28]">
                 {editingParty ? 'Edit Party' : 'Add New Party'}
               </h2>
@@ -1565,7 +1565,10 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <div className="p-6 space-y-4 overflow-y-auto flex-1 min-h-0">
+            <div 
+              className="p-6 space-y-6 overflow-y-auto"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
                   Party Name *
@@ -1730,7 +1733,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="p-6 border-t border-gray-100 flex-shrink-0 flex justify-end gap-4">
+            <div className="p-6 border-t border-gray-100 flex-shrink-0 flex justify-end gap-4 sticky bottom-0 bg-white rounded-b-lg z-10">
               <button
                 onClick={closeModal}
                 className="px-6 py-2 border border-gray-200 rounded hover:bg-gray-50 transition-colors text-sm"
