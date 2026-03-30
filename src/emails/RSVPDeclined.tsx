@@ -3,6 +3,7 @@ import {
   Button,
   Head,
   Html,
+  Img,
   Preview,
   Section,
   Text,
@@ -16,6 +17,7 @@ interface RSVPDeclinedProps {
 
 const BASE_URL = 'https://theestifanos.com';
 const PWD = 'Matthew19:6';
+const PRAY_IMAGE_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG';
 
 export const RSVPDeclined = ({ 
   partyId
@@ -59,6 +61,17 @@ export const RSVPDeclined = ({
           </Button>
         </Section>
 
+        {/* ── Hero Image (Corrected Tag) ── */}
+        <Img
+          src={PRAY_IMAGE_URL}
+          alt="Praying over Yonatan and Saron"
+          width="440"
+          style={heroImage}
+        />
+        <Text style={caption}>
+          Pastor Ashenafi praying over our upcoming marriage at our engagement celebration.
+        </Text>
+
         {/* ── Monogram ── */}
         <Text style={monogram}>Y &amp; S</Text>
 
@@ -82,7 +95,7 @@ const mainBody: React.CSSProperties = {
   margin: '0 auto',
   padding: '60px 20px',
   textAlign: 'center',
-  fontFamily: 'Helvetica, Arial, sans-serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
   maxWidth: '600px',
 };
 
@@ -92,6 +105,7 @@ const preHeader: React.CSSProperties = {
   letterSpacing: '6px',
   textTransform: 'uppercase',
   margin: '0 0 10px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const hairline: React.CSSProperties = {
@@ -106,7 +120,7 @@ const title: React.CSSProperties = {
   fontSize: '32px',
   lineHeight: '1.2',
   margin: '0 0 40px',
-  fontFamily: 'Georgia, serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
   fontWeight: '400',
 };
 
@@ -116,6 +130,7 @@ const messageText: React.CSSProperties = {
   lineHeight: '1.6',
   margin: '0 auto 24px',
   maxWidth: '440px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const escapeHatchText: React.CSSProperties = {
@@ -125,7 +140,7 @@ const escapeHatchText: React.CSSProperties = {
   fontStyle: 'italic',
   margin: '0 auto 40px',
   maxWidth: '400px',
-  fontFamily: 'Georgia, serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const ctaSection: React.CSSProperties = {
@@ -142,11 +157,31 @@ const ctaButton: React.CSSProperties = {
   textDecoration: 'none',
   display: 'inline-block',
   borderRadius: '100px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
+};
+
+const heroImage: React.CSSProperties = {
+  width: '100%',
+  maxWidth: '440px',
+  height: 'auto',
+  display: 'block',
+  margin: '0 auto 12px',
+  borderRadius: '8px',
+};
+
+const caption: React.CSSProperties = {
+  fontFamily: "Georgia, 'Times New Roman', serif",
+  fontStyle: 'italic',
+  fontSize: '12px',
+  color: '#888888',
+  textAlign: 'center',
+  margin: '0 auto 40px',
+  maxWidth: '400px',
 };
 
 const monogram: React.CSSProperties = {
   color: '#D4A845',
-  fontFamily: 'Georgia, serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
   fontStyle: 'italic',
   fontSize: '24px',
   marginTop: '60px',
@@ -159,4 +194,5 @@ const footer: React.CSSProperties = {
   letterSpacing: '1px',
   textTransform: 'uppercase',
   margin: '0',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
