@@ -1,7 +1,6 @@
 import {
   Body,
   Button,
-  Container,
   Head,
   Html,
   Img,
@@ -33,70 +32,68 @@ export const PhotoSaveTheDate = ({
       <Head />
       <Preview>Save the Date — Yonatan &amp; Saron · September 4, 2026</Preview>
       <Body style={mainBody}>
-        <Container style={mainContainer}>
-          {/* ── Pre-header ── */}
-          <Text style={preHeader}>SAVE THE DATE</Text>
+        {/* ── Pre-header ── */}
+        <Text style={preHeader}>SAVE THE DATE</Text>
 
-          {/* ── Hero image ── */}
-          <Img
-            src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_4.jpeg"
-            alt="Yonatan &amp; Saron"
-            width="440"
-            style={heroImage}
-          />
+        {/* ── Hero image ── */}
+        <Img
+          src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_4.jpeg"
+          alt="Yonatan &amp; Saron"
+          width="440"
+          style={heroImage}
+        />
 
-          {/* ── Framing ── */}
-          <Hr style={hairline} />
+        {/* ── Framing ── */}
+        <Hr style={hairline} />
 
-          {/* ── Names ── */}
-          <Text style={names}>
-            Yonatan
-            <br />
-            <span style={ampersand}>&amp;</span>
-            <br />
-            Saron
+        {/* ── Stacked Names ── */}
+        <Text style={names}>
+          Yonatan
+          <br />
+          <span style={ampersand}>&amp;</span>
+          <br />
+          Saron
+        </Text>
+
+        {/* ── Date & Location ── */}
+        <Text style={dateLine}>FRIDAY · SEPTEMBER 4, 2026</Text>
+        <Text style={locationLine}>WRIGHTSVILLE, PENNSYLVANIA</Text>
+
+        {/* ── Framing ── */}
+        <Hr style={hairline} />
+
+        {/* ── Content Area ── */}
+        <Section style={contentSection}>
+          <Text style={salutation}>Dear {guestName},</Text>
+          <Text style={paragraph}>
+            With grateful hearts, we&apos;re excited to share that we&apos;ll be getting
+            married. God has been so faithful in bringing our paths together, and
+            we&apos;re looking forward to beginning this next chapter surrounded by
+            the people we love.
           </Text>
-
-          {/* ── Date & Location ── */}
-          <Text style={dateLine}>FRIDAY · SEPTEMBER 4, 2026</Text>
-          <Text style={locationLine}>WRIGHTSVILLE, PENNSYLVANIA</Text>
-
-          {/* ── Framing ── */}
-          <Hr style={hairline} />
-
-          {/* ── Content Area ── */}
-          <Section style={contentSection}>
-            <Text style={salutation}>Dear {guestName},</Text>
-            <Text style={paragraph}>
-              With grateful hearts, we&apos;re excited to share that we&apos;ll be getting
-              married. God has been so faithful in bringing our paths together, and
-              we&apos;re looking forward to beginning this next chapter surrounded by
-              the people we love.
-            </Text>
-            <Text style={paragraph}>
-              We hope you&apos;ll save the date and celebrate with
-              us as we step into all that God has prepared.
-            </Text>
-            <Text style={subNote}>(Formal invitation to follow)</Text>
-          </Section>
-
-          {/* ── CTA ── */}
-          <Section style={ctaSection}>
-            <Button style={ctaButton} href={magicLink}>
-              Visit Wedding Website
-            </Button>
-          </Section>
-
-          {/* ── Monogram ── */}
-          <Text style={monogram}>Y &amp; S</Text>
-
-          {/* ── Footer ── */}
-          <Text style={footer}>
-            Yonatan &amp; Saron · September 4, 2026
-            <br />
-            (Please do not reply to this email)
+          <Text style={paragraph}>
+            We hope you&apos;ll save the date and celebrate with
+            us as we step into all that God has prepared.
           </Text>
-        </Container>
+          <Text style={subNote}>(Formal invitation to follow)</Text>
+        </Section>
+
+        {/* ── CTA ── */}
+        <Section style={ctaSection}>
+          <Button style={ctaButton} href={magicLink}>
+            Visit Wedding Website
+          </Button>
+        </Section>
+
+        {/* ── Monogram ── */}
+        <Text style={monogram}>Y &amp; S</Text>
+
+        {/* ── Footer ── */}
+        <Text style={footer}>
+          Yonatan &amp; Saron · September 4, 2026
+          <br />
+          (Please do not reply to this email)
+        </Text>
       </Body>
     </Html>
   );
@@ -108,15 +105,11 @@ export default PhotoSaveTheDate;
 
 const mainBody: React.CSSProperties = {
   backgroundColor: '#0A0A0A',
-  margin: '0',
-  padding: '0',
-  fontFamily: 'Helvetica, Arial, sans-serif',
-};
-
-const mainContainer: React.CSSProperties = {
   margin: '0 auto',
   padding: '60px 20px',
   textAlign: 'center',
+  fontFamily: 'Helvetica, Arial, sans-serif',
+  maxWidth: '600px',
 };
 
 const preHeader: React.CSSProperties = {
@@ -148,7 +141,7 @@ const names: React.CSSProperties = {
   fontSize: '48px',
   lineHeight: '1.1',
   margin: '0 0 20px',
-  fontFamily: "Georgia, serif",
+  fontFamily: "'Playfair Display', Georgia, serif",
   fontWeight: '400',
 };
 

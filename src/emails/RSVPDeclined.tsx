@@ -1,9 +1,9 @@
 import {
   Body,
   Button,
-  Container,
   Head,
   Html,
+  Img,
   Preview,
   Section,
   Text,
@@ -17,6 +17,7 @@ interface RSVPDeclinedProps {
 
 const BASE_URL = 'https://theestifanos.com';
 const PWD = 'Matthew19:6';
+const PRAY_IMAGE_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG';
 
 export const RSVPDeclined = ({ 
   partyId
@@ -31,46 +32,55 @@ export const RSVPDeclined = ({
       <Preview>RSVP Received — Yonatan &amp; Saron</Preview>
 
       <Body style={mainBody}>
-        <Container style={mainContainer}>
-          {/* ── Header ── */}
-          <Text style={preHeader}>RSVP RECEIVED</Text>
+        {/* ── Header ── */}
+        <Text style={preHeader}>RSVP RECEIVED</Text>
 
-          {/* ── Framing ── */}
-          <Hr style={hairline} />
+        {/* ── Framing ── */}
+        <Hr style={hairline} />
 
-          {/* ── Title ── */}
-          <Text style={title}>We will miss you!</Text>
+        {/* ── Title ── */}
+        <Text style={title}>We will miss you!</Text>
 
-          {/* ── Main Message ── */}
-          <Text style={messageText}>
-            We are so sorry you won&apos;t be able to join us, but we completely 
-            understand! Your love, prayers, and well-wishes are all we could 
-            ever ask for as we prepare to step into this marriage covenant.
-          </Text>
+        {/* ── Main Message ── */}
+        <Text style={messageText}>
+          We are so sorry you won&apos;t be able to join us, but we completely 
+          understand! Your love, prayers, and well-wishes are all we could 
+          ever ask for as we prepare to step into this marriage covenant.
+        </Text>
 
-          {/* ── Escape Hatch ── */}
-          <Text style={escapeHatchText}>
-            If you selected &apos;Decline&apos; by mistake, or if your plans change, 
-            you can update your response at any time using the link below.
-          </Text>
+        {/* ── Escape Hatch ── */}
+        <Text style={escapeHatchText}>
+          If you selected &apos;Decline&apos; by mistake, or if your plans change, 
+          you can update your response at any time using the link below.
+        </Text>
 
-          {/* ── CTA ── */}
-          <Section style={ctaSection}>
-            <Button style={ctaButton} href={magicLink}>
-              UPDATE MY RSVP
-            </Button>
-          </Section>
+        {/* ── CTA ── */}
+        <Section style={ctaSection}>
+          <Button style={ctaButton} href={magicLink}>
+            UPDATE MY RSVP
+          </Button>
+        </Section>
 
-          {/* ── Monogram ── */}
-          <Text style={monogram}>Y &amp; S</Text>
+        {/* ── Hero Image (Corrected Tag) ── */}
+        <Img
+          src={PRAY_IMAGE_URL}
+          alt="Praying over Yonatan and Saron"
+          width="440"
+          style={heroImage}
+        />
+        <Text style={caption}>
+          Pastor Ashenafi praying over our upcoming marriage at our engagement celebration.
+        </Text>
 
-          {/* ── Footer ── */}
-          <Text style={footer}>
-            Yonatan &amp; Saron · September 4, 2026
-            <br />
-            (Please do not reply to this email)
-          </Text>
-        </Container>
+        {/* ── Monogram ── */}
+        <Text style={monogram}>Y &amp; S</Text>
+
+        {/* ── Footer ── */}
+        <Text style={footer}>
+          Yonatan &amp; Saron · September 4, 2026
+          <br />
+          (Please do not reply to this email)
+        </Text>
       </Body>
     </Html>
   );
@@ -82,16 +92,11 @@ export default RSVPDeclined;
 
 const mainBody: React.CSSProperties = {
   backgroundColor: '#0A0A0A',
-  margin: '0',
-  padding: '0',
-  fontFamily: 'Helvetica, Arial, sans-serif',
-};
-
-const mainContainer: React.CSSProperties = {
-  maxWidth: '520px',
   margin: '0 auto',
   padding: '60px 20px',
   textAlign: 'center',
+  fontFamily: "Georgia, 'Times New Roman', serif",
+  maxWidth: '600px',
 };
 
 const preHeader: React.CSSProperties = {
@@ -100,6 +105,7 @@ const preHeader: React.CSSProperties = {
   letterSpacing: '6px',
   textTransform: 'uppercase',
   margin: '0 0 10px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const hairline: React.CSSProperties = {
@@ -114,7 +120,7 @@ const title: React.CSSProperties = {
   fontSize: '32px',
   lineHeight: '1.2',
   margin: '0 0 40px',
-  fontFamily: 'Georgia, serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
   fontWeight: '400',
 };
 
@@ -124,6 +130,7 @@ const messageText: React.CSSProperties = {
   lineHeight: '1.6',
   margin: '0 auto 24px',
   maxWidth: '440px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const escapeHatchText: React.CSSProperties = {
@@ -133,7 +140,7 @@ const escapeHatchText: React.CSSProperties = {
   fontStyle: 'italic',
   margin: '0 auto 40px',
   maxWidth: '400px',
-  fontFamily: 'Georgia, serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const ctaSection: React.CSSProperties = {
@@ -150,11 +157,31 @@ const ctaButton: React.CSSProperties = {
   textDecoration: 'none',
   display: 'inline-block',
   borderRadius: '100px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
+};
+
+const heroImage: React.CSSProperties = {
+  width: '100%',
+  maxWidth: '440px',
+  height: 'auto',
+  display: 'block',
+  margin: '0 auto 12px',
+  borderRadius: '8px',
+};
+
+const caption: React.CSSProperties = {
+  fontFamily: "Georgia, 'Times New Roman', serif",
+  fontStyle: 'italic',
+  fontSize: '12px',
+  color: '#888888',
+  textAlign: 'center',
+  margin: '0 auto 40px',
+  maxWidth: '400px',
 };
 
 const monogram: React.CSSProperties = {
   color: '#D4A845',
-  fontFamily: 'Georgia, serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
   fontStyle: 'italic',
   fontSize: '24px',
   marginTop: '60px',
@@ -167,4 +194,5 @@ const footer: React.CSSProperties = {
   letterSpacing: '1px',
   textTransform: 'uppercase',
   margin: '0',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };

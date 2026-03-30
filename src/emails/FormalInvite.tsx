@@ -1,7 +1,6 @@
 import {
   Body,
   Button,
-  Container,
   Head,
   Hr,
   Html,
@@ -34,82 +33,78 @@ export const FormalInvite = ({
       <Preview>You are invited to the wedding of Yonatan & Saron — September 4, 2026</Preview>
 
       <Body style={mainBody}>
-        <Container style={mainContainer}>
+        {/* ── Pre-header ── */}
+        <Section style={centeredSection}>
+          <Text style={preHeader}>FORMAL INVITATION</Text>
+        </Section>
 
-          {/* ── Pre-header ── */}
-          <Section style={centeredSection}>
-            <Text style={preHeader}>FORMAL INVITATION</Text>
-          </Section>
+        {/* ── Framing ── */}
+        <Hr style={hairline} />
 
-          {/* ── Framing ── */}
-          <Hr style={hairline} />
+        {/* ── Stacked Names ── */}
+        <Section style={centeredSection}>
+          <Text style={names}>
+            Yonatan
+            <br />
+            <span style={ampersand}>&amp;</span>
+            <br />
+            Saron
+          </Text>
+        </Section>
 
-          {/* ── Stacked Names ── */}
-          <Section style={centeredSection}>
-            <Text style={names}>
-              Yonatan
-              <br />
-              <span style={ampersand}>&amp;</span>
-              <br />
-              Saron
-            </Text>
-          </Section>
+        {/* ── Date & Location ── */}
+        <Section style={centeredSection}>
+          <Text style={details}>
+            SEPTEMBER 4, 2026&nbsp;&nbsp;·&nbsp;&nbsp;WRIGHTSVILLE, PA
+          </Text>
+        </Section>
 
-          {/* ── Date & Location ── */}
-          <Section style={centeredSection}>
-            <Text style={details}>
-              SEPTEMBER 4, 2026&nbsp;&nbsp;·&nbsp;&nbsp;WRIGHTSVILLE, PA
-            </Text>
-          </Section>
+        {/* ── Framing ── */}
+        <Hr style={hairline} />
 
-          {/* ── Framing ── */}
-          <Hr style={hairline} />
+        {/* ── Body Copy ── */}
+        <Section style={bodySection}>
+          <Text style={salutation}>Dear {guestName},</Text>
+          <Text style={message}>
+            With joyful hearts and overwhelming gratitude for what the Lord has done,
+            we are so excited to invite you to celebrate our marriage.
+          </Text>
+          <Text style={message}>
+            Your love, prayers, and support have deeply shaped our story. From the
+            long-distance days to the quiet moments of faith that brought us here,
+            you have been our village. We truly cannot imagine stepping into this
+            next chapter without you by our side.
+          </Text>
+        </Section>
 
-          {/* ── Body Copy ── */}
-          <Section style={bodySection}>
-            <Text style={salutation}>Dear {guestName},</Text>
-            <Text style={message}>
-              With joyful hearts and overwhelming gratitude for what the Lord has done,
-              we are so excited to invite you to celebrate our marriage.
-            </Text>
-            <Text style={message}>
-              Your love, prayers, and support have deeply shaped our story. From the
-              long-distance days to the quiet moments of faith that brought us here,
-              you have been our village. We truly cannot imagine stepping into this
-              next chapter without you by our side.
-            </Text>
-          </Section>
+        {/* ── CTA ── */}
+        <Section style={ctaSection}>
+          <Button style={ctaButton} href={magicLink}>
+            RSVP &amp; Explore Our Story
+          </Button>
+        </Section>
 
-          {/* ── CTA ── */}
-          <Section style={ctaSection}>
-            <Button style={ctaButton} href={magicLink}>
-              RSVP &amp; Explore Our Story
-            </Button>
-          </Section>
+        {/* ── Hero Image ── */}
+        <Section style={matSection}>
+          <Img
+            src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_2.jpeg"
+            alt="Yonatan and Saron"
+            width="440"
+            style={photo}
+          />
+        </Section>
 
-          {/* ── Hero Image ── */}
-          <Section style={matSection}>
-            <Img
-              src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_2.jpeg"
-              alt="Yonatan and Saron"
-              width="440"
-              style={photo}
-            />
-          </Section>
+        {/* ── Monogram ── */}
+        <Text style={monogram}>Y &amp; S</Text>
 
-          {/* ── Monogram ── */}
-          <Text style={monogram}>Y &amp; S</Text>
-
-          {/* ── Footer ── */}
-          <Section style={footerSection}>
-            <Text style={footer}>
-              Yonatan &amp; Saron · September 4, 2026
-              <br />
-              (Please do not reply to this email)
-            </Text>
-          </Section>
-
-        </Container>
+        {/* ── Footer ── */}
+        <Section style={footerSection}>
+          <Text style={footer}>
+            Yonatan &amp; Saron · September 4, 2026
+            <br />
+            (Please do not reply to this email)
+          </Text>
+        </Section>
       </Body>
     </Html>
   );
@@ -121,15 +116,11 @@ export default FormalInvite;
 
 const mainBody: React.CSSProperties = {
   backgroundColor: '#0A0A0A',
-  margin: '0',
-  padding: '0',
-  fontFamily: 'Helvetica, Arial, sans-serif',
-};
-
-const mainContainer: React.CSSProperties = {
   margin: '0 auto',
   padding: '60px 20px',
   textAlign: 'center',
+  fontFamily: 'Helvetica, Arial, sans-serif',
+  maxWidth: '600px',
 };
 
 const centeredSection: React.CSSProperties = {
@@ -156,7 +147,7 @@ const names: React.CSSProperties = {
   fontSize: '48px',
   lineHeight: '1.1',
   margin: '0 0 20px',
-  fontFamily: "Georgia, serif",
+  fontFamily: "'Playfair Display', Georgia, serif",
   fontWeight: '400',
 };
 

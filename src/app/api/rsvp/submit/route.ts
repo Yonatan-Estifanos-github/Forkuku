@@ -35,8 +35,7 @@ export async function POST(req: Request) {
       ? [...existingPhones, phone]
       : existingPhones;
 
-    // Atomic update: only succeeds if has_responded is still false
-    // This prevents race conditions where two requests try to submit simultaneously
+    // Update party info. We allow multiple submissions now to support updates (e.g. from Decline to Accept).
     const { data: updatedParty, error: partyError } = await supabaseAdmin
       .from('parties')
       .update({
@@ -47,7 +46,6 @@ export async function POST(req: Request) {
         admin_notes: message ? `User Message: ${message}` : undefined
       })
       .eq('id', party_id)
-      .eq('has_responded', false)
       .select('id, party_name, emails, guests(email)')
       .maybeSingle();
 
@@ -56,9 +54,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Failed to update RSVP' }, { status: 500 });
     }
 
-    // If no rows updated, either party doesn't exist or already responded
+    // If no rows updated, party not found
     if (!updatedParty) {
-      return NextResponse.json({ error: 'RSVP has already been submitted or party not found' }, { status: 400 });
+      return NextResponse.json({ error: 'Party not found' }, { status: 404 });
     }
 
     // 2. Update Guests (all in a single transaction via RPC)
