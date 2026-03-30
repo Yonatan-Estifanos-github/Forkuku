@@ -111,18 +111,15 @@ export default SaveTheDate;
 // ── Styles ────────────────────────────────────────────────────────────────────
 
 const mainBody: React.CSSProperties = {
-  backgroundColor: '#000000',
+  backgroundColor: '#0A0A0A',
   margin: '0',
-  padding: '40px 0',
+  padding: '0',
   fontFamily: 'Helvetica, Arial, sans-serif',
 };
 
 const mainContainer: React.CSSProperties = {
-  maxWidth: '520px',
   margin: '0 auto',
-  backgroundColor: '#0A0A0A',
-  border: '1px solid #1A1A1A',
-  padding: '60px 40px',
+  padding: '60px 20px',
   textAlign: 'center',
 };
 
@@ -146,7 +143,7 @@ const names: React.CSSProperties = {
   fontSize: '48px',
   lineHeight: '1.1',
   margin: '0 0 20px',
-  fontFamily: "'Playfair Display', Georgia, serif",
+  fontFamily: "Georgia, serif",
   fontWeight: '400',
 };
 
@@ -174,8 +171,9 @@ const message: React.CSSProperties = {
   color: '#D1D5DB',
   fontSize: '14px',
   lineHeight: '1.6',
-  margin: '0 0 30px',
+  margin: '0 auto 30px',
   textAlign: 'center',
+  maxWidth: '440px',
 };
 
 const passwordText: React.CSSProperties = {

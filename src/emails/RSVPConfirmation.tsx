@@ -15,7 +15,7 @@ interface RSVPConfirmationProps {
   guests: { name: string; is_attending: boolean }[];
 }
 
-const PRAY_IMAGE_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG';
+const PRAY_IMAGE_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.png';
 
 export const RSVPConfirmation = ({ 
   guests = []
@@ -111,18 +111,16 @@ export default RSVPConfirmation;
 // ── Styles ────────────────────────────────────────────────────────────────────
 
 const mainBody: React.CSSProperties = {
-  backgroundColor: '#000000',
+  backgroundColor: '#0A0A0A',
   margin: '0',
-  padding: '40px 0',
+  padding: '0',
   fontFamily: 'Helvetica, Arial, sans-serif',
 };
 
 const mainContainer: React.CSSProperties = {
   maxWidth: '520px',
   margin: '0 auto',
-  backgroundColor: '#0A0A0A',
-  border: '1px solid #1A1A1A',
-  padding: '60px 40px',
+  padding: '60px 20px',
   textAlign: 'center',
 };
 
@@ -167,7 +165,7 @@ const guestStatusLabel: React.CSSProperties = {
 };
 
 const guestStatusLabelDeclined: React.CSSProperties = {
-  color: '#6B5D4F',
+  color: '#F2EFE9',
   fontSize: '9px',
   letterSpacing: '3px',
   textTransform: 'uppercase',
