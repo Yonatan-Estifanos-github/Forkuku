@@ -132,7 +132,8 @@ export const FormalInvite = ({
       </Container>
     </Body>
   </Html>
-);
+  );
+};
 
 export default FormalInvite;
 

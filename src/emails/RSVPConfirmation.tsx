@@ -15,7 +15,7 @@ interface RSVPConfirmationProps {
   guests: { name: string; is_attending: boolean }[];
 }
 
-const PRAY_IMAGE_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.png';
+const PRAY_IMAGE_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG';
 
 export const RSVPConfirmation = ({ 
   guests = []
@@ -67,7 +67,7 @@ export const RSVPConfirmation = ({
           <Hr style={rule} />
           <Text style={prayerTitle}>THE PRAYER REQUEST</Text>
           <Text style={prayerText}>
-            As we prepare for this covenant, we ask that you join us in prayer for our marriage and for this beautiful day.
+            More than anything, as we prepare to enter into this marriage covenant, our greatest request is your continued prayers. Please join us in praying over our relationship, our future together, and the beautiful day ahead.
           </Text>
 
           {/* ── Hero Image ── */}
@@ -77,6 +77,9 @@ export const RSVPConfirmation = ({
             width="536"
             style={heroImage}
           />
+          <Text style={caption}>
+            Pastor Ashenafi praying over our upcoming marriage at our engagement celebration.
+          </Text>
 
           {/* ── Footer ── */}
           <Text style={footer}>
@@ -213,8 +216,18 @@ const heroImage: React.CSSProperties = {
   maxWidth: '600px',
   height: 'auto',
   display: 'block',
-  margin: '0 auto 40px',
+  margin: '0 auto 12px',
   borderRadius: '8px',
+};
+
+const caption: React.CSSProperties = {
+  fontFamily: "'Playfair Display', Georgia, serif",
+  fontStyle: 'italic',
+  fontSize: '12px',
+  color: '#888888',
+  textAlign: 'center',
+  margin: '0 auto 40px',
+  maxWidth: '440px',
 };
 
 const footer: React.CSSProperties = {

@@ -109,7 +109,8 @@ export const SaveTheDate = ({
       </Container>
     </Body>
   </Html>
-);
+  );
+};
 
 export default SaveTheDate;
 
