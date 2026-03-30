@@ -1617,7 +1617,7 @@ export default function AdminDashboard() {
                   value={partyName}
                   onChange={(e) => setPartyName(e.target.value)}
                   placeholder="e.g., The Smith Family"
-                  className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
+                  className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
                 />
               </div>
 
@@ -1664,7 +1664,7 @@ export default function AdminDashboard() {
                           setPartyEmails(updated);
                         }}
                         placeholder="email@example.com"
-                        className="flex-1 px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
+                        className="flex-1 px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
                       />
                       {partyEmails.length > 1 && (
                         <button
@@ -1704,7 +1704,7 @@ export default function AdminDashboard() {
                           setPartyPhones(updated);
                         }}
                         placeholder="+1234567890"
-                        className="flex-1 px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
+                        className="flex-1 px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
                       />
                       {partyPhones.length > 1 && (
                         <button
@@ -1740,7 +1740,7 @@ export default function AdminDashboard() {
                           value={guest.name}
                           onChange={(e) => handleGuestChange(index, 'name', e.target.value)}
                           placeholder={`Guest ${index + 1} name *`}
-                          className="flex-1 px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white"
+                          className="flex-1 px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
                         />
                         {guests.length > 1 && (
                           <button
@@ -1757,7 +1757,7 @@ export default function AdminDashboard() {
                         value={guest.email || ''}
                         onChange={(e) => handleGuestChange(index, 'email', e.target.value)}
                         placeholder="Guest email (optional)"
-                        className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-sm"
+                        className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black text-sm"
                       />
                     </div>
                   ))}
@@ -1811,7 +1811,7 @@ export default function AdminDashboard() {
                   value={itemName}
                   onChange={(e) => setItemName(e.target.value)}
                   placeholder="e.g., KitchenAid Stand Mixer"
-                  className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
+                  className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
                 />
               </div>
 
@@ -1824,12 +1824,10 @@ export default function AdminDashboard() {
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                   <input
                     type="number"
-                    step="0.01"
-                    min="0"
                     value={itemPrice}
                     onChange={(e) => setItemPrice(e.target.value)}
                     placeholder="0.00"
-                    className="w-full pl-8 pr-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
+                    className="w-full pl-8 pr-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
                   />
                 </div>
               </div>
@@ -1843,7 +1841,7 @@ export default function AdminDashboard() {
                   <select
                     value={itemCategory}
                     onChange={(e) => setItemCategory(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white"
+                    className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
                   >
                     {CATEGORIES.map((cat) => (
                       <option key={cat} value={cat}>
@@ -1859,7 +1857,7 @@ export default function AdminDashboard() {
                   <select
                     value={itemStore}
                     onChange={(e) => setItemStore(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white"
+                    className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
                   >
                     {STORES.map((store) => (
                       <option key={store} value={store}>
@@ -1880,7 +1878,7 @@ export default function AdminDashboard() {
                   value={itemProductUrl}
                   onChange={(e) => setItemProductUrl(e.target.value)}
                   placeholder="https://amazon.com/product/..."
-                  className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
+                  className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
                 />
               </div>
 
@@ -1894,7 +1892,7 @@ export default function AdminDashboard() {
                   value={itemImageUrl}
                   onChange={(e) => setItemImageUrl(e.target.value)}
                   placeholder="https://images.unsplash.com/..."
-                  className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845]"
+                  className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
                 />
                 {itemImageUrl && (
                   <div className="mt-2 w-20 h-20 rounded overflow-hidden border border-gray-200">
