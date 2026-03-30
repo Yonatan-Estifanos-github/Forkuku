@@ -657,7 +657,10 @@ export default function AdminDashboard() {
           rows.forEach((row, index) => {
             const rowNumber = index + 2;
             const keys = Object.keys(row);
-            const nameKey = keys.find(k => k.toLowerCase().includes('party')) || 'Party Name';
+            // Priority: Explicit "Party Name", then any key with "party" but NOT "id"
+            const nameKey = keys.find(k => k.toLowerCase() === 'party name') || 
+                            keys.find(k => k.toLowerCase().includes('party') && !k.toLowerCase().includes('id')) ||
+                            'Party Name';
             const emailKey = keys.find(k => k.toLowerCase().includes('email')) || 'Email';
             const phoneKey = keys.find(k => k.toLowerCase().includes('phone')) || 'Phone';
             const guestKey = keys.find(k => k.toLowerCase().includes('guest')) || 'Guest Name';
