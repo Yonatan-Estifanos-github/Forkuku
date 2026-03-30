@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { Resend } from 'resend';
 import RSVPConfirmation from '@/emails/RSVPConfirmation';
+import RSVPDeclined from '@/emails/RSVPDeclined';
 
 export async function POST(req: Request) {
   try {
@@ -133,14 +134,16 @@ export async function POST(req: Request) {
       }
       if (updatedParty.guests) (updatedParty.guests as GuestWithEmail[]).forEach(g => g.email && g.email.includes('@') && allEmails.add(g.email.toLowerCase()));
 
+      const isAttending = (guests as GuestResponse[]).some(g => g.is_attending);
+
       for (const guestEmail of Array.from(allEmails)) {
         await resend.emails.send({
           from: 'Yonatan & Saron (No Reply) <hello@theestifanos.com>',
           to: guestEmail,
-          subject: 'RSVP Confirmed — Yonatan & Saron',
-          react: RSVPConfirmation({
-            guests: guests
-          })
+          subject: isAttending ? 'RSVP Confirmed — Yonatan & Saron' : 'RSVP Received — Yonatan & Saron',
+          react: isAttending 
+            ? RSVPConfirmation({ guests }) 
+            : RSVPDeclined({ partyId: party_id })
         }).catch(err => console.error(`Guest Confirmation Error (${guestEmail}):`, err));
       }
     }

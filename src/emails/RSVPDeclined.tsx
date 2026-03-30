@@ -3,7 +3,6 @@ import {
   Button,
   Container,
   Head,
-  Heading,
   Html,
   Preview,
   Section,
@@ -12,53 +11,53 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
-interface GenericTemplateProps {
-  heading: string;
-  body: string;
-  ctaText?: string;
-  ctaLink?: string;
+interface RSVPDeclinedProps {
   partyId?: string;
 }
 
 const BASE_URL = 'https://theestifanos.com';
 const PWD = 'Matthew19:6';
 
-export const GenericTemplate = ({
-  heading,
-  body,
-  ctaText = 'Visit Website',
-  ctaLink,
-  partyId,
-}: GenericTemplateProps) => {
-  const magicLink = ctaLink || (partyId 
+export const RSVPDeclined = ({ 
+  partyId
+}: RSVPDeclinedProps) => {
+  const magicLink = partyId 
     ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
-    : `${BASE_URL}/?pwd=${PWD}`);
+    : `${BASE_URL}/?pwd=${PWD}`;
 
   return (
     <Html lang="en">
       <Head />
-      <Preview>{heading}</Preview>
+      <Preview>RSVP Received — Yonatan &amp; Saron</Preview>
+
       <Body style={mainBody}>
         <Container style={mainContainer}>
-          {/* ── Pre-header ── */}
-          <Text style={preHeader}>ESTIFANOS WEDDING</Text>
+          {/* ── Header ── */}
+          <Text style={preHeader}>RSVP RECEIVED</Text>
 
           {/* ── Framing ── */}
           <Hr style={hairline} />
 
-          {/* ── Heading ── */}
-          <Heading style={title}>{heading}</Heading>
+          {/* ── Title ── */}
+          <Text style={title}>We will miss you!</Text>
 
-          {/* ── Body ── */}
-          <Text style={paragraph}>{body}</Text>
+          {/* ── Main Message ── */}
+          <Text style={messageText}>
+            We are so sorry you won&apos;t be able to join us, but we completely 
+            understand! Your love, prayers, and well-wishes are all we could 
+            ever ask for as we prepare to step into this marriage covenant.
+          </Text>
 
-          {/* ── Framing ── */}
-          <Hr style={hairline} />
+          {/* ── Escape Hatch ── */}
+          <Text style={escapeHatchText}>
+            If you selected &apos;Decline&apos; by mistake, or if your plans change, 
+            you can update your response at any time using the link below.
+          </Text>
 
           {/* ── CTA ── */}
           <Section style={ctaSection}>
             <Button style={ctaButton} href={magicLink}>
-              {ctaText}
+              UPDATE MY RSVP
             </Button>
           </Section>
 
@@ -77,7 +76,7 @@ export const GenericTemplate = ({
   );
 };
 
-export default GenericTemplate;
+export default RSVPDeclined;
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
@@ -89,6 +88,7 @@ const mainBody: React.CSSProperties = {
 };
 
 const mainContainer: React.CSSProperties = {
+  maxWidth: '520px',
   margin: '0 auto',
   padding: '60px 20px',
   textAlign: 'center',
@@ -113,22 +113,31 @@ const title: React.CSSProperties = {
   color: '#F9FAFB',
   fontSize: '32px',
   lineHeight: '1.2',
-  margin: '0 0 30px',
-  fontFamily: "Georgia, serif",
+  margin: '0 0 40px',
+  fontFamily: 'Georgia, serif',
   fontWeight: '400',
-  textAlign: 'center',
 };
 
-const paragraph: React.CSSProperties = {
+const messageText: React.CSSProperties = {
   color: '#D1D5DB',
-  fontSize: '15px',
-  lineHeight: '1.8',
-  margin: '0 0 30px',
-  textAlign: 'center',
+  fontSize: '14px',
+  lineHeight: '1.6',
+  margin: '0 auto 24px',
+  maxWidth: '440px',
+};
+
+const escapeHatchText: React.CSSProperties = {
+  color: '#9C8C78',
+  fontSize: '13px',
+  lineHeight: '1.6',
+  fontStyle: 'italic',
+  margin: '0 auto 40px',
+  maxWidth: '400px',
+  fontFamily: 'Georgia, serif',
 };
 
 const ctaSection: React.CSSProperties = {
-  margin: '20px 0 60px',
+  margin: '0 0 60px',
 };
 
 const ctaButton: React.CSSProperties = {
