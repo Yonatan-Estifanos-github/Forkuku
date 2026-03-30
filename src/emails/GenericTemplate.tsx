@@ -1,7 +1,6 @@
 import {
   Body,
   Button,
-  Container,
   Head,
   Heading,
   Html,
@@ -39,39 +38,37 @@ export const GenericTemplate = ({
       <Head />
       <Preview>{heading}</Preview>
       <Body style={mainBody}>
-        <Container style={mainContainer}>
-          {/* ── Pre-header ── */}
-          <Text style={preHeader}>ESTIFANOS WEDDING</Text>
+        {/* ── Pre-header ── */}
+        <Text style={preHeader}>ESTIFANOS WEDDING</Text>
 
-          {/* ── Framing ── */}
-          <Hr style={hairline} />
+        {/* ── Framing ── */}
+        <Hr style={hairline} />
 
-          {/* ── Heading ── */}
-          <Heading style={title}>{heading}</Heading>
+        {/* ── Heading ── */}
+        <Heading style={title}>{heading}</Heading>
 
-          {/* ── Body ── */}
-          <Text style={paragraph}>{body}</Text>
+        {/* ── Body ── */}
+        <Text style={paragraph}>{body}</Text>
 
-          {/* ── Framing ── */}
-          <Hr style={hairline} />
+        {/* ── Framing ── */}
+        <Hr style={hairline} />
 
-          {/* ── CTA ── */}
-          <Section style={ctaSection}>
-            <Button style={ctaButton} href={magicLink}>
-              {ctaText}
-            </Button>
-          </Section>
+        {/* ── CTA ── */}
+        <Section style={ctaSection}>
+          <Button style={ctaButton} href={magicLink}>
+            {ctaText}
+          </Button>
+        </Section>
 
-          {/* ── Monogram ── */}
-          <Text style={monogram}>Y &amp; S</Text>
+        {/* ── Monogram ── */}
+        <Text style={monogram}>Y &amp; S</Text>
 
-          {/* ── Footer ── */}
-          <Text style={footer}>
-            Yonatan &amp; Saron · September 4, 2026
-            <br />
-            (Please do not reply to this email)
-          </Text>
-        </Container>
+        {/* ── Footer ── */}
+        <Text style={footer}>
+          Yonatan &amp; Saron · September 4, 2026
+          <br />
+          (Please do not reply to this email)
+        </Text>
       </Body>
     </Html>
   );
@@ -83,15 +80,11 @@ export default GenericTemplate;
 
 const mainBody: React.CSSProperties = {
   backgroundColor: '#0A0A0A',
-  margin: '0',
-  padding: '0',
-  fontFamily: 'Helvetica, Arial, sans-serif',
-};
-
-const mainContainer: React.CSSProperties = {
   margin: '0 auto',
   padding: '60px 20px',
   textAlign: 'center',
+  fontFamily: 'Helvetica, Arial, sans-serif',
+  maxWidth: '600px',
 };
 
 const preHeader: React.CSSProperties = {
@@ -123,8 +116,9 @@ const paragraph: React.CSSProperties = {
   color: '#D1D5DB',
   fontSize: '15px',
   lineHeight: '1.8',
-  margin: '0 0 30px',
+  margin: '0 auto 30px',
   textAlign: 'center',
+  maxWidth: '440px',
 };
 
 const ctaSection: React.CSSProperties = {

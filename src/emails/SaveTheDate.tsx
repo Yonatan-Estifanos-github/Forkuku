@@ -1,6 +1,5 @@
 import {
   Body,
-  Container,
   Head,
   Html,
   Img,
@@ -35,77 +34,75 @@ export const SaveTheDate = ({
       <Preview>Save the Date — Yonatan &amp; Saron · September 4, 2026</Preview>
 
       <Body style={mainBody}>
-        <Container style={mainContainer}>
-          {/* ── Pre-header ── */}
-          <Text style={preHeader}>SAVE THE DATE</Text>
+        {/* ── Pre-header ── */}
+        <Text style={preHeader}>SAVE THE DATE</Text>
 
-          {/* ── Framing ── */}
-          <Hr style={hairline} />
+        {/* ── Framing ── */}
+        <Hr style={hairline} />
 
-          {/* ── Stacked Names ── */}
-          <Text style={names}>
-            Yonatan
-            <br />
-            <span style={ampersand}>&amp;</span>
-            <br />
-            Saron
-          </Text>
+        {/* ── Stacked Names ── */}
+        <Text style={names}>
+          Yonatan
+          <br />
+          <span style={ampersand}>&amp;</span>
+          <br />
+          Saron
+        </Text>
 
-          {/* ── Date Line (Non-wrapping) ── */}
-          <Text style={dateLine}>
-            SEPTEMBER 4, 2026
-          </Text>
+        {/* ── Date Line ── */}
+        <Text style={dateLine}>
+          SEPTEMBER 4, 2026
+        </Text>
 
-          {/* ── Location Line (Non-wrapping) ── */}
-          <Text style={locationLine}>
-            WRIGHTSVILLE, PENNSYLVANIA
-          </Text>
+        {/* ── Location Line ── */}
+        <Text style={locationLine}>
+          WRIGHTSVILLE, PENNSYLVANIA
+        </Text>
 
-          {/* ── Framing ── */}
-          <Hr style={hairline} />
+        {/* ── Framing ── */}
+        <Hr style={hairline} />
 
-          {/* ── Salutation ── */}
-          <Text style={salutation}>{guestName},</Text>
+        {/* ── Salutation ── */}
+        <Text style={salutation}>{guestName},</Text>
 
-          {/* ── Main Message ── */}
-          <Text style={message}>
-            We are overjoyed to invite you to celebrate the beginning of our forever. 
-            God has been so faithful in bringing us together, and we couldn&apos;t imagine 
-            stepping into this marriage covenant without our favorite people in the room. 
-            To receive your formal invitation with the exact location and weekend details, 
-            please register your attendance on our website by May 1st.
-          </Text>
+        {/* ── Main Message ── */}
+        <Text style={message}>
+          We are overjoyed to invite you to celebrate the beginning of our forever. 
+          God has been so faithful in bringing us together, and we couldn&apos;t imagine 
+          stepping into this marriage covenant without our favorite people in the room. 
+          To receive your formal invitation with the exact location and weekend details, 
+          please register your attendance on our website by May 1st.
+        </Text>
 
-          {/* ── Password Notice ── */}
-          <Text style={passwordText}>
-            Website Password: Matthew19:6
-          </Text>
+        {/* ── Password Notice ── */}
+        <Text style={passwordText}>
+          Website Password: Matthew19:6
+        </Text>
 
-          {/* ── CTA ── */}
-          <Section style={ctaSection}>
-            <Link href={magicLink} style={ctaButton}>
-              RSVP NOW
-            </Link>
-          </Section>
+        {/* ── CTA ── */}
+        <Section style={ctaSection}>
+          <Link href={magicLink} style={ctaButton}>
+            RSVP NOW
+          </Link>
+        </Section>
 
-          {/* ── Hero Photo ── */}
-          <Img
-            src={PHOTO_URL}
-            alt="Yonatan and Saron"
-            width="440"
-            style={photo}
-          />
+        {/* ── Hero Photo ── */}
+        <Img
+          src={PHOTO_URL}
+          alt="Yonatan and Saron"
+          width="440"
+          style={photo}
+        />
 
-          {/* ── Monogram ── */}
-          <Text style={monogram}>Y &amp; S</Text>
+        {/* ── Monogram ── */}
+        <Text style={monogram}>Y &amp; S</Text>
 
-          {/* ── Legal/Footer ── */}
-          <Text style={footer}>
-            Yonatan &amp; Saron · September 4, 2026
-            <br />
-            (Please do not reply to this email)
-          </Text>
-        </Container>
+        {/* ── Legal/Footer ── */}
+        <Text style={footer}>
+          Yonatan &amp; Saron · September 4, 2026
+          <br />
+          (Please do not reply to this email)
+        </Text>
       </Body>
     </Html>
   );
@@ -117,16 +114,11 @@ export default SaveTheDate;
 
 const mainBody: React.CSSProperties = {
   backgroundColor: '#FCFBF8',
-  margin: '0',
-  padding: '0',
-  fontFamily: "Georgia, 'Times New Roman', serif",
-};
-
-const mainContainer: React.CSSProperties = {
   margin: '0 auto',
   padding: '60px 20px',
   textAlign: 'center',
-  backgroundColor: '#FCFBF8',
+  fontFamily: "Georgia, 'Times New Roman', serif",
+  maxWidth: '600px', // Soft constraint for readability, but not a nested table container
 };
 
 const preHeader: React.CSSProperties = {
@@ -140,7 +132,7 @@ const preHeader: React.CSSProperties = {
 
 const hairline: React.CSSProperties = {
   border: 'none',
-  borderTop: '1px solid #D6D4D1', // Simulated 20% opacity of #423E37 on #FCFBF8
+  borderTop: '1px solid #D6D4D1',
   margin: '30px auto',
   width: '48px',
 };
