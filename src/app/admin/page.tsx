@@ -651,19 +651,30 @@ export default function AdminDashboard() {
             return;
           }
 
-          const partyMap = new Map<string, { emails: string[]; phones: string[]; guests: { name: string; email: string | null }[]; family_side: 'bride' | 'groom' | null }>();
+          const partyMap = new Map<string, { party_name: string; emails: string[]; phones: string[]; guests: { name: string; email: string | null }[]; family_side: 'bride' | 'groom' | null }>();
           const skippedRows: { row: number; guest: string; reason: string }[] = [];
 
           rows.forEach((row, index) => {
             const rowNumber = index + 2;
             const keys = Object.keys(row);
-            const nameKey = keys.find(k => k.toLowerCase().includes('party')) || 'Party Name';
+            
+            // The unique grouping key from CSV (Party ID)
+            const idKey = keys.find(k => k.toLowerCase() === 'party id') || 
+                          keys.find(k => k.toLowerCase().includes('party') && k.toLowerCase().includes('id')) ||
+                          'Party ID';
+            
+            // The display name (Party Name)
+            const nameKey = keys.find(k => k.toLowerCase() === 'party name') || 
+                            keys.find(k => k.toLowerCase().includes('party') && !k.toLowerCase().includes('id')) ||
+                            'Party Name';
+
             const emailKey = keys.find(k => k.toLowerCase().includes('email')) || 'Email';
             const phoneKey = keys.find(k => k.toLowerCase().includes('phone')) || 'Phone';
             const guestKey = keys.find(k => k.toLowerCase().includes('guest')) || 'Guest Name';
             const sideKey = keys.find(k => k.toLowerCase().includes('family') || k.toLowerCase().includes('side')) || 'Family Side';
 
             const rowData = row as unknown as Record<string, string>;
+            const csvPartyId = rowData[idKey]?.trim();
             const csvPartyName = rowData[nameKey]?.trim();
             const guestName = rowData[guestKey]?.trim();
             const rawEmail = rowData[emailKey]?.trim();
@@ -672,17 +683,19 @@ export default function AdminDashboard() {
             const familySide: 'bride' | 'groom' | null =
               rawSide === 'bride' ? 'bride' : rawSide === 'groom' ? 'groom' : null;
 
-            if (!csvPartyName || !guestName) {
-              skippedRows.push({ row: rowNumber, guest: guestName || 'Unknown', reason: 'Missing Party or Guest Name' });
+            if (!csvPartyId || !guestName) {
+              skippedRows.push({ row: rowNumber, guest: guestName || 'Unknown', reason: 'Missing Party ID or Guest Name' });
               return;
             }
 
+            // Email Sanitization
             const sanitizeEmail = (e: string | undefined) => {
               if (!e || e === '---' || !e.includes('@')) return null;
               return e.toLowerCase();
             };
             const guestEmail = sanitizeEmail(rawEmail);
 
+            // Phone Sanitization
             const formatPhoneNumber = (p: string | undefined) => {
               if (!p || p === '---') return null;
               const digits = p.replace(/\D/g, '');
@@ -693,40 +706,50 @@ export default function AdminDashboard() {
             };
             const sanitizedPhone = formatPhoneNumber(rawPhone);
 
-            if (!partyMap.has(csvPartyName)) {
-              partyMap.set(csvPartyName, { emails: [], phones: [], guests: [], family_side: familySide });
+            if (!partyMap.has(csvPartyId)) {
+              partyMap.set(csvPartyId, { 
+                party_name: csvPartyName || csvPartyId,
+                emails: [], 
+                phones: [], 
+                guests: [], 
+                family_side: familySide 
+              });
             }
 
-            const entry = partyMap.get(csvPartyName)!;
+            const entry = partyMap.get(csvPartyId)!;
             if (guestEmail && !entry.emails.includes(guestEmail)) entry.emails.push(guestEmail);
             if (sanitizedPhone && !entry.phones.includes(sanitizedPhone)) entry.phones.push(sanitizedPhone);
             if (!entry.family_side && familySide) entry.family_side = familySide;
+            
             entry.guests.push({ name: guestName, email: guestEmail });
           });
 
           let upsertedParties = 0;
           let newGuestsInserted = 0;
 
-          for (const [csvPartyName, partyInfo] of Array.from(partyMap.entries())) {
+          for (const [csvPartyId, partyInfo] of Array.from(partyMap.entries())) {
+            // Upsert Party based on external_id (the CSV's Party ID)
             const { data: partyData, error: partyError } = await supabase
               .from('parties')
               .upsert({
-                party_name: csvPartyName,
+                external_id: csvPartyId,
+                party_name: partyInfo.party_name,
                 emails: partyInfo.emails,
                 phones: partyInfo.phones,
                 family_side: partyInfo.family_side,
                 status: 'pending',
-              }, { onConflict: 'party_name' })
+              }, { onConflict: 'external_id' })
               .select('id')
               .single();
 
             if (partyError || !partyData) {
-              console.error(`Failed to upsert party ${csvPartyName}:`, partyError);
+              console.error(`Failed to upsert party ID ${csvPartyId}:`, partyError);
               continue;
             }
 
             upsertedParties++;
 
+            // Fetch existing guests for this party to prevent duplicates
             const { data: existingGuests } = await supabase
               .from('guests')
               .select('name')
@@ -746,7 +769,7 @@ export default function AdminDashboard() {
             if (guestInserts.length > 0) {
               const { error: guestsError } = await supabase.from('guests').insert(guestInserts);
               if (guestsError) {
-                console.error(`Failed to insert guests for ${csvPartyName}:`, guestsError);
+                console.error(`Failed to insert guests for party ${csvPartyId}:`, guestsError);
               } else {
                 newGuestsInserted += guestInserts.length;
               }
