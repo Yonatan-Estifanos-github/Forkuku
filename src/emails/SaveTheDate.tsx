@@ -99,6 +99,8 @@ export const SaveTheDate = ({
           {/* ── Footer ── */}
           <Text style={footer}>
             Yonatan &amp; Saron · September 4, 2026 · Wrightsville, PA
+            <br />
+            (Please do not reply to this email)
           </Text>
 
         </Container>

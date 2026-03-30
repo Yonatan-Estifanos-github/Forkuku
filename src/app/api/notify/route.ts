@@ -110,7 +110,7 @@ export async function POST(req: Request) {
       }
 
       const { error: emailError } = await resend.emails.send({
-        from: 'Yonatan & Saron <wedding@theestifanos.com>',
+        from: 'Yonatan & Saron (No Reply) <wedding@theestifanos.com>',
         to: emails,
         subject,
         html,

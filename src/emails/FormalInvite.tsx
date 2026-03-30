@@ -121,6 +121,8 @@ export const FormalInvite = ({
           <Section style={footerSection}>
             <Text style={footerText}>
               For travel details, registries, and FAQs, please visit our website.
+              <br />
+              (Please do not reply to this email)
             </Text>
             <Text style={footerLinkText}>
               <a href={magicLink} style={footerAnchor}>

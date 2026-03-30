@@ -84,6 +84,8 @@ export const RSVPConfirmation = ({
           {/* ── Footer ── */}
           <Text style={footer}>
             Yonatan &amp; Saron · September 4, 2026
+            <br />
+            (Please do not reply to this email)
           </Text>
 
         </Container>
