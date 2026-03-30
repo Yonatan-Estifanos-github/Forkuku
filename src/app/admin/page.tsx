@@ -155,9 +155,29 @@ export default function AdminDashboard() {
 
   const [parties, setParties] = useState<Party[]>([]);
   const [loading, setLoading] = useState(true);
+  const [adminSearchQuery, setAdminSearchQuery] = useState('');
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [expandedPartyId, setExpandedPartyId] = useState<string | null>(null);
+  
+  // Memoized filtered parties list
+  const filteredParties = parties.filter(p => {
+    // 1. Family Side Filter
+    const sideMatch = familySideFilter === 'all' ? true :
+                     familySideFilter === 'unassigned' ? !p.family_side :
+                     p.family_side === familySideFilter;
+    
+    if (!sideMatch) return false;
+
+    // 2. Search Query Filter (Party name or Guest names)
+    if (!adminSearchQuery.trim()) return true;
+    
+    const query = adminSearchQuery.toLowerCase().trim();
+    const partyNameMatch = p.party_name.toLowerCase().includes(query);
+    const guestNamesMatch = p.guests.some(g => g.name?.toLowerCase().includes(query));
+    
+    return partyNameMatch || guestNamesMatch;
+  });
   const [selectedCampaign, setSelectedCampaign] = useState<CampaignId>('save-the-date');
   const [stats, setStats] = useState<DashboardStats>({
     totalParties: 0,
@@ -1132,6 +1152,19 @@ export default function AdminDashboard() {
               >
                 ↓ Sample CSV
               </button>
+
+              <div className="flex-1 min-w-[200px]">
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+                  <input
+                    type="text"
+                    value={adminSearchQuery}
+                    onChange={(e) => setAdminSearchQuery(e.target.value)}
+                    placeholder="Search guests or parties..."
+                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] text-sm bg-white text-black"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Family Side Filter */}
@@ -1179,11 +1212,7 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 text-sm">
-                    {parties.filter(p =>
-                      familySideFilter === 'all' ? true :
-                      familySideFilter === 'unassigned' ? !p.family_side :
-                      p.family_side === familySideFilter
-                    ).map((party) => {
+                    {filteredParties.map((party) => {
                       const emailSent = getChannelStatus(party, 'email');
                       const smsSent = getChannelStatus(party, 'sms');
                       const hasEmail = party.emails?.length > 0;
@@ -1590,10 +1619,9 @@ export default function AdminDashboard() {
         )}
       </div>
 
-      {/* Add/Edit Party Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[95vh] flex flex-col my-auto">
             <div className="p-6 border-b border-gray-100 flex-shrink-0 flex items-center justify-between">
               <h2 className="font-serif text-2xl text-[#1B3B28]">
                 {editingParty ? 'Edit Party' : 'Add New Party'}

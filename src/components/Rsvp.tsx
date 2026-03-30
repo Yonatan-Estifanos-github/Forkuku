@@ -272,13 +272,20 @@ function SelectScreen({
             <button
               key={party.id}
               onClick={() => onSelect(party)}
-              className="text-left w-full px-2 py-4 border-b border-white/10 hover:border-[#D4A845]/40 transition-all group"
+              className="text-left w-full px-6 py-6 border border-white/10 hover:border-[#D4A845]/40 bg-white/5 rounded-xl transition-all group"
             >
-              <p className="font-serif text-lg text-stone-200 group-hover:text-[#D4A845] transition-colors mb-1">
-                {party.party_name}
-              </p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="font-serif text-xl text-stone-200 group-hover:text-[#D4A845] transition-colors">
+                  {party.party_name}
+                </p>
+                <span className="text-[10px] tracking-widest text-[#D4A845] font-sans uppercase opacity-0 group-hover:opacity-100 transition-opacity">
+                  This is me &rarr;
+                </span>
+              </div>
               {guestNames && (
-                <p className="text-sm text-stone-500 font-serif italic">{guestNames}</p>
+                <p className="text-sm text-stone-500 font-serif italic leading-relaxed">
+                  Includes: {guestNames}
+                </p>
               )}
             </button>
           );
