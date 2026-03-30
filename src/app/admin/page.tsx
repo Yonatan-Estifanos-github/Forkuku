@@ -1582,8 +1582,8 @@ export default function AdminDashboard() {
 
             {/* Scrollable Content */}
             <div 
-              className="p-6 space-y-6 overflow-y-auto flex-1"
-              style={{ WebkitOverflowScrolling: 'touch' }}
+              className="p-6 space-y-6 overflow-y-auto flex-1 min-h-0"
+              style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}
             >
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
@@ -1778,7 +1778,10 @@ export default function AdminDashboard() {
               </h2>
             </div>
 
-            <div className="p-6 space-y-4 overflow-y-auto flex-1">
+            <div 
+              className="p-6 space-y-4 overflow-y-auto flex-1 min-h-0"
+              style={{ overscrollBehavior: 'contain' }}
+            >
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
                   Item Name *
