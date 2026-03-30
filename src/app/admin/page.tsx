@@ -15,7 +15,33 @@ interface Guest {
   dietary_notes?: string;
 }
 
-// ... rest of types ...
+interface CampaignLog {
+  campaign_id: string;
+  channel: string;
+  status: string;
+}
+
+interface Party {
+  id: string;
+  party_name: string;
+  status: string;
+  emails: string[];
+  phones: string[];
+  admin_notes?: string;
+  updated_at?: string;
+  family_side?: 'bride' | 'groom' | null;
+  has_responded: boolean;
+  guests: Guest[];
+  campaign_logs: CampaignLog[];
+}
+
+interface DashboardStats {
+  totalParties: number;
+  totalGuests: number;
+  confirmedAttending: number;
+  confirmedRSVPs: number;
+  campaignSentCount: number;
+}
 
 // Extended guest type for editing (includes optional id for new guests)
 interface EditableGuest {
