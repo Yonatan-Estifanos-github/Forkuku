@@ -8,6 +8,7 @@ import {
   Preview,
   Section,
   Text,
+  Hr,
 } from '@react-email/components';
 import * as React from 'react';
 
@@ -28,53 +29,73 @@ export const PhotoSaveTheDate = ({
     : `${BASE_URL}/?pwd=${PWD}`;
 
   return (
-    <Html>
+    <Html lang="en">
       <Head />
-      <Preview>Save the Date — Yonatan & Saron · September 4, 2026</Preview>
-      <Body style={main}>
-        <Container style={container}>
-          {/* Hero image — full-width, responsive */}
+      <Preview>Save the Date — Yonatan &amp; Saron · September 4, 2026</Preview>
+      <Body style={mainBody}>
+        <Container style={mainContainer}>
+          {/* ── Pre-header ── */}
+          <Text style={preHeader}>SAVE THE DATE</Text>
+
+          {/* ── Hero image ── */}
           <Img
             src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_4.jpeg"
-            alt="Yonatan & Saron"
-            width="600"
+            alt="Yonatan &amp; Saron"
+            width="440"
             style={heroImage}
           />
 
-          {/* Content area with padding */}
-          <Section style={content}>
-            <Text style={headline}>SAVE THE DATE</Text>
+          {/* ── Framing ── */}
+          <Hr style={hairline} />
 
-            <Text style={names}>Yonatan & Saron</Text>
+          {/* ── Names ── */}
+          <Text style={names}>
+            Yonatan
+            <br />
+            <span style={ampersand}>&amp;</span>
+            <br />
+            Saron
+          </Text>
 
-            <Text style={date}>Friday · September 4, 2026</Text>
+          {/* ── Date & Location ── */}
+          <Text style={dateLine}>FRIDAY · SEPTEMBER 4, 2026</Text>
+          <Text style={locationLine}>WRIGHTSVILLE, PENNSYLVANIA</Text>
 
-            {/* Gold divider */}
-            <div style={divider} />
+          {/* ── Framing ── */}
+          <Hr style={hairline} />
 
-            <Text style={paragraph}>Dear {guestName},</Text>
+          {/* ── Content Area ── */}
+          <Section style={contentSection}>
+            <Text style={salutation}>Dear {guestName},</Text>
             <Text style={paragraph}>
               With grateful hearts, we&apos;re excited to share that we&apos;ll be getting
               married. God has been so faithful in bringing our paths together, and
               we&apos;re looking forward to beginning this next chapter surrounded by
-              the people we love. We hope you&apos;ll save the date and celebrate with
+              the people we love.
+            </Text>
+            <Text style={paragraph}>
+              We hope you&apos;ll save the date and celebrate with
               us as we step into all that God has prepared.
             </Text>
-
-            <Text style={locationText}>
-              Wrightsville, Pennsylvania
-              <br />
-              <span style={subNote}>(Formal invitation to follow)</span>
-            </Text>
-
-            <Section style={btnContainer}>
-              <Button style={button} href={magicLink}>
-                Visit Wedding Website
-              </Button>
-            </Section>
-
-            <Text style={footer}>The Estifanos Family</Text>
+            <Text style={subNote}>(Formal invitation to follow)</Text>
           </Section>
+
+          {/* ── CTA ── */}
+          <Section style={ctaSection}>
+            <Button style={ctaButton} href={magicLink}>
+              Visit Wedding Website
+            </Button>
+          </Section>
+
+          {/* ── Monogram ── */}
+          <Text style={monogram}>Y &amp; S</Text>
+
+          {/* ── Footer ── */}
+          <Text style={footer}>
+            Yonatan &amp; Saron · September 4, 2026
+            <br />
+            (Please do not reply to this email)
+          </Text>
         </Container>
       </Body>
     </Html>
@@ -83,118 +104,134 @@ export const PhotoSaveTheDate = ({
 
 export default PhotoSaveTheDate;
 
-// ---------------------------------------------------------------------------
-// Styles
-// ---------------------------------------------------------------------------
+// ── Styles ────────────────────────────────────────────────────────────────────
 
-const main: React.CSSProperties = {
-  backgroundColor: '#0A0908',
-  fontFamily: '"Times New Roman", Times, serif',
+const mainBody: React.CSSProperties = {
+  backgroundColor: '#000000',
   margin: '0',
-  padding: '0',
+  padding: '40px 0',
+  fontFamily: 'Helvetica, Arial, sans-serif',
 };
 
-const container: React.CSSProperties = {
+const mainContainer: React.CSSProperties = {
+  maxWidth: '520px',
   margin: '0 auto',
-  maxWidth: '600px',
-  backgroundColor: '#0A0908',
+  backgroundColor: '#0A0A0A',
+  border: '1px solid #1A1A1A',
+  padding: '60px 40px',
+  textAlign: 'center',
+};
+
+const preHeader: React.CSSProperties = {
+  color: '#D4A845',
+  fontSize: '10px',
+  letterSpacing: '6px',
+  textTransform: 'uppercase',
+  margin: '0 0 30px',
 };
 
 const heroImage: React.CSSProperties = {
   width: '100%',
+  maxWidth: '440px',
   height: 'auto',
   display: 'block',
+  margin: '0 auto',
+  borderRadius: '2px',
 };
 
-const content: React.CSSProperties = {
-  padding: '48px 32px',
-  textAlign: 'center',
-};
-
-const headline: React.CSSProperties = {
-  color: '#D4A845',
-  fontSize: '11px',
-  letterSpacing: '6px',
-  fontWeight: 'bold',
-  textTransform: 'uppercase',
-  margin: '0 0 24px',
+const hairline: React.CSSProperties = {
+  border: 'none',
+  borderTop: '1px solid #332911',
+  margin: '30px auto',
+  width: '40px',
 };
 
 const names: React.CSSProperties = {
-  color: '#FFFFFF',
-  fontSize: '42px',
-  fontStyle: 'italic',
-  fontWeight: 'normal',
-  margin: '0 0 16px',
-  lineHeight: '1.2',
-  fontFamily: 'Georgia, serif',
+  color: '#F9FAFB',
+  fontSize: '48px',
+  lineHeight: '1.1',
+  margin: '0 0 20px',
+  fontFamily: "'Playfair Display', Georgia, serif",
+  fontWeight: '400',
 };
 
-const date: React.CSSProperties = {
+const ampersand: React.CSSProperties = {
   color: '#D4A845',
-  fontSize: '18px',
+  fontSize: '0.7em',
+};
+
+const dateLine: React.CSSProperties = {
+  color: '#D4A845',
+  fontSize: '16px',
   letterSpacing: '4px',
   textTransform: 'uppercase',
-  margin: '0 0 28px',
+  margin: '0 0 8px',
+  fontFamily: 'Helvetica, Arial, sans-serif',
 };
 
-const divider: React.CSSProperties = {
-  width: '60px',
-  height: '1px',
-  backgroundColor: '#D4A845',
-  margin: '0 auto 28px',
-  opacity: 0.3,
+const locationLine: React.CSSProperties = {
+  color: '#A1A1AA',
+  fontSize: '11px',
+  letterSpacing: '3px',
+  textTransform: 'uppercase',
+  margin: '0 0 10px',
+};
+
+const contentSection: React.CSSProperties = {
+  padding: '20px 0',
+};
+
+const salutation: React.CSSProperties = {
+  color: '#F9FAFB',
+  fontSize: '16px',
+  margin: '0 0 16px',
+  fontFamily: "Georgia, serif",
 };
 
 const paragraph: React.CSSProperties = {
-  color: '#F2EFE9',
-  fontSize: '16px',
-  lineHeight: '1.8',
-  margin: '0 0 24px',
-  textAlign: 'center',
-};
-
-const locationText: React.CSSProperties = {
-  color: '#FFFFFF',
+  color: '#D1D5DB',
   fontSize: '14px',
-  textTransform: 'uppercase',
-  letterSpacing: '3px',
-  margin: '32px 0 0',
-  lineHeight: '1.8',
+  lineHeight: '1.6',
+  margin: '0 auto 20px',
+  maxWidth: '440px',
 };
 
 const subNote: React.CSSProperties = {
   fontSize: '12px',
   letterSpacing: '1px',
-  textTransform: 'none',
-  color: '#9C8C78',
+  color: '#6B5D4F',
   fontStyle: 'italic',
 };
 
-const btnContainer: React.CSSProperties = {
-  textAlign: 'center',
-  marginTop: '40px',
-  marginBottom: '40px',
+const ctaSection: React.CSSProperties = {
+  margin: '20px 0 60px',
 };
 
-const button: React.CSSProperties = {
-  backgroundColor: 'transparent',
-  color: '#D4A845',
-  fontSize: '11px',
-  letterSpacing: '4px',
-  textTransform: 'uppercase',
-  textDecoration: 'none',
-  textAlign: 'center',
-  display: 'inline-block',
-  padding: '14px 40px',
+const ctaButton: React.CSSProperties = {
   border: '1px solid #D4A845',
+  color: '#D4A845',
+  padding: '14px 40px',
+  textTransform: 'uppercase',
+  letterSpacing: '0.2em',
+  fontSize: '10px',
+  textDecoration: 'none',
+  display: 'inline-block',
   borderRadius: '100px',
 };
 
+const monogram: React.CSSProperties = {
+  color: '#D4A845',
+  fontFamily: 'Georgia, serif',
+  fontStyle: 'italic',
+  fontSize: '24px',
+  marginTop: '60px',
+  marginBottom: '20px',
+};
+
 const footer: React.CSSProperties = {
-  color: '#6B5D4F',
+  color: '#3D3D3D',
   fontSize: '10px',
-  letterSpacing: '2px',
+  letterSpacing: '1px',
   textTransform: 'uppercase',
-  marginTop: '48px',
+  margin: '0',
 };

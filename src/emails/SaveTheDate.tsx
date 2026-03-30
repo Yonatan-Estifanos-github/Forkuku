@@ -8,6 +8,7 @@ import {
   Section,
   Text,
   Hr,
+  Link,
 } from '@react-email/components';
 import * as React from 'react';
 
@@ -18,8 +19,7 @@ interface SaveTheDateProps {
 
 const BASE_URL = 'https://theestifanos.com';
 const PWD = 'Matthew19:6';
-const PHOTO_URL =
-  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_3.jpeg';
+const PHOTO_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_3.jpeg';
 
 export const SaveTheDate = ({ 
   guestName = 'Dear Friend',
@@ -34,75 +34,72 @@ export const SaveTheDate = ({
       <Head />
       <Preview>Save the Date — Yonatan &amp; Saron · September 4, 2026</Preview>
 
-      <Body style={body}>
-        <Container style={container}>
-
-          {/* ── Pre-header label ── */}
+      <Body style={mainBody}>
+        <Container style={mainContainer}>
+          {/* ── Pre-header ── */}
           <Text style={preHeader}>SAVE THE DATE</Text>
 
-          {/* ── Decorative rule ── */}
-          <Hr style={rule} />
+          {/* ── Framing ── */}
+          <Hr style={hairline} />
 
-          {/* ── Names ── */}
+          {/* ── Stacked Names ── */}
           <Text style={names}>
             Yonatan
+            <br />
             <span style={ampersand}>&amp;</span>
+            <br />
             Saron
           </Text>
 
           {/* ── Date & Location ── */}
-          <Text style={dateLine}>September 4, 2026</Text>
-          <Text style={locationLine}>Wrightsville, Pennsylvania</Text>
+          <Text style={details}>
+            SEPTEMBER 4, 2026&nbsp;&nbsp;·&nbsp;&nbsp;WRIGHTSVILLE, PA
+          </Text>
 
-          {/* ── Decorative rule ── */}
-          <Hr style={rule} />
+          {/* ── Framing ── */}
+          <Hr style={hairline} />
 
           {/* ── Salutation ── */}
           <Text style={salutation}>{guestName},</Text>
 
-          {/* ── Body copy ── */}
-          <Text style={bodyText}>
-            Please join us as we celebrate the beginning of our forever.
-            To receive your official formal invitation — which will include
-            venue details and weekend itineraries — please register your
-            attendance on our website by <span style={emphasis}>May 1st, 2026</span>.
+          {/* ── Main Message ── */}
+          <Text style={message}>
+            We are overjoyed to invite you to celebrate the beginning of our forever. 
+            God has been so faithful in bringing us together, and we couldn&apos;t imagine 
+            stepping into this marriage covenant without our favorite people in the room. 
+            To receive your formal invitation with the exact location and weekend details, 
+            please register your attendance on our website by May 1st.
           </Text>
 
-          {/* ── Password notice ── */}
-          <Section style={passwordBox}>
-            <Text style={passwordLabel}>WEBSITE ACCESS</Text>
-            <Text style={passwordValue}>Matthew19:6</Text>
-          </Section>
+          {/* ── Password Notice ── */}
+          <Text style={passwordText}>
+            Website Password: Matthew19:6
+          </Text>
 
           {/* ── CTA ── */}
           <Section style={ctaSection}>
-            <a href={magicLink} style={ctaButton} target="_blank" rel="noopener noreferrer">
+            <Link href={magicLink} style={ctaButton}>
               RSVP NOW
-            </a>
+            </Link>
           </Section>
 
-          {/* ── Scripture note ── */}
-          <Text style={scripture}>
-            &quot;What therefore God has joined together, let no man separate.&quot;
-            <br />
-            <span style={scriptureRef}>— Matthew 19:6</span>
-          </Text>
-
-          {/* ── Engagement photo ── */}
+          {/* ── Hero Photo ── */}
           <Img
             src={PHOTO_URL}
             alt="Yonatan and Saron"
-            width="560"
+            width="440"
             style={photo}
           />
 
-          {/* ── Footer ── */}
+          {/* ── Monogram ── */}
+          <Text style={monogram}>Y &amp; S</Text>
+
+          {/* ── Legal/Footer ── */}
           <Text style={footer}>
-            Yonatan &amp; Saron · September 4, 2026 · Wrightsville, PA
+            Yonatan &amp; Saron · September 4, 2026
             <br />
             (Please do not reply to this email)
           </Text>
-
         </Container>
       </Body>
     </Html>
@@ -113,169 +110,120 @@ export default SaveTheDate;
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const body: React.CSSProperties = {
-  backgroundColor: '#0A0908',
+const mainBody: React.CSSProperties = {
+  backgroundColor: '#000000',
   margin: '0',
-  padding: '0',
-  fontFamily: 'Georgia, "Times New Roman", Times, serif',
+  padding: '40px 0',
+  fontFamily: 'Helvetica, Arial, sans-serif',
 };
 
-const container: React.CSSProperties = {
+const mainContainer: React.CSSProperties = {
+  maxWidth: '520px',
   margin: '0 auto',
-  padding: '48px 32px 0',
-  maxWidth: '600px',
+  backgroundColor: '#0A0A0A',
+  border: '1px solid #1A1A1A',
+  padding: '60px 40px',
   textAlign: 'center',
-  backgroundColor: '#0A0908',
 };
 
 const preHeader: React.CSSProperties = {
   color: '#D4A845',
-  fontSize: '11px',
+  fontSize: '10px',
   letterSpacing: '6px',
   textTransform: 'uppercase',
-  margin: '0 0 24px',
-  fontFamily: 'Helvetica, Arial, sans-serif',
+  margin: '0 0 10px',
 };
 
-const rule: React.CSSProperties = {
-  borderColor: '#D4A845',
-  borderTopWidth: '1px',
-  borderTopStyle: 'solid',
-  opacity: 0.25,
-  margin: '0 auto 32px',
-  width: '80px',
+const hairline: React.CSSProperties = {
+  border: 'none',
+  borderTop: '1px solid #332911',
+  margin: '30px auto',
+  width: '40px',
 };
 
 const names: React.CSSProperties = {
-  color: '#FFFFFF',
-  fontSize: '54px',
-  fontStyle: 'normal',
+  color: '#F9FAFB',
+  fontSize: '48px',
+  lineHeight: '1.1',
+  margin: '0 0 20px',
+  fontFamily: "'Playfair Display', Georgia, serif",
   fontWeight: '400',
-  margin: '0 0 16px',
-  lineHeight: '1.2',
-  letterSpacing: '1px',
-  fontFamily: "'Playfair Display', Didot, Georgia, 'Times New Roman', serif",
 };
 
 const ampersand: React.CSSProperties = {
   color: '#D4A845',
   fontSize: '0.7em',
-  margin: '10px 0',
-  display: 'block',
 };
 
-const dateLine: React.CSSProperties = {
-  color: '#D4A845',
-  fontSize: '16px',
-  letterSpacing: '4px',
-  textTransform: 'uppercase',
-  margin: '0 0 8px',
-  fontFamily: 'Helvetica, Arial, sans-serif',
-};
-
-const locationLine: React.CSSProperties = {
-  color: '#F2EFE9',
+const details: React.CSSProperties = {
+  color: '#A1A1AA',
   fontSize: '11px',
   letterSpacing: '3px',
   textTransform: 'uppercase',
-  margin: '0 0 32px',
-  fontFamily: 'Helvetica, Arial, sans-serif',
+  margin: '0 0 10px',
 };
 
 const salutation: React.CSSProperties = {
-  color: '#FFFFFF',
-  fontSize: '18px',
-  fontStyle: 'italic',
-  margin: '0 0 12px',
+  color: '#F9FAFB',
+  fontSize: '16px',
+  margin: '0 0 16px',
+  fontFamily: "Georgia, serif",
 };
 
-const bodyText: React.CSSProperties = {
-  color: '#F2EFE9',
-  fontSize: '15px',
-  lineHeight: '1.8',
-  margin: '0 0 36px',
-  fontFamily: 'Georgia, "Times New Roman", Times, serif',
+const message: React.CSSProperties = {
+  color: '#D1D5DB',
+  fontSize: '14px',
+  lineHeight: '1.6',
+  margin: '0 0 30px',
+  textAlign: 'center',
 };
 
-const emphasis: React.CSSProperties = {
-  color: '#FFFFFF',
-  fontStyle: 'italic',
-};
-
-const passwordBox: React.CSSProperties = {
-  border: '1px solid rgba(212, 168, 69, 0.25)',
-  borderRadius: '4px',
-  padding: '16px 24px',
-  margin: '0 auto 36px',
-  maxWidth: '280px',
-  backgroundColor: 'rgba(212, 168, 69, 0.04)',
-};
-
-const passwordLabel: React.CSSProperties = {
+const passwordText: React.CSSProperties = {
   color: '#D4A845',
-  fontSize: '9px',
-  letterSpacing: '4px',
-  textTransform: 'uppercase',
-  margin: '0 0 6px',
-  fontFamily: 'Helvetica, Arial, sans-serif',
-};
-
-const passwordValue: React.CSSProperties = {
-  color: '#FFFFFF',
-  fontSize: '18px',
+  fontSize: '13px',
   fontStyle: 'italic',
-  margin: '0',
-  letterSpacing: '1px',
+  margin: '0 0 40px',
+  fontFamily: "Georgia, serif",
 };
 
 const ctaSection: React.CSSProperties = {
-  textAlign: 'center',
-  margin: '0 0 40px',
+  margin: '0 0 60px',
 };
 
 const ctaButton: React.CSSProperties = {
-  display: 'inline-block',
   border: '1px solid #D4A845',
   color: '#D4A845',
-  backgroundColor: 'transparent',
-  fontSize: '11px',
-  letterSpacing: '4px',
-  textTransform: 'uppercase',
-  textDecoration: 'none',
   padding: '14px 40px',
+  textTransform: 'uppercase',
+  letterSpacing: '0.2em',
+  fontSize: '10px',
+  textDecoration: 'none',
+  display: 'inline-block',
   borderRadius: '100px',
-  fontFamily: 'Helvetica, Arial, sans-serif',
-};
-
-const scripture: React.CSSProperties = {
-  color: '#9C8C78',
-  fontSize: '13px',
-  fontStyle: 'italic',
-  lineHeight: '1.7',
-  margin: '0 0 40px',
-};
-
-const scriptureRef: React.CSSProperties = {
-  fontSize: '11px',
-  letterSpacing: '1px',
-  fontStyle: 'normal',
-  color: '#6B5D4F',
 };
 
 const photo: React.CSSProperties = {
   width: '100%',
-  maxWidth: '560px',
+  maxWidth: '440px',
   height: 'auto',
   display: 'block',
   margin: '0 auto',
-  borderRadius: '4px',
+  borderRadius: '2px',
+};
+
+const monogram: React.CSSProperties = {
+  color: '#D4A845',
+  fontFamily: 'Georgia, serif',
+  fontStyle: 'italic',
+  fontSize: '24px',
+  marginTop: '60px',
+  marginBottom: '20px',
 };
 
 const footer: React.CSSProperties = {
-  color: '#6B5D4F',
+  color: '#3D3D3D',
   fontSize: '10px',
-  letterSpacing: '2px',
+  letterSpacing: '1px',
   textTransform: 'uppercase',
-  margin: '24px 0 32px',
-  fontFamily: 'Helvetica, Arial, sans-serif',
+  margin: '0',
 };
