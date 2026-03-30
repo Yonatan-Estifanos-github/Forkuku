@@ -919,6 +919,19 @@ export default function AdminDashboard() {
   }
 
   useEffect(() => {
+    if (!loading) {
+      fetchParties();
+      fetchRegistryItems();
+    }
+  }, [selectedCampaign, loading]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (activeTab === 'registry') {
+      fetchRegistryItems();
+    }
+  }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     const checkAuthAndFetch = async () => {
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError || !user) {
@@ -926,6 +939,7 @@ export default function AdminDashboard() {
         return;
       }
       await fetchParties();
+      await fetchRegistryItems();
       setLoading(false);
     };
 
@@ -1550,9 +1564,10 @@ export default function AdminDashboard() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[95vh] flex flex-col my-auto">
-            <div className="p-6 border-b border-gray-100 flex-shrink-0 flex items-center justify-between">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col relative overflow-hidden">
+            {/* Header */}
+            <div className="p-6 border-b border-gray-100 flex-shrink-0 flex items-center justify-between bg-white z-10">
               <h2 className="font-serif text-2xl text-[#1B3B28]">
                 {editingParty ? 'Edit Party' : 'Add New Party'}
               </h2>
@@ -1565,7 +1580,11 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <div className="p-6 space-y-4 overflow-y-auto flex-1 min-h-0">
+            {/* Scrollable Content */}
+            <div 
+              className="p-6 space-y-6 overflow-y-auto flex-1 min-h-0"
+              style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}
+            >
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
                   Party Name *
@@ -1730,7 +1749,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="p-6 border-t border-gray-100 flex-shrink-0 flex justify-end gap-4">
+            <div className="p-6 border-t border-gray-100 flex-shrink-0 flex justify-end gap-4 bg-white z-10">
               <button
                 onClick={closeModal}
                 className="px-6 py-2 border border-gray-200 rounded hover:bg-gray-50 transition-colors text-sm"
@@ -1752,14 +1771,17 @@ export default function AdminDashboard() {
       {/* Registry Item Modal */}
       {showRegistryModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-100">
+          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col relative overflow-hidden">
+            <div className="p-6 border-b border-gray-100 flex-shrink-0">
               <h2 className="font-serif text-2xl text-[#1B3B28]">
                 {editingItem ? 'Edit Gift' : 'Add New Gift'}
               </h2>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div 
+              className="p-6 space-y-4 overflow-y-auto flex-1 min-h-0"
+              style={{ overscrollBehavior: 'contain' }}
+            >
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
                   Item Name *
@@ -1888,7 +1910,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="p-6 border-t border-gray-100 flex justify-end gap-4">
+            <div className="p-6 border-t border-gray-100 flex-shrink-0 flex justify-end gap-4 bg-white">
               <button
                 onClick={closeRegistryModal}
                 className="px-6 py-2 border border-gray-200 rounded hover:bg-gray-50 transition-colors text-sm"
