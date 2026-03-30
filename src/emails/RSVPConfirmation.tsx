@@ -112,7 +112,7 @@ const mainBody: React.CSSProperties = {
   margin: '0 auto',
   padding: '60px 20px',
   textAlign: 'center',
-  fontFamily: 'Helvetica, Arial, sans-serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
   maxWidth: '600px',
 };
 
@@ -122,6 +122,7 @@ const preHeader: React.CSSProperties = {
   letterSpacing: '6px',
   textTransform: 'uppercase',
   margin: '0 0 10px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const hairline: React.CSSProperties = {
@@ -136,7 +137,7 @@ const title: React.CSSProperties = {
   fontSize: '32px',
   lineHeight: '1.2',
   margin: '0 0 40px',
-  fontFamily: 'Georgia, serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
   fontWeight: '400',
 };
 
@@ -154,6 +155,7 @@ const guestStatusLabel: React.CSSProperties = {
   letterSpacing: '3px',
   textTransform: 'uppercase',
   margin: '0 0 8px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const guestStatusLabelDeclined: React.CSSProperties = {
@@ -162,13 +164,14 @@ const guestStatusLabelDeclined: React.CSSProperties = {
   letterSpacing: '3px',
   textTransform: 'uppercase',
   margin: '0 0 8px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const guestName: React.CSSProperties = {
   color: '#FFFFFF',
   fontSize: '18px',
   margin: '4px 0',
-  fontFamily: 'Georgia, serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
   fontStyle: 'italic',
 };
 
@@ -176,7 +179,7 @@ const guestNameDeclined: React.CSSProperties = {
   color: '#6B5D4F',
   fontSize: '16px',
   margin: '4px 0',
-  fontFamily: 'Georgia, serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
   fontStyle: 'italic',
   textDecoration: 'line-through',
 };
@@ -187,6 +190,7 @@ const messageText: React.CSSProperties = {
   lineHeight: '1.6',
   margin: '0 auto 40px',
   maxWidth: '440px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const prayerTitle: React.CSSProperties = {
@@ -195,6 +199,7 @@ const prayerTitle: React.CSSProperties = {
   letterSpacing: '4px',
   textTransform: 'uppercase',
   margin: '0 0 16px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const prayerText: React.CSSProperties = {
@@ -204,7 +209,7 @@ const prayerText: React.CSSProperties = {
   fontStyle: 'italic',
   margin: '0 auto 40px',
   maxWidth: '400px',
-  fontFamily: 'Georgia, serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const heroImage: React.CSSProperties = {
@@ -217,7 +222,7 @@ const heroImage: React.CSSProperties = {
 };
 
 const caption: React.CSSProperties = {
-  fontFamily: "Georgia, serif",
+  fontFamily: "Georgia, 'Times New Roman', serif",
   fontStyle: 'italic',
   fontSize: '12px',
   color: '#888888',
@@ -228,7 +233,7 @@ const caption: React.CSSProperties = {
 
 const monogram: React.CSSProperties = {
   color: '#D4A845',
-  fontFamily: 'Georgia, serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
   fontStyle: 'italic',
   fontSize: '24px',
   marginTop: '60px',
@@ -241,4 +246,5 @@ const footer: React.CSSProperties = {
   letterSpacing: '1px',
   textTransform: 'uppercase',
   margin: '0',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
