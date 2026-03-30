@@ -77,7 +77,7 @@ export default PhotoSaveTheDate;
 // ---------------------------------------------------------------------------
 
 const main: React.CSSProperties = {
-  backgroundColor: '#F9F7F2',
+  backgroundColor: '#0A0908',
   fontFamily: '"Times New Roman", Times, serif',
   margin: '0',
   padding: '0',
@@ -86,7 +86,7 @@ const main: React.CSSProperties = {
 const container: React.CSSProperties = {
   margin: '0 auto',
   maxWidth: '600px',
-  backgroundColor: '#ffffff',
+  backgroundColor: '#0A0908',
 };
 
 const heroImage: React.CSSProperties = {
@@ -96,32 +96,34 @@ const heroImage: React.CSSProperties = {
 };
 
 const content: React.CSSProperties = {
-  padding: '40px 32px',
+  padding: '48px 32px',
   textAlign: 'center',
 };
 
 const headline: React.CSSProperties = {
   color: '#D4A845',
-  fontSize: '13px',
-  letterSpacing: '5px',
+  fontSize: '11px',
+  letterSpacing: '6px',
   fontWeight: 'bold',
   textTransform: 'uppercase',
-  margin: '0 0 16px',
+  margin: '0 0 24px',
 };
 
 const names: React.CSSProperties = {
-  color: '#1B3B28',
+  color: '#E6D2B5',
   fontSize: '42px',
   fontStyle: 'italic',
   fontWeight: 'normal',
   margin: '0 0 16px',
   lineHeight: '1.2',
+  fontFamily: 'Georgia, serif',
 };
 
 const date: React.CSSProperties = {
   color: '#D4A845',
-  fontSize: '20px',
-  letterSpacing: '2px',
+  fontSize: '18px',
+  letterSpacing: '4px',
+  textTransform: 'uppercase',
   margin: '0 0 28px',
 };
 
@@ -130,57 +132,58 @@ const divider: React.CSSProperties = {
   height: '1px',
   backgroundColor: '#D4A845',
   margin: '0 auto 28px',
+  opacity: 0.3,
 };
 
 const paragraph: React.CSSProperties = {
-  color: '#1B3B28',
-  fontSize: '17px',
-  lineHeight: '1.7',
-  margin: '0 0 18px',
+  color: '#9C8C78',
+  fontSize: '16px',
+  lineHeight: '1.8',
+  margin: '0 0 24px',
   textAlign: 'center',
 };
 
 const locationText: React.CSSProperties = {
-  color: '#1B3B28',
-  fontSize: '16px',
+  color: '#E6D2B5',
+  fontSize: '14px',
   textTransform: 'uppercase',
-  letterSpacing: '2px',
-  margin: '28px 0 0',
+  letterSpacing: '3px',
+  margin: '32px 0 0',
   lineHeight: '1.8',
 };
 
 const subNote: React.CSSProperties = {
-  fontSize: '13px',
+  fontSize: '12px',
   letterSpacing: '1px',
   textTransform: 'none',
-  color: '#888888',
+  color: '#6B5D4F',
   fontStyle: 'italic',
 };
 
 const btnContainer: React.CSSProperties = {
   textAlign: 'center',
-  marginTop: '32px',
-  marginBottom: '32px',
+  marginTop: '40px',
+  marginBottom: '40px',
 };
 
 const button: React.CSSProperties = {
-  backgroundColor: '#1B3B28',
+  backgroundColor: 'transparent',
   color: '#D4A845',
-  fontSize: '15px',
-  fontWeight: 'bold',
+  fontSize: '11px',
+  letterSpacing: '4px',
+  textTransform: 'uppercase',
   textDecoration: 'none',
   textAlign: 'center',
   display: 'inline-block',
-  padding: '14px 32px',
+  padding: '14px 40px',
   border: '1px solid #D4A845',
-  borderRadius: '6px',
-  letterSpacing: '1.5px',
-  textTransform: 'uppercase',
+  borderRadius: '100px',
 };
 
 const footer: React.CSSProperties = {
-  color: '#888888',
-  fontSize: '12px',
-  letterSpacing: '1px',
-  marginTop: '40px',
+  color: '#3D342C',
+  fontSize: '10px',
+  letterSpacing: '2px',
+  textTransform: 'uppercase',
+  marginTop: '48px',
 };

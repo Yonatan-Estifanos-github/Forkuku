@@ -129,14 +129,14 @@ export default FormalInvite;
 // ─────────────────────────────────────────────
 
 const main: React.CSSProperties = {
-  backgroundColor: '#F9F7F2',
+  backgroundColor: '#0A0908',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
   margin: '0',
   padding: '48px 0',
 };
 
 const container: React.CSSProperties = {
-  backgroundColor: '#FFFFFF',
+  backgroundColor: '#0A0908',
   margin: '0 auto',
   maxWidth: '600px',
   width: '100%',
@@ -179,20 +179,22 @@ const goldRule: React.CSSProperties = {
   borderTopWidth: '1px',
   margin: '0 40px',
   width: 'auto',
+  opacity: 0.3,
 };
 
 // Soft neutral rule before/after body sections
 const softRule: React.CSSProperties = {
-  borderColor: '#EDE9E0',
+  borderColor: '#D4A845',
   borderTopStyle: 'solid',
   borderTopWidth: '1px',
   margin: '0 40px',
   width: 'auto',
+  opacity: 0.1,
 };
 
 // "Yonatan & Saron"
 const namesText: React.CSSProperties = {
-  color: '#1B3B28',
+  color: '#E6D2B5',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
   fontSize: '42px',
   fontStyle: 'italic',
@@ -204,7 +206,7 @@ const namesText: React.CSSProperties = {
 
 // "September 4, 2026 · Wrightsville, Pennsylvania"
 const detailsText: React.CSSProperties = {
-  color: '#6B6B6B',
+  color: '#9C8C78',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSize: '12px',
   fontWeight: '300',
@@ -219,7 +221,7 @@ const bodySection: React.CSSProperties = {
 };
 
 const salutation: React.CSSProperties = {
-  color: '#1B3B28',
+  color: '#E6D2B5',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
   fontSize: '18px',
   fontStyle: 'italic',
@@ -228,7 +230,7 @@ const salutation: React.CSSProperties = {
 };
 
 const paragraph: React.CSSProperties = {
-  color: '#4A4A4A',
+  color: '#9C8C78',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSize: '15px',
   fontWeight: '300',
@@ -243,9 +245,9 @@ const btnSection: React.CSSProperties = {
 };
 
 const ghostButton: React.CSSProperties = {
-  backgroundColor: '#1B3B28',
+  backgroundColor: 'transparent',
   border: '1px solid #D4A845',
-  borderRadius: '2px',
+  borderRadius: '100px',
   color: '#D4A845',
   display: 'inline-block',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
@@ -264,7 +266,7 @@ const signoffSection: React.CSSProperties = {
 };
 
 const signoffLine: React.CSSProperties = {
-  color: '#4A4A4A',
+  color: '#9C8C78',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
   fontSize: '15px',
   fontStyle: 'italic',
@@ -273,7 +275,7 @@ const signoffLine: React.CSSProperties = {
 };
 
 const signoffWith: React.CSSProperties = {
-  color: '#9A9A9A',
+  color: '#6B5D4F',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSize: '12px',
   fontStyle: 'italic',
@@ -282,7 +284,7 @@ const signoffWith: React.CSSProperties = {
 };
 
 const signoffNames: React.CSSProperties = {
-  color: '#1B3B28',
+  color: '#E6D2B5',
   fontFamily: 'Georgia, "Times New Roman", Times, serif',
   fontSize: '32px',
   fontStyle: 'italic',
@@ -299,7 +301,7 @@ const footerSection: React.CSSProperties = {
 };
 
 const footerText: React.CSSProperties = {
-  color: '#BBBBBB',
+  color: '#3D342C',
   fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSize: '11px',
   fontWeight: '300',
@@ -319,4 +321,5 @@ const footerAnchor: React.CSSProperties = {
   fontWeight: '300',
   letterSpacing: '2px',
   textDecoration: 'none',
+  opacity: 0.8,
 };
