@@ -1,13 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const COOKIE_OPTS = (maxAge: number) => ({
-  path: '/',
-  httpOnly: false,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
-  maxAge,
-});
-
 export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
   const sitePassword = process.env.SITE_PASSWORD;
