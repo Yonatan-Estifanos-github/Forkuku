@@ -134,7 +134,7 @@ export async function POST(req: Request) {
       }
       if (updatedParty.guests) (updatedParty.guests as GuestWithEmail[]).forEach(g => g.email && g.email.includes('@') && allEmails.add(g.email.toLowerCase()));
 
-      const isAttending = guests.some((g: any) => g.is_attending);
+      const isAttending = (guests as GuestResponse[]).some(g => g.is_attending);
 
       for (const guestEmail of Array.from(allEmails)) {
         await resend.emails.send({
