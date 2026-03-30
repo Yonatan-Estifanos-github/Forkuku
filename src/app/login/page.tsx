@@ -51,7 +51,10 @@ function SiteLoginPageInner() {
       .split('; ')
       .find((c) => c.startsWith('site-access-token='))
       ?.split('=')[1];
-    if (saved) setPassword(decodeURIComponent(saved));
+    if (saved) {
+      setPassword(decodeURIComponent(saved));
+      setIsVip(true);
+    }
   }, []);
 
   // Magic link: pre-fill password when ?pwd=Matthew19:6 is present
@@ -159,7 +162,9 @@ function SiteLoginPageInner() {
               className="text-center space-y-1"
             >
               <p className={`text-[#D4A845] text-xs font-medium ${isAmharic ? 'font-ethiopic' : 'font-sans uppercase tracking-widest'}`}>
-                {t('login.vipPasswordFilled')}
+                {searchParams.get('pwd') === MAGIC_PASSWORD 
+                  ? t('login.vipPasswordFilled') 
+                  : t('login.welcomeBack')}
               </p>
               <p className={`text-white/40 text-[10px] ${isAmharic ? 'font-ethiopic' : 'font-serif italic'}`}>
                 {t('login.vipClickLogin')}
