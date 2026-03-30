@@ -16,8 +16,25 @@ export async function POST(req: Request) {
 
     const searchTerm = name.toLowerCase().trim();
 
-    // Query parties where search_tags (array) contains the searchTerm
-    const { data: parties, error } = await supabaseAdmin
+    // 1. Call fuzzy search RPC function
+    const { data: fuzzyMatches, error: searchError } = await supabaseAdmin
+      .rpc('search_guests_fuzzy', { search_term: searchTerm });
+
+    if (searchError) {
+      console.error('Fuzzy search error:', searchError);
+      return NextResponse.json({ error: 'Search failed' }, { status: 500 });
+    }
+
+    if (!fuzzyMatches || fuzzyMatches.length === 0) {
+      return NextResponse.json({ error: 'Invitation not found' }, { status: 404 });
+    }
+
+    // 2. Fetch full details including guests for the matched IDs
+    interface FuzzyMatch {
+      id: string;
+    }
+    const matchedIds = (fuzzyMatches as FuzzyMatch[]).map((m) => m.id);
+    const { data: parties, error: fetchError } = await supabaseAdmin
       .from('parties')
       .select(`
         id,
@@ -31,19 +48,20 @@ export async function POST(req: Request) {
           is_plus_one
         )
       `)
-      .contains('search_tags', [searchTerm]);
+      .in('id', matchedIds);
 
-    if (error) {
-      console.error('Supabase query error:', error);
+    if (fetchError) {
+      console.error('Supabase fetch error:', fetchError);
       return NextResponse.json({ error: 'Database error' }, { status: 500 });
     }
 
-    if (!parties || parties.length === 0) {
-      return NextResponse.json({ error: 'Invitation not found' }, { status: 404 });
-    }
+    // Sort parties based on the original fuzzy match similarity order
+    const sortedParties = parties?.sort((a, b) => 
+      matchedIds.indexOf(a.id) - matchedIds.indexOf(b.id)
+    );
 
     // Return array of all matching parties (caller handles disambiguation)
-    return NextResponse.json({ parties });
+    return NextResponse.json({ parties: sortedParties });
 
   } catch (err) {
     console.error('Search API unhandled error:', err);
