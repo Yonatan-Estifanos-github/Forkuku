@@ -51,9 +51,14 @@ export const SaveTheDate = ({
             Saron
           </Text>
 
-          {/* ── Date & Location ── */}
-          <Text style={details}>
-            SEPTEMBER 4, 2026&nbsp;&nbsp;·&nbsp;&nbsp;WRIGHTSVILLE, PA
+          {/* ── Date Line (Non-wrapping) ── */}
+          <Text style={dateLine}>
+            SEPTEMBER 4, 2026
+          </Text>
+
+          {/* ── Location Line (Non-wrapping) ── */}
+          <Text style={locationLine}>
+            WRIGHTSVILLE, PENNSYLVANIA
           </Text>
 
           {/* ── Framing ── */}
@@ -111,77 +116,96 @@ export default SaveTheDate;
 // ── Styles ────────────────────────────────────────────────────────────────────
 
 const mainBody: React.CSSProperties = {
-  backgroundColor: '#0A0A0A',
+  backgroundColor: '#FCFBF8',
   margin: '0',
   padding: '0',
-  fontFamily: 'Helvetica, Arial, sans-serif',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const mainContainer: React.CSSProperties = {
   margin: '0 auto',
   padding: '60px 20px',
   textAlign: 'center',
+  backgroundColor: '#FCFBF8',
 };
 
 const preHeader: React.CSSProperties = {
-  color: '#D4A845',
+  color: '#B08D57',
   fontSize: '10px',
   letterSpacing: '6px',
   textTransform: 'uppercase',
   margin: '0 0 10px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const hairline: React.CSSProperties = {
   border: 'none',
-  borderTop: '1px solid #332911',
+  borderTop: '1px solid #D6D4D1', // Simulated 20% opacity of #423E37 on #FCFBF8
   margin: '30px auto',
-  width: '40px',
+  width: '48px',
 };
 
 const names: React.CSSProperties = {
-  color: '#F9FAFB',
+  color: '#423E37',
   fontSize: '48px',
   lineHeight: '1.1',
   margin: '0 0 20px',
-  fontFamily: "Georgia, serif",
+  fontFamily: "'Playfair Display', Didot, Georgia, serif",
   fontWeight: '400',
+  fontStyle: 'normal',
 };
 
 const ampersand: React.CSSProperties = {
-  color: '#D4A845',
+  color: '#B08D57',
   fontSize: '0.7em',
+  fontStyle: 'italic',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
-const details: React.CSSProperties = {
-  color: '#A1A1AA',
+const dateLine: React.CSSProperties = {
+  color: '#B08D57',
   fontSize: '11px',
-  letterSpacing: '3px',
+  letterSpacing: '0.2em',
+  textTransform: 'uppercase',
+  margin: '0 0 8px',
+  whiteSpace: 'nowrap',
+  fontFamily: "Georgia, 'Times New Roman', serif",
+};
+
+const locationLine: React.CSSProperties = {
+  color: '#888888',
+  fontSize: '11px',
+  letterSpacing: '0.2em',
   textTransform: 'uppercase',
   margin: '0 0 10px',
+  whiteSpace: 'nowrap',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const salutation: React.CSSProperties = {
-  color: '#F9FAFB',
+  color: '#423E37',
   fontSize: '16px',
   margin: '0 0 16px',
-  fontFamily: "Georgia, serif",
+  fontFamily: "Georgia, 'Times New Roman', serif",
+  fontStyle: 'italic',
 };
 
 const message: React.CSSProperties = {
-  color: '#D1D5DB',
+  color: '#5A544C',
   fontSize: '14px',
-  lineHeight: '1.6',
+  lineHeight: '1.8',
   margin: '0 auto 30px',
   textAlign: 'center',
   maxWidth: '440px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const passwordText: React.CSSProperties = {
-  color: '#D4A845',
+  color: '#B08D57',
   fontSize: '13px',
   fontStyle: 'italic',
   margin: '0 0 40px',
-  fontFamily: "Georgia, serif",
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const ctaSection: React.CSSProperties = {
@@ -189,8 +213,8 @@ const ctaSection: React.CSSProperties = {
 };
 
 const ctaButton: React.CSSProperties = {
-  border: '1px solid #D4A845',
-  color: '#D4A845',
+  border: '1px solid #B08D57',
+  color: '#B08D57',
   padding: '14px 40px',
   textTransform: 'uppercase',
   letterSpacing: '0.2em',
@@ -198,6 +222,7 @@ const ctaButton: React.CSSProperties = {
   textDecoration: 'none',
   display: 'inline-block',
   borderRadius: '100px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const photo: React.CSSProperties = {
@@ -210,8 +235,8 @@ const photo: React.CSSProperties = {
 };
 
 const monogram: React.CSSProperties = {
-  color: '#D4A845',
-  fontFamily: 'Georgia, serif',
+  color: '#B08D57',
+  fontFamily: "Georgia, 'Times New Roman', serif",
   fontStyle: 'italic',
   fontSize: '24px',
   marginTop: '60px',
@@ -219,9 +244,10 @@ const monogram: React.CSSProperties = {
 };
 
 const footer: React.CSSProperties = {
-  color: '#3D3D3D',
+  color: '#A1A1AA',
   fontSize: '10px',
   letterSpacing: '1px',
   textTransform: 'uppercase',
   margin: '0',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
