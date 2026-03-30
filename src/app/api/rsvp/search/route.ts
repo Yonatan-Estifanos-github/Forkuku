@@ -30,7 +30,10 @@ export async function POST(req: Request) {
     }
 
     // 2. Fetch full details including guests for the matched IDs
-    const matchedIds = fuzzyMatches.map((m: any) => m.id);
+    interface FuzzyMatch {
+      id: string;
+    }
+    const matchedIds = (fuzzyMatches as FuzzyMatch[]).map((m) => m.id);
     const { data: parties, error: fetchError } = await supabaseAdmin
       .from('parties')
       .select(`
