@@ -660,8 +660,10 @@ export default function AdminDashboard() {
           }
 
           const partyMap = new Map<string, { emails: string[]; phones: string[]; guests: { name: string; email: string | null }[]; family_side: 'bride' | 'groom' | null }>();
+          const skippedRows: { row: number; guest: string; reason: string }[] = [];
 
-          rows.forEach(row => {
+          rows.forEach((row, index) => {
+            const rowNumber = index + 2; // +1 for header, +1 for 0-indexing
             const keys = Object.keys(row);
             const nameKey = keys.find(k => k.toLowerCase().includes('party')) || 'Party Name';
             const emailKey = keys.find(k => k.toLowerCase().includes('email')) || 'Email';
@@ -678,7 +680,10 @@ export default function AdminDashboard() {
             const familySide: 'bride' | 'groom' | null =
               rawSide === 'bride' ? 'bride' : rawSide === 'groom' ? 'groom' : null;
 
-            if (!csvPartyName || !guestName) return;
+            if (!csvPartyName || !guestName) {
+              skippedRows.push({ row: rowNumber, guest: guestName || 'Unknown', reason: 'Missing Party or Guest Name' });
+              return;
+            }
 
             // Email Sanitization: ---, blank, or invalid -> null
             const sanitizeEmail = (e: string | undefined) => {
@@ -687,60 +692,100 @@ export default function AdminDashboard() {
             };
             const guestEmail = sanitizeEmail(rawEmail);
 
+            // Phone Sanitization: Standardize to E.164 (+1XXXXXXXXXX)
+            const formatPhoneNumber = (p: string | undefined) => {
+              if (!p || p === '---') return null;
+              
+              // Remove all non-numeric characters
+              const digits = p.replace(/\D/g, '');
+              
+              if (digits.length === 10) {
+                // Standard 10-digit US number
+                return `+1${digits}`;
+              } else if (digits.length === 11 && digits.startsWith('1')) {
+                // 11-digit number starting with country code 1
+                return `+${digits}`;
+              } else if (p.startsWith('+1') && p.replace(/\D/g, '').length === 11) {
+                // Already starts with +1, just clean formatting
+                return `+${p.replace(/\D/g, '')}`;
+              }
+              
+              // Invalid length or format for US-based assumption
+              return null;
+            };
+            const sanitizedPhone = formatPhoneNumber(rawPhone);
+
             if (!partyMap.has(csvPartyName)) {
               partyMap.set(csvPartyName, { emails: [], phones: [], guests: [], family_side: familySide });
             }
 
             const entry = partyMap.get(csvPartyName)!;
-            // Add to party-level emails if valid
+            // Add to party-level emails/phones if valid
             if (guestEmail && !entry.emails.includes(guestEmail)) entry.emails.push(guestEmail);
-            if (rawPhone && !entry.phones.includes(rawPhone)) entry.phones.push(rawPhone);
+            if (sanitizedPhone && !entry.phones.includes(sanitizedPhone)) entry.phones.push(sanitizedPhone);
             // First non-null side wins
             if (!entry.family_side && familySide) entry.family_side = familySide;
             
             entry.guests.push({ name: guestName, email: guestEmail });
           });
 
-          let insertedParties = 0;
-          let insertedGuests = 0;
+          let upsertedParties = 0;
+          let newGuestsInserted = 0;
 
           for (const [csvPartyName, partyInfo] of Array.from(partyMap.entries())) {
+            // Upsert Party based on party_name
             const { data: partyData, error: partyError } = await supabase
               .from('parties')
-              .insert({
+              .upsert({
                 party_name: csvPartyName,
                 emails: partyInfo.emails,
                 phones: partyInfo.phones,
                 family_side: partyInfo.family_side,
                 status: 'pending',
-              })
+              }, { onConflict: 'party_name' })
               .select('id')
               .single();
 
             if (partyError || !partyData) {
-              console.error(`Failed to insert party ${csvPartyName}:`, partyError);
+              console.error(`Failed to upsert party ${csvPartyName}:`, partyError);
               continue;
             }
 
-            insertedParties++;
+            upsertedParties++;
 
-            const guestInserts = partyInfo.guests.map(g => ({
-              party_id: partyData.id,
-              name: g.name,
-              email: g.email,
-              is_attending: false,
-            }));
+            // Fetch existing guests for this party to prevent duplicates
+            const { data: existingGuests } = await supabase
+              .from('guests')
+              .select('name')
+              .eq('party_id', partyData.id);
 
-            const { error: guestsError } = await supabase.from('guests').insert(guestInserts);
+            const existingNames = new Set(existingGuests?.map(g => g.name.toLowerCase()) || []);
 
-            if (guestsError) {
-              console.error(`Failed to insert guests for ${csvPartyName}:`, guestsError);
-            } else {
-              insertedGuests += guestInserts.length;
+            const guestInserts = partyInfo.guests
+              .filter(g => !existingNames.has(g.name.toLowerCase()))
+              .map(g => ({
+                party_id: partyData.id,
+                name: g.name,
+                email: g.email,
+                is_attending: false,
+              }));
+
+            if (guestInserts.length > 0) {
+              const { error: guestsError } = await supabase.from('guests').insert(guestInserts);
+              if (guestsError) {
+                console.error(`Failed to insert guests for ${csvPartyName}:`, guestsError);
+              } else {
+                newGuestsInserted += guestInserts.length;
+              }
             }
           }
 
-          alert(`Imported ${insertedParties} parties with ${insertedGuests} guests`);
+          let summary = `Import processed: ${upsertedParties} parties updated/created, ${newGuestsInserted} new guests added.`;
+          if (skippedRows.length > 0) {
+            summary += `\n\nWARNING: Skipped ${skippedRows.length} rows due to missing data:\n` + 
+              skippedRows.map(s => `Row ${s.row} (${s.guest})`).join(', ');
+          }
+          alert(summary);
           await fetchParties();
         } catch (err) {
           console.error('CSV processing error:', err);
