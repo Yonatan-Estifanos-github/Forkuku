@@ -692,12 +692,28 @@ export default function AdminDashboard() {
             };
             const guestEmail = sanitizeEmail(rawEmail);
 
-            // Phone Sanitization: Strip non-digits except +
-            const sanitizePhone = (p: string | undefined) => {
+            // Phone Sanitization: Standardize to E.164 (+1XXXXXXXXXX)
+            const formatPhoneNumber = (p: string | undefined) => {
               if (!p || p === '---') return null;
-              return p.replace(/[^\d+]/g, '');
+              
+              // Remove all non-numeric characters
+              const digits = p.replace(/\D/g, '');
+              
+              if (digits.length === 10) {
+                // Standard 10-digit US number
+                return `+1${digits}`;
+              } else if (digits.length === 11 && digits.startsWith('1')) {
+                // 11-digit number starting with country code 1
+                return `+${digits}`;
+              } else if (p.startsWith('+1') && p.replace(/\D/g, '').length === 11) {
+                // Already starts with +1, just clean formatting
+                return `+${p.replace(/\D/g, '')}`;
+              }
+              
+              // Invalid length or format for US-based assumption
+              return null;
             };
-            const sanitizedPhone = sanitizePhone(rawPhone);
+            const sanitizedPhone = formatPhoneNumber(rawPhone);
 
             if (!partyMap.has(csvPartyName)) {
               partyMap.set(csvPartyName, { emails: [], phones: [], guests: [], family_side: familySide });
