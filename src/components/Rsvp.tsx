@@ -58,14 +58,20 @@ function LuxuryInput({
   className,
   ...props
 }: { label: string; id: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+  const { language } = useLanguage();
+  const isAmharic = language === 'am';
+
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-wedding-gold/80 text-center">
+      <label
+        htmlFor={id}
+        className={`text-xs tracking-widest uppercase font-medium text-wedding-gold/80 text-center ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}
+      >
         {label}
       </label>
       <input
         id={id}
-        className={`w-full bg-transparent border-b border-white/20 py-3 text-lg font-serif tracking-wide outline-none text-stone-200 placeholder:text-stone-600 placeholder:italic focus:border-white/50 transition-colors duration-300 text-center${className ? ` ${className}` : ''}`}
+        className={`w-full bg-transparent border-b border-white/20 py-3 text-lg tracking-wide outline-none text-stone-200 placeholder:text-stone-600 placeholder:italic focus:border-white/50 transition-colors duration-300 text-center ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'} ${className ? ` ${className}` : ''}`}
         {...props}
       />
     </div>
@@ -77,14 +83,20 @@ function LuxuryTextarea({
   id,
   ...props
 }: { label: string; id: string } & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  const { language } = useLanguage();
+  const isAmharic = language === 'am';
+
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-xs tracking-widest uppercase font-medium text-wedding-gold/80">
+      <label
+        htmlFor={id}
+        className={`text-xs tracking-widest uppercase font-medium text-wedding-gold/80 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}
+      >
         {label}
       </label>
       <textarea
         id={id}
-        className="w-full bg-transparent border-b border-white/20 py-3 text-lg font-serif tracking-wide outline-none text-stone-200 resize-none placeholder:text-stone-600 placeholder:italic focus:border-white/50 transition-colors duration-300"
+        className={`w-full bg-transparent border-b border-white/20 py-3 text-lg tracking-wide outline-none text-stone-200 resize-none placeholder:text-stone-600 placeholder:italic focus:border-white/50 transition-colors duration-300 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
         {...props}
       />
     </div>
@@ -110,7 +122,8 @@ function SearchScreen({
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -198,7 +211,7 @@ function SearchScreen({
 
   return (
     <div className="w-full max-w-md mx-auto text-center">
-      <p className="font-serif text-base md:text-lg mb-10 leading-relaxed px-4 text-stone-400 text-center mx-auto">
+      <p className={`text-base md:text-lg mb-10 leading-relaxed px-4 text-stone-400 text-center mx-auto ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
         {t('rsvp.searchPrompt')}
       </p>
 
@@ -242,14 +255,15 @@ function SelectScreen({
   onSelect: (party: Party) => void;
   onBack: () => void;
 }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
 
   return (
     <div className="w-full max-w-lg">
       <div className="w-full flex justify-start">
         <button
           onClick={onBack}
-          className="mb-8 font-serif text-sm tracking-wide flex items-center gap-2 text-stone-500 hover:text-stone-300 transition-colors"
+          className={`mb-8 text-sm tracking-wide flex items-center gap-2 text-stone-500 hover:text-stone-300 transition-colors ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -258,7 +272,7 @@ function SelectScreen({
         </button>
       </div>
 
-      <p className="font-serif text-base md:text-lg mb-8 leading-relaxed text-stone-400 text-center">
+      <p className={`text-base md:text-lg mb-8 leading-relaxed text-stone-400 text-center ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
         {t('rsvp.multipleFound')}
       </p>
 
@@ -275,16 +289,16 @@ function SelectScreen({
               className="text-left w-full px-6 py-6 border border-white/10 hover:border-[#D4A845]/40 bg-white/5 rounded-xl transition-all group"
             >
               <div className="flex items-center justify-between mb-2">
-                <p className="font-serif text-xl text-stone-200 group-hover:text-[#D4A845] transition-colors">
+                <p className={`text-xl text-stone-200 group-hover:text-[#D4A845] transition-colors ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
                   {party.party_name}
                 </p>
-                <span className="text-[10px] tracking-widest text-[#D4A845] font-sans uppercase opacity-0 group-hover:opacity-100 transition-opacity">
-                  This is me &rarr;
+                <span className={`text-[10px] tracking-widest text-[#D4A845] font-sans uppercase opacity-0 group-hover:opacity-100 transition-opacity ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                  {t('rsvp.thisIsMe')} &rarr;
                 </span>
               </div>
               {guestNames && (
-                <p className="text-sm text-stone-500 font-serif italic leading-relaxed">
-                  Includes: {guestNames}
+                <p className={`text-sm text-stone-500 leading-relaxed ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
+                  {t('rsvp.includes')} {guestNames}
                 </p>
               )}
             </button>
@@ -316,7 +330,8 @@ function FormScreen({
   const [smsConsent, setSmsConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
 
   // Ref to prevent double-submission (synchronous check before React state updates)
   const isSubmittingRef = useRef(false);
@@ -438,7 +453,7 @@ function FormScreen({
       {/* Back Button */}
       <button
         onClick={onBack}
-        className="mb-8 font-serif text-sm tracking-wide flex items-center gap-2 text-stone-500 hover:text-stone-300 transition-colors"
+        className={`mb-8 text-sm tracking-wide flex items-center gap-2 text-stone-500 hover:text-stone-300 transition-colors ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -448,10 +463,10 @@ function FormScreen({
 
       {/* Welcome Header */}
       <div className="text-center mb-10">
-        <p className="text-xs tracking-widest uppercase mb-2 text-wedding-gold/80">
+        <p className={`text-xs tracking-widest uppercase mb-2 text-wedding-gold/80 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
           {t('rsvp.youreInvited')}
         </p>
-        <h3 className="font-display text-3xl md:text-4xl tracking-wide text-stone-200">
+        <h3 className={`text-3xl md:text-4xl tracking-wide text-stone-200 ${isAmharic ? 'font-ethiopic font-light' : 'font-display'}`}>
           {t('rsvp.welcome').replace('{name}', party.party_name)}
         </h3>
       </div>
@@ -459,17 +474,17 @@ function FormScreen({
       <form onSubmit={handleSubmit}>
         {/* Guest List */}
         <div className="mb-10">
-          <p className="text-xs tracking-widest uppercase font-medium text-wedding-gold/80 mb-6">
+          <p className={`text-xs tracking-widest uppercase font-medium text-wedding-gold/80 mb-6 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
             {t('rsvp.respondForEach')}
           </p>
 
           {/* Empty guests message */}
           {guests.length === 0 && (
             <div className="text-center py-8 border border-white/10 rounded-lg">
-              <p className="font-serif text-stone-400 italic">
+              <p className={`text-stone-400 italic ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
                 {t('rsvp.noGuests')}
               </p>
-              <p className="font-serif text-stone-500 text-sm mt-2">
+              <p className={`text-stone-500 text-sm mt-2 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
                 {t('rsvp.contactCouple')}
               </p>
             </div>
@@ -482,7 +497,7 @@ function FormScreen({
                 className="flex flex-col gap-3 py-4 border-b border-white/10"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-serif text-lg tracking-wide text-stone-200">
+                  <span className={`text-lg tracking-wide text-stone-200 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
                     {guest.is_plus_one && !guest.name ? `Guest ${idx + 1}` : guest.name}
                   </span>
 
@@ -490,7 +505,7 @@ function FormScreen({
                     <button
                       type="button"
                       onClick={() => toggleGuest(idx, true)}
-                      className={`px-4 py-2 text-[10px] tracking-widest uppercase border rounded-full transition-all duration-300 font-sans ${
+                      className={`px-4 py-2 text-[10px] tracking-widest uppercase border rounded-full transition-all duration-300 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'} ${
                         guest.is_attending
                           ? 'border-[#D4A845] text-[#D4A845] bg-[#D4A845]/10'
                           : 'bg-transparent border-white/20 text-white/60 hover:border-[#D4A845]/50 hover:text-[#D4A845]'
@@ -501,7 +516,7 @@ function FormScreen({
                     <button
                       type="button"
                       onClick={() => toggleGuest(idx, false)}
-                      className={`px-4 py-2 text-[10px] tracking-widest uppercase border rounded-full transition-all duration-300 font-sans ${
+                      className={`px-4 py-2 text-[10px] tracking-widest uppercase border rounded-full transition-all duration-300 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'} ${
                         !guest.is_attending
                           ? 'border-[#D4A845] text-[#D4A845] bg-[#D4A845]/10'
                           : 'bg-transparent border-white/20 text-white/60 hover:border-[#D4A845]/50 hover:text-[#D4A845]'
@@ -519,7 +534,7 @@ function FormScreen({
                     placeholder={t('rsvp.guestName')}
                     value={guest.name || ''}
                     onChange={(e) => handleNameChange(idx, e.target.value)}
-                    className="w-full bg-transparent border-b border-white/20 text-sm font-serif py-1 outline-none text-stone-200 placeholder:italic placeholder:text-stone-600 focus:border-white/50 transition-colors duration-300"
+                    className={`w-full bg-transparent border-b border-white/20 text-sm py-1 outline-none text-stone-200 placeholder:italic placeholder:text-stone-600 focus:border-white/50 transition-colors duration-300 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
                   />
                 )}
               </div>
@@ -583,14 +598,14 @@ function FormScreen({
 
         {/* Error Message */}
         {submitError && (
-          <p className="text-sm font-serif italic text-center mb-6 text-red-500">
+          <p className={`text-sm italic text-center mb-6 text-red-500 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
             {submitError}
           </p>
         )}
 
         {/* Submit */}
         <div className="flex justify-center">
-          <button type="submit" disabled={isSubmitting || guests.length === 0} className={btnClass}>
+          <button type="submit" disabled={isSubmitting || guests.length === 0} className={`${btnClass} ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
             {isSubmitting ? t('rsvp.submitting') : t('rsvp.submitButton')}
           </button>
         </div>
@@ -601,9 +616,9 @@ function FormScreen({
             <button
               type="button"
               onClick={onNotMyFamily}
-              className="text-[11px] font-sans tracking-widest text-stone-600 hover:text-stone-400 transition-colors duration-300 uppercase border-b border-stone-700 hover:border-stone-500 pb-px"
+              className={`text-[11px] tracking-widest text-stone-600 hover:text-stone-400 transition-colors duration-300 uppercase border-b border-stone-700 hover:border-stone-500 pb-px ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
             >
-              Not the {party.party_name}? Search for your invitation
+              {t('rsvp.notMyFamily').replace('{name}', party.party_name)}
             </button>
           </p>
         )}
@@ -616,7 +631,8 @@ function FormScreen({
 // SUCCESS SCREEN
 // ============================================================================
 function SuccessScreen({ partyName, onBack }: { partyName: string; onBack: () => void }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
 
   return (
     <div className="w-full max-w-md flex flex-col items-center">
@@ -624,7 +640,7 @@ function SuccessScreen({ partyName, onBack }: { partyName: string; onBack: () =>
       <div className="w-full flex justify-start">
         <button
           onClick={onBack}
-          className="mb-8 font-serif text-sm tracking-wide flex items-center gap-2 text-stone-500 hover:text-stone-300 transition-colors"
+          className={`mb-8 text-sm tracking-wide flex items-center gap-2 text-stone-500 hover:text-stone-300 transition-colors ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -642,22 +658,22 @@ function SuccessScreen({ partyName, onBack }: { partyName: string; onBack: () =>
         </div>
 
         {/* Thank you message */}
-        <h3 className="font-display text-3xl md:text-4xl mb-4 text-stone-200">
+        <h3 className={`text-3xl md:text-4xl mb-4 text-stone-200 ${isAmharic ? 'font-ethiopic font-light' : 'font-display'}`}>
           {t('rsvp.thankYouTitle')}
         </h3>
-        <p className="font-serif text-lg italic leading-relaxed text-stone-400">
+        <p className={`text-lg italic leading-relaxed text-stone-400 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
           {t('rsvp.thankYouMessage').replace('{name}', partyName)}
         </p>
 
         {/* Registry note */}
         <div className="mt-10 pt-8 border-t border-white/10">
-          <p className="font-serif text-base leading-relaxed text-stone-400 mb-6">
+          <p className={`text-base leading-relaxed text-stone-400 mb-6 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
             {t('rsvp.registryNote')}
           </p>
 
           <a
             href="/#registry"
-            className="inline-block px-8 py-3 font-medium text-sm tracking-widest uppercase transition-all duration-300 border border-wedding-gold/50 text-wedding-gold rounded hover:bg-wedding-gold/10 hover:border-wedding-gold"
+            className={`inline-block px-8 py-3 font-medium text-sm tracking-widest uppercase transition-all duration-300 border border-wedding-gold/50 text-wedding-gold rounded hover:bg-wedding-gold/10 hover:border-wedding-gold ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
           >
             {t('rsvp.viewRegistry')}
           </a>
@@ -679,7 +695,8 @@ function RespondedConfirmationScreen({
   onEdit: () => void;
   onNotMyFamily?: () => void;
 }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
 
   return (
     <div className="w-full max-w-md flex flex-col items-center text-center">
@@ -692,24 +709,24 @@ function RespondedConfirmationScreen({
       </div>
 
       {/* Pre-header */}
-      <p className="text-[9px] font-sans tracking-[0.4em] uppercase text-[#D4A845]/70 mb-4">
+      <p className={`text-[9px] tracking-[0.4em] uppercase text-[#D4A845]/70 mb-4 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
         {t('rsvp.youreInvited')}
       </p>
 
       {/* Party name */}
-      <h3 className="font-serif text-3xl md:text-4xl text-[#E6D2B5] mb-8 leading-snug">
+      <h3 className={`text-3xl md:text-4xl text-[#E6D2B5] mb-8 leading-snug ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
         {party.party_name}
       </h3>
 
       {/* Warm confirmation message */}
-      <p className="font-serif italic text-base md:text-lg leading-relaxed text-stone-400 mb-12 px-2">
+      <p className={`italic text-base md:text-lg leading-relaxed text-stone-400 mb-12 px-2 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
         {t('rsvp.alreadyRespondedConfirmation')}
       </p>
 
       {/* Registry link */}
       <a
         href="/#registry"
-        className="border border-[#D4A845]/40 text-[#D4A845] bg-transparent hover:bg-[#D4A845]/8 px-8 py-3 rounded-full text-[10px] tracking-widest uppercase font-sans transition-all duration-300 mb-10"
+        className={`border border-[#D4A845]/40 text-[#D4A845] bg-transparent hover:bg-[#D4A845]/8 px-8 py-3 rounded-full text-[10px] tracking-widest uppercase font-sans transition-all duration-300 mb-10 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
       >
         {t('rsvp.viewRegistry')}
       </a>
@@ -717,7 +734,7 @@ function RespondedConfirmationScreen({
       {/* Edit escape hatch */}
       <button
         onClick={onEdit}
-        className="text-[10px] font-sans tracking-widest uppercase text-white/35 hover:text-[#D4A845] transition-colors duration-300 border-b border-white/10 hover:border-[#D4A845]/40 pb-px"
+        className={`text-[10px] tracking-widest uppercase text-white/35 hover:text-[#D4A845] transition-colors duration-300 border-b border-white/10 hover:border-[#D4A845]/40 pb-px ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
       >
         {t('rsvp.editResponse')}
       </button>
@@ -726,9 +743,9 @@ function RespondedConfirmationScreen({
       {onNotMyFamily && (
         <button
           onClick={onNotMyFamily}
-          className="mt-6 text-[10px] font-sans tracking-widest uppercase text-stone-700 hover:text-stone-500 transition-colors duration-300"
+          className={`mt-6 text-[10px] tracking-widest uppercase text-stone-700 hover:text-stone-500 transition-colors duration-300 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
         >
-          Not the {party.party_name}? Search for your invitation
+          {t('rsvp.notMyFamily').replace('{name}', party.party_name)}
         </button>
       )}
     </div>
@@ -746,7 +763,8 @@ export default function Rsvp() {
   const [candidates, setCandidates] = useState<Party[]>([]);
   const [vipLoading, setVipLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
 
   // On mount: if a vip_party_id cookie exists, skip search and load the party directly
   useEffect(() => {
@@ -805,16 +823,16 @@ export default function Rsvp() {
           className="max-w-2xl w-full mx-auto flex flex-col items-center"
         >
           {/* Header */}
-          <h2 className="font-display text-6xl tracking-wide mb-4 text-wedding-gold text-center">
+          <h2 className={`text-6xl tracking-wide mb-4 text-wedding-gold text-center ${isAmharic ? 'font-ethiopic font-light' : 'font-display'}`}>
             {t('rsvp.heading')}
           </h2>
-          <p className="font-serif italic text-base md:text-lg tracking-wide mb-12 text-stone-400 text-center">
+          <p className={`text-base md:text-lg tracking-wide mb-12 text-stone-400 text-center ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
             {t('rsvp.deadline')}
           </p>
 
           {/* View Router */}
           {vipLoading && (
-            <p className="font-serif italic text-stone-500 text-sm animate-pulse">
+            <p className={`italic text-stone-500 text-sm animate-pulse ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
               {t('rsvp.searching')}
             </p>
           )}

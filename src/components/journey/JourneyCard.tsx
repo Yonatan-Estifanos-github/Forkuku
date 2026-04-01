@@ -116,7 +116,7 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
           {/* Year watermark — massive, 7% opacity, sits behind the frame */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0">
             <span
-              className="font-serif leading-none text-wedding-gold"
+              className={`leading-none text-wedding-gold ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
               style={{ fontSize: 170, opacity: 0.07 }}
             >
               {item.year.replace(/[^0-9]/g, '').slice(0, 4)}
@@ -159,7 +159,7 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
                 </motion.div>
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-[#1a1208] to-[#0a0908] flex items-center justify-center">
-                  <span className="font-serif text-wedding-gold/20 text-5xl">{displayYear}</span>
+                  <span className={`text-wedding-gold/20 text-5xl ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>{displayYear}</span>
                 </div>
               )}
             </div>

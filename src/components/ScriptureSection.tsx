@@ -1,8 +1,12 @@
 'use client';
 
 import FadeIn from '@/components/ui/FadeIn';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function ScriptureSection() {
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
+
   return (
     <section className="relative w-full min-h-[70vh] py-32 md:py-40 px-6 bg-stone-950 overflow-hidden">
       {/* God Ray — rotating conic gradient glow */}
@@ -19,17 +23,15 @@ export default function ScriptureSection() {
       <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
         {/* Reference — above the verse */}
         <FadeIn>
-          <p className="text-xs tracking-widest uppercase font-medium text-amber-600/80 mb-8">
-            Psalm 118:24
+          <p className={`text-xs tracking-widest uppercase font-medium text-amber-600/80 mb-8 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+            {t('scripture.reference')}
           </p>
         </FadeIn>
 
         {/* English Verse — Primary */}
         <FadeIn delay={0.15}>
-          <p className="font-display text-3xl md:text-5xl text-white leading-tight mb-8">
-            &ldquo;This is the day that the Lord has made;
-            <br />
-            let us rejoice and be glad in it.&rdquo;
+          <p className={`text-3xl md:text-5xl text-white leading-tight mb-8 ${isAmharic ? 'font-ethiopic font-light' : 'font-display'}`}>
+            &ldquo;{t('scripture.verse')}&rdquo;
           </p>
         </FadeIn>
 
