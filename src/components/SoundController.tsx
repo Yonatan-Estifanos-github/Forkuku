@@ -11,11 +11,13 @@ function CountdownUnit({
   suffix,
   showSep,
   duration = 0.18,
+  isAmharic,
 }: {
   value: string;
   suffix: string;
   showSep?: boolean;
   duration?: number;
+  isAmharic?: boolean;
 }) {
   return (
     <span className="inline-flex items-center leading-none">
@@ -37,7 +39,7 @@ function CountdownUnit({
           </motion.span>
         </AnimatePresence>
       </span>
-      <span className="opacity-60 ml-1 text-[10px]">{suffix}</span>
+      <span className={`opacity-60 ml-1 text-[10px] ${isAmharic ? 'font-ethiopic' : ''}`}>{suffix}</span>
       {showSep && <span className="opacity-30 mx-3 sm:mx-4"> : </span>}
     </span>
   );
@@ -49,6 +51,7 @@ export default function SoundController() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const shouldResumeRef = useRef(false);
   const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
 
   // Auto-start if user opted into music on the login page
   useEffect(() => {
@@ -144,13 +147,13 @@ export default function SoundController() {
         {mounted && (
           <span className="inline-flex items-center gap-0">
             {timeRemaining.isComplete ? (
-              <span>00D : 00H : 00M : 00S</span>
+              <span className={isAmharic ? 'font-ethiopic' : ''}>00D : 00H : 00M : 00S</span>
             ) : (
               <>
-                <CountdownUnit value={formatNumber(timeRemaining.days)}    suffix="D" showSep />
-                <CountdownUnit value={formatNumber(timeRemaining.hours)}   suffix="H" showSep />
-                <CountdownUnit value={formatNumber(timeRemaining.minutes)} suffix="M" showSep />
-                <CountdownUnit value={formatNumber(timeRemaining.seconds)} suffix="S" />
+                <CountdownUnit value={formatNumber(timeRemaining.days)}    suffix={isAmharic ? 'ቀ' : 'D'} showSep isAmharic={isAmharic} />
+                <CountdownUnit value={formatNumber(timeRemaining.hours)}   suffix={isAmharic ? 'ሰ' : 'H'} showSep isAmharic={isAmharic} />
+                <CountdownUnit value={formatNumber(timeRemaining.minutes)} suffix={isAmharic ? 'ደ' : 'M'} showSep isAmharic={isAmharic} />
+                <CountdownUnit value={formatNumber(timeRemaining.seconds)} suffix={isAmharic ? 'ሰ' : 'S'} isAmharic={isAmharic} />
               </>
             )}
           </span>

@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 
-const VIDEO_SRC = "https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/wedding_venue.mp4";
+const VIDEO_SRC = "/videos/wedding_venue.mp4";
 
 export default function GoogleEarthVideo() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -63,15 +63,17 @@ export default function GoogleEarthVideo() {
     <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-black">
       <video
         ref={videoRef}
-        src={VIDEO_SRC}
         className="absolute inset-0 w-full h-full object-cover"
         autoPlay={false}
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="auto"
         onTimeUpdate={handleTimeUpdate}
-      />
+      >
+        <source src={VIDEO_SRC} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
       
       {/* Dark Overlay for Text Readability */}
       <div className="absolute inset-0 bg-black/40 z-10" />
