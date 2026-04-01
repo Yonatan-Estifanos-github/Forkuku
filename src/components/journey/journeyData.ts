@@ -25,10 +25,10 @@ export const JOURNEY_DATA: JourneyItem[] = [
     description:
       '[Saron] It started on a Covid Zoom prayer line. I was deeply moved by the absolute conviction in the way he prayed. Later, an Instagram request led me to notice this one guy stealing the spotlight in every photo. Turns out, it was Yoni. Those early DMs sparked something real, eventually leading to my very first trip to Harrisburg, PA.',
     image: img('firstime inPA2021.jpg'),
-    amYear: 'መጀመሪያ 2021',
-    amTitle: 'የዙም ጸሎት እና የኢንስታግራም ክትትል',
+    amYear: '2021 መጀመሪያ ወራቶች',
+    amTitle: 'በረከተ መርገም',
     amDescription:
-      '[Saron] የጀመረው በኮቪድ የዙም የጸሎት መስመር ላይ ነው። በሚጸልይበት መንገድ እና በነበረው ፍጹም እምነት በጣም ተነክቼ ነበር። ቆየት ብሎ፣ የኢንስታግራም ጥያቄ በአንዱ ሰው ፎቶዎች ላይ ልዩ ትኩረት እንድሰጥ አደረገኝ። ያም ሰው ዮኒ ሆኖ ተገኘ። እነዚያ የመጀመሪያ የውስጥ መልእክቶች (DMs) እውነተኛ ነገርን ፈጠሩ፤ ውሎ አድሮም ለመጀመሪያ ጊዜ ወደ ሃሪስበርግ፣ ፔንሲልቬንያ እንድጓዝ ምክንያት ሆኑ።',
+      'ሳሮን:- የኮቪድ ዘመን ከቤት መዉጣት በመከልከሉ ምክንያት መንፈሳዊ ፕሮግራሞችም ወደ ዙም ሚቲንግ ተቀየሩ። ታላቁ ፈላስፋ ከበደ ሚካኤል \'በረከተ መርገም\' (bitter sweet) ብለዉ እንደገለፁት ክፉዉ የኮቪድ ዘመንም እኔና ዮኒ በዙም የፀሎት ፕሮግራም ላይ የተገናኘንበትን መልካም እድልን ከፈተ። ሜሪላንድ እና ፔንሲልቫኒያ በየቤታችን ሆነን እየተካፈልን በሄድንና ቀናት በጨመሩ ቁጥር ከጉባዔዉ መካከል የአንድ ሰዉ የፀሎት ስታይል ልቤን እየሰረቀዉ መጣ። ለካስ በዚያም በኩል ተመሳሳይ ስሜት ተፈጥሮ ነበርና አንድ ቀን የኢንስታግራም ጓደኝነት ጥያቄ ደረሰኝ። ዮኒ ነበር። ሃሌሉያ!! ጓደኝነት ተጀመረ። ሀሪስበርግ ፔንሲልቫኒያ መመላለስ ኒዉ ኖርማል ሆነ። ለዚህ ቅርቡ ታይትል የጋብርኤል ጋርሲያ \'Love in the time of cholera\' የሚለዉ ነዉ:: (Watch: ሙሉ ታሪኩን ሳይሆን the devotion despite disease and distance)::',
   },
   {
     id: 2,
@@ -38,9 +38,9 @@ export const JOURNEY_DATA: JourneyItem[] = [
       '[Yoni] Seeing her in person at The Gathering — a conference in DC brought together by multiple different ministries — I just remember that curly hair and thinking how beautiful she was. [Saron] Inspired by Jesus washing his disciples\u2019 feet, the conference ended with a foot-washing service. I hate feet, yet I somehow found myself washing Yoni\u2019s. That night shifted everything. We texted endlessly — pausing at times to find clarity — leading to a December day where we finally confessed how we felt.',
     image: img('firsttime tellign each other w elike eachother2021.jpg'),
     amYear: 'መጨረሻ 2021',
-    amTitle: 'ሁሉም ነገር የተቀየረባት ምሽት',
+    amTitle: 'ታሪክን የቀየረች ምሽት',
     amDescription:
-      '[Yoni] በተለያዩ አገልግሎቶች በተዘጋጀው በዲሲው \'The Gathering\' ኮንፈረንስ ላይ በአካል ሳያት — ያን የተንጨበረረ ፀጉሯን እና ምን ያህል ቆንጆ እንደሆነች ማሰቤን አስታውሳለሁ። [Saron] ኢየሱስ የደቀ መዛሙርቱን እግር በማጠቡ ተመስጦ፣ ኮንፈረንሱ በእግር እጥበት አገልግሎት ተጠናቀቀ። እግር አልወድም፣ ነገር ግን በሆነ አጋጣሚ የዮኒን እግር ሳጥብ ተገኘሁ። ያች ምሽት ሁሉንም ነገር ቀየረችው። ማለቂያ የሌለው የጽሁፍ መልእክት እንለዋወጥ ነበር — አንዳንድ ጊዜ ግልጽነትን ለማግኘት እረፍት እያደረግን — በመጨረሻም በታህሳስ ወር አንድ ቀን የተሰማንን እስከምንነጋገርበት ጊዜ ድረስ አደረሰን።',
+      'ዮኒ:- \'The Gathering\' በተሰኘዉና በዲሲ የተለያዩ አገልግሎቶችን አካቶ በተካሄደዉ ኮንፈረንስ ላይ ፀጉሯን በተንጨባረረ ስታይል ተሰርታ ሳሮንን በአካል ሳያት ዉበቷ እንዴት በንዝረት እንደሳበኝ እና አሁንም በተያየን ቁጥር ያ ስሜት እንደ አዲስ መኖሩ ይደንቀኛል። ሳሮን:- \'The Gathering\' በተሰኘዉ የዲሲ ኮንፈረንስ የተጠናቀቀዉ ዮሀንስ 13፡5 ላይ እየሱስ “የደቀ መዛሙርቱንም እግር ሊያጥብና በታጠቀበትም ማበሻ ጨርቅ ሊያብስ ጀመረ።” ተብሎ በተጻፈዉ መሰረት እርስ በእርስ እግር በመተጣጠብ ነበር። እንኳን እግር ማጠብን ይቅርና እግርን ራሱ የምጠላዋ ሴት በዚያች ምሽት የዮኒን እግር ሳጥብ ራሴን አገኘሁት። ታሪክ ተቀየረ። በዚያዉ ዓመት ታህሳስ ወር መዋደዳችንን በግልፅ እስከተነጋገርንበት ጊዜ ድረስ የስልክ ልዉዉጥ ጎረፈ። አንዳንዴ \'ለመፈታተሽ\' ልብ ከተሰቃቀልንባቸዉ ጥቂት ጊዜያት (pauses) በስተቀር።',
   },
   {
     id: 3,
@@ -50,9 +50,9 @@ export const JOURNEY_DATA: JourneyItem[] = [
       '[Saron] Feelings were one thing — actually driving out to Harrisburg to find out if any of this was real was another. So I did. It was. [Yoni] We didn\'t want to rush it. We started fasting and praying, took things slow, and before long we were quietly dating. We celebrated her birthday that month with a surprise — our first real moment together as something more.',
     image: img('herbirthday2022feb.jpeg'),
     amYear: 'የካቲት 2022',
-    amTitle: 'አሰሳው',
+    amTitle: 'ክትትሉ',
     amDescription:
-      '[Saron] ስሜት አንድ ነገር ነው — ይህ ሁሉ እውነት መሆኑን ለማረጋገጥ ወደ ሃሪስበርግ መንዳት ደግሞ ሌላ ነበር። እናም አደረግኩት። እውነትም ነበር። [Yoni] መቸኮል አልፈለግንም። መጾም እና መጸለይ ጀመርን፣ ቀስ ብለን ተጓዝን፣ ብዙም ሳይቆይ በጸጥታ የፍቅር ግንኙነት ጀመርን። በዚያ ወር የልደት ቀኗን በድንገተኛ ስጦታ አከበርን — ይህ እንደ ፍቅረኛሞች አብረን ያሳለፍነው የመጀመሪያው እውነተኛ ጊዜ ነበር።',
+      'ሳሮን፡- በስሜት የተጀመረ ፍቅር በተግባር ካልተረጋገጠ አደጋዉ ያመዝናል። ሂደቱ ግን ቀላል አልነበረም። በተደጋጋሚ ወደ ሀሪስበርግ መንዳትን አንዳንዴም በምሽት ዋጋን ያስከፈለ ነበር። ዮኒ:-መቸኮል አልፈለግንም። ጾም ፀሎት ጀመርን:: ኳስ በመሬት። ቀስ በቀስ የፍቅር ቀጠሮ (dating) ድምፅ አጥፍተን ጀመርን። በዚያዉ ወር የሳሮንን ልደት በድንገተኛ ስጦታ (surprise) አከበርን:: እንደ ፍቅረኛሞች አብረን ያሳለፍነው የመጀመሪያው እውነተኛ ጊዜ (dating) ነበር።',
   },
   {
     id: 4,
