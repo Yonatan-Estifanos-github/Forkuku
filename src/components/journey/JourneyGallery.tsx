@@ -23,7 +23,9 @@ export default function JourneyGallery() {
     <section id="story" ref={containerRef} className="relative bg-luxury-black py-24 md:py-40">
       {/* Section header */}
       <div className="text-center mb-20 md:mb-32 px-4 max-w-2xl mx-auto">
-        <h2 className="font-serif text-4xl md:text-6xl gold-shimmer mb-8">{t('journey.heading')}</h2>
+        <h2 className={`text-4xl md:text-6xl gold-shimmer mb-8 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+          {t('journey.heading')}
+        </h2>
         <div className="w-8 h-[1px] bg-wedding-gold/40 mx-auto mb-8" />
         <p className={`text-base md:text-lg text-white/60 leading-relaxed ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
           {t('journey.subtitle')}

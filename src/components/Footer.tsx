@@ -5,7 +5,8 @@ import { useLanguage } from '@/context/LanguageContext';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -20,7 +21,7 @@ export default function Footer() {
         className="group flex flex-col items-center gap-4 transition-opacity hover:opacity-80"
         aria-label="Return to top"
       >
-        <span className="text-[#D4A845] text-[10px] tracking-[0.3em] uppercase font-bold group-hover:underline underline-offset-4">
+        <span className={`text-[#D4A845] text-[10px] tracking-[0.3em] uppercase font-bold group-hover:underline underline-offset-4 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
           {t('footer.returnToTop')}
         </span>
         <motion.div whileHover={{ y: -5 }} className="text-[#D4A845]">
@@ -35,10 +36,10 @@ export default function Footer() {
 
       {/* Signature & Copyright */}
       <div className="flex flex-col items-center gap-4 text-center">
-        <p className="font-serif text-[#FFF5E6]/90 text-base italic">
+        <p className={`text-[#FFF5E6]/90 text-base ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
           {t('footer.madeWith')}
         </p>
-        <p className="font-sans text-[#FFF5E6]/40 text-xs tracking-wider uppercase">
+        <p className={`text-[#FFF5E6]/40 text-xs tracking-wider uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
           {t('footer.copyright')} &copy; {currentYear}
         </p>
       </div>
@@ -48,7 +49,7 @@ export default function Footer() {
         href="https://github.com/Yonatan-Estifanos-github/ForKuku"
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-4 px-6 py-2 rounded-full border border-[#D4A845]/30 bg-[#D4A845]/5 hover:bg-[#D4A845]/10 text-[#D4A845] text-[10px] tracking-[0.2em] uppercase font-bold transition-all duration-300 backdrop-blur-sm"
+        className={`mt-4 px-6 py-2 rounded-full border border-[#D4A845]/30 bg-[#D4A845]/5 hover:bg-[#D4A845]/10 text-[#D4A845] text-[10px] tracking-[0.2em] uppercase font-bold transition-all duration-300 backdrop-blur-sm ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
       >
         {t('footer.sourceCode')}
       </a>

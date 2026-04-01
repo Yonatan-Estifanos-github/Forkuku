@@ -188,6 +188,8 @@ const SUPERLATIVE_PREFIX    = 'Most Likely to ';
 const HIDDEN_TALENT_PREFIX  = 'Hidden Talent: ';
 
 function SuperlativeOverlay({ text }: { text: string }) {
+  const { language } = useLanguage();
+  const isAmharic = language === 'am';
   const isSuperlative   = text.startsWith(SUPERLATIVE_PREFIX);
   const isHiddenTalent  = text.startsWith(HIDDEN_TALENT_PREFIX);
   const label    = isSuperlative  ? 'Most Likely to'
@@ -209,8 +211,8 @@ function SuperlativeOverlay({ text }: { text: string }) {
     >
       {/* Gold micro-label */}
       <motion.p
-        className="font-sans text-wedding-gold/70 tracking-[0.35em] uppercase mb-1.5 leading-none"
-        style={{ fontSize: '5.5px' }}
+        className={`text-wedding-gold/70 tracking-[0.35em] uppercase mb-1.5 leading-none ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
+        style={{ fontSize: isAmharic ? '7px' : '5.5px' }}
         initial={{ opacity: 0, y: 4 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0 }}
@@ -230,8 +232,8 @@ function SuperlativeOverlay({ text }: { text: string }) {
 
       {/* Punchline — italic Cormorant */}
       <motion.p
-        className="font-serif italic text-white/90 leading-snug"
-        style={{ fontSize: '8px' }}
+        className={`italic text-white/90 leading-snug ${isAmharic ? 'font-ethiopic font-light not-italic' : 'font-serif'}`}
+        style={{ fontSize: isAmharic ? '10px' : '8px' }}
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0 }}
@@ -242,8 +244,8 @@ function SuperlativeOverlay({ text }: { text: string }) {
 
       {/* Tap-to-close hint */}
       <motion.p
-        className="font-sans text-white/20 tracking-[0.25em] uppercase absolute bottom-1.5"
-        style={{ fontSize: '5px' }}
+        className={`text-white/20 tracking-[0.25em] uppercase absolute bottom-1.5 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
+        style={{ fontSize: isAmharic ? '7px' : '5px' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -273,6 +275,8 @@ function PartyCard({
 }) {
   const [isFlipped, setIsFlipped]   = useState(false);
   const [isActive,  setIsActive]    = useState(false);
+  const { language } = useLanguage();
+  const isAmharic = language === 'am';
 
   // ── 3D tilt (default variant, front face only) ──
   const mouseX = useMotionValue(0);
@@ -343,11 +347,11 @@ function PartyCard({
     <div className="absolute bottom-0 left-0 right-0 px-2 pb-2 text-center z-30">
       {member.name ? (
         <>
-          <p className="font-serif text-[10px] md:text-xs text-white/85 leading-tight truncate">{member.name}</p>
-          <p className="font-sans text-[7px] md:text-[9px] text-wedding-gold/60 tracking-[0.3em] uppercase mt-0.5 truncate">{member.role}</p>
+          <p className={`text-[10px] md:text-xs text-white/85 leading-tight truncate ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>{member.name}</p>
+          <p className={`text-[7px] md:text-[9px] text-wedding-gold/60 tracking-[0.3em] uppercase mt-0.5 truncate ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>{member.role}</p>
         </>
       ) : (
-        <p className="font-sans text-[7px] md:text-[9px] text-white/22 tracking-[0.3em] uppercase">{member.role}</p>
+        <p className={`text-[7px] md:text-[9px] text-white/22 tracking-[0.3em] uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>{member.role}</p>
       )}
     </div>
   );
@@ -367,7 +371,7 @@ function PartyCard({
       >
         {/* Number watermark */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-          <span className="font-serif leading-none text-wedding-gold" style={{ fontSize: '4.5rem', opacity: 0.07 }}>
+          <span className={`leading-none text-wedding-gold ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`} style={{ fontSize: '4.5rem', opacity: 0.07 }}>
             {member.id}
           </span>
         </div>
@@ -381,7 +385,7 @@ function PartyCard({
         {/* Tap hint (only when not active) */}
         {!isActive && (
           <div className="absolute top-1.5 right-1.5 z-30">
-            <span className="font-sans text-[6px] text-white/20 tracking-widest uppercase">tap</span>
+            <span className={`text-[6px] text-white/20 tracking-widest uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>tap</span>
           </div>
         )}
 
@@ -425,7 +429,7 @@ function PartyCard({
         >
           {/* Number watermark */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-            <span className="font-serif leading-none text-wedding-gold" style={{ fontSize: '4.5rem', opacity: 0.07 }}>
+            <span className={`leading-none text-wedding-gold ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`} style={{ fontSize: '4.5rem', opacity: 0.07 }}>
               {member.id}
             </span>
           </div>
@@ -439,7 +443,7 @@ function PartyCard({
 
           {/* Tap hint */}
           <div className="absolute top-1.5 right-1.5 z-30">
-            <span className="font-sans text-[6px] text-white/20 tracking-widest uppercase">tap</span>
+            <span className={`text-[6px] text-white/20 tracking-widest uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>tap</span>
           </div>
 
           {/* Edge vignette */}
@@ -459,17 +463,17 @@ function PartyCard({
           {/* Top ornament */}
           <div className="flex flex-col items-center gap-1 pt-0.5">
             <div className="w-5 h-[1px] bg-wedding-gold/40" />
-            <p className="font-sans text-[6px] md:text-[7px] text-wedding-gold/60 tracking-[0.4em] uppercase">Fun Fact</p>
+            <p className={`text-[6px] md:text-[7px] text-wedding-gold/60 tracking-[0.4em] uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>Fun Fact</p>
             <div className="w-5 h-[1px] bg-wedding-gold/40" />
           </div>
 
           {/* Fun fact text */}
-          <p className="font-serif text-[8px] md:text-[9px] text-white/78 text-center leading-relaxed italic flex-1 flex items-center px-0.5 py-2">
+          <p className={`text-[8px] md:text-[9px] text-white/78 text-center leading-relaxed italic flex-1 flex items-center px-0.5 py-2 ${isAmharic ? 'font-ethiopic font-light not-italic' : 'font-serif'}`}>
             {member.funFact}
           </p>
 
           {/* Bottom hint */}
-          <p className="font-sans text-[6px] text-white/20 tracking-[0.25em] uppercase">tap to close</p>
+          <p className={`text-[6px] text-white/20 tracking-[0.25em] uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>tap to close</p>
         </div>
       </motion.div>
     </motion.div>

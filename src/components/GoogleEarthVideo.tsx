@@ -2,21 +2,24 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '@/context/LanguageContext';
 
 const VIDEO_SRC = "https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/wedding_venue.mp4";
-
-const CAPTIONS = [
-  { text: ["From every place we've been…"] },
-  { text: ["God has been faithful in our story."] },
-  { text: ["Now we invite you to share our joy", "surrounded by those we love."] },
-  { text: ["Come celebrate with us", "in Wrightsville, Pennsylvania."] }
-];
 
 export default function GoogleEarthVideo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [currentCaptionIndex, setCurrentCaptionIndex] = useState(0);
   const [canPlay, setCanPlay] = useState(false);
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
+
+  const CAPTIONS = [
+    { text: [t('venue.caption1')] },
+    { text: [t('venue.caption2')] },
+    { text: [t('venue.caption3_1'), t('venue.caption3_2')] },
+    { text: [t('venue.caption4_1'), t('venue.caption4_2')] }
+  ];
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -87,7 +90,7 @@ export default function GoogleEarthVideo() {
             {CAPTIONS[currentCaptionIndex].text.map((line, i) => (
               <h2 
                 key={i}
-                className="font-serif italic text-2xl md:text-4xl lg:text-5xl text-[#D4A845] mb-2 leading-tight drop-shadow-xl"
+                className={`italic text-2xl md:text-4xl lg:text-5xl text-[#D4A845] mb-2 leading-tight drop-shadow-xl ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
               >
                 {line}
               </h2>
@@ -98,8 +101,8 @@ export default function GoogleEarthVideo() {
 
       {/* Bottom Scroll Hint */}
       <div className="absolute bottom-12 left-0 w-full z-30 flex flex-col items-center justify-center px-6 text-center">
-        <span className="text-[#D4A845] text-[10px] md:text-xs tracking-[0.2em] uppercase font-bold mb-4 opacity-90 drop-shadow-md max-w-md leading-relaxed">
-          Please RSVP below and we will contact you soon about day-of plan and address
+        <span className={`text-[#D4A845] text-[10px] md:text-xs tracking-[0.2em] uppercase font-bold mb-4 opacity-90 drop-shadow-md max-w-md leading-relaxed ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+          {t('venue.rsvpHint')}
         </span>
         
         <motion.div

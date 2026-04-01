@@ -351,7 +351,9 @@ const lineExpand = {
 // HERO OVERLAY - Cinematic Luxury Design
 // ============================================================================ 
 function HeroOverlay() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
+
   return (
     <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between items-center h-full w-full">
       {/* Seamless Vignette Overlay */}
@@ -388,7 +390,7 @@ function HeroOverlay() {
               <motion.p
                 variants={maskReveal}
                 custom={2.2}
-                className="text-[#FFFFFF] tracking-[0.5em] text-sm sm:text-base md:text-lg font-extrabold uppercase mb-3 drop-shadow-lg"
+                className={`text-[#FFFFFF] tracking-[0.5em] text-sm sm:text-base md:text-lg font-extrabold uppercase mb-3 drop-shadow-lg ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
                 style={{ textShadow: '0 4px 30px rgba(0,0,0,1), 0 2px 10px rgba(0,0,0,1)' }}
               >
                 {t('hero.month')}
@@ -421,7 +423,7 @@ function HeroOverlay() {
               <motion.p
                 variants={maskReveal}
                 custom={2.5}
-                className="editorial-label text-[#FFFFFF] tracking-[0.6em] text-xs sm:text-sm md:text-base font-bold uppercase mt-3"
+                className={`editorial-label text-[#FFFFFF] tracking-[0.6em] text-xs sm:text-sm md:text-base font-bold uppercase mt-3 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
               >
                 2026
               </motion.p>
@@ -433,7 +435,7 @@ function HeroOverlay() {
             <motion.p
               variants={maskReveal}
               custom={2.8}
-              className="editorial-label text-[#D4A845] tracking-[0.4em] text-xs sm:text-sm md:text-base font-bold uppercase"
+              className={`editorial-label text-[#D4A845] tracking-[0.4em] text-xs sm:text-sm md:text-base font-bold uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
             >
               {t('hero.location')}
             </motion.p>
@@ -466,9 +468,9 @@ function HeroOverlay() {
               <motion.h1
                 variants={maskReveal}
                 custom={0.5}
-                className="gold-shimmer font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.15em]"
+                className={`gold-shimmer text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.15em] ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
               >
-                Yonatan
+                {t('hero.yonatan')}
               </motion.h1>
             </div>
 
@@ -483,7 +485,7 @@ function HeroOverlay() {
                 custom={1.5}
                 className="w-8 sm:w-12 md:w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4A845]/50 origin-right"
               />
-              <span className="text-[#D4A845]/90 text-xl sm:text-2xl md:text-3xl font-serif italic">&</span>
+              <span className={`text-[#D4A845]/90 text-xl sm:text-2xl md:text-3xl font-serif italic ${isAmharic ? 'font-ethiopic not-italic' : ''}`}>&</span>
               <motion.div
                 variants={lineExpand}
                 custom={1.5}
@@ -496,9 +498,9 @@ function HeroOverlay() {
               <motion.h1
                 variants={maskReveal}
                 custom={0.8}
-                className="gold-shimmer font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.15em]"
+                className={`gold-shimmer text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.15em] ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
               >
-                Saron
+                {t('hero.saron')}
               </motion.h1>
             </div>
           </motion.div>
@@ -517,7 +519,7 @@ function HeroOverlay() {
              <motion.p
               animate={{ y: [0, 5, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="gold-shimmer tracking-[0.4em] text-xs sm:text-sm uppercase font-black"
+              className={`gold-shimmer tracking-[0.4em] text-xs sm:text-sm uppercase font-black ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
             >
               {t('hero.scroll')}
             </motion.p>

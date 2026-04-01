@@ -67,7 +67,22 @@
     "scroll": "Scroll",
     "month": "September",
     "location": "Wrightsville, Pennsylvania",
-    "utilityMusic": "Worship"
+    "utilityMusic": "Worship",
+    "yonatan": "Yonatan",
+    "saron": "Saron"
+  },
+  "venue": {
+    "caption1": "From every place we've been…",
+    "caption2": "God has been faithful in our story.",
+    "caption3_1": "Now we invite you to share our joy",
+    "caption3_2": "surrounded by those we love.",
+    "caption4_1": "Come celebrate with us",
+    "caption4_2": "in Wrightsville, Pennsylvania.",
+    "rsvpHint": "Please RSVP below and we will contact you soon about day-of plan and address"
+  },
+  "scripture": {
+    "reference": "Psalm 118:24",
+    "verse": "This is the day that the Lord has made; let us rejoice and be glad in it."
   },
   "party": {
     "heading": "The Wedding Party",
@@ -99,6 +114,8 @@
     "timeout": "Request timed out. Please check your connection and try again.",
     "searchAgain": "Search Again",
     "multipleFound": "We found a few parties that match. Please select the one that includes your name.",
+    "includes": "Includes:",
+    "thisIsMe": "This is me",
     "youreInvited": "You're Invited",
     "welcome": "Welcome, {name}!",
     "respondForEach": "Please respond for each guest",
@@ -123,6 +140,7 @@
     "submitting": "Sending...",
     "submitError": "Failed to submit RSVP. Please try again.",
     "goBack": "Go Back",
+    "notMyFamily": "Not the {name}? Search for your invitation",
     "thankYouTitle": "Thank You!",
     "thankYouMessage": "{name}, your response has been recorded. We look forward to celebrating with you!",
     "registryNote": "Your presence at our celebration means the world to us and is truly all we need. For those who have kindly asked about gifts, we've put together a registry to help with coordination.",
