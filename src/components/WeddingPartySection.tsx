@@ -600,6 +600,47 @@ export default function WeddingPartySection() {
           </div>
           <PartyColumn title={t('party.bridesmaids')} members={BRIDESMAIDS} side="right" gender="female" variant="superlative" />
         </div>
+
+        {/* --- PARENTS SECTION --- */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="mt-24 md:mt-32 pt-16 border-t border-wedding-gold/15 flex flex-col items-center text-center"
+        >
+          <h3 className={`text-3xl md:text-4xl text-wedding-gold mb-8 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
+            {t('party.parentsHeading')}
+          </h3>
+
+          <div className="relative group max-w-4xl mx-auto mb-10">
+            {/* Museum Frame for Parents Photo */}
+            <div className="relative z-10 border border-wedding-gold/25 bg-[#0f0e0d] p-3 sm:p-5 shadow-2xl transition-transform duration-700 group-hover:scale-[1.01]">
+              {/* Gold corner accents */}
+              <div className="absolute top-1.5 left-1.5 w-6 h-6 border-t border-l border-wedding-gold/55" />
+              <div className="absolute top-1.5 right-1.5 w-6 h-6 border-t border-r border-wedding-gold/55" />
+              <div className="absolute bottom-1.5 left-1.5 w-6 h-6 border-b border-l border-wedding-gold/55" />
+              <div className="absolute bottom-1.5 right-1.5 w-6 h-6 border-b border-r border-wedding-gold/55" />
+
+              <div className="relative overflow-hidden aspect-[16/10] sm:aspect-[16/9]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/bothfamilyfromeng.JPG"
+                  alt="Our Parents"
+                  className="w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              </div>
+            </div>
+            
+            {/* Soft glow behind frame */}
+            <div className="absolute inset-0 bg-wedding-gold/5 blur-3xl -z-10 rounded-full scale-110" />
+          </div>
+
+          <p className={`max-w-2xl mx-auto text-lg md:text-xl text-stone-300 leading-relaxed px-4 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
+            &ldquo;{t('party.parentsDescription')}&rdquo;
+          </p>
+        </motion.div>
       </div>
     </section>
   );
