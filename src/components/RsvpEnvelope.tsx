@@ -5,6 +5,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Html, ContactShadows } from '@react-three/drei';
 import { animated, useSpring } from '@react-spring/three';
 import * as THREE from 'three';
+import { useLanguage } from '@/context/LanguageContext';
 
 // ============================================================================
 // COLORS - White & Green Botanical Theme
@@ -176,6 +177,8 @@ interface WaxSealProps {
 function WaxSeal({ stage, onHoldStart, onHoldEnd, isHolding }: WaxSealProps) {
   const meshRef = useRef<THREE.Group>(null!);
   const [hovered, setHovered] = useState(false);
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
 
   const { scale } = useSpring({
     scale: stage === 'breaking' ? 0 : 1,
@@ -253,14 +256,14 @@ function WaxSeal({ stage, onHoldStart, onHoldEnd, isHolding }: WaxSealProps) {
       {hovered && (
         <Html center position={[0, 0.18, 0]} style={{ pointerEvents: 'none' }}>
           <div
-            className="text-xs tracking-[0.2em] uppercase whitespace-nowrap font-light px-3 py-1 rounded-full"
+            className={`text-xs tracking-[0.2em] uppercase whitespace-nowrap font-light px-3 py-1 rounded-full ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
             style={{
               color: COLORS.textPrimary,
               backgroundColor: 'rgba(255,255,255,0.9)',
               border: `1px solid ${COLORS.liner}`,
             }}
           >
-            Hold to Open
+            {t('rsvp.holdToOpen')}
           </div>
         </Html>
       )}
@@ -321,6 +324,8 @@ function EnvelopeFlap({ stage }: { stage: AnimationStage }) {
 // ============================================================================
 function InvitationCard({ stage, onCardReady }: { stage: AnimationStage; onCardReady?: () => void }) {
   const [showContent, setShowContent] = useState(false);
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
 
   const isExtracting = stage === 'extracting';
   const isPresenting = stage === 'presenting';
@@ -405,14 +410,14 @@ function InvitationCard({ stage, onCardReady }: { stage: AnimationStage; onCardR
           <div className="flex flex-col items-center gap-1">
             {/* Names */}
             <h2
-              className="text-2xl tracking-wide"
+              className={`text-2xl tracking-wide ${isAmharic ? 'font-ethiopic font-light' : ''}`}
               style={{
-                fontFamily: 'var(--font-cormorant), Georgia, serif',
+                fontFamily: isAmharic ? 'inherit' : 'var(--font-cormorant), Georgia, serif',
                 color: COLORS.textPrimary,
                 fontWeight: 500,
               }}
             >
-              Yonatan & Saron
+              {t('hero.yonatan')} & {t('hero.saron')}
             </h2>
 
             {/* Decorative divider */}
@@ -425,26 +430,26 @@ function InvitationCard({ stage, onCardReady }: { stage: AnimationStage; onCardR
 
             {/* Date */}
             <p
-              className="text-sm tracking-[0.25em] uppercase"
+              className={`text-sm tracking-[0.25em] uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
               style={{
-                fontFamily: 'var(--font-cormorant), Georgia, serif',
+                fontFamily: isAmharic ? 'inherit' : 'var(--font-cormorant), Georgia, serif',
                 color: COLORS.textPrimary,
                 fontWeight: 600,
               }}
             >
-              September 4, 2026
+              {isAmharic ? `${t('hero.month')} 4, 2026` : 'September 4, 2026'}
             </p>
 
             {/* Subtitle */}
             <p
-              className="text-[10px] tracking-[0.2em] uppercase mt-3"
+              className={`text-[10px] tracking-[0.2em] uppercase mt-3 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
               style={{
-                fontFamily: 'var(--font-inter), sans-serif',
+                fontFamily: isAmharic ? 'inherit' : 'var(--font-inter), sans-serif',
                 color: COLORS.liner,
                 fontWeight: 500,
               }}
             >
-              You&apos;re Invited
+              {t('rsvp.youreInvited')}
             </p>
           </div>
         </Html>
@@ -631,6 +636,8 @@ interface RsvpEnvelopeProps {
 
 export default function RsvpEnvelope({ onCardPresented, className = '' }: RsvpEnvelopeProps) {
   const [mounted, setMounted] = useState(false);
+  const { t, language } = useLanguage();
+  const isAmharic = language === 'am';
 
   useEffect(() => {
     setMounted(true);
@@ -639,8 +646,8 @@ export default function RsvpEnvelope({ onCardPresented, className = '' }: RsvpEn
   if (!mounted) {
     return (
       <div className={`w-full h-[550px] flex items-center justify-center ${className}`}>
-        <p className="text-[#8F9E8B] text-sm tracking-widest uppercase">
-          Loading...
+        <p className={`text-[#8F9E8B] text-sm tracking-widest uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+          {t('rsvp.loadingEnvelope')}
         </p>
       </div>
     );
@@ -666,12 +673,12 @@ export default function RsvpEnvelope({ onCardPresented, className = '' }: RsvpEn
       </Canvas>
 
       {/* Instruction */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none w-full px-4 text-center">
         <p
-          className="text-xs tracking-[0.25em] uppercase text-center"
+          className={`text-xs tracking-[0.25em] uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
           style={{ color: COLORS.liner }}
         >
-          Click & hold the seal to open
+          {t('rsvp.openInstruction')}
         </p>
       </div>
     </div>

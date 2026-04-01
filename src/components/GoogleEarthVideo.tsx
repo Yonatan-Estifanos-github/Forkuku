@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 
-const VIDEO_SRC = "https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/wedding_venue.mp4";
+const VIDEO_SRC = "/videos/wedding_venue.mp4";
 
 export default function GoogleEarthVideo() {
   const containerRef = useRef<HTMLDivElement>(null);
