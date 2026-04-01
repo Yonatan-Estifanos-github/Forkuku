@@ -191,7 +191,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
     title: 'The Blessing Before the Ring',
     description:
       '[Yoni] In Ethiopian tradition, before a man proposes, elders go to the family first \u2014 on his behalf \u2014 to ask for their daughter\u2019s hand and receive their blessing. Before I could do anything, her family had to say yes. While she and I were in Puerto Rico, that was happening back home. I just had to wait. One text came through. It said \u201cGo.\u201d And I went.',
-    image: img('elders.jpeg'),
+    image: img('elders1.jpeg'),
     amYear: 'ሰኔ 2025',
     amTitle: 'ከቀለበቱ በፊት በረከቱ',
     amDescription:
