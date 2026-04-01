@@ -26,9 +26,9 @@ export const JOURNEY_DATA: JourneyItem[] = [
       '[Saron] It started on a Covid Zoom prayer line. I was deeply moved by the absolute conviction in the way he prayed. Later, an Instagram request led me to notice this one guy stealing the spotlight in every photo. Turns out, it was Yoni. Those early DMs sparked something real, eventually leading to my very first trip to Harrisburg, PA.',
     image: img('firstime inPA2021.jpg'),
     amYear: '2021 መጀመሪያ ወራቶች',
-    amTitle: 'በረከተ መርገም',
+    amTitle: 'የዙም ጸሎት እና የኢንስታግራም ክትትል',
     amDescription:
-      'ሳሮን:- የኮቪድ ዘመን ከቤት መዉጣት በመከልከሉ ምክንያት መንፈሳዊ ፕሮግራሞችም ወደ ዙም ሚቲንግ ተቀየሩ። ታላቁ ፈላስፋ ከበደ ሚካኤል \'በረከተ መርገም\' (bitter sweet) ብለዉ እንደገለፁት ክፉዉ የኮቪድ ዘመንም እኔና ዮኒ በዙም የፀሎት ፕሮግራም ላይ የተገናኘንበትን መልካም እድልን ከፈተ። ሜሪላንድ እና ፔንሲልቫኒያ በየቤታችን ሆነን እየተካፈልን በሄድንና ቀናት በጨመሩ ቁጥር ከጉባዔዉ መካከል የአንድ ሰዉ የፀሎት ስታይል ልቤን እየሰረቀዉ መጣ። ለካስ በዚያም በኩል ተመሳሳይ ስሜት ተፈጥሮ ነበርና አንድ ቀን የኢንስታግራም ጓደኝነት ጥያቄ ደረሰኝ። ዮኒ ነበር። ሃሌሉያ!! ጓደኝነት ተጀመረ። ሀሪስበርግ ፔንሲልቫኒያ መመላለስ ኒዉ ኖርማል ሆነ። ለዚህ ቅርቡ ታይትል የጋብርኤል ጋርሲያ \'Love in the time of cholera\' የሚለዉ ነዉ:: (Watch: ሙሉ ታሪኩን ሳይሆን the devotion despite disease and distance)::',
+      'ሳሮን:- 2021 መጀመሪያ ወራቶች የኮቪድ ዘመን ከቤት መዉጣት በመከልከሉ ምክንያት መንፈሳዊ ፕሮግራሞችም ወደ ዙም ሚቲንግ ተቀየሩ። ታላቁ ፈላስፋ ከበደ ሚካኤል \'በረከተ መርገም\' (bitter sweet) ብለዉ እንደገለፁት ክፉዉ የኮቪድ ዘመንም እኔና ዮኒ በዙም የፀሎት ፕሮግራም ላይ የተገናኘንበትን መልካም እድልን ከፈተ። ሜሪላንድ እና ፔንሲልቫኒያ በየቤታችን ሆነን እየተካፈልን በሄድንና ቀናት በጨመሩ ቁጥር ከጉባዔዉ መካከል የአንድ ሰዉ የፀሎት ስታይል ልቤን እየሰረቀዉ መጣ። ለካስ በዚያም በኩል ተመሳሳይ ስሜት ተፈጥሮ ነበርና አንድ ቀን የኢንስታግራም ጓደኝነት ጥያቄ ደረሰኝ። ዮኒ ነበር። ሃሌሉያ!! ጓደኝነት ተጀመረ። ሀሪስበርግ ፔንሲልቫኒያ መመላለስ ኒዉ ኖርማል ሆነ። ለዚህ ቅርቡ ታይትል የጋብርኤል ጋርሲያ \'Love in the time of cholera\' የሚለዉ ነዉ:: (Watch: ሙሉ ታሪኩን ሳይሆን the devotion despite disease and distance)::',
   },
   {
     id: 2,
