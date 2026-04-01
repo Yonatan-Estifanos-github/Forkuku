@@ -35,7 +35,6 @@ next-env.d.ts
 # local assets (now hosted on Supabase)
 public/images/
 public/audio/
-public/videos/
 
 # claude
 .claude/

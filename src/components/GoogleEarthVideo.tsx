@@ -63,15 +63,17 @@ export default function GoogleEarthVideo() {
     <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-black">
       <video
         ref={videoRef}
-        src={VIDEO_SRC}
         className="absolute inset-0 w-full h-full object-cover"
         autoPlay={false}
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="auto"
         onTimeUpdate={handleTimeUpdate}
-      />
+      >
+        <source src={VIDEO_SRC} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
       
       {/* Dark Overlay for Text Readability */}
       <div className="absolute inset-0 bg-black/40 z-10" />
