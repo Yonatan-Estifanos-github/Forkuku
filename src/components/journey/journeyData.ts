@@ -80,7 +80,7 @@ export const JOURNEY_DATA: JourneyItem[] = [
   {
     id: 6,
     year: 'Summer 2023',
-    title: "Abel & Hermela's Wedding",
+    title: "Abel & Hermella's Wedding",
     description:
       "[Saron] Before we even started dating, Hermella was the one who told me, \u2018Just go talk to him.\u2019 So standing by her side at her wedding, with Yoni right across the aisle as a groomsman, felt incredibly surreal. It was a hilarious, beautiful sneak peek at the future God was writing for us. [Yoni] I called Abel and begged him to get me paired to walk with her \u2014 lol thanks big dawg, I appreciate you for that.",
     image: img('abelandhermellawedding.jpg'),
