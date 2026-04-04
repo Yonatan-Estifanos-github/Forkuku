@@ -136,9 +136,20 @@ function SiteLoginPageInner() {
             <span className="block text-[#D4A845]/70 text-3xl sm:text-4xl my-1 font-light not-italic">&</span>
             Saron
           </motion.h1>
-          <p className="font-sans text-[#D4A845] text-[9px] sm:text-[10px] tracking-[0.45em] uppercase mt-1">
-            A Private Celebration
-          </p>
+          <div className="flex flex-col items-center gap-1 mt-1">
+            {isAmharic ? (
+              <p className="font-ethiopic text-[#D4A845]/80 text-sm sm:text-base text-center">
+                {t('login.psalm25')}
+              </p>
+            ) : (
+              <p className="font-serif italic text-[#D4A845]/80 text-[11px] sm:text-xs tracking-wide text-center">
+                &ldquo;No one who hopes in you will ever be put to shame…&rdquo;
+              </p>
+            )}
+            <p className="font-sans text-white/25 text-[9px] tracking-widest uppercase mt-0.5">
+              Psalm 25:3
+            </p>
+          </div>
         </motion.div>
 
         {/* Decorative line */}
