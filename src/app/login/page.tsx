@@ -142,7 +142,7 @@ function SiteLoginPageInner() {
                 {t('login.psalm25')}
               </p>
             ) : (
-              <p className="font-serif italic text-[#D4A845]/80 text-[11px] sm:text-xs tracking-wide text-center">
+              <p className="font-serif italic text-[#D4A845]/80 text-sm sm:text-base tracking-wide text-center">
                 &ldquo;No one who hopes in you will ever be put to shame…&rdquo;
               </p>
             )}
