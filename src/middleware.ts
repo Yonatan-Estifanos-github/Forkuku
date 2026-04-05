@@ -24,6 +24,7 @@ export function middleware(request: NextRequest) {
   const excludedPaths = [
     '/_next', '/api', '/static', '/login', '/admin',
     '/legal', '/favicon.ico', '/images', '/audio', '/fonts', '/textures', '/videos',
+    '/sms-opt-in-proof.jpg',
   ];
 
   if (excludedPaths.some((p) => pathname.startsWith(p))) {
