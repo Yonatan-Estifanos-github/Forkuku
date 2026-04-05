@@ -10,7 +10,7 @@ const nextConfig = {
     return [
       {
         source: '/sms-opt-in-proof.jpg',
-        destination: 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/rsvp2.jpg',
+        destination: 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/rsvp3.jpg',
         permanent: false,
       },
     ];
