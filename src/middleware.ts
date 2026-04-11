@@ -23,7 +23,7 @@ export function middleware(request: NextRequest) {
   // ── Paths excluded from password protection ──────────────────────────────
   const excludedPaths = [
     '/_next', '/api', '/static', '/login', '/admin',
-    '/legal', '/favicon.ico', '/images', '/audio', '/fonts', '/textures', '/videos',
+    '/legal', '/sms-optin-info', '/favicon.ico', '/images', '/audio', '/fonts', '/textures', '/videos',
     '/sms-opt-in-proof.jpg',
   ];
 
