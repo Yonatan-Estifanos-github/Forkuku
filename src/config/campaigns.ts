@@ -16,7 +16,7 @@ export interface Campaign {
   disabled?: boolean;
 }
 
-const COMPLIANCE_FOOTER = 'Yonatan & Saron Wedding: You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.';
+const COMPLIANCE_FOOTER = 'You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.';
 const SITE_LINK = 'https://theestifanos.com/?pwd=Matthew19:6';
 const PHOTO_STD = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_3.jpeg';
 const PHOTO_INVITE = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_2.jpeg';

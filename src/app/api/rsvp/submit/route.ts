@@ -157,7 +157,7 @@ export async function POST(req: Request) {
         await twilioClient.messages.create({
           to: phone,
           messagingServiceSid: 'MG0851f4936a77e5efd5c0f1d4b69eed14',
-          body: 'Yonatan & Saron Wedding: You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.',
+          body: 'You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.',
           mediaUrl: ['https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_3.jpeg'],
         });
       } catch (smsErr) {
