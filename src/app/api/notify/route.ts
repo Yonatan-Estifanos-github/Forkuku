@@ -174,7 +174,7 @@ function buildAlreadyRsvpedSmsBody(
       '',
       "We are so sorry you won't be able to join us, but we completely understand! Your love, prayers, and well-wishes are all we could ever ask for as we prepare to step into this marriage covenant.",
       '',
-      "If you selected 'Decline' by mistake, or if your plans change, you can update your response at any time:",
+      "If you selected 'Decline' by mistake, or if your plans change, you can update your response until June 1st:",
       magicLink,
       '',
       'Y & S',
