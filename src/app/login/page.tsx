@@ -57,7 +57,7 @@ function SiteLoginPageInner() {
     }
   }, []);
 
-  // Magic link: auto-submit when ?pwd=Matthew19:6 is present so guests skip the login screen
+  // Magic link: pre-fill password when ?pwd=Matthew19:6 is present
   useEffect(() => {
     const pwd = searchParams.get('pwd');
     const partyId = searchParams.get('partyId');
@@ -66,45 +66,27 @@ function SiteLoginPageInner() {
     setPassword(MAGIC_PASSWORD);
     setIsVip(true);
 
-    const autoLogin = async () => {
-      // Track the click and set VIP cookie before redirecting
-      if (partyId) {
+    // Track the click and drop the VIP cookie
+    if (partyId) {
+      const runTracking = async () => {
         const alreadyTracked = sessionStorage.getItem(`tracked_${partyId}`);
-        if (!alreadyTracked) {
-          try {
-            await fetch('/api/rsvp/track-click', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ partyId }),
-            });
-            sessionStorage.setItem(`tracked_${partyId}`, 'true');
-          } catch { /* non-critical */ }
-        }
+        if (alreadyTracked) return;
+
+        try {
+          await fetch('/api/rsvp/track-click', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ partyId }),
+          });
+          sessionStorage.setItem(`tracked_${partyId}`, 'true');
+        } catch { /* non-critical */ }
+
         const expires = new Date();
         expires.setDate(expires.getDate() + 90);
         document.cookie = `vip_party_id=${encodeURIComponent(partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
-      }
-
-      // Auto-submit — skip the manual "Enter" click entirely
-      setLoading(true);
-      try {
-        const res = await fetch('/api/auth/site-login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: MAGIC_PASSWORD }),
-        });
-        if (res.ok) {
-          sessionStorage.setItem('wedding-music-pref', 'off');
-          window.location.href = partyId ? `/?partyId=${encodeURIComponent(partyId)}` : '/';
-        } else {
-          setLoading(false);
-        }
-      } catch {
-        setLoading(false);
-      }
-    };
-
-    autoLogin();
+      };
+      runTracking();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
