@@ -349,13 +349,16 @@ export async function POST(req: Request) {
           smsBody = buildSmsBody(campaignId, guestName, partyId);
         }
 
+        const PRAY_IMAGE = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG';
+        const smsMediaUrl = party.has_responded ? PRAY_IMAGE : (campaign.smsMediaUrl || null);
+
         for (const phone of usPhones) {
           try {
             await twilioClient.messages.create({
               to: phone,
               messagingServiceSid: 'MG0851f4936a77e5efd5c0f1d4b69eed14',
               body: smsBody,
-              ...(campaign.smsMediaUrl ? { mediaUrl: [campaign.smsMediaUrl] } : {}),
+              ...(smsMediaUrl ? { mediaUrl: [smsMediaUrl] } : {}),
             });
             smsSentCount++;
           } catch (smsErr) {
