@@ -102,7 +102,7 @@ function SiteLoginPageInner() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Legacy magic link: pre-fill password when ?pwd=Matthew19:6 is present
+  // Legacy magic link: auto-login when ?pwd=Matthew19:6 is present
   useEffect(() => {
     const pwd = searchParams.get('pwd');
     const partyId = searchParams.get('partyId');
@@ -111,27 +111,46 @@ function SiteLoginPageInner() {
     setPassword(MAGIC_PASSWORD);
     setIsVip(true);
 
-    // Track the click and drop the VIP cookie
-    if (partyId) {
-      const runTracking = async () => {
+    const autoLogin = async () => {
+      // Track the click and drop the VIP cookie
+      if (partyId) {
         const alreadyTracked = sessionStorage.getItem(`tracked_${partyId}`);
-        if (alreadyTracked) return;
+        if (!alreadyTracked) {
+          try {
+            await fetch('/api/rsvp/track-click', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ partyId }),
+            });
+            sessionStorage.setItem(`tracked_${partyId}`, 'true');
+          } catch { /* non-critical */ }
 
-        try {
-          await fetch('/api/rsvp/track-click', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ partyId }),
-          });
-          sessionStorage.setItem(`tracked_${partyId}`, 'true');
-        } catch { /* non-critical */ }
+          const expires = new Date();
+          expires.setDate(expires.getDate() + 90);
+          document.cookie = `vip_party_id=${encodeURIComponent(partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+        }
+      }
 
-        const expires = new Date();
-        expires.setDate(expires.getDate() + 90);
-        document.cookie = `vip_party_id=${encodeURIComponent(partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
-      };
-      runTracking();
-    }
+      // Auto-submit — no manual Enter needed
+      setLoading(true);
+      try {
+        const loginRes = await fetch('/api/auth/site-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: MAGIC_PASSWORD }),
+        });
+        if (loginRes.ok) {
+          sessionStorage.setItem('wedding-music-pref', 'off');
+          window.location.href = partyId ? `/?partyId=${encodeURIComponent(partyId)}` : '/';
+        } else {
+          setLoading(false);
+        }
+      } catch {
+        setLoading(false);
+      }
+    };
+
+    autoLogin();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
