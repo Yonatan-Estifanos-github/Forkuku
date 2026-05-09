@@ -5,6 +5,14 @@ import RSVPConfirmation from '@/emails/RSVPConfirmation';
 import RSVPDeclined from '@/emails/RSVPDeclined';
 import twilio from 'twilio';
 
+/** Normalize a US phone number to E.164 (+1XXXXXXXXXX). Returns null if not a US number. */
+function toE164(raw: string): string | null {
+  const digits = raw.replace(/\D/g, '');
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+  return null;
+}
+
 export async function POST(req: Request) {
   try {
     const { party_id, email, phone, message, guests } = await req.json();
@@ -29,11 +37,12 @@ export async function POST(req: Request) {
 
     const existingEmails: string[] = currentParty?.emails || [];
     const existingPhones: string[] = currentParty?.phones || [];
+    const normalizedPhone = phone ? toE164(phone) : null;
     const mergedEmails = email && !existingEmails.includes(email)
       ? [...existingEmails, email]
       : existingEmails;
-    const mergedPhones = phone && !existingPhones.includes(phone)
-      ? [...existingPhones, phone]
+    const mergedPhones = normalizedPhone && !existingPhones.includes(normalizedPhone)
+      ? [...existingPhones, normalizedPhone]
       : existingPhones;
 
     // Update party info. We allow multiple submissions now to support updates (e.g. from Decline to Accept).
@@ -148,7 +157,7 @@ export async function POST(req: Request) {
     }
 
     // 4. Send SMS Confirmation
-    if (phone && typeof phone === 'string') {
+    if (normalizedPhone) {
       try {
         const twilioClient = twilio(
           process.env.TWILIO_ACCOUNT_SID,
@@ -201,7 +210,7 @@ export async function POST(req: Request) {
             ].join('\n');
 
         await twilioClient.messages.create({
-          to: phone,
+          to: normalizedPhone,
           messagingServiceSid: 'MG0851f4936a77e5efd5c0f1d4b69eed14',
           body: smsBody,
           mediaUrl: ['https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG'],
