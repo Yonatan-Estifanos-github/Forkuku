@@ -149,9 +149,9 @@ export async function POST(req: Request) {
           from: 'Yonatan & Saron (No Reply) <hello@theestifanos.com>',
           to: guestEmail,
           subject: isAttending ? 'RSVP Confirmed — Yonatan & Saron' : 'RSVP Received — Yonatan & Saron',
-          react: isAttending 
-            ? RSVPConfirmation({ guests }) 
-            : RSVPDeclined({ partyId: party_id })
+          react: isAttending
+            ? RSVPConfirmation({ guests, partyId: party_id, inviteToken: currentParty?.invite_token })
+            : RSVPDeclined({ partyId: party_id, inviteToken: currentParty?.invite_token })
         }).catch(err => console.error(`Guest Confirmation Error (${guestEmail}):`, err));
       }
     }
