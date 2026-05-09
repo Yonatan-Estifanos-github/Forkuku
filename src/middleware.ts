@@ -4,6 +4,18 @@ export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
   const sitePassword = process.env.SITE_PASSWORD;
 
+  // ── Paths excluded from password protection (checked first) ─────────────
+  // Must be before magic-link checks so ?token= on /api/* isn't intercepted.
+  const excludedPaths = [
+    '/_next', '/api', '/static', '/login', '/admin',
+    '/legal', '/sms-optin-info', '/favicon.ico', '/images', '/audio', '/fonts', '/textures', '/videos',
+    '/sms-opt-in-proof.jpg',
+  ];
+
+  if (excludedPaths.some((p) => pathname.startsWith(p))) {
+    return NextResponse.next();
+  }
+
   // ── Already authenticated: let them through regardless of query params ───
   const accessTokenEarly  = request.cookies.get('site-access-token')?.value;
   const entryGrantedEarly = request.cookies.get('site-entry-granted')?.value;
@@ -33,18 +45,7 @@ export function middleware(request: NextRequest) {
       if (partyId) loginUrl.searchParams.set('partyId', partyId);
       return NextResponse.redirect(loginUrl);
     }
-    // If already on /login, just let it through (will be handled by excludedPaths)
-  }
-
-  // ── Paths excluded from password protection ──────────────────────────────
-  const excludedPaths = [
-    '/_next', '/api', '/static', '/login', '/admin',
-    '/legal', '/sms-optin-info', '/favicon.ico', '/images', '/audio', '/fonts', '/textures', '/videos',
-    '/sms-opt-in-proof.jpg',
-  ];
-
-  if (excludedPaths.some((p) => pathname.startsWith(p))) {
-    return NextResponse.next();
+    // If already on /login, just let it through
   }
 
   // If no password is configured, allow access (development fallback)
