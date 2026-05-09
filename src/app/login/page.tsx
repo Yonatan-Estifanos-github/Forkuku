@@ -58,12 +58,12 @@ function SiteLoginPageInner() {
     }
   }, []);
 
-  // Token-based magic link: validate token then auto-login — no password entry needed
+  // Token-based magic link: resolve token → pre-fill password, set VIP cookie
   useEffect(() => {
     const token = searchParams.get('token');
     if (!token) return;
 
-    const autoLogin = async () => {
+    const resolveToken = async () => {
       try {
         const res = await fetch(`/api/auth/magic?token=${encodeURIComponent(token)}`);
         if (!res.ok) return;
@@ -75,34 +75,17 @@ function SiteLoginPageInner() {
         setPassword(MAGIC_PASSWORD);
         setIsVip(true);
 
-        // Drop the VIP cookie so the site remembers this party
         const expires = new Date();
         expires.setDate(expires.getDate() + 90);
         document.cookie = `vip_party_id=${encodeURIComponent(partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
-
-        // Auto-submit — skip manual Enter entirely
-        setLoading(true);
-        const loginRes = await fetch('/api/auth/site-login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: MAGIC_PASSWORD }),
-        });
-        if (loginRes.ok) {
-          sessionStorage.setItem('wedding-music-pref', 'off');
-          window.location.href = `/?partyId=${encodeURIComponent(partyId)}`;
-        } else {
-          setLoading(false);
-        }
-      } catch {
-        setLoading(false);
-      }
+      } catch { /* non-critical */ }
     };
 
-    autoLogin();
+    resolveToken();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Legacy magic link: auto-login when ?pwd=Matthew19:6 is present
+  // Legacy magic link: pre-fill password when ?pwd=Matthew19:6 is present
   useEffect(() => {
     const pwd = searchParams.get('pwd');
     const partyId = searchParams.get('partyId');
@@ -111,46 +94,21 @@ function SiteLoginPageInner() {
     setPassword(MAGIC_PASSWORD);
     setIsVip(true);
 
-    const autoLogin = async () => {
-      // Track the click and drop the VIP cookie
-      if (partyId) {
-        const alreadyTracked = sessionStorage.getItem(`tracked_${partyId}`);
-        if (!alreadyTracked) {
-          try {
-            await fetch('/api/rsvp/track-click', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ partyId }),
-            });
-            sessionStorage.setItem(`tracked_${partyId}`, 'true');
-          } catch { /* non-critical */ }
-
-          const expires = new Date();
-          expires.setDate(expires.getDate() + 90);
-          document.cookie = `vip_party_id=${encodeURIComponent(partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
-        }
-      }
-
-      // Auto-submit — no manual Enter needed
-      setLoading(true);
-      try {
-        const loginRes = await fetch('/api/auth/site-login', {
+    if (partyId) {
+      const alreadyTracked = sessionStorage.getItem(`tracked_${partyId}`);
+      if (!alreadyTracked) {
+        fetch('/api/rsvp/track-click', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: MAGIC_PASSWORD }),
-        });
-        if (loginRes.ok) {
-          sessionStorage.setItem('wedding-music-pref', 'off');
-          window.location.href = partyId ? `/?partyId=${encodeURIComponent(partyId)}` : '/';
-        } else {
-          setLoading(false);
-        }
-      } catch {
-        setLoading(false);
-      }
-    };
+          body: JSON.stringify({ partyId }),
+        }).catch(() => {});
+        sessionStorage.setItem(`tracked_${partyId}`, 'true');
 
-    autoLogin();
+        const expires = new Date();
+        expires.setDate(expires.getDate() + 90);
+        document.cookie = `vip_party_id=${encodeURIComponent(partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+      }
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
