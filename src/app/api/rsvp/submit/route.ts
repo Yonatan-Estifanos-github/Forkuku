@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { Resend } from 'resend';
 import RSVPConfirmation from '@/emails/RSVPConfirmation';
 import RSVPDeclined from '@/emails/RSVPDeclined';
+import twilio from 'twilio';
 
 export async function POST(req: Request) {
   try {
@@ -146,7 +147,24 @@ export async function POST(req: Request) {
       }
     }
 
-    // 4. Create Audit Log
+    // 4. Send SMS Confirmation
+    if (phone && typeof phone === 'string') {
+      try {
+        const twilioClient = twilio(
+          process.env.TWILIO_ACCOUNT_SID,
+          process.env.TWILIO_AUTH_TOKEN
+        );
+        await twilioClient.messages.create({
+          to: phone,
+          messagingServiceSid: 'MG0851f4936a77e5efd5c0f1d4b69eed14',
+          body: 'Yonatan & Saron Wedding: You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.'
+        });
+      } catch (smsErr) {
+        console.error('Twilio SMS confirmation error (non-critical):', smsErr);
+      }
+    }
+
+    // 5. Create Audit Log
     const { error: auditError } = await supabaseAdmin
       .from('audit_logs')
       .insert({
