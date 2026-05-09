@@ -71,7 +71,7 @@ export const SaveTheDate = ({
           God has been so faithful in bringing us together, and we couldn&apos;t imagine 
           stepping into this marriage covenant without our favorite people in the room. 
           To receive your formal invitation with the exact location and weekend details, 
-          please register your attendance on our website by May 1st.
+          please register your attendance on our website by June 1st.
         </Text>
 
         {/* ── Password Notice ── */}

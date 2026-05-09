@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { render } from '@react-email/render';
 import * as React from 'react';
+import twilio from 'twilio';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getCampaign } from '@/config/campaigns';
 import { FormalInvite } from '@/emails/FormalInvite';
@@ -17,6 +18,177 @@ const SUBJECTS: Record<string, string> = {
   'day-of-alert':        'Day-of Update — Yonatan & Saron',
   'thank-you':           'Thank You — Yonatan & Saron',
 };
+
+const BASE_URL = 'https://theestifanos.com';
+const PWD = 'Matthew19:6';
+const COMPLIANCE = 'You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.';
+
+function buildSmsBody(campaignId: string, guestName: string, partyId: string, inviteToken?: string): string {
+  const magicLink = inviteToken
+    ? `${BASE_URL}/?token=${inviteToken}`
+    : `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`;
+
+  switch (campaignId) {
+    case 'save-the-date':
+      return [
+        'SAVE THE DATE',
+        '',
+        'Yonatan & Saron',
+        'SEPTEMBER 4, 2026',
+        'WRIGHTSVILLE, PENNSYLVANIA',
+        '',
+        `${guestName},`,
+        '',
+        "We are overjoyed to invite you to celebrate the beginning of our forever. God has been so faithful in bringing us together, and we couldn't imagine stepping into this marriage covenant without our favorite people in the room. To receive your formal invitation with the exact location and weekend details, please register your attendance on our website by June 1st.",
+        '',
+        `RSVP: ${magicLink}`,
+        '',
+        '---',
+        COMPLIANCE,
+      ].join('\n');
+
+    case 'formal-invitation':
+      return [
+        'FORMAL INVITATION',
+        '',
+        'Yonatan & Saron',
+        'SEPTEMBER 4, 2026  ·  WRIGHTSVILLE, PA',
+        '',
+        `Dear ${guestName},`,
+        '',
+        "With joyful hearts and overwhelming gratitude for what the Lord has done, we are so excited to invite you to celebrate our marriage.",
+        '',
+        "Your love, prayers, and support have deeply shaped our story. From the long-distance days to the quiet moments of faith that brought us here, you have been our village. We truly cannot imagine stepping into this next chapter without you by our side.",
+        '',
+        `RSVP & Explore Our Story: ${magicLink}`,
+        '',
+        '---',
+        COMPLIANCE,
+      ].join('\n');
+
+    case 'rsvp-reminder':
+      return [
+        'RSVP REMINDER',
+        '',
+        `${guestName},`,
+        '',
+        `This is a friendly reminder to RSVP for Yonatan & Saron's wedding by June 1st, 2026. We'd love to know if you can make it!`,
+        '',
+        `RSVP here: ${magicLink}`,
+        '',
+        '---',
+        COMPLIANCE,
+      ].join('\n');
+
+    case 'logistics-update':
+      return [
+        'WEDDING WEEK DETAILS',
+        '',
+        'Yonatan & Saron · September 4, 2026',
+        '',
+        `${guestName},`,
+        '',
+        "Here are the details you'll need for the big weekend. Visit our website for parking, hotel accommodations, and the full day-of schedule.",
+        '',
+        `Details: ${magicLink}`,
+        '',
+        '---',
+        COMPLIANCE,
+      ].join('\n');
+
+    case 'day-of-alert':
+      return [
+        'TODAY IS THE DAY!',
+        '',
+        "We're so excited to celebrate with you today! Check our website for any last-minute updates.",
+        '',
+        `Updates: ${magicLink}`,
+        '',
+        '---',
+        COMPLIANCE,
+      ].join('\n');
+
+    case 'thank-you':
+      return [
+        'THANK YOU',
+        '',
+        `${guestName},`,
+        '',
+        "Thank you so much for celebrating our wedding with us. Your presence, love, and support meant everything. We are so grateful to have you in our lives.",
+        '',
+        '— Yonatan & Saron',
+        '',
+        '---',
+        COMPLIANCE,
+      ].join('\n');
+
+    default:
+      return `Update from Yonatan & Saron. Visit: ${magicLink}\n\n---\n${COMPLIANCE}`;
+  }
+}
+
+function buildAlreadyRsvpedSmsBody(
+  guestName: string,
+  partyId: string,
+  attending: string[],
+  declined: string[],
+  inviteToken?: string
+): string {
+  const magicLink = inviteToken
+    ? `${BASE_URL}/?token=${inviteToken}`
+    : `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`;
+  const hasAttending = attending.length > 0;
+
+  if (hasAttending) {
+    const lines = [
+      'RSVP CONFIRMED',
+      '',
+      "We can't wait to celebrate with you.",
+      '',
+      'Thank you for confirming your attendance. We are currently preparing your formal invitation suite, which will include the venue location, day-of details, and our full weekend itinerary. We will reach out to your party soon with these final details.',
+      '',
+      'ATTENDING:',
+      ...attending,
+    ];
+
+    if (declined.length > 0) {
+      lines.push('');
+      lines.push('NOT ATTENDING:');
+      declined.forEach(name => lines.push(name));
+    }
+
+    lines.push(
+      '',
+      'THE PRAYER REQUEST',
+      "More than anything, as we prepare to enter into this marriage covenant, our greatest request is your continued prayers. Please join us in praying over our relationship, our future together, and the beautiful day ahead.",
+      '',
+      'Y & S',
+      'Yonatan & Saron · September 4, 2026',
+      '',
+      '---',
+      COMPLIANCE
+    );
+
+    return lines.join('\n');
+  } else {
+    return [
+      'RSVP RECEIVED',
+      '',
+      'We will miss you!',
+      '',
+      "We are so sorry you won't be able to join us, but we completely understand! Your love, prayers, and well-wishes are all we could ever ask for as we prepare to step into this marriage covenant.",
+      '',
+      "If you selected 'Decline' by mistake, or if your plans change, you can update your response until June 1st:",
+      magicLink,
+      '',
+      'Y & S',
+      'Yonatan & Saron · September 4, 2026',
+      '',
+      '---',
+      COMPLIANCE,
+    ].join('\n');
+  }
+}
 
 const GENERIC_CONTENT: Record<string, { heading: string; body: string }> = {
   'rsvp-reminder': {
@@ -39,11 +211,15 @@ const GENERIC_CONTENT: Record<string, { heading: string; body: string }> = {
 
 export async function POST(req: Request) {
   try {
-    const { partyId, campaignId } = await req.json();
+    const { partyId, campaignId, channel } = await req.json();
 
     if (!partyId || !campaignId) {
       return NextResponse.json({ error: 'partyId and campaignId are required' }, { status: 400 });
     }
+
+    // channel: 'email' | 'sms' | undefined (undefined = send both)
+    const sendEmail = !channel || channel === 'email';
+    const sendSms   = !channel || channel === 'sms';
 
     if (!supabaseAdmin) {
       console.error('Supabase admin client not initialised — SUPABASE_SERVICE_ROLE_KEY missing');
@@ -60,7 +236,7 @@ export async function POST(req: Request) {
     // ── Fetch party + guests ──
     const { data: party, error: partyError } = await supabaseAdmin
       .from('parties')
-      .select('id, party_name, emails, phones, guests(id, name, email)')
+      .select('id, party_name, emails, phones, has_responded, invite_token, guests(id, name, email, is_attending)')
       .eq('id', partyId)
       .single();
 
@@ -112,7 +288,7 @@ export async function POST(req: Request) {
     const logEntries: { channel: string; status: string }[] = [];
 
     // ── Email ──
-    if (recipients.length > 0 && campaign.priority !== 'sms') {
+    if (sendEmail && recipients.length > 0 && campaign.priority !== 'sms') {
       let sentCount = 0;
       let failCount = 0;
 
@@ -168,6 +344,63 @@ export async function POST(req: Request) {
 
       if (finalStatus === 'failed') {
         return NextResponse.json({ error: 'Email send failed for all recipients' }, { status: 500 });
+      }
+    }
+
+    // ── SMS ──
+    if (sendSms && campaign.priority !== 'email') {
+      const usPhones = (party.phones as string[] || []).filter(
+        (p) => p && (p.startsWith('+1') || (p.replace(/\D/g, '').length === 11 && p.replace(/\D/g, '').startsWith('1')))
+      );
+
+      if (usPhones.length > 0 && process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+        const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+        let smsSentCount = 0;
+        let smsFailCount = 0;
+
+        // Use first guest name for personalization
+        const guestName = (party.guests as { name?: string; is_attending?: boolean }[])?.[0]?.name || party.party_name || 'Friend';
+        const inviteToken = (party as { invite_token?: string }).invite_token;
+
+        // If they've already RSVPed, send a tailored acknowledgment instead of the campaign message
+        let smsBody: string;
+        if (party.has_responded) {
+          const allGuests = party.guests as { name?: string; is_attending?: boolean }[];
+          const attending = allGuests.filter(g => g.is_attending).map(g => g.name || '').filter(Boolean);
+          const declined  = allGuests.filter(g => !g.is_attending).map(g => g.name || '').filter(Boolean);
+          smsBody = buildAlreadyRsvpedSmsBody(guestName, partyId, attending, declined, inviteToken);
+        } else {
+          smsBody = buildSmsBody(campaignId, guestName, partyId, inviteToken);
+        }
+
+        const PRAY_IMAGE = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG';
+        const smsMediaUrl = party.has_responded ? PRAY_IMAGE : (campaign.smsMediaUrl || null);
+
+        for (const phone of usPhones) {
+          try {
+            await twilioClient.messages.create({
+              to: phone,
+              messagingServiceSid: 'MG0851f4936a77e5efd5c0f1d4b69eed14',
+              body: smsBody,
+              ...(smsMediaUrl ? { mediaUrl: [smsMediaUrl] } : {}),
+            });
+            smsSentCount++;
+          } catch (smsErr) {
+            console.error(`Twilio error for ${phone}:`, smsErr);
+            smsFailCount++;
+          }
+        }
+
+        const smsStatus = smsFailCount === 0 ? 'sent' : smsSentCount > 0 ? 'partial' : 'failed';
+        logEntries.push({ channel: 'sms', status: smsStatus });
+
+        await supabaseAdmin.from('campaign_logs').insert({
+          party_id: partyId,
+          campaign_id: campaignId,
+          channel: 'sms',
+          status: smsStatus,
+          sent_at: new Date().toISOString(),
+        });
       }
     }
 

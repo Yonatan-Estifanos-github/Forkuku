@@ -30,6 +30,7 @@ function SiteLoginPageInner() {
   const [loading, setLoading] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
   const [isVip, setIsVip] = useState(false);
+  const [tokenPartyId, setTokenPartyId] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { language, setLanguage, t } = useLanguage();
   const searchParams = useSearchParams();
@@ -57,36 +58,57 @@ function SiteLoginPageInner() {
     }
   }, []);
 
-  // Magic link: pre-fill password when ?pwd=Matthew19:6 is present
+  // Token-based magic link: validate opaque token, pre-fill password
+  useEffect(() => {
+    const token = searchParams.get('token');
+    if (!token) return;
+
+    fetch(`/api/auth/magic?token=${encodeURIComponent(token)}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (!data?.partyId) return;
+        setTokenPartyId(data.partyId);
+        setPassword(MAGIC_PASSWORD);
+        setIsVip(true);
+
+        // Drop the VIP cookie so the site remembers this party
+        const expires = new Date();
+        expires.setDate(expires.getDate() + 90);
+        document.cookie = `vip_party_id=${encodeURIComponent(data.partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+      })
+      .catch(() => { /* non-critical */ });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Legacy magic link: pre-fill password when ?pwd=Matthew19:6 is present
   useEffect(() => {
     const pwd = searchParams.get('pwd');
     const partyId = searchParams.get('partyId');
-    if (pwd === MAGIC_PASSWORD) {
-      setPassword(MAGIC_PASSWORD);
-      setIsVip(true);
+    if (pwd !== MAGIC_PASSWORD) return;
 
-      // If a partyId is in the URL, track the click and drop the VIP cookie
-      if (partyId) {
-        const runTracking = async () => {
-          // Prevent duplicate tracking in the same session
-          const alreadyTracked = sessionStorage.getItem(`tracked_${partyId}`);
-          if (alreadyTracked) return;
+    setPassword(MAGIC_PASSWORD);
+    setIsVip(true);
 
-          try {
-            await fetch('/api/rsvp/track-click', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ partyId }),
-            });
-            sessionStorage.setItem(`tracked_${partyId}`, 'true');
-          } catch { /* non-critical */ }
+    // Track the click and drop the VIP cookie
+    if (partyId) {
+      const runTracking = async () => {
+        const alreadyTracked = sessionStorage.getItem(`tracked_${partyId}`);
+        if (alreadyTracked) return;
 
-          const expires = new Date();
-          expires.setDate(expires.getDate() + 90);
-          document.cookie = `vip_party_id=${encodeURIComponent(partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
-        };
-        runTracking();
-      }
+        try {
+          await fetch('/api/rsvp/track-click', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ partyId }),
+          });
+          sessionStorage.setItem(`tracked_${partyId}`, 'true');
+        } catch { /* non-critical */ }
+
+        const expires = new Date();
+        expires.setDate(expires.getDate() + 90);
+        document.cookie = `vip_party_id=${encodeURIComponent(partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+      };
+      runTracking();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -105,7 +127,8 @@ function SiteLoginPageInner() {
 
       if (response.ok) {
         sessionStorage.setItem('wedding-music-pref', musicOn ? 'on' : 'off');
-        window.location.href = '/';
+        const partyId = searchParams.get('partyId') || tokenPartyId;
+        window.location.href = partyId ? `/?partyId=${encodeURIComponent(partyId)}` : '/';
       } else {
         setError(t('login.incorrectPassword'));
         setLoading(false);
