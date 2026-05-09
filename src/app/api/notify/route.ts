@@ -122,8 +122,49 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string): s
       ].join('\n');
 
     default:
-      return `Update from Yonatan & Saron. Visit: ${magicLink}\n\n${COMPLIANCE}`;
+      return `Update from Yonatan & Saron. Visit: ${magicLink}\n\n---\n${COMPLIANCE}`;
   }
+}
+
+function buildAlreadyRsvpedSmsBody(
+  guestName: string,
+  partyId: string,
+  attending: string[],
+  declined: string[]
+): string {
+  const magicLink = `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`;
+  const hasAttending = attending.length > 0;
+
+  const lines = [
+    `Hi ${guestName}!`,
+    '',
+    'We already have your RSVP on file — thank you!',
+    '',
+  ];
+
+  if (hasAttending) {
+    lines.push('ATTENDING:');
+    attending.forEach(name => lines.push(name));
+    lines.push('');
+    lines.push("We can't wait to celebrate with you on September 4, 2026 in Wrightsville, PA!");
+  } else {
+    lines.push("We're sorry you won't be able to make it, but we completely understand. Your love and prayers mean everything to us.");
+    lines.push('');
+    lines.push(`If your plans change, you can update your RSVP anytime: ${magicLink}`);
+  }
+
+  if (declined.length > 0 && hasAttending) {
+    lines.push('');
+    lines.push(`We'll miss: ${declined.join(', ')}`);
+  }
+
+  lines.push('');
+  lines.push('— Yonatan & Saron · September 4, 2026');
+  lines.push('');
+  lines.push('---');
+  lines.push(COMPLIANCE);
+
+  return lines.join('\n');
 }
 
 const GENERIC_CONTENT: Record<string, { heading: string; body: string }> = {
@@ -172,7 +213,7 @@ export async function POST(req: Request) {
     // ── Fetch party + guests ──
     const { data: party, error: partyError } = await supabaseAdmin
       .from('parties')
-      .select('id, party_name, emails, phones, guests(id, name, email)')
+      .select('id, party_name, emails, phones, has_responded, guests(id, name, email, is_attending)')
       .eq('id', partyId)
       .single();
 
@@ -295,8 +336,18 @@ export async function POST(req: Request) {
         let smsFailCount = 0;
 
         // Use first guest name for personalization
-        const guestName = (party.guests as { name?: string }[])?.[0]?.name || party.party_name || 'Friend';
-        const smsBody = buildSmsBody(campaignId, guestName, partyId);
+        const guestName = (party.guests as { name?: string; is_attending?: boolean }[])?.[0]?.name || party.party_name || 'Friend';
+
+        // If they've already RSVPed, send a tailored acknowledgment instead of the campaign message
+        let smsBody: string;
+        if (party.has_responded) {
+          const allGuests = party.guests as { name?: string; is_attending?: boolean }[];
+          const attending = allGuests.filter(g => g.is_attending).map(g => g.name || '').filter(Boolean);
+          const declined  = allGuests.filter(g => !g.is_attending).map(g => g.name || '').filter(Boolean);
+          smsBody = buildAlreadyRsvpedSmsBody(guestName, partyId, attending, declined);
+        } else {
+          smsBody = buildSmsBody(campaignId, guestName, partyId);
+        }
 
         for (const phone of usPhones) {
           try {
