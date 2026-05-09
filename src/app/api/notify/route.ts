@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { render } from '@react-email/render';
 import * as React from 'react';
+import twilio from 'twilio';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getCampaign } from '@/config/campaigns';
 import { FormalInvite } from '@/emails/FormalInvite';
@@ -39,11 +40,15 @@ const GENERIC_CONTENT: Record<string, { heading: string; body: string }> = {
 
 export async function POST(req: Request) {
   try {
-    const { partyId, campaignId } = await req.json();
+    const { partyId, campaignId, channel } = await req.json();
 
     if (!partyId || !campaignId) {
       return NextResponse.json({ error: 'partyId and campaignId are required' }, { status: 400 });
     }
+
+    // channel: 'email' | 'sms' | undefined (undefined = send both)
+    const sendEmail = !channel || channel === 'email';
+    const sendSms   = !channel || channel === 'sms';
 
     if (!supabaseAdmin) {
       console.error('Supabase admin client not initialised — SUPABASE_SERVICE_ROLE_KEY missing');
@@ -112,7 +117,7 @@ export async function POST(req: Request) {
     const logEntries: { channel: string; status: string }[] = [];
 
     // ── Email ──
-    if (recipients.length > 0 && campaign.priority !== 'sms') {
+    if (sendEmail && recipients.length > 0 && campaign.priority !== 'sms') {
       let sentCount = 0;
       let failCount = 0;
 
@@ -168,6 +173,44 @@ export async function POST(req: Request) {
 
       if (finalStatus === 'failed') {
         return NextResponse.json({ error: 'Email send failed for all recipients' }, { status: 500 });
+      }
+    }
+
+    // ── SMS ──
+    if (sendSms && campaign.smsBody && campaign.priority !== 'email') {
+      const usPhones = (party.phones as string[] || []).filter(
+        (p) => p && (p.startsWith('+1') || (p.replace(/\D/g, '').length === 11 && p.replace(/\D/g, '').startsWith('1')))
+      );
+
+      if (usPhones.length > 0 && process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+        const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+        let smsSentCount = 0;
+        let smsFailCount = 0;
+
+        for (const phone of usPhones) {
+          try {
+            await twilioClient.messages.create({
+              to: phone,
+              messagingServiceSid: 'MG0851f4936a77e5efd5c0f1d4b69eed14',
+              body: campaign.smsBody,
+            });
+            smsSentCount++;
+          } catch (smsErr) {
+            console.error(`Twilio error for ${phone}:`, smsErr);
+            smsFailCount++;
+          }
+        }
+
+        const smsStatus = smsFailCount === 0 ? 'sent' : smsSentCount > 0 ? 'partial' : 'failed';
+        logEntries.push({ channel: 'sms', status: smsStatus });
+
+        await supabaseAdmin.from('campaign_logs').insert({
+          party_id: partyId,
+          campaign_id: campaignId,
+          channel: 'sms',
+          status: smsStatus,
+          sent_at: new Date().toISOString(),
+        });
       }
     }
 

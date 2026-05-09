@@ -155,7 +155,7 @@ export default function AdminDashboard() {
   const [parties, setParties] = useState<Party[]>([]);
   const [loading, setLoading] = useState(true);
   const [adminSearchQuery, setAdminSearchQuery] = useState('');
-  const [sendingId, setSendingId] = useState<string | null>(null);
+  const [sendingId, setSendingId] = useState<string | null>(null); // format: `${partyId}-email` or `${partyId}-sms`
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [expandedPartyId, setExpandedPartyId] = useState<string | null>(null);
   const [selectedCampaign, setSelectedCampaign] = useState<CampaignId>('save-the-date');
@@ -295,20 +295,21 @@ export default function AdminDashboard() {
     router.push('/admin/login');
   }
 
-  async function handleSendNotification(partyId: string) {
+  async function handleSendNotification(partyId: string, channel: 'email' | 'sms') {
     const party = parties.find(p => p.id === partyId);
     const campaignLabel = CAMPAIGNS.find(c => c.id === selectedCampaign)?.label || selectedCampaign;
+    const channelLabel = channel === 'email' ? 'Email' : 'SMS';
     const confirmed = window.confirm(
-      `Send "${campaignLabel}" to ${party?.party_name || 'this party'}?`
+      `Send "${campaignLabel}" via ${channelLabel} to ${party?.party_name || 'this party'}?`
     );
     if (!confirmed) return;
 
-    setSendingId(partyId);
+    setSendingId(`${partyId}-${channel}`);
     try {
       const res = await fetch('/api/notify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ partyId, campaignId: selectedCampaign }),
+        body: JSON.stringify({ partyId, campaignId: selectedCampaign, channel }),
       });
 
       const result = await res.json();
@@ -1195,7 +1196,8 @@ export default function AdminDashboard() {
                       <th className="p-4 font-medium">Guests</th>
                       <th className="p-4 font-medium">RSVP Status</th>
                       <th className="p-4 font-medium">Contact</th>
-                      <th className="p-4 font-medium">Campaign</th>
+                      <th className="p-4 font-medium">Email</th>
+                      <th className="p-4 font-medium">SMS</th>
                       <th className="p-4 font-medium text-right">Actions</th>
                     </tr>
                   </thead>
@@ -1206,12 +1208,8 @@ export default function AdminDashboard() {
                       const hasEmail = party.emails?.length > 0;
                       const hasPhone = party.phones?.length > 0;
                       const hasUSPhone = party.phones?.some(p => isUSPhone(p)) ?? false;
-                      const hasAnyContact = hasEmail || hasPhone;
                       const primaryPhone = party.phones?.[0];
                       const activeCampaign = CAMPAIGNS.find(c => c.id === selectedCampaign);
-                      const campaignNeedsEmail = activeCampaign?.priority !== 'sms';
-                      const campaignNeedsSMS = activeCampaign?.priority !== 'email';
-                      const allSent = (hasEmail && campaignNeedsEmail ? emailSent : true) && (hasUSPhone && campaignNeedsSMS ? smsSent : true) && hasAnyContact;
                       const rsvpStatus = getRSVPStatus(party);
                       const isExpanded = expandedPartyId === party.id;
 
@@ -1318,25 +1316,56 @@ export default function AdminDashboard() {
                                 )}
                               </div>
                             </td>
+                            {/* Email column */}
                             <td className="p-4">
-                              {!hasAnyContact ? (
-                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-red-100 text-red-600">
-                                  No Contact
-                                </span>
-                              ) : allSent ? (
+                              {!hasEmail ? (
+                                <span className="text-gray-300 text-xs">—</span>
+                              ) : emailSent ? (
                                 <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-green-100 text-green-700">
                                   Sent
                                 </span>
-                              ) : emailSent || (hasUSPhone && smsSent) ? (
-                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-yellow-100 text-yellow-700">
-                                  Partial
+                              ) : activeCampaign?.disabled ? (
+                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-gray-100 text-gray-400 italic">
+                                  Locked
                                 </span>
+                              ) : activeCampaign?.priority === 'sms' ? (
+                                <span className="text-gray-300 text-xs">—</span>
                               ) : (
-                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-gray-100 text-gray-500">
-                                  Not Sent
-                                </span>
+                                <button
+                                  onClick={() => handleSendNotification(party.id, 'email')}
+                                  disabled={sendingId === `${party.id}-email`}
+                                  className="px-3 py-1 bg-[#D4A845] text-white text-xs font-bold uppercase rounded hover:bg-[#b88f35] transition-colors disabled:opacity-50"
+                                >
+                                  {sendingId === `${party.id}-email` ? 'Sending...' : 'Send'}
+                                </button>
                               )}
                             </td>
+
+                            {/* SMS column */}
+                            <td className="p-4">
+                              {!hasUSPhone ? (
+                                <span className="text-gray-300 text-xs">{hasPhone ? 'Intl' : '—'}</span>
+                              ) : smsSent ? (
+                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-green-100 text-green-700">
+                                  Sent
+                                </span>
+                              ) : activeCampaign?.disabled ? (
+                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-gray-100 text-gray-400 italic">
+                                  Locked
+                                </span>
+                              ) : activeCampaign?.priority === 'email' ? (
+                                <span className="text-gray-300 text-xs">—</span>
+                              ) : (
+                                <button
+                                  onClick={() => handleSendNotification(party.id, 'sms')}
+                                  disabled={sendingId === `${party.id}-sms`}
+                                  className="px-3 py-1 bg-[#1B3B28] text-white text-xs font-bold uppercase rounded hover:bg-[#2a5a3f] transition-colors disabled:opacity-50"
+                                >
+                                  {sendingId === `${party.id}-sms` ? 'Sending...' : 'Send'}
+                                </button>
+                              )}
+                            </td>
+
                             <td className="p-4 text-right">
                               <div className="flex items-center justify-end gap-2">
                                 {/* Reset Button (Test only) */}
@@ -1368,35 +1397,12 @@ export default function AdminDashboard() {
                                 >
                                   {deletingId === party.id ? '...' : '🗑️'}
                                 </button>
-
-                                {/* Send Button */}
-                                {!hasAnyContact ? (
-                                  <span className="text-xs font-bold text-red-300 cursor-not-allowed uppercase px-2">
-                                    No Contact
-                                  </span>
-                                ) : allSent ? (
-                                  <span className="text-xs font-bold text-gray-400 cursor-not-allowed uppercase px-2">
-                                    Sent
-                                  </span>
-                                ) : activeCampaign?.disabled ? (
-                                  <span className="text-xs font-bold text-gray-300 cursor-not-allowed uppercase px-2 italic">
-                                    Locked
-                                  </span>
-                                ) : (
-                                  <button
-                                    onClick={() => handleSendNotification(party.id)}
-                                    disabled={sendingId === party.id}
-                                    className="px-3 py-1 bg-[#D4A845] text-white text-xs font-bold uppercase rounded hover:bg-[#b88f35] transition-colors disabled:opacity-50 ml-2"
-                                  >
-                                    {sendingId === party.id ? 'Sending...' : 'Send'}
-                                  </button>
-                                )}
                               </div>
                             </td>
                           </tr>
                           {isExpanded && (
                             <tr className="bg-white">
-                              <td colSpan={6} className="p-6 border-b border-gray-100">
+                              <td colSpan={7} className="p-6 border-b border-gray-100">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                   {/* Guest Attendance */}
                                   <div>
