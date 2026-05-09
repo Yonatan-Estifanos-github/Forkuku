@@ -4,6 +4,15 @@ export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
   const sitePassword = process.env.SITE_PASSWORD;
 
+  // ── Already authenticated: let them through regardless of query params ───
+  const accessTokenEarly  = request.cookies.get('site-access-token')?.value;
+  const entryGrantedEarly = request.cookies.get('site-entry-granted')?.value;
+  if (sitePassword && accessTokenEarly === sitePassword && entryGrantedEarly === '1') {
+    const res = NextResponse.next();
+    res.cookies.delete('site-entry-granted');
+    return res;
+  }
+
   // ── Token-based magic link: ?token=<uuid> ────────────────────────────────
   // Opaque invite token — no password exposed in URL.
   const inviteToken = searchParams.get('token');
