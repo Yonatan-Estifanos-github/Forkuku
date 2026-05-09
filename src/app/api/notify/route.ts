@@ -19,6 +19,107 @@ const SUBJECTS: Record<string, string> = {
   'thank-you':           'Thank You — Yonatan & Saron',
 };
 
+const BASE_URL = 'https://theestifanos.com';
+const PWD = 'Matthew19:6';
+const COMPLIANCE = 'You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.';
+
+function buildSmsBody(campaignId: string, guestName: string, partyId: string): string {
+  const magicLink = `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`;
+
+  switch (campaignId) {
+    case 'save-the-date':
+      return [
+        'SAVE THE DATE',
+        '',
+        'Yonatan & Saron',
+        'SEPTEMBER 4, 2026',
+        'WRIGHTSVILLE, PENNSYLVANIA',
+        '',
+        `${guestName},`,
+        '',
+        "We are overjoyed to invite you to celebrate the beginning of our forever. God has been so faithful in bringing us together, and we couldn't imagine stepping into this marriage covenant without our favorite people in the room. To receive your formal invitation with the exact location and weekend details, please register your attendance on our website by June 1st.",
+        '',
+        'Website Password: Matthew19:6',
+        `RSVP: ${magicLink}`,
+        '',
+        COMPLIANCE,
+      ].join('\n');
+
+    case 'formal-invitation':
+      return [
+        'FORMAL INVITATION',
+        '',
+        'Yonatan & Saron',
+        'SEPTEMBER 4, 2026  ·  WRIGHTSVILLE, PA',
+        '',
+        `Dear ${guestName},`,
+        '',
+        "With joyful hearts and overwhelming gratitude for what the Lord has done, we are so excited to invite you to celebrate our marriage.",
+        '',
+        "Your love, prayers, and support have deeply shaped our story. From the long-distance days to the quiet moments of faith that brought us here, you have been our village. We truly cannot imagine stepping into this next chapter without you by our side.",
+        '',
+        `RSVP & Explore Our Story: ${magicLink}`,
+        '',
+        COMPLIANCE,
+      ].join('\n');
+
+    case 'rsvp-reminder':
+      return [
+        'RSVP REMINDER',
+        '',
+        `${guestName},`,
+        '',
+        `This is a friendly reminder to RSVP for Yonatan & Saron's wedding by June 1st, 2026. We'd love to know if you can make it!`,
+        '',
+        `RSVP here: ${magicLink}`,
+        '',
+        COMPLIANCE,
+      ].join('\n');
+
+    case 'logistics-update':
+      return [
+        'WEDDING WEEK DETAILS',
+        '',
+        'Yonatan & Saron · September 4, 2026',
+        '',
+        `${guestName},`,
+        '',
+        "Here are the details you'll need for the big weekend. Visit our website for parking, hotel accommodations, and the full day-of schedule.",
+        '',
+        `Details: ${magicLink}`,
+        '',
+        COMPLIANCE,
+      ].join('\n');
+
+    case 'day-of-alert':
+      return [
+        'TODAY IS THE DAY!',
+        '',
+        "We're so excited to celebrate with you today! Check our website for any last-minute updates.",
+        '',
+        `Updates: ${magicLink}`,
+        '',
+        COMPLIANCE,
+      ].join('\n');
+
+    case 'thank-you':
+      return [
+        'THANK YOU',
+        '',
+        `${guestName},`,
+        '',
+        "Thank you so much for celebrating our wedding with us. Your presence, love, and support meant everything. We are so grateful to have you in our lives.",
+        '',
+        '— Yonatan & Saron',
+        '',
+        COMPLIANCE,
+      ].join('\n');
+
+    default:
+      return `Update from Yonatan & Saron. Visit: ${magicLink}\n\n${COMPLIANCE}`;
+  }
+}
+
 const GENERIC_CONTENT: Record<string, { heading: string; body: string }> = {
   'rsvp-reminder': {
     heading: 'Please RSVP by June 1st',
@@ -177,7 +278,7 @@ export async function POST(req: Request) {
     }
 
     // ── SMS ──
-    if (sendSms && campaign.smsBody && campaign.priority !== 'email') {
+    if (sendSms && campaign.priority !== 'email') {
       const usPhones = (party.phones as string[] || []).filter(
         (p) => p && (p.startsWith('+1') || (p.replace(/\D/g, '').length === 11 && p.replace(/\D/g, '').startsWith('1')))
       );
@@ -187,12 +288,16 @@ export async function POST(req: Request) {
         let smsSentCount = 0;
         let smsFailCount = 0;
 
+        // Use first guest name for personalization
+        const guestName = (party.guests as { name?: string }[])?.[0]?.name || party.party_name || 'Friend';
+        const smsBody = buildSmsBody(campaignId, guestName, partyId);
+
         for (const phone of usPhones) {
           try {
             await twilioClient.messages.create({
               to: phone,
               messagingServiceSid: 'MG0851f4936a77e5efd5c0f1d4b69eed14',
-              body: campaign.smsBody,
+              body: smsBody,
               ...(campaign.smsMediaUrl ? { mediaUrl: [campaign.smsMediaUrl] } : {}),
             });
             smsSentCount++;

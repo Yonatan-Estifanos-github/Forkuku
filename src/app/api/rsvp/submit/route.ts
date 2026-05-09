@@ -154,11 +154,52 @@ export async function POST(req: Request) {
           process.env.TWILIO_ACCOUNT_SID,
           process.env.TWILIO_AUTH_TOKEN
         );
+
+        const COMPLIANCE = 'You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.';
+        const magicLink = `https://theestifanos.com/?pwd=Matthew19:6&partyId=${party_id}`;
+
+        interface GuestResponse { name: string; is_attending: boolean; }
+        const attending = (guests as GuestResponse[]).filter(g => g.is_attending).map(g => g.name);
+        const isAttending = attending.length > 0;
+
+        const smsBody = isAttending
+          ? [
+              'RSVP CONFIRMED',
+              '',
+              "We can't wait to celebrate with you.",
+              '',
+              'Thank you for confirming your attendance. We are currently preparing your formal invitation suite, which will include the venue location, day-of details, and our full weekend itinerary. We will reach out to your party soon with these final details.',
+              '',
+              'ATTENDING:',
+              ...attending,
+              '',
+              'THE PRAYER REQUEST',
+              "More than anything, as we prepare to enter into this marriage covenant, our greatest request is your continued prayers. Please join us in praying over our relationship, our future together, and the beautiful day ahead.",
+              '',
+              'Y & S — Yonatan & Saron · September 4, 2026',
+              '',
+              COMPLIANCE,
+            ].join('\n')
+          : [
+              'RSVP RECEIVED',
+              '',
+              'We will miss you!',
+              '',
+              "We are so sorry you won't be able to join us, but we completely understand! Your love, prayers, and well-wishes are all we could ever ask for as we prepare to step into this marriage covenant.",
+              '',
+              "If you selected 'Decline' by mistake, or if your plans change, you can update your response at any time:",
+              magicLink,
+              '',
+              'Y & S — Yonatan & Saron · September 4, 2026',
+              '',
+              COMPLIANCE,
+            ].join('\n');
+
         await twilioClient.messages.create({
           to: phone,
           messagingServiceSid: 'MG0851f4936a77e5efd5c0f1d4b69eed14',
-          body: 'You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.',
-          mediaUrl: ['https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_3.jpeg'],
+          body: smsBody,
+          mediaUrl: ['https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG'],
         });
       } catch (smsErr) {
         console.error('Twilio SMS confirmation error (non-critical):', smsErr);
