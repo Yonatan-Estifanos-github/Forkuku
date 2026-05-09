@@ -295,6 +295,31 @@ export default function AdminDashboard() {
     router.push('/admin/login');
   }
 
+  async function handleResendRsvpSms(partyId: string) {
+    const party = parties.find(p => p.id === partyId);
+    const confirmed = window.confirm(
+      `Resend RSVP confirmation SMS to ${party?.party_name || 'this party'}?`
+    );
+    if (!confirmed) return;
+
+    setSendingId(`${partyId}-resend-rsvp`);
+    try {
+      const res = await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ partyId, campaignId: 'save-the-date', channel: 'sms' }),
+      });
+      const result = await res.json();
+      if (!res.ok) alert(`Failed: ${result.error}`);
+      else await fetchParties();
+    } catch (e) {
+      console.error(e);
+      alert('Error sending RSVP confirmation');
+    } finally {
+      setSendingId(null);
+    }
+  }
+
   async function handleSendNotification(partyId: string, channel: 'email' | 'sms') {
     const party = parties.find(p => p.id === partyId);
     const campaignLabel = CAMPAIGNS.find(c => c.id === selectedCampaign)?.label || selectedCampaign;
@@ -1342,6 +1367,15 @@ export default function AdminDashboard() {
                                       className="w-fit px-3 py-0.5 bg-[#1B3B28] text-white text-xs font-bold uppercase rounded hover:bg-[#2a5a3f] transition-colors disabled:opacity-50"
                                     >
                                       {sendingId === `${party.id}-sms` ? 'Sending...' : 'Send SMS'}
+                                    </button>
+                                  )}
+                                  {party.has_responded && (
+                                    <button
+                                      onClick={() => handleResendRsvpSms(party.id)}
+                                      disabled={sendingId === `${party.id}-resend-rsvp`}
+                                      className="w-fit px-3 py-0.5 bg-blue-700 text-white text-xs font-bold uppercase rounded hover:bg-blue-800 transition-colors disabled:opacity-50"
+                                    >
+                                      {sendingId === `${party.id}-resend-rsvp` ? 'Sending...' : 'Resend RSVP'}
                                     </button>
                                   )}
                                 </div>
