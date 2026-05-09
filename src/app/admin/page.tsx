@@ -1195,7 +1195,6 @@ export default function AdminDashboard() {
                       <th className="p-4 font-medium">Party Name</th>
                       <th className="p-4 font-medium">Guests</th>
                       <th className="p-4 font-medium">RSVP Status</th>
-                      <th className="p-4 font-medium">Contact</th>
                       <th className="p-4 font-medium">Email</th>
                       <th className="p-4 font-medium">SMS</th>
                       <th className="p-4 font-medium text-right">Actions</th>
@@ -1276,93 +1275,76 @@ export default function AdminDashboard() {
                                 {rsvpStatus}
                               </span>
                             </td>
-                            <td className="p-4">
-                              <div className="flex items-center gap-3">
-                                <span
-                                  className={hasEmail ? 'opacity-100' : 'opacity-30'}
-                                  title={party.emails?.join(', ') || 'No email'}
-                                >
-                                  {emailSent ? (
-                                    <span className="text-green-600">&#x2709;&#x2713;</span>
-                                  ) : (
-                                    <span>&#x2709;</span>
-                                  )}
-                                  {(party.emails?.length ?? 0) > 1 && (
-                                    <span className="text-[10px] text-gray-400 ml-0.5">×{party.emails!.length}</span>
-                                  )}
-                                </span>
-
-                                {hasPhone && !hasUSPhone ? (
-                                  <span
-                                    className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded font-medium"
-                                    title={`International: ${primaryPhone}`}
-                                  >
-                                    Intl{(party.phones?.length ?? 0) > 1 ? ` ×${party.phones!.length}` : ''}
-                                  </span>
-                                ) : (
-                                  <span
-                                    className={hasUSPhone ? 'opacity-100' : 'opacity-30'}
-                                    title={party.phones?.join(', ') || 'No phone'}
-                                  >
-                                    {smsSent ? (
-                                      <span className="text-green-600">&#x1F4F1;&#x2713;</span>
-                                    ) : (
-                                      <span>&#x1F4F1;</span>
-                                    )}
-                                    {(party.phones?.length ?? 0) > 1 && (
-                                      <span className="text-[10px] text-gray-400 ml-0.5">×{party.phones!.length}</span>
-                                    )}
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                            {/* Email column */}
+                            {/* Email column: address + send status */}
                             <td className="p-4">
                               {!hasEmail ? (
-                                <span className="text-gray-300 text-xs">—</span>
-                              ) : emailSent ? (
-                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-green-100 text-green-700">
-                                  Sent
-                                </span>
-                              ) : activeCampaign?.disabled ? (
-                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-gray-100 text-gray-400 italic">
-                                  Locked
-                                </span>
-                              ) : activeCampaign?.priority === 'sms' ? (
-                                <span className="text-gray-300 text-xs">—</span>
+                                <span className="text-gray-300 text-xs">No email</span>
                               ) : (
-                                <button
-                                  onClick={() => handleSendNotification(party.id, 'email')}
-                                  disabled={sendingId === `${party.id}-email`}
-                                  className="px-3 py-1 bg-[#D4A845] text-white text-xs font-bold uppercase rounded hover:bg-[#b88f35] transition-colors disabled:opacity-50"
-                                >
-                                  {sendingId === `${party.id}-email` ? 'Sending...' : 'Send'}
-                                </button>
+                                <div className="flex flex-col gap-1.5">
+                                  <span className="text-[11px] text-gray-500 truncate max-w-[180px]" title={party.emails?.join(', ')}>
+                                    {party.emails?.[0]}
+                                    {(party.emails?.length ?? 0) > 1 && (
+                                      <span className="text-gray-400 ml-1">+{party.emails!.length - 1}</span>
+                                    )}
+                                  </span>
+                                  {emailSent ? (
+                                    <span className="inline-block w-fit px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-green-100 text-green-700">
+                                      ✓ Sent
+                                    </span>
+                                  ) : activeCampaign?.disabled ? (
+                                    <span className="text-xs text-gray-400 italic">Locked</span>
+                                  ) : activeCampaign?.priority === 'sms' ? (
+                                    <span className="text-gray-300 text-xs">—</span>
+                                  ) : (
+                                    <button
+                                      onClick={() => handleSendNotification(party.id, 'email')}
+                                      disabled={sendingId === `${party.id}-email`}
+                                      className="w-fit px-3 py-0.5 bg-[#D4A845] text-white text-xs font-bold uppercase rounded hover:bg-[#b88f35] transition-colors disabled:opacity-50"
+                                    >
+                                      {sendingId === `${party.id}-email` ? 'Sending...' : 'Send Email'}
+                                    </button>
+                                  )}
+                                </div>
                               )}
                             </td>
 
-                            {/* SMS column */}
+                            {/* SMS column: phone + send status */}
                             <td className="p-4">
-                              {!hasUSPhone ? (
-                                <span className="text-gray-300 text-xs">{hasPhone ? 'Intl' : '—'}</span>
-                              ) : smsSent ? (
-                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-green-100 text-green-700">
-                                  Sent
-                                </span>
-                              ) : activeCampaign?.disabled ? (
-                                <span className="inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-gray-100 text-gray-400 italic">
-                                  Locked
-                                </span>
-                              ) : activeCampaign?.priority === 'email' ? (
-                                <span className="text-gray-300 text-xs">—</span>
+                              {!hasPhone ? (
+                                <span className="text-gray-300 text-xs">No phone</span>
+                              ) : !hasUSPhone ? (
+                                <div className="flex flex-col gap-1.5">
+                                  <span className="text-[11px] text-gray-500 truncate max-w-[160px]" title={primaryPhone}>
+                                    {primaryPhone}
+                                  </span>
+                                  <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded font-medium w-fit">Intl</span>
+                                </div>
                               ) : (
-                                <button
-                                  onClick={() => handleSendNotification(party.id, 'sms')}
-                                  disabled={sendingId === `${party.id}-sms`}
-                                  className="px-3 py-1 bg-[#1B3B28] text-white text-xs font-bold uppercase rounded hover:bg-[#2a5a3f] transition-colors disabled:opacity-50"
-                                >
-                                  {sendingId === `${party.id}-sms` ? 'Sending...' : 'Send'}
-                                </button>
+                                <div className="flex flex-col gap-1.5">
+                                  <span className="text-[11px] text-gray-500 truncate max-w-[160px]" title={party.phones?.join(', ')}>
+                                    {primaryPhone}
+                                    {(party.phones?.length ?? 0) > 1 && (
+                                      <span className="text-gray-400 ml-1">+{party.phones!.length - 1}</span>
+                                    )}
+                                  </span>
+                                  {smsSent ? (
+                                    <span className="inline-block w-fit px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-green-100 text-green-700">
+                                      ✓ Sent
+                                    </span>
+                                  ) : activeCampaign?.disabled ? (
+                                    <span className="text-xs text-gray-400 italic">Locked</span>
+                                  ) : activeCampaign?.priority === 'email' ? (
+                                    <span className="text-gray-300 text-xs">—</span>
+                                  ) : (
+                                    <button
+                                      onClick={() => handleSendNotification(party.id, 'sms')}
+                                      disabled={sendingId === `${party.id}-sms`}
+                                      className="w-fit px-3 py-0.5 bg-[#1B3B28] text-white text-xs font-bold uppercase rounded hover:bg-[#2a5a3f] transition-colors disabled:opacity-50"
+                                    >
+                                      {sendingId === `${party.id}-sms` ? 'Sending...' : 'Send SMS'}
+                                    </button>
+                                  )}
+                                </div>
                               )}
                             </td>
 
@@ -1402,7 +1384,7 @@ export default function AdminDashboard() {
                           </tr>
                           {isExpanded && (
                             <tr className="bg-white">
-                              <td colSpan={7} className="p-6 border-b border-gray-100">
+                              <td colSpan={6} className="p-6 border-b border-gray-100">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                   {/* Guest Attendance */}
                                   <div>
