@@ -41,7 +41,6 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string, in
         '',
         "We are overjoyed to invite you to celebrate the beginning of our forever. God has been so faithful in bringing us together, and we couldn't imagine stepping into this marriage covenant without our favorite people in the room. To receive your formal invitation with the exact location and weekend details, please register your attendance on our website by June 1st.",
         '',
-        'Website Password: Matthew19:6',
         `RSVP: ${magicLink}`,
         '',
         '---',
