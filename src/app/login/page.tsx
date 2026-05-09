@@ -58,25 +58,47 @@ function SiteLoginPageInner() {
     }
   }, []);
 
-  // Token-based magic link: validate opaque token, pre-fill password
+  // Token-based magic link: validate token then auto-login — no password entry needed
   useEffect(() => {
     const token = searchParams.get('token');
     if (!token) return;
 
-    fetch(`/api/auth/magic?token=${encodeURIComponent(token)}`)
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
+    const autoLogin = async () => {
+      try {
+        const res = await fetch(`/api/auth/magic?token=${encodeURIComponent(token)}`);
+        if (!res.ok) return;
+        const data = await res.json();
         if (!data?.partyId) return;
-        setTokenPartyId(data.partyId);
+
+        const partyId = data.partyId;
+        setTokenPartyId(partyId);
         setPassword(MAGIC_PASSWORD);
         setIsVip(true);
 
         // Drop the VIP cookie so the site remembers this party
         const expires = new Date();
         expires.setDate(expires.getDate() + 90);
-        document.cookie = `vip_party_id=${encodeURIComponent(data.partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
-      })
-      .catch(() => { /* non-critical */ });
+        document.cookie = `vip_party_id=${encodeURIComponent(partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+
+        // Auto-submit — skip manual Enter entirely
+        setLoading(true);
+        const loginRes = await fetch('/api/auth/site-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: MAGIC_PASSWORD }),
+        });
+        if (loginRes.ok) {
+          sessionStorage.setItem('wedding-music-pref', 'off');
+          window.location.href = `/?partyId=${encodeURIComponent(partyId)}`;
+        } else {
+          setLoading(false);
+        }
+      } catch {
+        setLoading(false);
+      }
+    };
+
+    autoLogin();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
