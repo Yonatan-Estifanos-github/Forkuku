@@ -42,6 +42,7 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string): s
         'Website Password: Matthew19:6',
         `RSVP: ${magicLink}`,
         '',
+        '---',
         COMPLIANCE,
       ].join('\n');
 
@@ -60,6 +61,7 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string): s
         '',
         `RSVP & Explore Our Story: ${magicLink}`,
         '',
+        '---',
         COMPLIANCE,
       ].join('\n');
 
@@ -73,6 +75,7 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string): s
         '',
         `RSVP here: ${magicLink}`,
         '',
+        '---',
         COMPLIANCE,
       ].join('\n');
 
@@ -88,6 +91,7 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string): s
         '',
         `Details: ${magicLink}`,
         '',
+        '---',
         COMPLIANCE,
       ].join('\n');
 
@@ -99,6 +103,7 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string): s
         '',
         `Updates: ${magicLink}`,
         '',
+        '---',
         COMPLIANCE,
       ].join('\n');
 
@@ -112,6 +117,7 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string): s
         '',
         '— Yonatan & Saron',
         '',
+        '---',
         COMPLIANCE,
       ].join('\n');
 

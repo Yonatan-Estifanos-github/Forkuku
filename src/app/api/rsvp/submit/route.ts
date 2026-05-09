@@ -178,6 +178,7 @@ export async function POST(req: Request) {
               '',
               'Y & S — Yonatan & Saron · September 4, 2026',
               '',
+              '---',
               COMPLIANCE,
             ].join('\n')
           : [
@@ -192,6 +193,7 @@ export async function POST(req: Request) {
               '',
               'Y & S — Yonatan & Saron · September 4, 2026',
               '',
+              '---',
               COMPLIANCE,
             ].join('\n');
 
