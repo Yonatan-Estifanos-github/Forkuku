@@ -193,6 +193,7 @@ export async function POST(req: Request) {
               to: phone,
               messagingServiceSid: 'MG0851f4936a77e5efd5c0f1d4b69eed14',
               body: campaign.smsBody,
+              ...(campaign.smsMediaUrl ? { mediaUrl: [campaign.smsMediaUrl] } : {}),
             });
             smsSentCount++;
           } catch (smsErr) {
