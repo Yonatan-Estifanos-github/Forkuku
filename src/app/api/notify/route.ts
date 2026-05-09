@@ -135,36 +135,55 @@ function buildAlreadyRsvpedSmsBody(
   const magicLink = `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`;
   const hasAttending = attending.length > 0;
 
-  const lines = [
-    `Hi ${guestName}!`,
-    '',
-    'We already have your RSVP on file — thank you!',
-    '',
-  ];
-
   if (hasAttending) {
-    lines.push('ATTENDING:');
-    attending.forEach(name => lines.push(name));
-    lines.push('');
-    lines.push("We can't wait to celebrate with you on September 4, 2026 in Wrightsville, PA!");
+    const lines = [
+      'RSVP CONFIRMED',
+      '',
+      "We can't wait to celebrate with you.",
+      '',
+      'Thank you for confirming your attendance. We are currently preparing your formal invitation suite, which will include the venue location, day-of details, and our full weekend itinerary. We will reach out to your party soon with these final details.',
+      '',
+      'ATTENDING:',
+      ...attending,
+    ];
+
+    if (declined.length > 0) {
+      lines.push('');
+      lines.push('NOT ATTENDING:');
+      declined.forEach(name => lines.push(name));
+    }
+
+    lines.push(
+      '',
+      'THE PRAYER REQUEST',
+      "More than anything, as we prepare to enter into this marriage covenant, our greatest request is your continued prayers. Please join us in praying over our relationship, our future together, and the beautiful day ahead.",
+      '',
+      'Y & S',
+      'Yonatan & Saron · September 4, 2026',
+      '',
+      '---',
+      COMPLIANCE
+    );
+
+    return lines.join('\n');
   } else {
-    lines.push("We're sorry you won't be able to make it, but we completely understand. Your love and prayers mean everything to us.");
-    lines.push('');
-    lines.push(`If your plans change, you can update your RSVP anytime: ${magicLink}`);
+    return [
+      'RSVP RECEIVED',
+      '',
+      'We will miss you!',
+      '',
+      "We are so sorry you won't be able to join us, but we completely understand! Your love, prayers, and well-wishes are all we could ever ask for as we prepare to step into this marriage covenant.",
+      '',
+      "If you selected 'Decline' by mistake, or if your plans change, you can update your response at any time:",
+      magicLink,
+      '',
+      'Y & S',
+      'Yonatan & Saron · September 4, 2026',
+      '',
+      '---',
+      COMPLIANCE,
+    ].join('\n');
   }
-
-  if (declined.length > 0 && hasAttending) {
-    lines.push('');
-    lines.push(`We'll miss: ${declined.join(', ')}`);
-  }
-
-  lines.push('');
-  lines.push('— Yonatan & Saron · September 4, 2026');
-  lines.push('');
-  lines.push('---');
-  lines.push(COMPLIANCE);
-
-  return lines.join('\n');
 }
 
 const GENERIC_CONTENT: Record<string, { heading: string; body: string }> = {
