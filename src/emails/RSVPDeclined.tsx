@@ -13,18 +13,22 @@ import * as React from 'react';
 
 interface RSVPDeclinedProps {
   partyId?: string;
+  inviteToken?: string;
 }
 
 const BASE_URL = 'https://theestifanos.com';
 const PWD = 'Matthew19:6';
 const PRAY_IMAGE_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG';
 
-export const RSVPDeclined = ({ 
-  partyId
+export const RSVPDeclined = ({
+  partyId,
+  inviteToken,
 }: RSVPDeclinedProps) => {
-  const magicLink = partyId 
-    ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
-    : `${BASE_URL}/?pwd=${PWD}`;
+  const magicLink = inviteToken
+    ? `${BASE_URL}/?token=${inviteToken}`
+    : partyId
+      ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
+      : BASE_URL;
 
   return (
     <Html lang="en">

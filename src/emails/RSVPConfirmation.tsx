@@ -1,5 +1,6 @@
 import {
   Body,
+  Button,
   Head,
   Html,
   Img,
@@ -11,14 +12,26 @@ import * as React from 'react';
 
 interface RSVPConfirmationProps {
   guests: { name: string; is_attending: boolean }[];
+  partyId?: string;
+  inviteToken?: string;
 }
+
+const BASE_URL = 'https://theestifanos.com';
+const PWD = 'Matthew19:6';
 
 const PRAY_IMAGE_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG';
 
-export const RSVPConfirmation = ({ 
-  guests = []
+export const RSVPConfirmation = ({
+  guests = [],
+  partyId,
+  inviteToken,
 }: RSVPConfirmationProps) => {
   const attendingGuests = guests.filter(g => g.is_attending);
+  const siteLink = inviteToken
+    ? `${BASE_URL}/?token=${inviteToken}`
+    : partyId
+      ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
+      : BASE_URL;
 
   return (
     <Html lang="en">
@@ -61,7 +74,14 @@ export const RSVPConfirmation = ({
           </Text>
         </Section>
 
-        {/* ── 6. Image & Caption ── */}
+        {/* ── 6. Visit Website CTA ── */}
+        <Section style={ctaSection}>
+          <Button style={ctaButton} href={siteLink}>
+            VISIT OUR WEBSITE
+          </Button>
+        </Section>
+
+        {/* ── 7. Image & Caption ── */}
         <Img
           src={PRAY_IMAGE_URL}
           alt="Yonatan and Saron"
@@ -72,7 +92,7 @@ export const RSVPConfirmation = ({
           Pastor Ashenafi praying over our upcoming marriage at our engagement celebration.
         </Text>
 
-        {/* ── 7. Footer ── */}
+        {/* ── 8. Footer ── */}
         <Section style={footerSection}>
           <Text style={monogram}>Y &amp; S</Text>
           <Text style={footerNames}>
@@ -184,6 +204,23 @@ const heroImage: React.CSSProperties = {
   maxWidth: '500px',
   margin: '0 auto',
   display: 'block',
+};
+
+const ctaSection: React.CSSProperties = {
+  margin: '0 0 48px',
+};
+
+const ctaButton: React.CSSProperties = {
+  border: '1px solid #D4A845',
+  color: '#D4A845',
+  padding: '14px 40px',
+  textTransform: 'uppercase',
+  letterSpacing: '0.2em',
+  fontSize: '10px',
+  textDecoration: 'none',
+  display: 'inline-block',
+  borderRadius: '100px',
+  fontFamily: 'Helvetica, Arial, sans-serif',
 };
 
 const caption: React.CSSProperties = {
