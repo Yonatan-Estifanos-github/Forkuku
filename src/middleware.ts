@@ -4,9 +4,16 @@ export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
   const sitePassword = process.env.SITE_PASSWORD;
 
-  // ── Magic Link: intercept ?pwd= or ?partyId on any path ──────────────────
-  // If magic params are present, we want to ensure the user ends up on /login
-  // so they can see the "VIP" welcome message and intentionally enter.
+  // ── Token-based magic link: ?token=<uuid> ────────────────────────────────
+  // Opaque invite token — no password exposed in URL.
+  const inviteToken = searchParams.get('token');
+  if (inviteToken && pathname !== '/login') {
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('token', inviteToken);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // ── Legacy magic link: ?pwd= or ?partyId= ────────────────────────────────
   const magicPwd = searchParams.get('pwd');
   const partyId  = searchParams.get('partyId');
 

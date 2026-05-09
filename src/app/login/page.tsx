@@ -30,6 +30,7 @@ function SiteLoginPageInner() {
   const [loading, setLoading] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
   const [isVip, setIsVip] = useState(false);
+  const [tokenPartyId, setTokenPartyId] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { language, setLanguage, t } = useLanguage();
   const searchParams = useSearchParams();
@@ -57,7 +58,29 @@ function SiteLoginPageInner() {
     }
   }, []);
 
-  // Magic link: pre-fill password when ?pwd=Matthew19:6 is present
+  // Token-based magic link: validate opaque token, pre-fill password
+  useEffect(() => {
+    const token = searchParams.get('token');
+    if (!token) return;
+
+    fetch(`/api/auth/magic?token=${encodeURIComponent(token)}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (!data?.partyId) return;
+        setTokenPartyId(data.partyId);
+        setPassword(MAGIC_PASSWORD);
+        setIsVip(true);
+
+        // Drop the VIP cookie so the site remembers this party
+        const expires = new Date();
+        expires.setDate(expires.getDate() + 90);
+        document.cookie = `vip_party_id=${encodeURIComponent(data.partyId)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+      })
+      .catch(() => { /* non-critical */ });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Legacy magic link: pre-fill password when ?pwd=Matthew19:6 is present
   useEffect(() => {
     const pwd = searchParams.get('pwd');
     const partyId = searchParams.get('partyId');
@@ -104,7 +127,7 @@ function SiteLoginPageInner() {
 
       if (response.ok) {
         sessionStorage.setItem('wedding-music-pref', musicOn ? 'on' : 'off');
-        const partyId = searchParams.get('partyId');
+        const partyId = searchParams.get('partyId') || tokenPartyId;
         window.location.href = partyId ? `/?partyId=${encodeURIComponent(partyId)}` : '/';
       } else {
         setError(t('login.incorrectPassword'));

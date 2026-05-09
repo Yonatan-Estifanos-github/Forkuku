@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     // Fetch current contact arrays so we can merge without duplicates
     const { data: currentParty } = await supabaseAdmin
       .from('parties')
-      .select('emails, phones, party_name')
+      .select('emails, phones, party_name, invite_token')
       .eq('id', party_id)
       .single();
 
@@ -156,7 +156,10 @@ export async function POST(req: Request) {
         );
 
         const COMPLIANCE = 'You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.';
-        const magicLink = `https://theestifanos.com/?pwd=Matthew19:6&partyId=${party_id}`;
+        const inviteToken = currentParty?.invite_token;
+        const magicLink = inviteToken
+          ? `https://theestifanos.com/?token=${inviteToken}`
+          : `https://theestifanos.com/?pwd=Matthew19:6&partyId=${party_id}`;
 
         interface GuestResponse { name: string; is_attending: boolean; }
         const attending = (guests as GuestResponse[]).filter(g => g.is_attending).map(g => g.name);

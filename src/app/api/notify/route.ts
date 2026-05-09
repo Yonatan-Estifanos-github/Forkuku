@@ -23,8 +23,10 @@ const BASE_URL = 'https://theestifanos.com';
 const PWD = 'Matthew19:6';
 const COMPLIANCE = 'You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.';
 
-function buildSmsBody(campaignId: string, guestName: string, partyId: string): string {
-  const magicLink = `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`;
+function buildSmsBody(campaignId: string, guestName: string, partyId: string, inviteToken?: string): string {
+  const magicLink = inviteToken
+    ? `${BASE_URL}/?token=${inviteToken}`
+    : `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`;
 
   switch (campaignId) {
     case 'save-the-date':
@@ -130,9 +132,12 @@ function buildAlreadyRsvpedSmsBody(
   guestName: string,
   partyId: string,
   attending: string[],
-  declined: string[]
+  declined: string[],
+  inviteToken?: string
 ): string {
-  const magicLink = `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`;
+  const magicLink = inviteToken
+    ? `${BASE_URL}/?token=${inviteToken}`
+    : `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`;
   const hasAttending = attending.length > 0;
 
   if (hasAttending) {
@@ -232,7 +237,7 @@ export async function POST(req: Request) {
     // ── Fetch party + guests ──
     const { data: party, error: partyError } = await supabaseAdmin
       .from('parties')
-      .select('id, party_name, emails, phones, has_responded, guests(id, name, email, is_attending)')
+      .select('id, party_name, emails, phones, has_responded, invite_token, guests(id, name, email, is_attending)')
       .eq('id', partyId)
       .single();
 
@@ -356,6 +361,7 @@ export async function POST(req: Request) {
 
         // Use first guest name for personalization
         const guestName = (party.guests as { name?: string; is_attending?: boolean }[])?.[0]?.name || party.party_name || 'Friend';
+        const inviteToken = (party as { invite_token?: string }).invite_token;
 
         // If they've already RSVPed, send a tailored acknowledgment instead of the campaign message
         let smsBody: string;
@@ -363,9 +369,9 @@ export async function POST(req: Request) {
           const allGuests = party.guests as { name?: string; is_attending?: boolean }[];
           const attending = allGuests.filter(g => g.is_attending).map(g => g.name || '').filter(Boolean);
           const declined  = allGuests.filter(g => !g.is_attending).map(g => g.name || '').filter(Boolean);
-          smsBody = buildAlreadyRsvpedSmsBody(guestName, partyId, attending, declined);
+          smsBody = buildAlreadyRsvpedSmsBody(guestName, partyId, attending, declined, inviteToken);
         } else {
-          smsBody = buildSmsBody(campaignId, guestName, partyId);
+          smsBody = buildSmsBody(campaignId, guestName, partyId, inviteToken);
         }
 
         const PRAY_IMAGE = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG';
