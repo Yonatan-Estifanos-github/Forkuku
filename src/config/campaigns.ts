@@ -42,7 +42,7 @@ export const CAMPAIGNS: Campaign[] = [
   {
     id: 'rsvp-reminder',
     label: 'RSVP Deadline Reminder',
-    smsBody: `Reminder: Please RSVP for Yonatan & Saron's wedding by June 1st at ${SITE_LINK}\n\n${COMPLIANCE_FOOTER}`,
+    smsBody: `Reminder: Please RSVP for Yonatan & Saron's wedding by June 15th at ${SITE_LINK}\n\n${COMPLIANCE_FOOTER}`,
     smsMediaUrl: PHOTO_STD,
     emailTemplate: 'GenericTemplate',
     priority: 'both',

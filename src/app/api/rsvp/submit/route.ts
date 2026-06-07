@@ -200,7 +200,7 @@ export async function POST(req: Request) {
               '',
               "We are so sorry you won't be able to join us, but we completely understand! Your love, prayers, and well-wishes are all we could ever ask for as we prepare to step into this marriage covenant.",
               '',
-              "If you selected 'Decline' by mistake, or if your plans change, you can update your response until June 1st:",
+              "If you selected 'Decline' by mistake, or if your plans change, you can update your response until June 15th:",
               magicLink,
               '',
               'Yonatan & Saron · September 4, 2026',

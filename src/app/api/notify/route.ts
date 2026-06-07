@@ -13,7 +13,7 @@ import { GenericTemplate } from '@/emails/GenericTemplate';
 const SUBJECTS: Record<string, string> = {
   'save-the-date':       'Save the Date — Yonatan & Saron · September 4, 2026',
   'formal-invitation':   'You are invited to the wedding of Yonatan & Saron',
-  'rsvp-reminder':       'Reminder: RSVP by June 1st — Yonatan & Saron',
+  'rsvp-reminder':       'Reminder: RSVP by June 15th — Yonatan & Saron',
   'logistics-update':    'Wedding Week Details — Yonatan & Saron',
   'day-of-alert':        'Day-of Update — Yonatan & Saron',
   'thank-you':           'Thank You — Yonatan & Saron',
@@ -39,7 +39,7 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string, in
         '',
         `${guestName},`,
         '',
-        "We are overjoyed to invite you to celebrate the beginning of our forever. God has been so faithful in bringing us together, and we couldn't imagine stepping into this marriage covenant without our favorite people in the room. To receive your formal invitation with the exact location and weekend details, please register your attendance on our website by June 1st.",
+        "We are overjoyed to invite you to celebrate the beginning of our forever. God has been so faithful in bringing us together, and we couldn't imagine stepping into this marriage covenant without our favorite people in the room. To receive your formal invitation with the exact location and weekend details, please register your attendance on our website by June 15th.",
         '',
         `RSVP: ${magicLink}`,
         '',
@@ -72,7 +72,7 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string, in
         '',
         `${guestName},`,
         '',
-        `This is a friendly reminder to RSVP for Yonatan & Saron's wedding by June 1st, 2026. We'd love to know if you can make it!`,
+        `This is a friendly reminder to RSVP for Yonatan & Saron's wedding by June 15th, 2026. We'd love to know if you can make it!`,
         '',
         `RSVP here: ${magicLink}`,
         '',
@@ -177,7 +177,7 @@ function buildAlreadyRsvpedSmsBody(
       '',
       "We are so sorry you won't be able to join us, but we completely understand! Your love, prayers, and well-wishes are all we could ever ask for as we prepare to step into this marriage covenant.",
       '',
-      "If you selected 'Decline' by mistake, or if your plans change, you can update your response until June 1st:",
+      "If you selected 'Decline' by mistake, or if your plans change, you can update your response until June 15th:",
       magicLink,
       '',
       'Yonatan & Saron · September 4, 2026',
@@ -190,8 +190,8 @@ function buildAlreadyRsvpedSmsBody(
 
 const GENERIC_CONTENT: Record<string, { heading: string; body: string }> = {
   'rsvp-reminder': {
-    heading: 'Please RSVP by June 1st',
-    body: 'This is a friendly reminder to RSVP for Yonatan & Saron\'s wedding by June 1st, 2026. We\'d love to know if you can make it!',
+    heading: 'Please RSVP by June 15th',
+    body: 'This is a friendly reminder to RSVP for Yonatan & Saron\'s wedding by June 15th, 2026. We\'d love to know if you can make it!',
   },
   'logistics-update': {
     heading: 'Wedding Week Logistics',
