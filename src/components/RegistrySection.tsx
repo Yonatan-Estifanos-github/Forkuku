@@ -228,7 +228,7 @@ export default function RegistrySection() {
   };
 
   const handleCopyHandle = (type: 'cashapp' | 'venmo') => {
-    const handle = type === 'cashapp' ? '$theestifanos' : '7179635535';
+    const handle = type === 'cashapp' ? '$theestifanos' : '@theestifanos';
     navigator.clipboard.writeText(handle);
     setCopiedHandle(type);
     setTimeout(() => setCopiedHandle(null), 2000);
@@ -466,6 +466,7 @@ export default function RegistrySection() {
                 <p className={`text-xl text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
                   {t('registry.cashAppHandle')}
                 </p>
+                <p className="text-xs text-white/40 font-sans">{t('registry.cashPayPhone')}</p>
                 <button
                   onClick={() => handleCopyHandle('cashapp')}
                   className={`mt-auto px-4 py-1.5 border border-wedding-gold/40 text-wedding-gold text-xs rounded-full hover:bg-wedding-gold/10 transition-colors ${isAmharic ? 'font-ethiopic' : ''}`}
@@ -482,6 +483,7 @@ export default function RegistrySection() {
                 <p className={`text-xl text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
                   {t('registry.venmoHandle')}
                 </p>
+                <p className="text-xs text-white/40 font-sans">{t('registry.cashPayPhone')}</p>
                 <button
                   onClick={() => handleCopyHandle('venmo')}
                   className={`mt-auto px-4 py-1.5 border border-wedding-gold/40 text-wedding-gold text-xs rounded-full hover:bg-wedding-gold/10 transition-colors ${isAmharic ? 'font-ethiopic' : ''}`}
