@@ -55,7 +55,7 @@ export const RSVPDeclined = ({
         {/* ── Escape Hatch ── */}
         <Text style={escapeHatchText}>
           If you selected &apos;Decline&apos; by mistake, or if your plans change,
-          you can update your response until June 1st using the link below.
+          you can update your response until June 15th using the link below.
         </Text>
 
         {/* ── CTA ── */}
