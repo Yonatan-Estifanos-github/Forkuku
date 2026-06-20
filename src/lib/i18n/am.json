@@ -190,6 +190,25 @@
     "successMessage": "እናመሰግናለን። ለልግስናዎ ክብር ይሰጠናል። ከናንተ ጋር ለማክበር እጥቅም ላይ ነን!",
     "onItsWay": "ወደ ቤታችን በመምጣት ላይ",
     "withLove": "በፍቅር፣ ዮናታን እና ሳሮን",
-    "close": "ዝጋ"
+    "close": "ዝጋ",
+    "cashGiftHeading": "የጥሬ ገንዘብ ስጦታ",
+    "cashGiftDescription": "በጥሬ ገንዘብ ስጦታ ለሚፈልጉ፣ ቀጥታ ሊልኩ ይችላሉ፦",
+    "cashAppLabel": "Cash App",
+    "venmoLabel": "Venmo",
+    "cashAppHandle": "$theestifanos",
+    "venmoHandle": "7179635535",
+    "copied": "ተቀድቷል!",
+    "copyHandle": "ቅዳ",
+    "sendNote": "ማስታወሻ ላኩ",
+    "cashNoteHeading": "ማስታወሻ ይተዉ",
+    "cashNoteDescription": "ስጦታ እንደላኩ ያሳውቁን — ከልብ ለማመስገን እንፈልጋለን።",
+    "whichPlatform": "የትኛውን ተጠቀሙ?",
+    "yourNameCash": "ስምዎ *",
+    "yourEmailCash": "ኢሜይልዎ (አማራጭ)",
+    "yourMessageCash": "መልዕክትዎ (አማራጭ)",
+    "sendNoteButton": "ላክ",
+    "sendingNote": "በመላክ ላይ...",
+    "cashNoteSuccess": "እናመሰግናለን! ማስታወሻዎ ደርሶናል።",
+    "cashNoteError": "መላክ አልቻለም። እንደገና ይሞክሩ።"
   }
 }

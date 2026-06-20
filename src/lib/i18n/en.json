@@ -189,6 +189,25 @@
     "successMessage": "Thank you. We are honored by your generosity. Can't wait to celebrate with you!",
     "onItsWay": "On its way to our home",
     "withLove": "With love, Yonatan & Saron",
-    "close": "Close"
+    "close": "Close",
+    "cashGiftHeading": "Cash Gift",
+    "cashGiftDescription": "Prefer to give cash? We'd be so grateful. You can send directly via:",
+    "cashAppLabel": "Cash App",
+    "venmoLabel": "Venmo",
+    "cashAppHandle": "$theestifanos",
+    "venmoHandle": "7179635535",
+    "copied": "Copied!",
+    "copyHandle": "Copy",
+    "sendNote": "Send us a note",
+    "cashNoteHeading": "Leave a Note",
+    "cashNoteDescription": "Let us know you sent a gift — we'd love to thank you personally.",
+    "whichPlatform": "Which did you use?",
+    "yourNameCash": "Your Name *",
+    "yourEmailCash": "Your Email (optional)",
+    "yourMessageCash": "Your Message (optional)",
+    "sendNoteButton": "Send Note",
+    "sendingNote": "Sending...",
+    "cashNoteSuccess": "Thank you! Your note has been received.",
+    "cashNoteError": "Failed to send. Please try again."
   }
 }

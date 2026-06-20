@@ -27,6 +27,7 @@ interface ShippingAddress {
 }
 
 type ModalStep = 'shipping' | 'details' | 'success';
+type CashNoteStep = 'form' | 'success';
 
 export default function RegistrySection() {
   const [items, setItems] = useState<RegistryItem[]>([]);
@@ -44,6 +45,17 @@ export default function RegistrySection() {
   const [purchaserMessage, setPurchaserMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Cash gift state
+  const [showCashModal, setShowCashModal] = useState(false);
+  const [cashNoteStep, setCashNoteStep] = useState<CashNoteStep>('form');
+  const [cashGiftType, setCashGiftType] = useState<'cashapp' | 'venmo'>('cashapp');
+  const [cashName, setCashName] = useState('');
+  const [cashEmail, setCashEmail] = useState('');
+  const [cashMessage, setCashMessage] = useState('');
+  const [cashSubmitting, setCashSubmitting] = useState(false);
+  const [cashError, setCashError] = useState('');
+  const [copiedHandle, setCopiedHandle] = useState<'cashapp' | 'venmo' | null>(null);
 
   const fetchItems = async () => {
     const { data, error } = await supabase
@@ -160,6 +172,53 @@ export default function RegistrySection() {
     setPurchaserName('');
     setPurchaserEmail('');
     setPurchaserMessage('');
+  };
+
+  const handleCopyHandle = (type: 'cashapp' | 'venmo') => {
+    const handle = type === 'cashapp' ? '$theestifanos' : '7179635535';
+    navigator.clipboard.writeText(handle);
+    setCopiedHandle(type);
+    setTimeout(() => setCopiedHandle(null), 2000);
+  };
+
+  const handleOpenCashModal = () => {
+    setCashNoteStep('form');
+    setCashGiftType('cashapp');
+    setCashName('');
+    setCashEmail('');
+    setCashMessage('');
+    setCashError('');
+    setShowCashModal(true);
+  };
+
+  const handleSubmitCashNote = async () => {
+    if (!cashName.trim()) {
+      setCashError(t('registry.yourNameCash').replace(' *', '') + ' is required');
+      return;
+    }
+    setCashSubmitting(true);
+    setCashError('');
+    try {
+      const res = await fetch('/api/registry/cash-gift', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: cashName,
+          email: cashEmail,
+          message: cashMessage,
+          giftType: cashGiftType,
+        }),
+      });
+      if (res.ok) {
+        setCashNoteStep('success');
+      } else {
+        setCashError(t('registry.cashNoteError'));
+      }
+    } catch {
+      setCashError(t('registry.cashNoteError'));
+    } finally {
+      setCashSubmitting(false);
+    }
   };
 
   return (
@@ -321,6 +380,61 @@ export default function RegistrySection() {
           </FadeIn>
         )}
 
+        {/* Cash Gift Section */}
+        <FadeIn delay={0.35}>
+          <div className="mt-20 max-w-lg mx-auto">
+            <h3 className={`text-2xl text-wedding-gold text-center mb-2 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+              {t('registry.cashGiftHeading')}
+            </h3>
+            <p className={`text-center text-sm mb-8 ${isAmharic ? 'font-ethiopic text-white/60' : 'font-serif text-white/50'}`}>
+              {t('registry.cashGiftDescription')}
+            </p>
+
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              {/* Cash App */}
+              <div className="border border-white/10 rounded-xl p-5 bg-white/5 flex flex-col items-center gap-3">
+                <p className={`text-xs tracking-widest uppercase text-white/50 ${isAmharic ? 'font-ethiopic' : ''}`}>
+                  {t('registry.cashAppLabel')}
+                </p>
+                <p className={`text-xl text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
+                  {t('registry.cashAppHandle')}
+                </p>
+                <button
+                  onClick={() => handleCopyHandle('cashapp')}
+                  className={`mt-auto px-4 py-1.5 border border-wedding-gold/40 text-wedding-gold text-xs rounded-full hover:bg-wedding-gold/10 transition-colors ${isAmharic ? 'font-ethiopic' : ''}`}
+                >
+                  {copiedHandle === 'cashapp' ? t('registry.copied') : t('registry.copyHandle')}
+                </button>
+              </div>
+
+              {/* Venmo */}
+              <div className="border border-white/10 rounded-xl p-5 bg-white/5 flex flex-col items-center gap-3">
+                <p className={`text-xs tracking-widest uppercase text-white/50 ${isAmharic ? 'font-ethiopic' : ''}`}>
+                  {t('registry.venmoLabel')}
+                </p>
+                <p className={`text-xl text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
+                  {t('registry.venmoHandle')}
+                </p>
+                <button
+                  onClick={() => handleCopyHandle('venmo')}
+                  className={`mt-auto px-4 py-1.5 border border-wedding-gold/40 text-wedding-gold text-xs rounded-full hover:bg-wedding-gold/10 transition-colors ${isAmharic ? 'font-ethiopic' : ''}`}
+                >
+                  {copiedHandle === 'venmo' ? t('registry.copied') : t('registry.copyHandle')}
+                </button>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <button
+                onClick={handleOpenCashModal}
+                className={`text-sm text-white/50 hover:text-wedding-gold transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-wedding-gold/50 ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
+              >
+                {t('registry.sendNote')}
+              </button>
+            </div>
+          </div>
+        </FadeIn>
+
         {/* Thank you note */}
         <FadeIn delay={0.4}>
           <div className="mt-16 text-center">
@@ -330,6 +444,149 @@ export default function RegistrySection() {
           </div>
         </FadeIn>
       </div>
+
+      {/* Cash Gift Note Modal */}
+      {showCashModal && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setShowCashModal(false)}
+        >
+          <div
+            className="bg-luxury-black border border-wedding-gold/30 rounded-2xl max-w-md w-full p-8 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {cashNoteStep === 'form' ? (
+              <>
+                {/* Icon */}
+                <div className="flex justify-center mb-6">
+                  <div className="w-16 h-16 rounded-full bg-wedding-gold/10 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-wedding-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                </div>
+
+                <h3 className={`text-2xl text-wedding-gold text-center mb-2 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+                  {t('registry.cashNoteHeading')}
+                </h3>
+                <p className={`text-center text-sm mb-6 ${isAmharic ? 'font-ethiopic text-white/80' : 'font-serif text-white/60'}`}>
+                  {t('registry.cashNoteDescription')}
+                </p>
+
+                <div className="space-y-4 mb-6">
+                  {/* Platform selector */}
+                  <div>
+                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                      {t('registry.whichPlatform')}
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {(['cashapp', 'venmo'] as const).map((type) => (
+                        <button
+                          key={type}
+                          type="button"
+                          onClick={() => setCashGiftType(type)}
+                          className={`py-2.5 rounded-lg border text-sm transition-colors ${isAmharic ? 'font-ethiopic' : 'font-serif'} ${
+                            cashGiftType === type
+                              ? 'border-wedding-gold bg-wedding-gold/10 text-wedding-gold'
+                              : 'border-white/20 text-white/50 hover:border-white/40'
+                          }`}
+                        >
+                          {type === 'cashapp' ? t('registry.cashAppLabel') : t('registry.venmoLabel')}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                      {t('registry.yourNameCash')}
+                    </label>
+                    <input
+                      type="text"
+                      value={cashName}
+                      onChange={(e) => setCashName(e.target.value)}
+                      placeholder={t('registry.whoToThank')}
+                      className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                      {t('registry.yourEmailCash')}
+                    </label>
+                    <input
+                      type="email"
+                      value={cashEmail}
+                      onChange={(e) => setCashEmail(e.target.value)}
+                      placeholder="your@email.com"
+                      className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                      {t('registry.yourMessageCash')}
+                    </label>
+                    <textarea
+                      value={cashMessage}
+                      onChange={(e) => setCashMessage(e.target.value)}
+                      placeholder={t('registry.loveToHear')}
+                      rows={3}
+                      className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors resize-none ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+                    />
+                  </div>
+                </div>
+
+                {cashError && (
+                  <p className="text-red-400 text-sm text-center mb-4 font-serif italic">{cashError}</p>
+                )}
+
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={handleSubmitCashNote}
+                    disabled={cashSubmitting || !cashName.trim()}
+                    className={`w-full py-3 bg-wedding-gold text-luxury-black font-medium rounded-lg hover:bg-wedding-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
+                  >
+                    {cashSubmitting ? t('registry.sendingNote') : t('registry.sendNoteButton')}
+                  </button>
+                  <button
+                    onClick={() => setShowCashModal(false)}
+                    className={`w-full py-2 text-sm hover:text-white/70 transition-colors ${isAmharic ? 'font-ethiopic text-white/60' : 'font-serif text-white/50'}`}
+                  >
+                    {t('registry.maybeLater')}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Success */}
+                <div className="flex justify-center mb-6">
+                  <div className="w-20 h-20 rounded-full bg-wedding-gold/20 flex items-center justify-center">
+                    <svg className="w-10 h-10 text-wedding-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+                <h3 className={`text-3xl text-wedding-gold text-center mb-3 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+                  {t('registry.successTitle').replace('{name}', cashName)}
+                </h3>
+                <p className={`text-center mb-8 leading-relaxed ${isAmharic ? 'font-ethiopic text-white/80' : 'font-serif text-white/70'}`}>
+                  {t('registry.cashNoteSuccess')}
+                </p>
+                <p className={`text-center text-xl mb-6 ${isAmharic ? 'font-ethiopic text-wedding-gold/80' : 'font-script text-wedding-gold/60'}`}>
+                  {t('registry.withLove')}
+                </p>
+                <button
+                  onClick={() => setShowCashModal(false)}
+                  className={`w-full py-3 border border-wedding-gold/50 text-wedding-gold rounded-lg hover:bg-wedding-gold/10 transition-colors ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
+                >
+                  {t('registry.close')}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Multi-Step Gift Modal */}
       {selectedItem && (
