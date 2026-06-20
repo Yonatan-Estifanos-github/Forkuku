@@ -87,6 +87,27 @@ export default function RegistrySection() {
   useEffect(() => {
     fetchItems();
     fetchShippingAddress();
+
+    // Realtime: update any item that flips to purchased so all visitors see it immediately
+    const channel = supabase
+      .channel('registry-purchased')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'registry_items' },
+        (payload) => {
+          setItems((prev) =>
+            prev.map((item) =>
+              item.id === payload.new.id
+                ? { ...item, ...(payload.new as RegistryItem) }
+                : item
+            )
+          );
+        }
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Get unique categories
