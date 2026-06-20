@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   try {
     const supabaseAdmin = getSupabaseAdmin();
     const body = await request.json();
-    const { id, name, email, message } = body;
+    const { id, name, email, phone, message } = body;
 
     // Validate required fields
     if (!id) {
@@ -29,9 +29,9 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!name || !name.trim()) {
+    if (!name?.trim() || !email?.trim() || !phone?.trim()) {
       return NextResponse.json(
-        { error: 'Your name is required' },
+        { error: 'Name, email, and phone number are required' },
         { status: 400 }
       );
     }
@@ -42,7 +42,8 @@ export async function POST(request: Request) {
       .update({
         is_purchased: true,
         purchaser_name: name.trim(),
-        purchaser_email: email?.trim() || null,
+        purchaser_email: email.trim(),
+        purchaser_phone: phone.trim(),
         purchaser_message: message?.trim() || null,
       })
       .eq('id', id)
@@ -74,7 +75,8 @@ export async function POST(request: Request) {
             itemName: data.name,
             itemPrice: data.price,
             purchaserName: name.trim(),
-            purchaserEmail: email?.trim() || undefined,
+            purchaserEmail: email.trim(),
+            purchaserPhone: phone.trim(),
             purchaserMessage: message?.trim() || undefined,
           })
         );

@@ -42,9 +42,14 @@ export default function RegistrySection() {
   const [modalStep, setModalStep] = useState<ModalStep>('shipping');
   const [purchaserName, setPurchaserName] = useState('');
   const [purchaserEmail, setPurchaserEmail] = useState('');
+  const [purchaserPhone, setPurchaserPhone] = useState('');
   const [purchaserMessage, setPurchaserMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Track items purchased in this session so the buyer can undo
+  const [purchasedByMeIds, setPurchasedByMeIds] = useState<Set<number>>(new Set());
+  const [undoingId, setUndoingId] = useState<number | null>(null);
 
   // Cash gift state
   const [showCashModal, setShowCashModal] = useState(false);
@@ -119,17 +124,41 @@ export default function RegistrySection() {
     : items.filter(item => item.category === selectedCategory);
 
   // Separate available and purchased items
-  const availableItems = filteredItems.filter(item => !item.is_purchased);
-  const purchasedItems = filteredItems.filter(item => item.is_purchased);
+  // Items purchased by this buyer stay visible to them (for undo); hidden for everyone else
+  const availableItems = filteredItems.filter(item => !item.is_purchased || purchasedByMeIds.has(item.id));
+  const purchasedItems = filteredItems.filter(item => item.is_purchased && !purchasedByMeIds.has(item.id));
 
   const handleItemClick = (item: RegistryItem) => {
+    if (purchasedByMeIds.has(item.id)) return; // already bought by this user; undo button handles it
     if (item.product_url) {
       setSelectedItem(item);
       setModalStep('shipping');
       setPurchaserName('');
       setPurchaserEmail('');
+      setPurchaserPhone('');
       setPurchaserMessage('');
       setCopied(false);
+    }
+  };
+
+  const handleUndo = async (itemId: number) => {
+    setUndoingId(itemId);
+    try {
+      await fetch('/api/registry/undo-purchase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: itemId }),
+      });
+      setPurchasedByMeIds((prev) => {
+        const next = new Set(prev);
+        next.delete(itemId);
+        return next;
+      });
+      // Realtime will update everyone else automatically
+    } catch (err) {
+      console.error('Undo failed:', err);
+    } finally {
+      setUndoingId(null);
     }
   };
 
@@ -152,10 +181,7 @@ export default function RegistrySection() {
   };
 
   const handleConfirmPurchase = async () => {
-    if (!purchaserName.trim()) {
-      alert('Please enter your name');
-      return;
-    }
+    if (!purchaserName.trim() || !purchaserEmail.trim() || !purchaserPhone.trim()) return;
 
     setSubmitting(true);
 
@@ -167,6 +193,7 @@ export default function RegistrySection() {
           id: selectedItem?.id,
           name: purchaserName,
           email: purchaserEmail,
+          phone: purchaserPhone,
           message: purchaserMessage,
         }),
       });
@@ -174,8 +201,12 @@ export default function RegistrySection() {
       const result = await res.json();
 
       if (res.ok) {
+        // Mark as purchased by this buyer so they can undo; realtime hides it for everyone else
+        if (selectedItem) {
+          setPurchasedByMeIds((prev) => new Set(prev).add(selectedItem.id));
+        }
         setModalStep('success');
-        await fetchItems(); // Refresh the list
+        await fetchItems();
       } else {
         alert(result.error || 'Failed to mark as purchased');
       }
@@ -192,6 +223,7 @@ export default function RegistrySection() {
     setModalStep('shipping');
     setPurchaserName('');
     setPurchaserEmail('');
+    setPurchaserPhone('');
     setPurchaserMessage('');
   };
 
@@ -331,16 +363,30 @@ export default function RegistrySection() {
                       </div>
                     )}
 
-                    {/* Hover overlay with button */}
-                    {item.product_url && (
-                      <button
-                        onClick={() => handleItemClick(item)}
-                        className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
-                      >
-                        <span className={`px-6 py-2 border border-wedding-gold text-wedding-gold text-sm rounded hover:bg-wedding-gold hover:text-luxury-black transition-colors ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
-                          {t('registry.giftThis')}
-                        </span>
-                      </button>
+                    {/* Purchased-by-you overlay: stay visible only to buyer with undo */}
+                    {purchasedByMeIds.has(item.id) ? (
+                      <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-3 p-4">
+                        <span className="text-wedding-gold text-xs font-sans uppercase tracking-widest">✓ Purchased by you</span>
+                        <button
+                          onClick={() => handleUndo(item.id)}
+                          disabled={undoingId === item.id}
+                          className="px-4 py-1.5 border border-white/40 text-white/70 text-xs rounded-full hover:border-white hover:text-white transition-colors disabled:opacity-40"
+                        >
+                          {undoingId === item.id ? 'Undoing...' : 'Undo'}
+                        </button>
+                      </div>
+                    ) : (
+                      /* Hover overlay with button */
+                      item.product_url && (
+                        <button
+                          onClick={() => handleItemClick(item)}
+                          className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
+                        >
+                          <span className={`px-6 py-2 border border-wedding-gold text-wedding-gold text-sm rounded hover:bg-wedding-gold hover:text-luxury-black transition-colors ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
+                            {t('registry.giftThis')}
+                          </span>
+                        </button>
+                      )
                     )}
                   </div>
 
@@ -747,13 +793,25 @@ export default function RegistrySection() {
                   </div>
                   <div>
                     <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
-                      {t('registry.yourEmail')}
+                      Your Email *
                     </label>
                     <input
                       type="email"
                       value={purchaserEmail}
                       onChange={(e) => setPurchaserEmail(e.target.value)}
                       placeholder="your@email.com"
+                      className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+                    />
+                  </div>
+                  <div>
+                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                      Your Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      value={purchaserPhone}
+                      onChange={(e) => setPurchaserPhone(e.target.value)}
+                      placeholder="(555) 123-4567"
                       className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
                     />
                   </div>
@@ -775,7 +833,7 @@ export default function RegistrySection() {
                 <div className="flex flex-col gap-3">
                   <button
                     onClick={handleConfirmPurchase}
-                    disabled={submitting || !purchaserName.trim()}
+                    disabled={submitting || !purchaserName.trim() || !purchaserEmail.trim() || !purchaserPhone.trim()}
                     className={`w-full py-3 bg-wedding-gold text-luxury-black font-medium rounded-lg hover:bg-wedding-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
                   >
                     {submitting ? t('registry.saving') : t('registry.confirmGift')}

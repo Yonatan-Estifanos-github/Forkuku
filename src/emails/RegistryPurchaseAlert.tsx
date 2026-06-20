@@ -13,6 +13,7 @@ interface RegistryPurchaseAlertProps {
   itemPrice: number;
   purchaserName: string;
   purchaserEmail?: string;
+  purchaserPhone?: string;
   purchaserMessage?: string;
 }
 
@@ -21,6 +22,7 @@ export const RegistryPurchaseAlert = ({
   itemPrice,
   purchaserName,
   purchaserEmail,
+  purchaserPhone,
   purchaserMessage,
 }: RegistryPurchaseAlertProps) => (
   <Html lang="en">
@@ -39,9 +41,8 @@ export const RegistryPurchaseAlert = ({
       <Section style={card}>
         <Text style={cardLabel}>FROM</Text>
         <Text style={cardValue}>{purchaserName}</Text>
-        {purchaserEmail && (
-          <Text style={cardSub}>{purchaserEmail}</Text>
-        )}
+        {purchaserEmail && <Text style={cardSub}>{purchaserEmail}</Text>}
+        {purchaserPhone && <Text style={cardSub}>{purchaserPhone}</Text>}
       </Section>
 
       {purchaserMessage && (
