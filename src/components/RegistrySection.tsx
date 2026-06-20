@@ -295,18 +295,18 @@ export default function RegistrySection() {
           </p>
 
           {/* Wedding Fund */}
-          <div className="max-w-sm mx-auto mb-12">
-            <p className={`text-xs tracking-widest uppercase text-white/40 text-center mb-4 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+          <div className="max-w-lg mx-auto mb-12">
+            <p className={`text-xs tracking-widest uppercase text-white/40 text-center mb-5 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
               {t('registry.cashGiftHeading')}
             </p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               {(['cashapp', 'venmo'] as const).map((type) => {
                 const isFlipped = flippedCard === type;
                 return (
                   <div
                     key={type}
                     onClick={() => setFlippedCard(isFlipped ? null : type)}
-                    style={{ perspective: '1000px', height: '180px', cursor: 'pointer' }}
+                    style={{ perspective: '1000px', height: '240px', cursor: 'pointer' }}
                   >
                     <div style={{
                       position: 'relative', width: '100%', height: '100%',
@@ -316,21 +316,21 @@ export default function RegistrySection() {
                     }}>
                       {/* Front */}
                       <div style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
-                        className="border border-white/10 rounded-xl bg-white/5 flex flex-col items-center justify-center gap-2 p-4">
+                        className="border border-white/10 rounded-xl bg-white/5 flex flex-col items-center justify-center gap-3 p-5">
                         <p className={`text-[10px] tracking-widest uppercase text-white/40 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
                           {type === 'cashapp' ? t('registry.cashAppLabel') : t('registry.venmoLabel')}
                         </p>
-                        <p className={`text-base text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
+                        <p className={`text-xl text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
                           {type === 'cashapp' ? t('registry.cashAppHandle') : t('registry.venmoHandle')}
                         </p>
-                        <p className="text-[10px] text-white/30 font-sans">{t('registry.cashPayPhone')}</p>
+                        <p className="text-xs text-white/30 font-sans">{t('registry.cashPayPhone')}</p>
                         <button
                           onClick={(e) => { e.stopPropagation(); handleCopyHandle(type); }}
-                          className="mt-1 px-3 py-1 border border-wedding-gold/30 text-wedding-gold text-[10px] rounded-full hover:bg-wedding-gold/10 transition-colors"
+                          className="px-4 py-1.5 border border-wedding-gold/30 text-wedding-gold text-[10px] rounded-full hover:bg-wedding-gold/10 transition-colors"
                         >
                           {copiedHandle === type ? t('registry.copied') : t('registry.copyHandle')}
                         </button>
-                        <p className="text-[9px] text-white/20 font-sans mt-1">tap to see QR</p>
+                        <p className="text-[9px] text-white/20 font-sans">tap to see QR</p>
                       </div>
                       {/* Back — QR code */}
                       <div style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', position: 'absolute', inset: 0 }}
@@ -343,10 +343,16 @@ export default function RegistrySection() {
                 );
               })}
             </div>
-            <div className="text-center mt-4">
+            <div className="text-center mt-6">
+              <p className={`text-xs text-white/35 mb-2 ${isAmharic ? 'font-ethiopic' : 'font-serif italic'}`}>
+                If you sent a cash gift —
+              </p>
               <button
                 onClick={handleOpenCashModal}
-                className={`text-xs text-white/40 hover:text-wedding-gold transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-wedding-gold/50 ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
+                className={`relative text-sm text-wedding-gold/80 hover:text-wedding-gold transition-colors
+                  [text-shadow:0_0_12px_rgba(212,168,69,0.6),0_0_24px_rgba(212,168,69,0.3)]
+                  animate-pulse hover:animate-none
+                  ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
               >
                 {t('registry.sendNote')}
               </button>
@@ -514,71 +520,7 @@ export default function RegistrySection() {
           </FadeIn>
         )}
 
-        {/* Cash Gift Section */}
-        <FadeIn delay={0.35}>
-          <div className="mt-20 max-w-lg mx-auto">
-            <h3 className={`text-2xl text-wedding-gold text-center mb-2 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
-              {t('registry.cashGiftHeading')}
-            </h3>
-            <p className={`text-center text-sm mb-8 ${isAmharic ? 'font-ethiopic text-white/60' : 'font-serif text-white/50'}`}>
-              {t('registry.cashGiftDescription')}
-            </p>
 
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              {(['cashapp', 'venmo'] as const).map((type) => {
-                const isFlipped = flippedCard === type;
-                return (
-                  <div
-                    key={type}
-                    onClick={() => setFlippedCard(isFlipped ? null : type)}
-                    style={{ perspective: '1000px', height: '220px', cursor: 'pointer' }}
-                  >
-                    <div style={{
-                      position: 'relative', width: '100%', height: '100%',
-                      transformStyle: 'preserve-3d',
-                      transition: 'transform 0.55s cubic-bezier(0.4,0.2,0.2,1)',
-                      transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                    }}>
-                      {/* Front */}
-                      <div style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
-                        className="border border-white/10 rounded-xl bg-white/5 flex flex-col items-center justify-center gap-3 p-5">
-                        <p className={`text-xs tracking-widest uppercase text-white/50 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
-                          {type === 'cashapp' ? t('registry.cashAppLabel') : t('registry.venmoLabel')}
-                        </p>
-                        <p className={`text-xl text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
-                          {type === 'cashapp' ? t('registry.cashAppHandle') : t('registry.venmoHandle')}
-                        </p>
-                        <p className="text-xs text-white/40 font-sans">{t('registry.cashPayPhone')}</p>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleCopyHandle(type); }}
-                          className={`px-4 py-1.5 border border-wedding-gold/40 text-wedding-gold text-xs rounded-full hover:bg-wedding-gold/10 transition-colors ${isAmharic ? 'font-ethiopic' : ''}`}
-                        >
-                          {copiedHandle === type ? t('registry.copied') : t('registry.copyHandle')}
-                        </button>
-                        <p className="text-[10px] text-white/20 font-sans">tap to see QR</p>
-                      </div>
-                      {/* Back — QR code */}
-                      <div style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', position: 'absolute', inset: 0 }}
-                        className="border border-wedding-gold/30 rounded-xl bg-white flex items-center justify-center p-3">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={QR[type]} alt={`${type} QR code`} className="w-full h-full object-contain rounded-lg" />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="text-center">
-              <button
-                onClick={handleOpenCashModal}
-                className={`text-sm text-white/50 hover:text-wedding-gold transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-wedding-gold/50 ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
-              >
-                {t('registry.sendNote')}
-              </button>
-            </div>
-          </div>
-        </FadeIn>
 
         {/* Thank you note */}
         <FadeIn delay={0.4}>
