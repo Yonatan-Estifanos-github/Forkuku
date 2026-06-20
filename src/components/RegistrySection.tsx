@@ -51,6 +51,14 @@ export default function RegistrySection() {
   const [purchasedByMeIds, setPurchasedByMeIds] = useState<Set<number>>(new Set());
   const [undoingId, setUndoingId] = useState<number | null>(null);
 
+  // Flip card state for cash payment cards
+  const [flippedCard, setFlippedCard] = useState<'cashapp' | 'venmo' | null>(null);
+
+  const QR: Record<'cashapp' | 'venmo', string> = {
+    cashapp: 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/cashappqr.png',
+    venmo:   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/venmoqr.png',
+  };
+
   // Cash gift state
   const [showCashModal, setShowCashModal] = useState(false);
   const [cashNoteStep, setCashNoteStep] = useState<CashNoteStep>('form');
@@ -292,23 +300,48 @@ export default function RegistrySection() {
               {t('registry.cashGiftHeading')}
             </p>
             <div className="grid grid-cols-2 gap-3">
-              {(['cashapp', 'venmo'] as const).map((type) => (
-                <div key={type} className="border border-white/10 rounded-xl p-4 bg-white/5 flex flex-col items-center gap-2">
-                  <p className={`text-[10px] tracking-widest uppercase text-white/40 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
-                    {type === 'cashapp' ? t('registry.cashAppLabel') : t('registry.venmoLabel')}
-                  </p>
-                  <p className={`text-base text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
-                    {type === 'cashapp' ? t('registry.cashAppHandle') : t('registry.venmoHandle')}
-                  </p>
-                  <p className="text-[10px] text-white/30 font-sans">{t('registry.cashPayPhone')}</p>
-                  <button
-                    onClick={() => handleCopyHandle(type)}
-                    className="mt-1 px-3 py-1 border border-wedding-gold/30 text-wedding-gold text-[10px] rounded-full hover:bg-wedding-gold/10 transition-colors"
+              {(['cashapp', 'venmo'] as const).map((type) => {
+                const isFlipped = flippedCard === type;
+                return (
+                  <div
+                    key={type}
+                    onClick={() => setFlippedCard(isFlipped ? null : type)}
+                    style={{ perspective: '1000px', height: '180px', cursor: 'pointer' }}
                   >
-                    {copiedHandle === type ? t('registry.copied') : t('registry.copyHandle')}
-                  </button>
-                </div>
-              ))}
+                    <div style={{
+                      position: 'relative', width: '100%', height: '100%',
+                      transformStyle: 'preserve-3d',
+                      transition: 'transform 0.55s cubic-bezier(0.4,0.2,0.2,1)',
+                      transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                    }}>
+                      {/* Front */}
+                      <div style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
+                        className="border border-white/10 rounded-xl bg-white/5 flex flex-col items-center justify-center gap-2 p-4">
+                        <p className={`text-[10px] tracking-widest uppercase text-white/40 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+                          {type === 'cashapp' ? t('registry.cashAppLabel') : t('registry.venmoLabel')}
+                        </p>
+                        <p className={`text-base text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
+                          {type === 'cashapp' ? t('registry.cashAppHandle') : t('registry.venmoHandle')}
+                        </p>
+                        <p className="text-[10px] text-white/30 font-sans">{t('registry.cashPayPhone')}</p>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleCopyHandle(type); }}
+                          className="mt-1 px-3 py-1 border border-wedding-gold/30 text-wedding-gold text-[10px] rounded-full hover:bg-wedding-gold/10 transition-colors"
+                        >
+                          {copiedHandle === type ? t('registry.copied') : t('registry.copyHandle')}
+                        </button>
+                        <p className="text-[9px] text-white/20 font-sans mt-1">tap to see QR</p>
+                      </div>
+                      {/* Back — QR code */}
+                      <div style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', position: 'absolute', inset: 0 }}
+                        className="border border-wedding-gold/30 rounded-xl bg-white flex items-center justify-center p-2">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={QR[type]} alt={`${type} QR code`} className="w-full h-full object-contain rounded-lg" />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             <div className="text-center mt-4">
               <button
@@ -492,39 +525,48 @@ export default function RegistrySection() {
             </p>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
-              {/* Cash App */}
-              <div className="border border-white/10 rounded-xl p-5 bg-white/5 flex flex-col items-center gap-3">
-                <p className={`text-xs tracking-widest uppercase text-white/50 ${isAmharic ? 'font-ethiopic' : ''}`}>
-                  {t('registry.cashAppLabel')}
-                </p>
-                <p className={`text-xl text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
-                  {t('registry.cashAppHandle')}
-                </p>
-                <p className="text-xs text-white/40 font-sans">{t('registry.cashPayPhone')}</p>
-                <button
-                  onClick={() => handleCopyHandle('cashapp')}
-                  className={`mt-auto px-4 py-1.5 border border-wedding-gold/40 text-wedding-gold text-xs rounded-full hover:bg-wedding-gold/10 transition-colors ${isAmharic ? 'font-ethiopic' : ''}`}
-                >
-                  {copiedHandle === 'cashapp' ? t('registry.copied') : t('registry.copyHandle')}
-                </button>
-              </div>
-
-              {/* Venmo */}
-              <div className="border border-white/10 rounded-xl p-5 bg-white/5 flex flex-col items-center gap-3">
-                <p className={`text-xs tracking-widest uppercase text-white/50 ${isAmharic ? 'font-ethiopic' : ''}`}>
-                  {t('registry.venmoLabel')}
-                </p>
-                <p className={`text-xl text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
-                  {t('registry.venmoHandle')}
-                </p>
-                <p className="text-xs text-white/40 font-sans">{t('registry.cashPayPhone')}</p>
-                <button
-                  onClick={() => handleCopyHandle('venmo')}
-                  className={`mt-auto px-4 py-1.5 border border-wedding-gold/40 text-wedding-gold text-xs rounded-full hover:bg-wedding-gold/10 transition-colors ${isAmharic ? 'font-ethiopic' : ''}`}
-                >
-                  {copiedHandle === 'venmo' ? t('registry.copied') : t('registry.copyHandle')}
-                </button>
-              </div>
+              {(['cashapp', 'venmo'] as const).map((type) => {
+                const isFlipped = flippedCard === type;
+                return (
+                  <div
+                    key={type}
+                    onClick={() => setFlippedCard(isFlipped ? null : type)}
+                    style={{ perspective: '1000px', height: '220px', cursor: 'pointer' }}
+                  >
+                    <div style={{
+                      position: 'relative', width: '100%', height: '100%',
+                      transformStyle: 'preserve-3d',
+                      transition: 'transform 0.55s cubic-bezier(0.4,0.2,0.2,1)',
+                      transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                    }}>
+                      {/* Front */}
+                      <div style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
+                        className="border border-white/10 rounded-xl bg-white/5 flex flex-col items-center justify-center gap-3 p-5">
+                        <p className={`text-xs tracking-widest uppercase text-white/50 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+                          {type === 'cashapp' ? t('registry.cashAppLabel') : t('registry.venmoLabel')}
+                        </p>
+                        <p className={`text-xl text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
+                          {type === 'cashapp' ? t('registry.cashAppHandle') : t('registry.venmoHandle')}
+                        </p>
+                        <p className="text-xs text-white/40 font-sans">{t('registry.cashPayPhone')}</p>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleCopyHandle(type); }}
+                          className={`px-4 py-1.5 border border-wedding-gold/40 text-wedding-gold text-xs rounded-full hover:bg-wedding-gold/10 transition-colors ${isAmharic ? 'font-ethiopic' : ''}`}
+                        >
+                          {copiedHandle === type ? t('registry.copied') : t('registry.copyHandle')}
+                        </button>
+                        <p className="text-[10px] text-white/20 font-sans">tap to see QR</p>
+                      </div>
+                      {/* Back — QR code */}
+                      <div style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', position: 'absolute', inset: 0 }}
+                        className="border border-wedding-gold/30 rounded-xl bg-white flex items-center justify-center p-3">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={QR[type]} alt={`${type} QR code`} className="w-full h-full object-contain rounded-lg" />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="text-center">
