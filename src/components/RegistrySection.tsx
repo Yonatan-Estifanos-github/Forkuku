@@ -282,9 +282,43 @@ export default function RegistrySection() {
           <h2 className={`text-4xl md:text-5xl lg:text-6xl text-wedding-gold text-center mb-4 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
             {t('registry.heading')}
           </h2>
-          <p className={`text-center max-w-xl mx-auto mb-12 ${isAmharic ? 'font-ethiopic text-white/80' : 'font-serif text-white/70'}`}>
+          <p className={`text-center max-w-xl mx-auto mb-10 ${isAmharic ? 'font-ethiopic text-white/80' : 'font-serif text-white/70'}`}>
             {t('registry.description')}
           </p>
+
+          {/* Wedding Fund */}
+          <div className="max-w-sm mx-auto mb-12">
+            <p className={`text-xs tracking-widest uppercase text-white/40 text-center mb-4 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+              {t('registry.cashGiftHeading')}
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              {(['cashapp', 'venmo'] as const).map((type) => (
+                <div key={type} className="border border-white/10 rounded-xl p-4 bg-white/5 flex flex-col items-center gap-2">
+                  <p className={`text-[10px] tracking-widest uppercase text-white/40 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+                    {type === 'cashapp' ? t('registry.cashAppLabel') : t('registry.venmoLabel')}
+                  </p>
+                  <p className={`text-base text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
+                    {type === 'cashapp' ? t('registry.cashAppHandle') : t('registry.venmoHandle')}
+                  </p>
+                  <p className="text-[10px] text-white/30 font-sans">{t('registry.cashPayPhone')}</p>
+                  <button
+                    onClick={() => handleCopyHandle(type)}
+                    className="mt-1 px-3 py-1 border border-wedding-gold/30 text-wedding-gold text-[10px] rounded-full hover:bg-wedding-gold/10 transition-colors"
+                  >
+                    {copiedHandle === type ? t('registry.copied') : t('registry.copyHandle')}
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-4">
+              <button
+                onClick={handleOpenCashModal}
+                className={`text-xs text-white/40 hover:text-wedding-gold transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-wedding-gold/50 ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
+              >
+                {t('registry.sendNote')}
+              </button>
+            </div>
+          </div>
         </FadeIn>
 
         {/* Category Filter */}
