@@ -25,13 +25,23 @@ export function middleware(request: NextRequest) {
     return res;
   }
 
+  // ── Theme signal: ?view=final-invite ──────────────────────────────────────
+  // Rides alongside either magic-link flow below; stamped as a cookie so
+  // ViewProvider can read it on the next render regardless of which flow ran.
+  const viewParam = searchParams.get('view');
+
   // ── Token-based magic link: ?token=<uuid> ────────────────────────────────
   // Opaque invite token — no password exposed in URL.
   const inviteToken = searchParams.get('token');
   if (inviteToken && pathname !== '/login') {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('token', inviteToken);
-    return NextResponse.redirect(loginUrl);
+    if (viewParam) loginUrl.searchParams.set('view', viewParam);
+    const res = NextResponse.redirect(loginUrl);
+    if (viewParam === 'final-invite') {
+      res.cookies.set('view_pref', 'final-invite', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
+    }
+    return res;
   }
 
   // ── Legacy magic link: ?pwd= or ?partyId= ────────────────────────────────
@@ -43,7 +53,12 @@ export function middleware(request: NextRequest) {
       const loginUrl = new URL('/login', request.url);
       if (magicPwd) loginUrl.searchParams.set('pwd', magicPwd);
       if (partyId) loginUrl.searchParams.set('partyId', partyId);
-      return NextResponse.redirect(loginUrl);
+      if (viewParam) loginUrl.searchParams.set('view', viewParam);
+      const res = NextResponse.redirect(loginUrl);
+      if (viewParam === 'final-invite') {
+        res.cookies.set('view_pref', 'final-invite', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
+      }
+      return res;
     }
     // If already on /login, just let it through
   }

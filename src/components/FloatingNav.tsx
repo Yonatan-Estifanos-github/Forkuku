@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
+import { useNavView } from '@/context/ViewContext';
 
 const NAV_KEYS = [
   { key: 'home',     href: '/',               icon: HomeIcon,     sectionId: 'home' },
@@ -18,6 +19,7 @@ export default function FloatingNav() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string>('home');
   const { t, language, setLanguage } = useLanguage();
+  const { activeView, onToggleView } = useNavView();
 
   useEffect(() => {
     if (pathname !== '/') return;
@@ -66,7 +68,7 @@ export default function FloatingNav() {
       className="fixed bottom-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
       aria-label="Main navigation"
     >
-      <div className="pointer-events-auto flex items-center gap-2 sm:gap-4 rounded-3xl bg-black/50 backdrop-blur-md border border-white/10 px-3 sm:px-6 py-3 max-w-full overflow-x-auto scrollbar-hide">
+      <div className="pointer-events-auto flex items-center gap-2 sm:gap-4 rounded-3xl bg-surface/50 backdrop-blur-md border border-hairline px-3 sm:px-6 py-3 max-w-full overflow-x-auto scrollbar-hide">
 
         {/* Nav items */}
         {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }) => {
@@ -79,7 +81,7 @@ export default function FloatingNav() {
               onClick={(e) => handleClick(e, href)}
               aria-current={active ? 'page' : undefined}
               className={`flex flex-col items-center justify-center gap-1 sm:gap-1.5 shrink-0 transition-colors duration-300 ${
-                active ? 'text-[#D4A845]' : 'text-white/50 hover:text-white/90'
+                active ? 'text-accent' : 'text-ink/50 hover:text-ink/90'
               } ${language === 'am' ? 'font-ethiopic' : 'font-sans'}`}
             >
               <Icon className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
@@ -91,7 +93,7 @@ export default function FloatingNav() {
         })}
 
         {/* Divider */}
-        <span className="h-8 w-px bg-white/10 shrink-0" />
+        <span className="h-8 w-px bg-hairline shrink-0" />
 
         {/* Language switcher */}
         <div className="flex flex-col items-center gap-1.5 shrink-0">
@@ -99,7 +101,7 @@ export default function FloatingNav() {
             onClick={() => setLanguage('en')}
             aria-pressed={language === 'en'}
             className={`text-[9px] font-sans tracking-widest uppercase transition-colors duration-200 leading-none ${
-              language === 'en' ? 'text-[#D4A845]' : 'text-white/35 hover:text-white/70'
+              language === 'en' ? 'text-accent' : 'text-ink/35 hover:text-ink/70'
             }`}
           >
             EN
@@ -108,12 +110,25 @@ export default function FloatingNav() {
             onClick={() => setLanguage('am')}
             aria-pressed={language === 'am'}
             className={`text-[9px] font-ethiopic transition-colors duration-200 leading-none ${
-              language === 'am' ? 'text-[#D4A845]' : 'text-white/35 hover:text-white/70'
+              language === 'am' ? 'text-accent' : 'text-ink/35 hover:text-ink/70'
             }`}
           >
             አማ
           </button>
         </div>
+
+        {/* Divider */}
+        <span className="h-8 w-px bg-hairline shrink-0" />
+
+        {/* Theme toggle — Save the Date (dark) vs Final Invite (light) */}
+        <button
+          type="button"
+          onClick={() => onToggleView(activeView === 'final-invite' ? 'save-the-date' : 'final-invite')}
+          aria-pressed={activeView === 'final-invite'}
+          className={`flex flex-col items-center justify-center gap-1 sm:gap-1.5 shrink-0 text-[9px] sm:text-[10px] uppercase whitespace-nowrap leading-none tracking-widest text-ink/50 hover:text-ink/90 transition-colors duration-300 ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
+        >
+          {activeView === 'final-invite' ? 'Save the Date' : 'Final Invite'}
+        </button>
 
       </div>
     </motion.nav>

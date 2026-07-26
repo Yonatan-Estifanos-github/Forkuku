@@ -23,9 +23,9 @@ export const FormalInvite = ({
   guestName = 'Friend',
   partyId
 }: FormalInviteProps) => {
-  const magicLink = partyId 
-    ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
-    : `${BASE_URL}/?pwd=${PWD}`;
+  const magicLink = partyId
+    ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}&view=final-invite`
+    : `${BASE_URL}/?pwd=${PWD}&view=final-invite`;
 
   return (
     <Html lang="en">

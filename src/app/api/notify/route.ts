@@ -24,9 +24,10 @@ const PWD = 'Matthew19:6';
 const COMPLIANCE = 'You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.';
 
 function buildSmsBody(campaignId: string, guestName: string, partyId: string, inviteToken?: string): string {
+  const viewSuffix = campaignId === 'formal-invitation' ? '&view=final-invite' : '';
   const magicLink = inviteToken
-    ? `${BASE_URL}/?token=${inviteToken}`
-    : `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`;
+    ? `${BASE_URL}/?token=${inviteToken}${viewSuffix}`
+    : `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}${viewSuffix}`;
 
   switch (campaignId) {
     case 'save-the-date':

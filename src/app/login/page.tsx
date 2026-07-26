@@ -127,7 +127,11 @@ function SiteLoginPageInner() {
       if (response.ok) {
         sessionStorage.setItem('wedding-music-pref', musicOn ? 'on' : 'off');
         const partyId = searchParams.get('partyId') || tokenPartyId;
-        window.location.href = partyId ? `/?partyId=${encodeURIComponent(partyId)}` : '/';
+        const view = searchParams.get('view');
+        const qs = new URLSearchParams();
+        if (partyId) qs.set('partyId', partyId);
+        if (view === 'final-invite') qs.set('view', view);
+        window.location.href = qs.toString() ? `/?${qs.toString()}` : '/';
       } else {
         setError(t('login.incorrectPassword'));
         setLoading(false);
