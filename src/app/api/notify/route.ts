@@ -14,7 +14,6 @@ const SUBJECTS: Record<string, string> = {
   'save-the-date':       'Save the Date — Yonatan & Saron · September 4, 2026',
   'formal-invitation':   'You are invited to the wedding of Yonatan & Saron',
   'rsvp-reminder':       'Reminder: RSVP by June 15th — Yonatan & Saron',
-  'final-invite':        'Final Call: RSVP by June 15th — Yonatan & Saron',
   'logistics-update':    'Wedding Week Details — Yonatan & Saron',
   'day-of-alert':        'Day-of Update — Yonatan & Saron',
   'thank-you':           'Thank You — Yonatan & Saron',
@@ -76,20 +75,6 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string, in
         `This is a friendly reminder to RSVP for Yonatan & Saron's wedding by June 15th, 2026. We'd love to know if you can make it!`,
         '',
         `RSVP here: ${magicLink}`,
-        '',
-        '---',
-        COMPLIANCE,
-      ].join('\n');
-
-    case 'final-invite':
-      return [
-        'FINAL CALL TO RSVP',
-        '',
-        `${guestName},`,
-        '',
-        "We're finalizing our guest count for Yonatan & Saron's wedding and haven't heard from you yet. This is the last call to RSVP — we'd hate for you to miss out!",
-        '',
-        `RSVP now: ${magicLink}`,
         '',
         '---',
         COMPLIANCE,
@@ -208,10 +193,6 @@ const GENERIC_CONTENT: Record<string, { heading: string; body: string }> = {
     heading: 'Please RSVP by June 15th',
     body: 'This is a friendly reminder to RSVP for Yonatan & Saron\'s wedding by June 15th, 2026. We\'d love to know if you can make it!',
   },
-  'final-invite': {
-    heading: 'Final Call to RSVP',
-    body: 'We\'re finalizing our guest count for Yonatan & Saron\'s wedding and haven\'t heard from you yet. This is the last call to RSVP — we\'d hate for you to miss out!',
-  },
   'logistics-update': {
     heading: 'Wedding Week Logistics',
     body: 'Here are the details you\'ll need for the big weekend. Visit our website for parking, hotel accommodations, and the full day-of schedule.',
@@ -226,34 +207,26 @@ const GENERIC_CONTENT: Record<string, { heading: string; body: string }> = {
   },
 };
 
-export interface CampaignSendResult {
-  success: boolean;
-  status: number;
-  error?: string;
-  results?: { channel: string; status: string }[];
-}
+export async function POST(req: Request) {
+  try {
+    const { partyId, campaignId, channel } = await req.json();
 
-// Shared by the single-party POST handler below and by bulk dispatchers (e.g.
-// /api/notify/final-invite) so every send — one party or many — goes through
-// this one campaign path: same has_responded override, same campaign_logs
-// bookkeeping, same magic-link fallback.
-export async function sendCampaignToParty(
-  partyId: string,
-  campaignId: string,
-  channel?: 'email' | 'sms'
-): Promise<CampaignSendResult> {
+    if (!partyId || !campaignId) {
+      return NextResponse.json({ error: 'partyId and campaignId are required' }, { status: 400 });
+    }
+
     // channel: 'email' | 'sms' | undefined (undefined = send both)
     const sendEmail = !channel || channel === 'email';
     const sendSms   = !channel || channel === 'sms';
 
     if (!supabaseAdmin) {
       console.error('Supabase admin client not initialised — SUPABASE_SERVICE_ROLE_KEY missing');
-      return { success: false, status: 500, error: 'Server configuration error' };
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
     if (!process.env.RESEND_API_KEY) {
       console.error('RESEND_API_KEY is not set');
-      return { success: false, status: 500, error: 'Email service not configured' };
+      return NextResponse.json({ error: 'Email service not configured' }, { status: 500 });
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
@@ -267,16 +240,16 @@ export async function sendCampaignToParty(
 
     if (partyError || !party) {
       console.error('Party fetch error:', partyError);
-      return { success: false, status: 404, error: 'Party not found' };
+      return NextResponse.json({ error: 'Party not found' }, { status: 404 });
     }
 
     const campaign = getCampaign(campaignId);
     if (!campaign) {
-      return { success: false, status: 404, error: 'Campaign not found' };
+      return NextResponse.json({ error: 'Campaign not found' }, { status: 404 });
     }
 
     if (campaign.disabled) {
-      return { success: false, status: 403, error: 'This campaign is currently locked' };
+      return NextResponse.json({ error: 'This campaign is currently locked' }, { status: 403 });
     }
 
     // Identify all recipients
@@ -368,7 +341,7 @@ export async function sendCampaignToParty(
       });
 
       if (finalStatus === 'failed') {
-        return { success: false, status: 500, error: 'Email send failed for all recipients' };
+        return NextResponse.json({ error: 'Email send failed for all recipients' }, { status: 500 });
       }
     }
 
@@ -429,24 +402,7 @@ export async function sendCampaignToParty(
       }
     }
 
-    return { success: true, status: 200, results: logEntries };
-}
-
-export async function POST(req: Request) {
-  try {
-    const { partyId, campaignId, channel } = await req.json();
-
-    if (!partyId || !campaignId) {
-      return NextResponse.json({ error: 'partyId and campaignId are required' }, { status: 400 });
-    }
-
-    const result = await sendCampaignToParty(partyId, campaignId, channel);
-
-    if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: result.status });
-    }
-
-    return NextResponse.json({ success: true, results: result.results });
+    return NextResponse.json({ success: true, results: logEntries });
 
   } catch (err) {
     console.error('Notify API unhandled error:', err);

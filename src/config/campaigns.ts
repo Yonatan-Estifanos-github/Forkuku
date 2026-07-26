@@ -2,7 +2,6 @@ export type CampaignId =
   | 'save-the-date'
   | 'formal-invitation'
   | 'rsvp-reminder'
-  | 'final-invite'
   | 'logistics-update'
   | 'day-of-alert'
   | 'thank-you';
@@ -45,15 +44,6 @@ export const CAMPAIGNS: Campaign[] = [
     label: 'RSVP Deadline Reminder',
     smsBody: `Reminder: Please RSVP for Yonatan & Saron's wedding by June 15th at ${SITE_LINK}\n\n${COMPLIANCE_FOOTER}`,
     smsMediaUrl: PHOTO_STD,
-    emailTemplate: 'GenericTemplate',
-    priority: 'both',
-    disabled: true,
-  },
-  {
-    id: 'final-invite',
-    label: 'Final Invite (Last Call)',
-    smsBody: `Final call! Yonatan & Saron's wedding is coming up and we haven't heard from you yet. Please RSVP by June 15th at ${SITE_LINK}\n\n${COMPLIANCE_FOOTER}`,
-    smsMediaUrl: PHOTO_INVITE,
     emailTemplate: 'GenericTemplate',
     priority: 'both',
     disabled: true,
