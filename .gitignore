@@ -37,7 +37,9 @@ public/images/
 public/audio/
 
 # claude
-.claude/
+.claude/*
+!.claude/agents/
+!.claude/agents/**
 .env
 
 # gemini
