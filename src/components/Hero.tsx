@@ -493,8 +493,7 @@ function HeroOverlay() {
               <motion.p
                 variants={maskReveal}
                 custom={2.2}
-                className={`text-ink-heading tracking-[0.5em] text-sm sm:text-base md:text-lg font-extrabold uppercase mb-3 drop-shadow-lg ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
-                style={{ textShadow: 'var(--label-shadow)' }}
+                className={`text-ink-heading tracking-[0.5em] text-sm sm:text-base md:text-lg font-extrabold uppercase mb-3 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
               >
                 {t('hero.month')}
               </motion.p>
@@ -510,6 +509,7 @@ function HeroOverlay() {
                 <motion.span
                   variants={maskReveal}
                   custom={2.4}
+                  style={{ filter: 'none' }}
                   className="gold-shimmer font-serif text-6xl sm:text-7xl md:text-8xl italic block"
                 >
                   4
@@ -624,6 +624,7 @@ function HeroOverlay() {
              <motion.p
               animate={{ y: [0, 5, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              style={{ filter: 'none' }}
               className={`gold-shimmer tracking-[0.4em] text-xs sm:text-sm uppercase font-black ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
             >
               {t('hero.scroll')}

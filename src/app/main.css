@@ -26,8 +26,6 @@
   --accent-rgb: 212, 168, 69;
   --accent-soft: #E6D2B5;
   --hairline: rgba(255, 255, 255, 0.1);
-  /* Legibility shadow for light text over busy photo backgrounds */
-  --label-shadow: 0 2px 10px rgba(0, 0, 0, 1), 0 4px 30px rgba(0, 0, 0, 0.8);
 }
 
 [data-theme="light"] {
@@ -45,8 +43,6 @@
   --accent-rgb: 169, 130, 47;
   --accent-soft: #5C6B3D;
   --hairline: rgba(34, 51, 27, 0.16);
-  /* Light halo instead — a dark shadow behind dark text reads as a smudge */
-  --label-shadow: 0 2px 8px rgba(255, 255, 255, 0.85), 0 1px 4px rgba(255, 255, 255, 0.6);
 }
 
 /* Amharic / Ethiopic script — applied automatically when language is 'am' */
@@ -229,7 +225,6 @@ body.preloader-active .countdown-container {
   letter-spacing: 0.5em;
   text-transform: uppercase;
   color: var(--ink-heading);
-  text-shadow: var(--label-shadow);
 }
 
 /* ================================
