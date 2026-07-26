@@ -479,7 +479,7 @@ function HeroOverlay() {
                 variants={maskReveal}
                 custom={2.2}
                 className={`text-ink-heading tracking-[0.5em] text-sm sm:text-base md:text-lg font-extrabold uppercase mb-3 drop-shadow-lg ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
-                style={{ textShadow: '0 4px 30px rgba(0,0,0,1), 0 2px 10px rgba(0,0,0,1)' }}
+                style={{ textShadow: 'var(--label-shadow)' }}
               >
                 {t('hero.month')}
               </motion.p>
