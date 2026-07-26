@@ -31,16 +31,20 @@
 }
 
 [data-theme="light"] {
-  --surface: #FAFAFA;
-  --surface-rgb: 250, 250, 250;
-  --surface-alt: #E7EFEA;
-  --ink: #1B3B28;
-  --ink-rgb: 27, 59, 40;
-  --ink-heading: #16301F;
-  --accent: #C5A059;
-  --accent-rgb: 197, 160, 89;
-  --accent-soft: #9CAF88;
-  --hairline: rgba(27, 59, 40, 0.12);
+  /* Warm parchment/ivory — not a neutral gray-white */
+  --surface: #F7F1E1;
+  --surface-rgb: 247, 241, 225;
+  /* Olive-cream wash for card panels */
+  --surface-alt: #E3E1C9;
+  /* Deep vineyard olive-green — bold, not pastel sage */
+  --ink: #22331B;
+  --ink-rgb: 34, 51, 27;
+  --ink-heading: #16210F;
+  /* Burnished, saturated gold rather than a pale antique tint */
+  --accent: #A9822F;
+  --accent-rgb: 169, 130, 47;
+  --accent-soft: #5C6B3D;
+  --hairline: rgba(34, 51, 27, 0.16);
   /* Light halo instead — a dark shadow behind dark text reads as a smudge */
   --label-shadow: 0 2px 8px rgba(255, 255, 255, 0.85), 0 1px 4px rgba(255, 255, 255, 0.6);
 }
