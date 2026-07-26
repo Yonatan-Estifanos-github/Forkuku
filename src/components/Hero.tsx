@@ -571,6 +571,7 @@ function HeroOverlay() {
               <motion.h1
                 variants={maskReveal}
                 custom={0.5}
+                style={{ filter: 'none' }}
                 className={`gold-shimmer text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.15em] ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
               >
                 {t('hero.yonatan')}
@@ -601,6 +602,7 @@ function HeroOverlay() {
               <motion.h1
                 variants={maskReveal}
                 custom={0.8}
+                style={{ filter: 'none' }}
                 className={`gold-shimmer text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.15em] ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
               >
                 {t('hero.saron')}
