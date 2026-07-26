@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import FloatingNav from '@/components/FloatingNav';
 import SoundController from '@/components/SoundController';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function ConditionalUI() {
   const pathname = usePathname();
@@ -36,6 +37,7 @@ export default function ConditionalUI() {
   return (
     <>
       <SoundController />
+      <ThemeToggle />
       <FloatingNav />
     </>
   );

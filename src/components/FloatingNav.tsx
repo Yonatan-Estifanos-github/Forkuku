@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { useNavView } from '@/context/ViewContext';
 
 const NAV_KEYS = [
   { key: 'home',     href: '/',               icon: HomeIcon,     sectionId: 'home' },
@@ -19,7 +18,6 @@ export default function FloatingNav() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string>('home');
   const { t, language, setLanguage } = useLanguage();
-  const { activeView, onToggleView } = useNavView();
 
   useEffect(() => {
     if (pathname !== '/') return;
@@ -116,19 +114,6 @@ export default function FloatingNav() {
             አማ
           </button>
         </div>
-
-        {/* Divider */}
-        <span className="h-8 w-px bg-hairline shrink-0" />
-
-        {/* Theme toggle — Save the Date (dark) vs Final Invite (light) */}
-        <button
-          type="button"
-          onClick={() => onToggleView(activeView === 'final-invite' ? 'save-the-date' : 'final-invite')}
-          aria-pressed={activeView === 'final-invite'}
-          className={`flex flex-col items-center justify-center gap-1 sm:gap-1.5 shrink-0 text-[9px] sm:text-[10px] uppercase whitespace-nowrap leading-none tracking-widest text-ink/50 hover:text-ink/90 transition-colors duration-300 ${language === 'am' ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
-        >
-          {activeView === 'final-invite' ? 'Save the Date' : 'Final Invite'}
-        </button>
 
       </div>
     </motion.nav>
