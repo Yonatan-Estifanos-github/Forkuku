@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Inter, Cormorant_Garamond, Allura, Playfair_Display, Noto_Sans_Ethiopic } from "next/font/google";
 import "./main.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import ConditionalUI from "@/components/ConditionalUI";
 import { LanguageProvider } from "@/context/LanguageContext";
-import { ViewProvider } from "@/context/ViewContext";
+import { ViewProvider, type ActiveView } from "@/context/ViewContext";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const cormorant = Cormorant_Garamond({
@@ -53,16 +54,20 @@ export const viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const initialView: ActiveView =
+    cookieStore.get('view_pref')?.value === 'final-invite' ? 'final-invite' : 'save-the-date';
+
   return (
-    <html lang="en">
+    <html lang="en" data-theme={initialView === 'final-invite' ? 'light' : 'dark'}>
       <body className={`${inter.variable} ${cormorant.variable} ${allura.variable} ${playfair.variable} ${notoEthiopic.variable} font-sans`}>
         <LanguageProvider>
-          <ViewProvider>
+          <ViewProvider initialView={initialView}>
             <SmoothScroll>
               {/* Conditionally render nav/sound (hidden on admin/login) */}
               <ConditionalUI />

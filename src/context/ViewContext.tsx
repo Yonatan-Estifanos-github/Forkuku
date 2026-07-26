@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
 export type ActiveView = 'save-the-date' | 'final-invite';
 
@@ -10,18 +10,34 @@ export interface NavState {
 }
 
 const DEFAULT_VIEW: ActiveView = 'save-the-date';
+const VIEW_COOKIE = 'view_pref';
 
 const ViewContext = createContext<NavState>({
   activeView: DEFAULT_VIEW,
   onToggleView: () => {},
 });
 
-export function ViewProvider({ children }: { children: React.ReactNode }) {
-  const [activeView, setActiveView] = useState<ActiveView>(DEFAULT_VIEW);
+export function ViewProvider({
+  children,
+  initialView = DEFAULT_VIEW,
+}: {
+  children: React.ReactNode;
+  initialView?: ActiveView;
+}) {
+  const [activeView, setActiveView] = useState<ActiveView>(initialView);
 
   const onToggleView = useCallback((view: ActiveView) => {
     setActiveView(view);
+    const expires = new Date();
+    expires.setFullYear(expires.getFullYear() + 1);
+    document.cookie = `${VIEW_COOKIE}=${view}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
   }, []);
+
+  // Layout already renders <html data-theme> to match initialView server-side,
+  // so this only needs to react to later manual toggles — no flash on load.
+  useEffect(() => {
+    document.documentElement.dataset.theme = activeView === 'final-invite' ? 'light' : 'dark';
+  }, [activeView]);
 
   return (
     <ViewContext.Provider value={{ activeView, onToggleView }}>

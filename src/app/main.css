@@ -9,6 +9,38 @@
   --color-dark-base: #0a0908;
 }
 
+/* ================================
+   THEME TOKENS
+   "Save the Date" (dark) is the default; "Final Invite" (light) applies
+   under [data-theme="light"], set on <html> by ViewProvider/layout.tsx.
+   ================================ */
+:root,
+[data-theme="dark"] {
+  --surface: #0a0908;
+  --surface-rgb: 10, 9, 8;
+  --surface-alt: #12100e;
+  --ink: #F2EFE9;
+  --ink-rgb: 242, 239, 233;
+  --ink-heading: #FFFFFF;
+  --accent: #D4A845;
+  --accent-rgb: 212, 168, 69;
+  --accent-soft: #E6D2B5;
+  --hairline: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] {
+  --surface: #FAFAFA;
+  --surface-rgb: 250, 250, 250;
+  --surface-alt: #E7EFEA;
+  --ink: #1B3B28;
+  --ink-rgb: 27, 59, 40;
+  --ink-heading: #16301F;
+  --accent: #C5A059;
+  --accent-rgb: 197, 160, 89;
+  --accent-soft: #9CAF88;
+  --hairline: rgba(27, 59, 40, 0.12);
+}
+
 /* Amharic / Ethiopic script — applied automatically when language is 'am' */
 .font-ethiopic,
 [lang="am"] {
@@ -25,6 +57,10 @@ html {
   text-rendering: optimizeLegibility;
 }
 
+[data-theme="light"] {
+  color-scheme: light;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -35,15 +71,17 @@ body {
 }
 
 body {
-  background-color: var(--color-dark-base);
-  color: #F2EFE9; /* Brighter, higher contrast cream */
+  background-color: var(--surface);
+  color: var(--ink);
   font-family: var(--font-inter), sans-serif;
   min-height: 100vh;
+  transition: background-color 0.6s ease, color 0.6s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-cormorant), serif;
-  color: #FFFFFF; /* Pure white for maximum visibility on headings */
+  color: var(--ink-heading);
+  transition: color 0.6s ease;
 }
 
 .script-font {

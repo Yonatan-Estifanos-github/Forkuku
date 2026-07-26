@@ -26,7 +26,7 @@ function ParsedDescription({
 
   return (
     <p
-      className={`text-sm text-white/55 leading-relaxed max-w-[280px] ${
+      className={`text-sm text-ink/55 leading-relaxed max-w-[280px] ${
         isAmharic ? 'font-ethiopic' : 'font-sans'
       } ${alignEnd ? 'md:text-right' : ''}`}
     >
@@ -36,7 +36,7 @@ function ParsedDescription({
             <span
               key={i}
               className="font-semibold tracking-wide"
-              style={{ color: '#D4A845' }}
+              style={{ color: 'var(--accent)' }}
             >
               {isAmharic ? 'ዮኒ › ' : 'Yoni › '}
             </span>
@@ -47,7 +47,7 @@ function ParsedDescription({
             <span
               key={i}
               className="font-semibold tracking-wide"
-              style={{ color: '#c8a060' }}
+              style={{ color: 'var(--accent-soft)' }}
             >
               {isAmharic ? 'ሳሮን › ' : 'Saron › '}
             </span>
@@ -96,7 +96,7 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
           animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
           className="w-3 h-3 rounded-full bg-wedding-gold"
-          style={{ boxShadow: '0 0 12px 3px rgba(212,168,69,0.45)' }}
+          style={{ boxShadow: '0 0 12px 3px rgba(var(--accent-rgb), 0.45)' }}
         />
       </div>
 
@@ -125,7 +125,7 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
 
           {/* Museum frame — generous padding, portrait orientation */}
           <div
-            className="relative z-10 border border-wedding-gold/25 bg-[#0f0e0d] p-[18px]"
+            className="relative z-10 border border-wedding-gold/25 bg-surface-alt p-[18px]"
             style={{ aspectRatio: '3/4' }}
           >
             {/* Gold corner accents */}
@@ -158,7 +158,7 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
                   />
                 </motion.div>
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[#1a1208] to-[#0a0908] flex items-center justify-center">
+                <div className="w-full h-full bg-gradient-to-br from-surface-alt to-surface flex items-center justify-center">
                   <span className={`text-wedding-gold/20 text-5xl ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>{displayYear}</span>
                 </div>
               )}
@@ -191,7 +191,7 @@ export default function JourneyCard({ item, index }: JourneyCardProps) {
           </p>
 
           {/* Milestone title */}
-          <h3 className={`text-2xl md:text-3xl text-white mb-3 leading-tight ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+          <h3 className={`text-2xl md:text-3xl text-ink-heading mb-3 leading-tight ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
             {displayTitle}
           </h3>
 

@@ -290,13 +290,13 @@ export default function RegistrySection() {
           <h2 className={`text-4xl md:text-5xl lg:text-6xl text-wedding-gold text-center mb-4 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
             {t('registry.heading')}
           </h2>
-          <p className={`text-center max-w-xl mx-auto mb-10 ${isAmharic ? 'font-ethiopic text-white/80' : 'font-serif text-white/70'}`}>
+          <p className={`text-center max-w-xl mx-auto mb-10 ${isAmharic ? 'font-ethiopic text-ink/80' : 'font-serif text-ink/70'}`}>
             {t('registry.description')}
           </p>
 
           {/* Wedding Fund */}
           <div className="max-w-lg mx-auto mb-12">
-            <p className={`text-xs tracking-widest uppercase text-white/40 text-center mb-5 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+            <p className={`text-xs tracking-widest uppercase text-ink/40 text-center mb-5 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
               {t('registry.cashGiftHeading')}
             </p>
             <div className="grid grid-cols-2 gap-4">
@@ -316,21 +316,21 @@ export default function RegistrySection() {
                     }}>
                       {/* Front */}
                       <div style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
-                        className="border border-white/10 rounded-xl bg-white/5 flex flex-col items-center justify-center gap-3 p-5">
-                        <p className={`text-[10px] tracking-widest uppercase text-white/40 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+                        className="border border-hairline rounded-xl bg-ink/5 flex flex-col items-center justify-center gap-3 p-5">
+                        <p className={`text-[10px] tracking-widest uppercase text-ink/40 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
                           {type === 'cashapp' ? t('registry.cashAppLabel') : t('registry.venmoLabel')}
                         </p>
                         <p className={`text-xl text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
                           {type === 'cashapp' ? t('registry.cashAppHandle') : t('registry.venmoHandle')}
                         </p>
-                        <p className="text-xs text-white/30 font-sans">{t('registry.cashPayPhone')}</p>
+                        <p className="text-xs text-ink/30 font-sans">{t('registry.cashPayPhone')}</p>
                         <button
                           onClick={(e) => { e.stopPropagation(); handleCopyHandle(type); }}
                           className="px-4 py-1.5 border border-wedding-gold/30 text-wedding-gold text-[10px] rounded-full hover:bg-wedding-gold/10 transition-colors"
                         >
                           {copiedHandle === type ? t('registry.copied') : t('registry.copyHandle')}
                         </button>
-                        <p className="text-[9px] text-white/20 font-sans">tap to see QR</p>
+                        <p className="text-[9px] text-ink/20 font-sans">tap to see QR</p>
                       </div>
                       {/* Back — QR code */}
                       <div style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', position: 'absolute', inset: 0 }}
@@ -344,7 +344,7 @@ export default function RegistrySection() {
               })}
             </div>
             <div className="text-center mt-6">
-              <p className={`text-xs text-white/35 mb-2 ${isAmharic ? 'font-ethiopic' : 'font-serif italic'}`}>
+              <p className={`text-xs text-ink/35 mb-2 ${isAmharic ? 'font-ethiopic' : 'font-serif italic'}`}>
                 If you sent a cash gift —
               </p>
               <button
@@ -371,7 +371,7 @@ export default function RegistrySection() {
                   className={`px-4 py-2 text-sm rounded-full border transition-all duration-300 ${isAmharic ? 'font-ethiopic' : 'font-serif'} ${
                     selectedCategory === category
                       ? 'bg-wedding-gold text-luxury-black border-wedding-gold'
-                      : 'text-white/70 border-white/20 hover:border-wedding-gold/50 hover:text-wedding-gold'
+                      : 'text-ink/70 border-hairline hover:border-wedding-gold/50 hover:text-wedding-gold'
                   }`}
                 >
                   {category === 'All' ? t('registry.all') : category}
@@ -385,14 +385,14 @@ export default function RegistrySection() {
         {loading && (
           <div className="text-center py-12">
             <div className="inline-block w-8 h-8 border-2 border-wedding-gold/30 border-t-wedding-gold rounded-full animate-spin mb-4" />
-            <p className={`text-white/50 ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>{t('registry.loading')}</p>
+            <p className={`text-ink/50 ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>{t('registry.loading')}</p>
           </div>
         )}
 
         {/* Empty state */}
         {!loading && items.length === 0 && (
           <div className="text-center py-12">
-            <p className={`text-white/70 ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
+            <p className={`text-ink/70 ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
               {t('registry.empty')}
             </p>
           </div>
@@ -408,12 +408,12 @@ export default function RegistrySection() {
                   className={`group relative rounded-xl overflow-hidden border transition-all duration-300 hover:scale-[1.02] ${
                     item.is_favorite
                       ? 'border-wedding-gold/50 bg-wedding-gold/5'
-                      : 'border-white/10 bg-white/5'
+                      : 'border-hairline bg-ink/5'
                   }`}
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   {/* Image */}
-                  <div className="aspect-square bg-white/5 relative overflow-hidden">
+                  <div className="aspect-square bg-ink/5 relative overflow-hidden">
                     {item.image_url ? (
                       /* eslint-disable-next-line @next/next/no-img-element */
                       <img
@@ -422,7 +422,7 @@ export default function RegistrySection() {
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-white/20">
+                      <div className="w-full h-full flex items-center justify-center text-ink/20">
                         <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -438,12 +438,12 @@ export default function RegistrySection() {
 
                     {/* Purchased-by-you overlay: stay visible only to buyer with undo */}
                     {purchasedByMeIds.has(item.id) ? (
-                      <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-3 p-4">
+                      <div className="absolute inset-0 bg-surface/70 flex flex-col items-center justify-center gap-3 p-4">
                         <span className="text-wedding-gold text-xs font-sans uppercase tracking-widest">✓ Purchased by you</span>
                         <button
                           onClick={() => handleUndo(item.id)}
                           disabled={undoingId === item.id}
-                          className="px-4 py-1.5 border border-white/40 text-white/70 text-xs rounded-full hover:border-white hover:text-white transition-colors disabled:opacity-40"
+                          className="px-4 py-1.5 border border-ink/40 text-ink/70 text-xs rounded-full hover:border-ink hover:text-ink transition-colors disabled:opacity-40"
                         >
                           {undoingId === item.id ? 'Undoing...' : 'Undo'}
                         </button>
@@ -453,7 +453,7 @@ export default function RegistrySection() {
                       item.product_url && (
                         <button
                           onClick={() => handleItemClick(item)}
-                          className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
+                          className="absolute inset-0 bg-surface/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
                         >
                           <span className={`px-6 py-2 border border-wedding-gold text-wedding-gold text-sm rounded hover:bg-wedding-gold hover:text-luxury-black transition-colors ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
                             {t('registry.giftThis')}
@@ -465,11 +465,11 @@ export default function RegistrySection() {
 
                   {/* Content */}
                   <div className="p-1.5 sm:p-4">
-                    <h3 className={`text-[10px] sm:text-lg text-white mb-0.5 sm:mb-1 line-clamp-1 sm:line-clamp-2 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>{item.name}</h3>
+                    <h3 className={`text-[10px] sm:text-lg text-ink mb-0.5 sm:mb-1 line-clamp-1 sm:line-clamp-2 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>{item.name}</h3>
                     <p className={`text-xs sm:text-2xl text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>${Number(item.price).toFixed(2)}</p>
-                    <div className="hidden sm:flex flex-wrap items-center gap-2 text-xs text-white/50 mt-2">
-                      <span className={`bg-white/10 px-2 py-0.5 rounded ${isAmharic ? 'font-ethiopic' : ''}`}>{item.category}</span>
-                      <span className={`bg-white/10 px-2 py-0.5 rounded ${isAmharic ? 'font-ethiopic' : ''}`}>{item.store}</span>
+                    <div className="hidden sm:flex flex-wrap items-center gap-2 text-xs text-ink/50 mt-2">
+                      <span className={`bg-ink/10 px-2 py-0.5 rounded ${isAmharic ? 'font-ethiopic' : ''}`}>{item.category}</span>
+                      <span className={`bg-ink/10 px-2 py-0.5 rounded ${isAmharic ? 'font-ethiopic' : ''}`}>{item.store}</span>
                     </div>
                   </div>
                 </div>
@@ -482,16 +482,16 @@ export default function RegistrySection() {
         {!loading && purchasedItems.length > 0 && (
           <FadeIn delay={0.3}>
             <div className="mt-16">
-              <h3 className={`text-2xl text-white/50 text-center mb-8 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+              <h3 className={`text-2xl text-ink/50 text-center mb-8 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
                 {t('registry.alreadyGifted')}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 max-w-5xl mx-auto">
                 {purchasedItems.map((item) => (
                   <div
                     key={item.id}
-                    className="relative rounded-lg overflow-hidden border border-white/5 bg-white/5 opacity-50"
+                    className="relative rounded-lg overflow-hidden border border-hairline bg-ink/5 opacity-50"
                   >
-                    <div className="aspect-square bg-white/5 relative">
+                    <div className="aspect-square bg-ink/5 relative">
                       {item.image_url ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img
@@ -500,18 +500,18 @@ export default function RegistrySection() {
                           className="w-full h-full object-cover grayscale"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-white/10">
+                        <div className="w-full h-full flex items-center justify-center text-ink/10">
                           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M5 13l4 4L19 7" />
                           </svg>
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <span className={`text-white/70 text-xs ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>{t('registry.gifted')}</span>
+                      <div className="absolute inset-0 bg-surface/40 flex items-center justify-center">
+                        <span className={`text-ink/70 text-xs ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>{t('registry.gifted')}</span>
                       </div>
                     </div>
                     <div className="p-2">
-                      <p className={`text-xs text-white/50 line-clamp-1 ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>{item.name}</p>
+                      <p className={`text-xs text-ink/50 line-clamp-1 ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>{item.name}</p>
                     </div>
                   </div>
                 ))}
@@ -525,7 +525,7 @@ export default function RegistrySection() {
         {/* Thank you note */}
         <FadeIn delay={0.4}>
           <div className="mt-16 text-center">
-            <p className={`text-sm max-w-md mx-auto ${isAmharic ? 'font-ethiopic text-white/60' : 'font-serif text-white/40'}`}>
+            <p className={`text-sm max-w-md mx-auto ${isAmharic ? 'font-ethiopic text-ink/60' : 'font-serif text-ink/40'}`}>
               {t('registry.thankYouNote')}
             </p>
           </div>
@@ -535,7 +535,7 @@ export default function RegistrySection() {
       {/* Cash Gift Note Modal */}
       {showCashModal && (
         <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-surface/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           onClick={() => setShowCashModal(false)}
         >
           <div
@@ -556,14 +556,14 @@ export default function RegistrySection() {
                 <h3 className={`text-2xl text-wedding-gold text-center mb-2 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
                   {t('registry.cashNoteHeading')}
                 </h3>
-                <p className={`text-center text-sm mb-6 ${isAmharic ? 'font-ethiopic text-white/80' : 'font-serif text-white/60'}`}>
+                <p className={`text-center text-sm mb-6 ${isAmharic ? 'font-ethiopic text-ink/80' : 'font-serif text-ink/60'}`}>
                   {t('registry.cashNoteDescription')}
                 </p>
 
                 <div className="space-y-4 mb-6">
                   {/* Platform selector */}
                   <div>
-                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                    <label className={`block text-xs uppercase tracking-widest text-ink/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
                       {t('registry.whichPlatform')}
                     </label>
                     <div className="grid grid-cols-2 gap-3">
@@ -575,7 +575,7 @@ export default function RegistrySection() {
                           className={`py-2.5 rounded-lg border text-sm transition-colors ${isAmharic ? 'font-ethiopic' : 'font-serif'} ${
                             cashGiftType === type
                               ? 'border-wedding-gold bg-wedding-gold/10 text-wedding-gold'
-                              : 'border-white/20 text-white/50 hover:border-white/40'
+                              : 'border-hairline text-ink/50 hover:border-ink/40'
                           }`}
                         >
                           {type === 'cashapp' ? t('registry.cashAppLabel') : t('registry.venmoLabel')}
@@ -585,7 +585,7 @@ export default function RegistrySection() {
                   </div>
 
                   <div>
-                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                    <label className={`block text-xs uppercase tracking-widest text-ink/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
                       {t('registry.yourNameCash')}
                     </label>
                     <input
@@ -593,12 +593,12 @@ export default function RegistrySection() {
                       value={cashName}
                       onChange={(e) => setCashName(e.target.value)}
                       placeholder={t('registry.whoToThank')}
-                      className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+                      className={`w-full px-4 py-3 bg-ink/5 border border-hairline rounded-lg text-ink placeholder-ink/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
                     />
                   </div>
 
                   <div>
-                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                    <label className={`block text-xs uppercase tracking-widest text-ink/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
                       {t('registry.yourEmailCash')}
                     </label>
                     <input
@@ -606,12 +606,12 @@ export default function RegistrySection() {
                       value={cashEmail}
                       onChange={(e) => setCashEmail(e.target.value)}
                       placeholder="your@email.com"
-                      className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+                      className={`w-full px-4 py-3 bg-ink/5 border border-hairline rounded-lg text-ink placeholder-ink/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
                     />
                   </div>
 
                   <div>
-                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                    <label className={`block text-xs uppercase tracking-widest text-ink/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
                       {t('registry.yourMessageCash')}
                     </label>
                     <textarea
@@ -619,7 +619,7 @@ export default function RegistrySection() {
                       onChange={(e) => setCashMessage(e.target.value)}
                       placeholder={t('registry.loveToHear')}
                       rows={3}
-                      className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors resize-none ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+                      className={`w-full px-4 py-3 bg-ink/5 border border-hairline rounded-lg text-ink placeholder-ink/30 focus:outline-none focus:border-wedding-gold transition-colors resize-none ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
                     />
                   </div>
                 </div>
@@ -638,7 +638,7 @@ export default function RegistrySection() {
                   </button>
                   <button
                     onClick={() => setShowCashModal(false)}
-                    className={`w-full py-2 text-sm hover:text-white/70 transition-colors ${isAmharic ? 'font-ethiopic text-white/60' : 'font-serif text-white/50'}`}
+                    className={`w-full py-2 text-sm hover:text-ink/70 transition-colors ${isAmharic ? 'font-ethiopic text-ink/60' : 'font-serif text-ink/50'}`}
                   >
                     {t('registry.maybeLater')}
                   </button>
@@ -657,7 +657,7 @@ export default function RegistrySection() {
                 <h3 className={`text-3xl text-wedding-gold text-center mb-3 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
                   {t('registry.successTitle').replace('{name}', cashName)}
                 </h3>
-                <p className={`text-center mb-8 leading-relaxed ${isAmharic ? 'font-ethiopic text-white/80' : 'font-serif text-white/70'}`}>
+                <p className={`text-center mb-8 leading-relaxed ${isAmharic ? 'font-ethiopic text-ink/80' : 'font-serif text-ink/70'}`}>
                   {t('registry.cashNoteSuccess')}
                 </p>
                 <p className={`text-center text-xl mb-6 ${isAmharic ? 'font-ethiopic text-wedding-gold/80' : 'font-script text-wedding-gold/60'}`}>
@@ -678,7 +678,7 @@ export default function RegistrySection() {
       {/* Multi-Step Gift Modal */}
       {selectedItem && (
         <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-surface/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           onClick={handleCloseModal}
         >
           <div
@@ -703,24 +703,24 @@ export default function RegistrySection() {
                 </h3>
 
                 {/* Personal note */}
-                <p className="font-serif text-white/60 text-center text-sm mb-6 italic">
+                <p className="font-serif text-ink/60 text-center text-sm mb-6 italic">
                   &ldquo;{selectedItem.name}&rdquo;
                 </p>
 
                 {/* Address card with copy */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-5 mb-2">
+                <div className="bg-ink/5 border border-hairline rounded-xl p-5 mb-2">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-serif text-white/50 text-sm mb-2">
+                      <p className="font-serif text-ink/50 text-sm mb-2">
                         {t('registry.sendToAddress')}
                       </p>
                       {shippingAddress ? (
-                        <p className="font-serif text-white text-lg leading-relaxed">
+                        <p className="font-serif text-ink text-lg leading-relaxed">
                           {shippingAddress.line1}<br />
                           {shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}
                         </p>
                       ) : (
-                        <p className="font-serif text-white/50 text-sm">{t('registry.loadingAddress')}</p>
+                        <p className="font-serif text-ink/50 text-sm">{t('registry.loadingAddress')}</p>
                       )}
                     </div>
                     <button
@@ -769,7 +769,7 @@ export default function RegistrySection() {
                   </button>
                   <button
                     onClick={handleCloseModal}
-                    className={`w-full py-2 text-sm hover:text-white/70 transition-colors ${isAmharic ? 'font-ethiopic text-white/60' : 'font-serif text-white/50'}`}
+                    className={`w-full py-2 text-sm hover:text-ink/70 transition-colors ${isAmharic ? 'font-ethiopic text-ink/60' : 'font-serif text-ink/50'}`}
                   >
                     {t('registry.maybeLater')}
                   </button>
@@ -793,14 +793,14 @@ export default function RegistrySection() {
                 <h3 className={`text-2xl text-wedding-gold text-center mb-2 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
                   {t('registry.thankYouStep')}
                 </h3>
-                <p className={`text-center text-sm mb-6 ${isAmharic ? 'font-ethiopic text-white/80' : 'font-serif text-white/60'}`}>
+                <p className={`text-center text-sm mb-6 ${isAmharic ? 'font-ethiopic text-ink/80' : 'font-serif text-ink/60'}`}>
                   {t('registry.thankYouDetails')}
                 </p>
 
                 {/* Form */}
                 <div className="space-y-4 mb-6">
                   <div>
-                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                    <label className={`block text-xs uppercase tracking-widest text-ink/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
                       {t('registry.yourName')}
                     </label>
                     <input
@@ -808,11 +808,11 @@ export default function RegistrySection() {
                       value={purchaserName}
                       onChange={(e) => setPurchaserName(e.target.value)}
                       placeholder={t('registry.whoToThank')}
-                      className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+                      className={`w-full px-4 py-3 bg-ink/5 border border-hairline rounded-lg text-ink placeholder-ink/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
                     />
                   </div>
                   <div>
-                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                    <label className={`block text-xs uppercase tracking-widest text-ink/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
                       Your Email *
                     </label>
                     <input
@@ -820,11 +820,11 @@ export default function RegistrySection() {
                       value={purchaserEmail}
                       onChange={(e) => setPurchaserEmail(e.target.value)}
                       placeholder="your@email.com"
-                      className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+                      className={`w-full px-4 py-3 bg-ink/5 border border-hairline rounded-lg text-ink placeholder-ink/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
                     />
                   </div>
                   <div>
-                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                    <label className={`block text-xs uppercase tracking-widest text-ink/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
                       Your Phone Number *
                     </label>
                     <input
@@ -832,11 +832,11 @@ export default function RegistrySection() {
                       value={purchaserPhone}
                       onChange={(e) => setPurchaserPhone(e.target.value)}
                       placeholder="(555) 123-4567"
-                      className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+                      className={`w-full px-4 py-3 bg-ink/5 border border-hairline rounded-lg text-ink placeholder-ink/30 focus:outline-none focus:border-wedding-gold transition-colors ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
                     />
                   </div>
                   <div>
-                    <label className={`block text-xs uppercase tracking-widest text-white/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                    <label className={`block text-xs uppercase tracking-widest text-ink/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
                       {t('registry.leaveNote')}
                     </label>
                     <textarea
@@ -844,7 +844,7 @@ export default function RegistrySection() {
                       onChange={(e) => setPurchaserMessage(e.target.value)}
                       placeholder={t('registry.loveToHear')}
                       rows={3}
-                      className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-wedding-gold transition-colors resize-none ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+                      className={`w-full px-4 py-3 bg-ink/5 border border-hairline rounded-lg text-ink placeholder-ink/30 focus:outline-none focus:border-wedding-gold transition-colors resize-none ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
                     />
                   </div>
                 </div>
@@ -860,7 +860,7 @@ export default function RegistrySection() {
                   </button>
                   <button
                     onClick={() => setModalStep('shipping')}
-                    className={`w-full py-2 text-sm hover:text-white/70 transition-colors ${isAmharic ? 'font-ethiopic text-white/60' : 'font-serif text-white/50'}`}
+                    className={`w-full py-2 text-sm hover:text-ink/70 transition-colors ${isAmharic ? 'font-ethiopic text-ink/60' : 'font-serif text-ink/50'}`}
                   >
                     {t('rsvp.goBack')}
                   </button>
@@ -886,12 +886,12 @@ export default function RegistrySection() {
                 </h3>
 
                 {/* Message */}
-                <p className={`text-center mb-8 leading-relaxed ${isAmharic ? 'font-ethiopic text-white/80' : 'font-serif text-white/70'}`}>
+                <p className={`text-center mb-8 leading-relaxed ${isAmharic ? 'font-ethiopic text-ink/80' : 'font-serif text-ink/70'}`}>
                   {t('registry.successMessage')}
                 </p>
 
                 {/* Item confirmation */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6 flex items-center gap-4">
+                <div className="bg-ink/5 border border-hairline rounded-xl p-4 mb-6 flex items-center gap-4">
                   {selectedItem.image_url && (
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img
@@ -901,8 +901,8 @@ export default function RegistrySection() {
                     />
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className={`text-white text-sm line-clamp-2 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>{selectedItem.name}</p>
-                    <p className={`text-xs mt-1 ${isAmharic ? 'font-ethiopic text-white/50' : 'text-white/40'}`}>{t('registry.onItsWay')}</p>
+                    <p className={`text-ink text-sm line-clamp-2 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>{selectedItem.name}</p>
+                    <p className={`text-xs mt-1 ${isAmharic ? 'font-ethiopic text-ink/50' : 'text-ink/40'}`}>{t('registry.onItsWay')}</p>
                   </div>
                   <div className="text-wedding-gold">
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
