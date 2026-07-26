@@ -220,7 +220,7 @@ body.preloader-active .countdown-container {
   font-weight: 500; /* Increased from 300 */
   letter-spacing: 0.5em;
   text-transform: uppercase;
-  color: #FFFFFF; /* Force white for maximum contrast */
+  color: var(--ink-heading);
   text-shadow:
     0 2px 10px rgba(0, 0, 0, 1),
     0 4px 30px rgba(0, 0, 0, 0.8);
