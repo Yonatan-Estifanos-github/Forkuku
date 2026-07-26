@@ -3,14 +3,7 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import FadeIn from '@/components/ui/FadeIn';
-
-// See INTERFACE.md ("1. View / Navigation State") — owned by feature/invite-nav.
-export type ActiveView = 'save-the-date' | 'final-invite';
-
-export interface NavState {
-  activeView: ActiveView;
-  onToggleView: (view: ActiveView) => void;
-}
+import type { NavState } from '@/context/ViewContext';
 
 interface FinalInviteProps extends NavState {
   guestName?: string;
