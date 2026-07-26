@@ -13,14 +13,26 @@ import Preloader from './Preloader';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNavView } from '@/context/ViewContext';
 
-// Slideshow images
-const SLIDESHOW_IMAGES = [
+// Slideshow images — dark theme ("Save the Date") keeps the original engagement shoot.
+const SLIDESHOW_IMAGES_DARK = [
   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_1.jpeg',
   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_2.jpeg',
   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_3.jpeg',
   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_4.jpeg',
 ];
+
+// Light theme ("Final Invite") uses the newer pre-wedding shoot. eng-main-image is the
+// primary shot — kept first and given a longer on-screen duration (MAIN_SLIDE_DURATION).
+const SLIDESHOW_IMAGES_LIGHT = [
+  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/eng-main-image.jpg',
+  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/hereyes.jpg',
+  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/laughing.jpg',
+  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/enjoyingeachother.jpg',
+  `https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/${encodeURIComponent('looking at each other.jpg')}`,
+];
+
 const SLIDE_DURATION = 6000;
+const MAIN_SLIDE_DURATION = 9000;
 
 function Fireflies({ count = 350, color = '#FFBF47' }: { count?: number; color?: string }) {
   const mesh = useRef<THREE.InstancedMesh>(null!);
@@ -120,11 +132,12 @@ function Fireflies({ count = 350, color = '#FFBF47' }: { count?: number; color?:
 const PLANE_Z = -8;
 const COVER_BUFFER = 1.05; // Safety buffer to prevent edge gaps
 
-function ParallaxBackground({ currentSlide }: { currentSlide: number }) {  const groupRef = useRef<THREE.Group>(null!);
+function ParallaxBackground({ currentSlide, images }: { currentSlide: number; images: string[] }) {
+  const groupRef = useRef<THREE.Group>(null!);
   const { camera, viewport } = useThree();
   const mouse = useRef({ x: 0, y: 0 });
 
-  const textures = useTexture(SLIDESHOW_IMAGES);
+  const textures = useTexture(images);
 
   // Track materials for opacity animation
   const materialRefs = useRef<THREE.MeshBasicMaterial[]>([]);
@@ -157,12 +170,12 @@ function ParallaxBackground({ currentSlide }: { currentSlide: number }) {  const
   // - currentSlide is visible (opacity 1).
   // - Slides > currentSlide are waiting behind (opacity 1).
   // When looping 3 -> 0: All become 1. 0 fades in on top of 3. Seamless.
-  const targetOpacities = useRef(SLIDESHOW_IMAGES.map((_, i) => i < 0 ? 0 : 1));
-  const currentOpacities = useRef(SLIDESHOW_IMAGES.map(() => 1));
+  const targetOpacities = useRef(images.map((_, i) => i < 0 ? 0 : 1));
+  const currentOpacities = useRef(images.map(() => 1));
 
   useEffect(() => {
-    targetOpacities.current = SLIDESHOW_IMAGES.map((_, i) => i < currentSlide ? 0 : 1);
-  }, [currentSlide]);
+    targetOpacities.current = images.map((_, i) => i < currentSlide ? 0 : 1);
+  }, [currentSlide, images]);
 
   useFrame(() => {
     // Parallax rotation
@@ -180,7 +193,7 @@ function ParallaxBackground({ currentSlide }: { currentSlide: number }) {  const
     }
 
     // Smooth opacity transitions
-    SLIDESHOW_IMAGES.forEach((_, i) => {
+    images.forEach((_, i) => {
       const target = targetOpacities.current[i];
       currentOpacities.current[i] = THREE.MathUtils.lerp(currentOpacities.current[i], target, 0.025);
 
@@ -347,7 +360,9 @@ const SCENE_THEMES: Record<'dark' | 'light', SceneTheme> = {
 
 function Scene({ currentSlide }: { currentSlide: number }) {
   const { activeView } = useNavView();
-  const theme = SCENE_THEMES[activeView === 'final-invite' ? 'light' : 'dark'];
+  const isLight = activeView === 'final-invite';
+  const theme = SCENE_THEMES[isLight ? 'light' : 'dark'];
+  const images = isLight ? SLIDESHOW_IMAGES_LIGHT : SLIDESHOW_IMAGES_DARK;
 
   return (
     <>
@@ -375,7 +390,7 @@ function Scene({ currentSlide }: { currentSlide: number }) {
       <WarmGlow color={theme.glowColor} />
 
       <Suspense fallback={null}>
-        <ParallaxBackground currentSlide={currentSlide} />
+        <ParallaxBackground currentSlide={currentSlide} images={images} />
       </Suspense>
 
       <Fireflies count={350} color={theme.fireflyColor} />
@@ -641,10 +656,13 @@ export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [visible, setVisible] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const totalSlides = SLIDESHOW_IMAGES.length;
+
+  const { activeView } = useNavView();
+  const isLight = activeView === 'final-invite';
+  const images = isLight ? SLIDESHOW_IMAGES_LIGHT : SLIDESHOW_IMAGES_DARK;
+  const totalSlides = images.length;
 
   // Crossfade the canvas briefly on theme toggle so the relight isn't seen mid-transition
-  const { activeView } = useNavView();
   const [canvasOpacity, setCanvasOpacity] = useState(1);
   const isFirstView = useRef(true);
   useEffect(() => {
@@ -655,6 +673,12 @@ export default function Hero() {
     setCanvasOpacity(0);
     const timer = setTimeout(() => setCanvasOpacity(1), 400);
     return () => clearTimeout(timer);
+  }, [activeView]);
+
+  // Image set changes with the theme (different slide counts) — restart the
+  // slideshow from the main/first slide rather than risk an out-of-range index.
+  useEffect(() => {
+    setCurrentSlide(0);
   }, [activeView]);
 
   useEffect(() => {
@@ -694,16 +718,19 @@ export default function Hero() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Auto-advance slideshow (only after preloader)
+  // Auto-advance slideshow (only after preloader). The main/first slide in the
+  // light-mode set gets a longer duration, so this reschedules per-slide instead
+  // of running on a fixed setInterval.
   useEffect(() => {
     if (!visible || !preloaderComplete) return;
 
-    const timer = setInterval(() => {
+    const duration = isLight && currentSlide === 0 ? MAIN_SLIDE_DURATION : SLIDE_DURATION;
+    const timer = setTimeout(() => {
       setCurrentSlide((prev) => (prev + 1) % totalSlides);
-    }, SLIDE_DURATION);
+    }, duration);
 
-    return () => clearInterval(timer);
-  }, [totalSlides, visible, preloaderComplete]);
+    return () => clearTimeout(timer);
+  }, [totalSlides, visible, preloaderComplete, currentSlide, isLight]);
 
   return (
     <div
