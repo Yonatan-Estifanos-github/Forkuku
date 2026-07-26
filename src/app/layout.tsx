@@ -4,6 +4,7 @@ import "./main.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import ConditionalUI from "@/components/ConditionalUI";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { ViewProvider } from "@/context/ViewContext";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const cormorant = Cormorant_Garamond({
@@ -61,12 +62,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${cormorant.variable} ${allura.variable} ${playfair.variable} ${notoEthiopic.variable} font-sans`}>
         <LanguageProvider>
-          <SmoothScroll>
-            {/* Conditionally render nav/sound (hidden on admin/login) */}
-            <ConditionalUI />
+          <ViewProvider>
+            <SmoothScroll>
+              {/* Conditionally render nav/sound (hidden on admin/login) */}
+              <ConditionalUI />
 
-            {children}
-          </SmoothScroll>
+              {children}
+            </SmoothScroll>
+          </ViewProvider>
         </LanguageProvider>
 
           {/* Global Film Grain Overlay */}
