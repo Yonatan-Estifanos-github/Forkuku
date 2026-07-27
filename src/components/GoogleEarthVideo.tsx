@@ -3,8 +3,10 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
+import { useNavView } from '@/context/ViewContext';
 
 const VIDEO_SRC = "/videos/wedding_venue.mp4";
+const DIRECTIONS_URL = "https://share.google/AgUZUvvMOxSMr0oic";
 
 export default function GoogleEarthVideo() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -12,7 +14,9 @@ export default function GoogleEarthVideo() {
   const [currentCaptionIndex, setCurrentCaptionIndex] = useState(0);
   const [canPlay, setCanPlay] = useState(false);
   const { t, language } = useLanguage();
+  const { activeView } = useNavView();
   const isAmharic = language === 'am';
+  const isLight = activeView === 'final-invite';
 
   const CAPTIONS = [
     { text: [t('venue.caption1')] },
@@ -101,26 +105,47 @@ export default function GoogleEarthVideo() {
         </AnimatePresence>
       </div>
 
-      {/* Bottom Scroll Hint */}
+      {/* Bottom Scroll Hint / Official Address */}
       <div className="absolute bottom-12 left-0 w-full z-30 flex flex-col items-center justify-center px-6 text-center">
-        <span className={`text-[#D4A845] text-[10px] md:text-xs tracking-[0.2em] uppercase font-bold mb-4 opacity-90 drop-shadow-md max-w-md leading-relaxed ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
-          {t('venue.rsvpHint')}
-        </span>
-        
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          className="text-[#D4A845] drop-shadow-lg"
-        >
-          <svg 
-            className="w-8 h-8 md:w-10 md:h-10" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
-          </svg>
-        </motion.div>
+        {isLight ? (
+          <div className="flex flex-col items-center gap-3">
+            <p className={`text-2xl md:text-3xl text-[#D4A845] drop-shadow-md ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+              {t('venue.venueName')}
+            </p>
+            <p className={`text-white/90 text-sm md:text-base tracking-wide drop-shadow-md ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+              {t('venue.officialAddress')}
+            </p>
+            <a
+              href={DIRECTIONS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`mt-2 border border-[#D4A845] text-[#D4A845] bg-black/10 hover:bg-[#D4A845]/10 px-8 py-2.5 rounded-full text-[10px] tracking-widest uppercase transition-all duration-300 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
+            >
+              {t('venue.directionsButton')}
+            </a>
+          </div>
+        ) : (
+          <>
+            <span className={`text-[#D4A845] text-[10px] md:text-xs tracking-[0.2em] uppercase font-bold mb-4 opacity-90 drop-shadow-md max-w-md leading-relaxed ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+              {t('venue.rsvpHint')}
+            </span>
+
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              className="text-[#D4A845] drop-shadow-lg"
+            >
+              <svg
+                className="w-8 h-8 md:w-10 md:h-10"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
+              </svg>
+            </motion.div>
+          </>
+        )}
       </div>
     </section>
   );

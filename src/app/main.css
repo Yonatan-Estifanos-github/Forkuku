@@ -26,6 +26,10 @@
   --accent-rgb: 212, 168, 69;
   --accent-soft: #E6D2B5;
   --hairline: rgba(255, 255, 255, 0.1);
+  /* .gold-shimmer gradient stops */
+  --shimmer-1: #8B7355;
+  --shimmer-2: #D4A845;
+  --shimmer-3: #FFFACD;
 }
 
 [data-theme="light"] {
@@ -43,6 +47,11 @@
   --accent-rgb: 169, 130, 47;
   --accent-soft: #5C6B3D;
   --hairline: rgba(34, 51, 27, 0.16);
+  /* .gold-shimmer gradient stops — deeper/more saturated than the dark-mode
+     values so the bronze ends don't wash into the ivory surface */
+  --shimmer-1: #7A5A28;
+  --shimmer-2: #C9962E;
+  --shimmer-3: #F0C869;
 }
 
 /* Amharic / Ethiopic script — applied automatically when language is 'am' */
@@ -196,11 +205,11 @@ body.preloader-active .countdown-container {
   /* Rich metallic gradient: Bronze -> Gold -> Bright Pale Gold -> Bronze */
   background: linear-gradient(
     90deg,
-    #8B7355 0%,        /* Bronze */
-    #D4A845 25%,       /* Gold */
-    #FFFACD 50%,       /* Bright Pale Gold (LemonChiffon/Cornsilk feel) */
-    #D4A845 75%,       /* Gold */
-    #8B7355 100%       /* Bronze */
+    var(--shimmer-1) 0%,
+    var(--shimmer-2) 25%,
+    var(--shimmer-3) 50%,
+    var(--shimmer-2) 75%,
+    var(--shimmer-1) 100%
   );
   background-size: 200% auto;
   /* Position responds to --mouse-x CSS variable */

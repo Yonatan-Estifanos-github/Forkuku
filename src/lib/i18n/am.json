@@ -44,7 +44,9 @@
     "home": "መነሻ",
     "story": "ታሪካችን",
     "venue": "ቦታ",
+    "timeline": "የቀኑ ፕሮግራም",
     "party": "ሚዜዎቻችን",
+    "hotels": "ሆቴሎች",
     "rsvp": "አርኤስቪፒ",
     "registry": "ስጦታ"
   },
@@ -79,7 +81,48 @@
     "caption3_2": "በምንወዳቸው ሰዎች ተከበን።",
     "caption4_1": "ኑ ከእኛ ጋር አብረን እናክብር",
     "caption4_2": "በራይትስቪል፣ ፔንሲልቬንያ።",
-    "rsvpHint": "እባክዎን ከዚህ በታች RSVP ያድርጉ እና ስለ ዕለቱ ዕቅድ እና አድራሻ በቅርቡ እናሳውቅዎታለን"
+    "rsvpHint": "እባክዎን ከዚህ በታች RSVP ያድርጉ እና ስለ ዕለቱ ዕቅድ እና አድራሻ በቅርቡ እናሳውቅዎታለን",
+    "venueName": "ላውክስሞንት ዌዲንግስ",
+    "officialAddress": "1215 Long Level Rd, Wrightsville, PA 17368",
+    "directionsButton": "አቅጣጫ ያግኙ"
+  },
+  "timeline": {
+    "heading": "የዕለቱ ፕሮግራም",
+    "subtitle": "መስከረም 4ን በተመለከተ ማወቅ ያለብዎት ነገር ሁሉ",
+    "event1Time": "2:00 PM",
+    "event1Label": "የእንግዶች መምጣትና መቀመጫ",
+    "event2Time": "2:30 PM",
+    "event2Label": "ሥነ ሥርዓት",
+    "event3Time": "3:15 PM",
+    "event3Label": "የኮክቴል ሰዓት",
+    "event4Time": "4:30 PM",
+    "event4Label": "ግብዣና እራት",
+    "event5Time": "6:00 PM",
+    "event5Label": "የምስጋና ንግግሮች",
+    "event6Time": "6:30 PM",
+    "event6Label": "ውዝዋዜ",
+    "event7Time": "11:00 PM",
+    "event7Label": "የመሰነባበቻ ጊዜ"
+  },
+  "hotels": {
+    "heading": "የት እንደሚያድሩ",
+    "description": "በመንገዱ ላይ የሚገኙ በጥሩ ደረጃ የተመዘገቡ አራት-ኮከብ ሆቴሎች — ምንም ልዩ ኮድ ሳይኖር፣ የእኛ ምርጫዎች ብቻ ናቸው።",
+    "viewHotel": "ሆቴሉን ይመልከቱ",
+    "hilton": {
+      "name": "ሂልተን ሃሪስበርግ",
+      "address": "1 N 2nd St, Harrisburg, PA 17101",
+      "note": "ወደ ሃሪስበርግ በጣም ቅርብ"
+    },
+    "yorktowne": {
+      "name": "ዮርክታውን ሆቴል",
+      "address": "48 E Market St, York, PA 17401",
+      "note": "ታሪካዊና በቅርቡ የታደሰ፣ በዮርክ መሃል"
+    },
+    "hampton": {
+      "name": "ሃምፕተን ኢን ዮርክ",
+      "address": "1550 Mount Zion Rd, York, PA 17402",
+      "note": "ወደ ሰርጉ ቦታ በጣም ቅርብ"
+    }
   },
   "scripture": {
     "reference": "መዝሙር 118:24",

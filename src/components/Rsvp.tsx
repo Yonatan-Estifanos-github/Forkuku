@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
+import { useNavView } from '@/context/ViewContext';
 
 // ============================================================================
 // COOKIE HELPERS
@@ -764,6 +765,7 @@ export default function Rsvp() {
   const [vipLoading, setVipLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const { t, language } = useLanguage();
+  const { activeView } = useNavView();
   const isAmharic = language === 'am';
 
   // On mount: if a vip_party_id cookie exists, skip search and load the party directly
@@ -811,6 +813,9 @@ export default function Rsvp() {
     clearVipPartyId();
     reset();
   };
+
+  // Final Invite guests already RSVPed to Save the Date — no RSVP form for them.
+  if (activeView === 'final-invite') return null;
 
   return (
     <section className="relative min-h-screen w-full">

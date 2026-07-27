@@ -4,24 +4,32 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
+import { useNavView } from '@/context/ViewContext';
 
 const NAV_KEYS = [
-  { key: 'home',     href: '/',               icon: HomeIcon,     sectionId: 'home' },
-  { key: 'story',    href: '/#story',          icon: BookIcon,     sectionId: 'story' },
-  { key: 'venue',    href: '/#venue',          icon: MapPinIcon,   sectionId: 'venue' },
-  { key: 'party',    href: '/#wedding-party',  icon: PeopleIcon,   sectionId: 'wedding-party' },
-  { key: 'rsvp',     href: '/#rsvp',           icon: EnvelopeIcon, sectionId: 'rsvp' },
-  { key: 'registry', href: '/#registry',       icon: GiftIcon,     sectionId: 'registry' },
+  { key: 'home',     href: '/',               icon: HomeIcon,     sectionId: 'home',          lightOnly: false, hiddenInLight: false },
+  { key: 'story',    href: '/#story',          icon: BookIcon,     sectionId: 'story',         lightOnly: false, hiddenInLight: false },
+  { key: 'venue',    href: '/#venue',          icon: MapPinIcon,   sectionId: 'venue',         lightOnly: false, hiddenInLight: false },
+  { key: 'timeline', href: '/#timeline',       icon: ClockIcon,    sectionId: 'timeline',      lightOnly: true,  hiddenInLight: false },
+  { key: 'party',    href: '/#wedding-party',  icon: PeopleIcon,   sectionId: 'wedding-party', lightOnly: false, hiddenInLight: false },
+  { key: 'hotels',   href: '/#hotels',         icon: HotelIcon,    sectionId: 'hotels',        lightOnly: true,  hiddenInLight: false },
+  { key: 'rsvp',     href: '/#rsvp',           icon: EnvelopeIcon, sectionId: 'rsvp',          lightOnly: false, hiddenInLight: true },
+  { key: 'registry', href: '/#registry',       icon: GiftIcon,     sectionId: 'registry',      lightOnly: false, hiddenInLight: false },
 ];
 
 export default function FloatingNav() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string>('home');
   const { t, language, setLanguage } = useLanguage();
+  const { activeView } = useNavView();
+  const isLight = activeView === 'final-invite';
+  const navItems = NAV_KEYS.filter((item) =>
+    isLight ? !item.hiddenInLight : !item.lightOnly
+  );
 
   useEffect(() => {
     if (pathname !== '/') return;
-    const sectionIds = ['home', 'story', 'venue', 'wedding-party', 'rsvp', 'registry'];
+    const sectionIds = ['home', 'story', 'venue', 'timeline', 'wedding-party', 'hotels', 'rsvp', 'registry'];
 
     const handleScroll = () => {
       const midpoint = window.scrollY + window.innerHeight * 0.4;
@@ -69,7 +77,7 @@ export default function FloatingNav() {
       <div className="pointer-events-auto flex items-center gap-2 sm:gap-4 rounded-3xl bg-surface/50 backdrop-blur-md border border-hairline px-3 sm:px-6 py-3 max-w-full overflow-x-auto scrollbar-hide">
 
         {/* Nav items */}
-        {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }) => {
+        {navItems.map(({ key, href, icon: Icon, sectionId }) => {
           const active = activeSection === sectionId;
           const label = t(`nav.${key}`);
           return (
@@ -170,6 +178,26 @@ function PeopleIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
       <path d="M3 21v-2a5 5 0 015-5h2a5 5 0 015 5v2" />
       <circle cx="17" cy="7" r="2.5" />
       <path d="M21 21v-1.5a4 4 0 00-3-3.87" />
+    </svg>
+  );
+}
+
+function ClockIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
+  return (
+    <svg className={className} aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3.5 2" />
+    </svg>
+  );
+}
+
+function HotelIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
+  return (
+    <svg className={className} aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 21V6a1 1 0 011-1h9a1 1 0 011 1v15" />
+      <path d="M14 10h6a1 1 0 011 1v10" />
+      <path d="M7 8h.01M7 12h.01M7 16h.01" />
+      <path d="M3 21h18" />
     </svg>
   );
 }
