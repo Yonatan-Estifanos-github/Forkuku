@@ -38,9 +38,10 @@ export function middleware(request: NextRequest) {
     loginUrl.searchParams.set('token', inviteToken);
     if (viewParam) loginUrl.searchParams.set('view', viewParam);
     const res = NextResponse.redirect(loginUrl);
-    if (viewParam === 'final-invite') {
-      res.cookies.set('view_pref', 'final-invite', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
-    }
+    // Magic links always pin an explicit theme, regardless of the site-wide
+    // default — Save the Date guests must land on dark/RSVP even though the
+    // site otherwise defaults to light for fresh/organic visits.
+    res.cookies.set('view_pref', viewParam === 'final-invite' ? 'final-invite' : 'save-the-date', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
     return res;
   }
 
@@ -55,9 +56,9 @@ export function middleware(request: NextRequest) {
       if (partyId) loginUrl.searchParams.set('partyId', partyId);
       if (viewParam) loginUrl.searchParams.set('view', viewParam);
       const res = NextResponse.redirect(loginUrl);
-      if (viewParam === 'final-invite') {
-        res.cookies.set('view_pref', 'final-invite', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
-      }
+      // Same pin as the token-based branch above — legacy magic links must
+      // not fall through to the site-wide light default.
+      res.cookies.set('view_pref', viewParam === 'final-invite' ? 'final-invite' : 'save-the-date', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
       return res;
     }
     // If already on /login, just let it through

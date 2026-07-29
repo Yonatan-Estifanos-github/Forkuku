@@ -61,7 +61,7 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const initialView: ActiveView =
-    cookieStore.get('view_pref')?.value === 'final-invite' ? 'final-invite' : 'save-the-date';
+    cookieStore.get('view_pref')?.value === 'save-the-date' ? 'save-the-date' : 'final-invite';
 
   return (
     <html lang="en" data-theme={initialView === 'final-invite' ? 'light' : 'dark'}>

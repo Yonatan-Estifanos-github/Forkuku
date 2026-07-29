@@ -25,7 +25,7 @@ export default function HotelsSection() {
   return (
     <div className="py-24 px-6">
       <FadeIn>
-        <h2 className={`text-4xl md:text-5xl lg:text-6xl text-wedding-gold text-center mb-4 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+        <h2 className={`text-4xl md:text-5xl lg:text-6xl text-wedding-gold text-center mb-4 font-semibold ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
           {t('hotels.heading')}
         </h2>
         <p className={`text-center max-w-xl mx-auto mb-14 ${isAmharic ? 'font-ethiopic text-ink/80' : 'font-serif text-ink/70'}`}>

@@ -9,7 +9,7 @@ export interface NavState {
   onToggleView: (view: ActiveView) => void;
 }
 
-const DEFAULT_VIEW: ActiveView = 'save-the-date';
+const DEFAULT_VIEW: ActiveView = 'final-invite';
 const VIEW_COOKIE = 'view_pref';
 
 const ViewContext = createContext<NavState>({
