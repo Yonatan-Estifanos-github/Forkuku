@@ -14,15 +14,15 @@ const config: Config = {
         // Existing dark-token names are kept and re-pointed at the same vars so
         // current call sites (bg-luxury-black, text-wedding-gold, ...) don't need
         // to change — only their definition does.
-        surface: 'rgb(var(--surface-rgb) / <alpha-value>)',
+        surface: 'rgba(var(--surface-rgb), <alpha-value>)',
         'surface-alt': 'var(--surface-alt)',
-        ink: 'rgb(var(--ink-rgb) / <alpha-value>)',
+        ink: 'rgba(var(--ink-rgb), <alpha-value>)',
         'ink-heading': 'var(--ink-heading)',
-        accent: 'rgb(var(--accent-rgb) / <alpha-value>)',
+        accent: 'rgba(var(--accent-rgb), <alpha-value>)',
         'accent-soft': 'var(--accent-soft)',
         hairline: 'var(--hairline)',
-        'luxury-black': 'rgb(var(--surface-rgb) / <alpha-value>)',
-        'wedding-gold': 'rgb(var(--accent-rgb) / <alpha-value>)',
+        'luxury-black': 'rgba(var(--surface-rgb), <alpha-value>)',
+        'wedding-gold': 'rgba(var(--accent-rgb), <alpha-value>)',
         // Literal palette — kept as raw hex for contexts that can't consume CSS
         // vars (e.g. Hero.tsx's Three.js material/light colors) and for the
         // [data-theme] value definitions themselves.
