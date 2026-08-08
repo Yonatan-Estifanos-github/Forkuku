@@ -14,7 +14,7 @@ export default function ThemeToggle() {
       transition={{ duration: 1, delay: 2.7, ease: 'easeOut' }}
       className="fixed left-0 right-0 top-[calc(max(1rem,env(safe-area-inset-top))+3.25rem)] z-40 flex justify-center px-4 pointer-events-none"
     >
-      <div className="pointer-events-auto flex items-center h-9 rounded-full bg-surface/20 backdrop-blur-md px-4 sm:px-5 gap-3 sm:gap-4 shadow-[0_12px_32px_rgba(0,0,0,0.18)]">
+      <div className="pointer-events-auto flex items-center h-9 rounded-full bg-surface/50 backdrop-blur-md border border-hairline px-4 sm:px-5 gap-3 sm:gap-4 shadow-[0_12px_32px_rgba(0,0,0,0.18)]">
         <button
           type="button"
           onClick={() => onToggleView('save-the-date')}
