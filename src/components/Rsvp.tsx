@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
+import { useNavView } from '@/context/ViewContext';
 
 // ============================================================================
 // COOKIE HELPERS
@@ -71,7 +72,7 @@ function LuxuryInput({
       </label>
       <input
         id={id}
-        className={`w-full bg-transparent border-b border-white/20 py-3 text-lg tracking-wide outline-none text-stone-200 placeholder:text-stone-600 placeholder:italic focus:border-white/50 transition-colors duration-300 text-center ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'} ${className ? ` ${className}` : ''}`}
+        className={`w-full bg-transparent border-b border-hairline py-3 text-lg tracking-wide outline-none text-stone-200 placeholder:text-stone-600 placeholder:italic focus:border-ink/50 transition-colors duration-300 text-center ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'} ${className ? ` ${className}` : ''}`}
         {...props}
       />
     </div>
@@ -96,7 +97,7 @@ function LuxuryTextarea({
       </label>
       <textarea
         id={id}
-        className={`w-full bg-transparent border-b border-white/20 py-3 text-lg tracking-wide outline-none text-stone-200 resize-none placeholder:text-stone-600 placeholder:italic focus:border-white/50 transition-colors duration-300 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+        className={`w-full bg-transparent border-b border-hairline py-3 text-lg tracking-wide outline-none text-stone-200 resize-none placeholder:text-stone-600 placeholder:italic focus:border-ink/50 transition-colors duration-300 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
         {...props}
       />
     </div>
@@ -107,7 +108,7 @@ function LuxuryTextarea({
 // BUTTON
 // ============================================================================
 const btnClass =
-  'border border-[#D4A845] text-[#D4A845] bg-transparent hover:bg-[#D4A845]/10 px-10 py-3 rounded-full text-[10px] tracking-widest uppercase font-sans transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed';
+  'border border-accent text-accent bg-transparent hover:bg-accent/10 px-10 py-3 rounded-full text-[10px] tracking-widest uppercase font-sans transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed';
 
 // ============================================================================
 // SEARCH SCREEN
@@ -286,13 +287,13 @@ function SelectScreen({
             <button
               key={party.id}
               onClick={() => onSelect(party)}
-              className="text-left w-full px-6 py-6 border border-white/10 hover:border-[#D4A845]/40 bg-white/5 rounded-xl transition-all group"
+              className="text-left w-full px-6 py-6 border border-hairline hover:border-accent/40 bg-ink/5 rounded-xl transition-all group"
             >
               <div className="flex items-center justify-between mb-2">
-                <p className={`text-xl text-stone-200 group-hover:text-[#D4A845] transition-colors ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
+                <p className={`text-xl text-stone-200 group-hover:text-accent transition-colors ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
                   {party.party_name}
                 </p>
-                <span className={`text-[10px] tracking-widest text-[#D4A845] font-sans uppercase opacity-0 group-hover:opacity-100 transition-opacity ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
+                <span className={`text-[10px] tracking-widest text-accent font-sans uppercase opacity-0 group-hover:opacity-100 transition-opacity ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
                   {t('rsvp.thisIsMe')} &rarr;
                 </span>
               </div>
@@ -480,7 +481,7 @@ function FormScreen({
 
           {/* Empty guests message */}
           {guests.length === 0 && (
-            <div className="text-center py-8 border border-white/10 rounded-lg">
+            <div className="text-center py-8 border border-hairline rounded-lg">
               <p className={`text-stone-400 italic ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
                 {t('rsvp.noGuests')}
               </p>
@@ -494,7 +495,7 @@ function FormScreen({
             {guests.map((guest, idx) => (
               <div
                 key={guest.id}
-                className="flex flex-col gap-3 py-4 border-b border-white/10"
+                className="flex flex-col gap-3 py-4 border-b border-hairline"
               >
                 <div className="flex items-center justify-between">
                   <span className={`text-lg tracking-wide text-stone-200 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
@@ -507,8 +508,8 @@ function FormScreen({
                       onClick={() => toggleGuest(idx, true)}
                       className={`px-4 py-2 text-[10px] tracking-widest uppercase border rounded-full transition-all duration-300 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'} ${
                         guest.is_attending
-                          ? 'border-[#D4A845] text-[#D4A845] bg-[#D4A845]/10'
-                          : 'bg-transparent border-white/20 text-white/60 hover:border-[#D4A845]/50 hover:text-[#D4A845]'
+                          ? 'border-accent text-accent bg-accent/10'
+                          : 'bg-transparent border-hairline text-ink/60 hover:border-accent/50 hover:text-accent'
                       }`}
                     >
                       {t('rsvp.accept')}
@@ -518,8 +519,8 @@ function FormScreen({
                       onClick={() => toggleGuest(idx, false)}
                       className={`px-4 py-2 text-[10px] tracking-widest uppercase border rounded-full transition-all duration-300 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'} ${
                         !guest.is_attending
-                          ? 'border-[#D4A845] text-[#D4A845] bg-[#D4A845]/10'
-                          : 'bg-transparent border-white/20 text-white/60 hover:border-[#D4A845]/50 hover:text-[#D4A845]'
+                          ? 'border-accent text-accent bg-accent/10'
+                          : 'bg-transparent border-hairline text-ink/60 hover:border-accent/50 hover:text-accent'
                       }`}
                     >
                       {t('rsvp.decline')}
@@ -534,7 +535,7 @@ function FormScreen({
                     placeholder={t('rsvp.guestName')}
                     value={guest.name || ''}
                     onChange={(e) => handleNameChange(idx, e.target.value)}
-                    className={`w-full bg-transparent border-b border-white/20 text-sm py-1 outline-none text-stone-200 placeholder:italic placeholder:text-stone-600 focus:border-white/50 transition-colors duration-300 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+                    className={`w-full bg-transparent border-b border-hairline text-sm py-1 outline-none text-stone-200 placeholder:italic placeholder:text-stone-600 focus:border-ink/50 transition-colors duration-300 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
                   />
                 )}
               </div>
@@ -571,7 +572,7 @@ function FormScreen({
             id="sms-consent"
             checked={smsConsent}
             onChange={(e) => setSmsConsent(e.target.checked)}
-            className="mt-1 w-4 h-4 rounded border-white/20 bg-transparent text-wedding-gold focus:ring-wedding-gold focus:ring-offset-0"
+            className="mt-1 w-4 h-4 rounded border-hairline bg-transparent text-wedding-gold focus:ring-wedding-gold focus:ring-offset-0"
           />
           <label htmlFor="sms-consent" className="text-xs leading-relaxed text-stone-400 font-sans tracking-wide cursor-pointer">
             {t('rsvp.smsConsent')}
@@ -666,7 +667,7 @@ function SuccessScreen({ partyName, onBack }: { partyName: string; onBack: () =>
         </p>
 
         {/* Registry note */}
-        <div className="mt-10 pt-8 border-t border-white/10">
+        <div className="mt-10 pt-8 border-t border-hairline">
           <p className={`text-base leading-relaxed text-stone-400 mb-6 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
             {t('rsvp.registryNote')}
           </p>
@@ -702,19 +703,19 @@ function RespondedConfirmationScreen({
     <div className="w-full max-w-md flex flex-col items-center text-center">
 
       {/* Gold checkmark ring */}
-      <div className="w-16 h-16 rounded-full border border-[#D4A845]/30 flex items-center justify-center mx-auto mb-8">
-        <svg className="w-7 h-7 text-[#D4A845]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="w-16 h-16 rounded-full border border-accent/30 flex items-center justify-center mx-auto mb-8">
+        <svg className="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
         </svg>
       </div>
 
       {/* Pre-header */}
-      <p className={`text-[9px] tracking-[0.4em] uppercase text-[#D4A845]/70 mb-4 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+      <p className={`text-[9px] tracking-[0.4em] uppercase text-accent/70 mb-4 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
         {t('rsvp.youreInvited')}
       </p>
 
       {/* Party name */}
-      <h3 className={`text-3xl md:text-4xl text-[#E6D2B5] mb-8 leading-snug ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+      <h3 className={`text-3xl md:text-4xl text-accent-soft mb-8 leading-snug ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
         {party.party_name}
       </h3>
 
@@ -726,7 +727,7 @@ function RespondedConfirmationScreen({
       {/* Registry link */}
       <a
         href="/#registry"
-        className={`border border-[#D4A845]/40 text-[#D4A845] bg-transparent hover:bg-[#D4A845]/8 px-8 py-3 rounded-full text-[10px] tracking-widest uppercase font-sans transition-all duration-300 mb-10 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
+        className={`border border-accent/40 text-accent bg-transparent hover:bg-accent/8 px-8 py-3 rounded-full text-[10px] tracking-widest uppercase font-sans transition-all duration-300 mb-10 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
       >
         {t('rsvp.viewRegistry')}
       </a>
@@ -734,7 +735,7 @@ function RespondedConfirmationScreen({
       {/* Edit escape hatch */}
       <button
         onClick={onEdit}
-        className={`text-[10px] tracking-widest uppercase text-white/35 hover:text-[#D4A845] transition-colors duration-300 border-b border-white/10 hover:border-[#D4A845]/40 pb-px ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
+        className={`text-[10px] tracking-widest uppercase text-ink/35 hover:text-accent transition-colors duration-300 border-b border-hairline hover:border-accent/40 pb-px ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
       >
         {t('rsvp.editResponse')}
       </button>
@@ -764,6 +765,7 @@ export default function Rsvp() {
   const [vipLoading, setVipLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const { t, language } = useLanguage();
+  const { activeView } = useNavView();
   const isAmharic = language === 'am';
 
   // On mount: if a vip_party_id cookie exists, skip search and load the party directly
@@ -811,6 +813,9 @@ export default function Rsvp() {
     clearVipPartyId();
     reset();
   };
+
+  // Final Invite guests already RSVPed to Save the Date — no RSVP form for them.
+  if (activeView === 'final-invite') return null;
 
   return (
     <section className="relative min-h-screen w-full">

@@ -26,7 +26,10 @@ export const RegistryPurchaseAlert = ({
   purchaserMessage,
 }: RegistryPurchaseAlertProps) => (
   <Html lang="en">
-    <Head />
+    <Head>
+      <meta name="color-scheme" content="dark" />
+      <meta name="supported-color-schemes" content="dark" />
+    </Head>
     <Preview>🎁 {purchaserName} just gifted: {itemName}</Preview>
     <Body style={body}>
       <Text style={label}>REGISTRY ALERT</Text>

@@ -9,8 +9,23 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'luxury-black': '#0a0908',
-        'wedding-gold': '#D4A845',
+        // Theme-aware tokens — resolve through CSS custom properties defined in
+        // main.css under [data-theme="dark"|"light"], swapped by ViewProvider.
+        // Existing dark-token names are kept and re-pointed at the same vars so
+        // current call sites (bg-luxury-black, text-wedding-gold, ...) don't need
+        // to change — only their definition does.
+        surface: 'rgba(var(--surface-rgb), <alpha-value>)',
+        'surface-alt': 'var(--surface-alt)',
+        ink: 'rgba(var(--ink-rgb), <alpha-value>)',
+        'ink-heading': 'var(--ink-heading)',
+        accent: 'rgba(var(--accent-rgb), <alpha-value>)',
+        'accent-soft': 'var(--accent-soft)',
+        hairline: 'var(--hairline)',
+        'luxury-black': 'rgba(var(--surface-rgb), <alpha-value>)',
+        'wedding-gold': 'rgba(var(--accent-rgb), <alpha-value>)',
+        // Literal palette — kept as raw hex for contexts that can't consume CSS
+        // vars (e.g. Hero.tsx's Three.js material/light colors) and for the
+        // [data-theme] value definitions themselves.
         'forest-green': '#1B3B28',
         'harvest-wheat': '#E6D2B5',
         'antique-gold': '#C5A059',

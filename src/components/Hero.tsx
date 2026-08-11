@@ -11,17 +11,30 @@ import * as THREE from 'three';
 import { motion } from 'framer-motion';
 import Preloader from './Preloader';
 import { useLanguage } from '@/context/LanguageContext';
+import { useNavView } from '@/context/ViewContext';
 
-// Slideshow images
-const SLIDESHOW_IMAGES = [
+// Slideshow images — dark theme ("Save the Date") keeps the original engagement shoot.
+const SLIDESHOW_IMAGES_DARK = [
   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_1.jpeg',
   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_2.jpeg',
   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_3.jpeg',
   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_4.jpeg',
 ];
-const SLIDE_DURATION = 6000;
 
-function Fireflies({ count = 350 }) {
+// Light theme ("Final Invite") uses the newer pre-wedding shoot. eng-main-image is the
+// primary shot — kept first and given a longer on-screen duration (MAIN_SLIDE_DURATION).
+const SLIDESHOW_IMAGES_LIGHT = [
+  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/eng-main-image.jpg',
+  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/hereyes.jpg',
+  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/laughing.jpg',
+  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/enjoyingeachother.jpg',
+  `https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/${encodeURIComponent('looking at each other.jpg')}`,
+];
+
+const SLIDE_DURATION = 6000;
+const MAIN_SLIDE_DURATION = 9000;
+
+function Fireflies({ count = 350, color = '#FFBF47' }: { count?: number; color?: string }) {
   const mesh = useRef<THREE.InstancedMesh>(null!);
   const mouse = useRef({ x: 0, y: 0 });
 
@@ -111,7 +124,7 @@ function Fireflies({ count = 350 }) {
   return (
     <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 10, 10]} />
-      <meshBasicMaterial color="#FFBF47" transparent opacity={0.9} toneMapped={false} />
+      <meshBasicMaterial color={color} transparent opacity={0.9} toneMapped={false} />
     </instancedMesh>
   );
 }
@@ -119,11 +132,12 @@ function Fireflies({ count = 350 }) {
 const PLANE_Z = -8;
 const COVER_BUFFER = 1.05; // Safety buffer to prevent edge gaps
 
-function ParallaxBackground({ currentSlide }: { currentSlide: number }) {  const groupRef = useRef<THREE.Group>(null!);
+function ParallaxBackground({ currentSlide, images }: { currentSlide: number; images: string[] }) {
+  const groupRef = useRef<THREE.Group>(null!);
   const { camera, viewport } = useThree();
   const mouse = useRef({ x: 0, y: 0 });
 
-  const textures = useTexture(SLIDESHOW_IMAGES);
+  const textures = useTexture(images);
 
   // Track materials for opacity animation
   const materialRefs = useRef<THREE.MeshBasicMaterial[]>([]);
@@ -156,12 +170,12 @@ function ParallaxBackground({ currentSlide }: { currentSlide: number }) {  const
   // - currentSlide is visible (opacity 1).
   // - Slides > currentSlide are waiting behind (opacity 1).
   // When looping 3 -> 0: All become 1. 0 fades in on top of 3. Seamless.
-  const targetOpacities = useRef(SLIDESHOW_IMAGES.map((_, i) => i < 0 ? 0 : 1));
-  const currentOpacities = useRef(SLIDESHOW_IMAGES.map(() => 1));
+  const targetOpacities = useRef(images.map((_, i) => i < 0 ? 0 : 1));
+  const currentOpacities = useRef(images.map(() => 1));
 
   useEffect(() => {
-    targetOpacities.current = SLIDESHOW_IMAGES.map((_, i) => i < currentSlide ? 0 : 1);
-  }, [currentSlide]);
+    targetOpacities.current = images.map((_, i) => i < currentSlide ? 0 : 1);
+  }, [currentSlide, images]);
 
   useFrame(() => {
     // Parallax rotation
@@ -179,7 +193,7 @@ function ParallaxBackground({ currentSlide }: { currentSlide: number }) {  const
     }
 
     // Smooth opacity transitions
-    SLIDESHOW_IMAGES.forEach((_, i) => {
+    images.forEach((_, i) => {
       const target = targetOpacities.current[i];
       currentOpacities.current[i] = THREE.MathUtils.lerp(currentOpacities.current[i], target, 0.025);
 
@@ -247,7 +261,7 @@ function ParallaxBackground({ currentSlide }: { currentSlide: number }) {  const
 }
 
 // Soft warm light rays
-function WarmGlow() {
+function WarmGlow({ color = '#FFB347' }: { color?: string }) {
   const groupRef = useRef<THREE.Group>(null!);
 
   useFrame((state) => {
@@ -262,7 +276,7 @@ function WarmGlow() {
         <mesh key={i} rotation={[0, 0, (i / 10) * Math.PI * 0.4 - Math.PI / 6]}>
           <planeGeometry args={[0.15 + i * 0.05, 70]} />
           <meshBasicMaterial
-            color="#FFB347"
+            color={color}
             transparent
             opacity={0.008 - i * 0.0006}
             blending={THREE.AdditiveBlending}
@@ -274,32 +288,121 @@ function WarmGlow() {
   );
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Per-theme scene configuration — "Save the Date" (dark) vs "Final Invite" (light)
+// ─────────────────────────────────────────────────────────────────────────────
+interface SceneLight {
+  kind: 'point' | 'spot';
+  position: [number, number, number];
+  intensity: number;
+  color: string;
+  angle?: number;
+  penumbra?: number;
+}
+
+interface SceneTheme {
+  background: string;
+  fogColor: string;
+  fogNear: number;
+  fogFar: number;
+  envPreset: 'sunset' | 'dawn';
+  ambientIntensity: number;
+  ambientColor: string;
+  lights: SceneLight[];
+  fireflyColor: string;
+  glowColor: string;
+  bloom: { luminanceThreshold: number; luminanceSmoothing: number; intensity: number };
+  vignetteDarkness: number;
+}
+
+const SCENE_THEMES: Record<'dark' | 'light', SceneTheme> = {
+  dark: {
+    background: '#0a0908',
+    fogColor: '#0a0908',
+    fogNear: 18,
+    fogFar: 65,
+    envPreset: 'sunset',
+    ambientIntensity: 0.35,
+    ambientColor: '#FFF5E6',
+    lights: [
+      { kind: 'point', position: [12, 12, 8], intensity: 1.2, color: '#FFB347' },
+      { kind: 'point', position: [-12, 6, 8], intensity: 0.9, color: '#DDA15E' },
+      { kind: 'point', position: [0, -8, 10], intensity: 0.4, color: '#FFECD2' },
+      { kind: 'spot', position: [0, 18, 12], intensity: 0.9, color: '#FFF8F0', angle: 0.45, penumbra: 1 },
+      { kind: 'spot', position: [-8, 8, 10], intensity: 0.4, color: '#DDA15E', angle: 0.5, penumbra: 0.9 },
+    ],
+    fireflyColor: '#FFBF47',
+    glowColor: '#FFB347',
+    bloom: { luminanceThreshold: 0.25, luminanceSmoothing: 0.9, intensity: 0.5 },
+    vignetteDarkness: 0.75,
+  },
+  light: {
+    background: '#F7F1E1',
+    fogColor: '#E3E1C9',
+    fogNear: 22,
+    fogFar: 70,
+    envPreset: 'dawn',
+    ambientIntensity: 0.55,
+    ambientColor: '#FFF6E4',
+    lights: [
+      { kind: 'point', position: [12, 12, 8], intensity: 0.9, color: '#FFF6E4' },
+      { kind: 'point', position: [-12, 6, 8], intensity: 0.65, color: '#C9C79E' },
+      { kind: 'point', position: [0, -8, 10], intensity: 0.3, color: '#F7F1E1' },
+      { kind: 'spot', position: [0, 18, 12], intensity: 0.65, color: '#FFF6E4', angle: 0.45, penumbra: 1 },
+      { kind: 'spot', position: [-8, 8, 10], intensity: 0.35, color: '#8C9A5E', angle: 0.5, penumbra: 0.9 },
+    ],
+    fireflyColor: '#A9822F',
+    glowColor: '#A9822F',
+    bloom: { luminanceThreshold: 0.4, luminanceSmoothing: 0.9, intensity: 0.3 },
+    vignetteDarkness: 0.15,
+  },
+};
+
 function Scene({ currentSlide }: { currentSlide: number }) {
+  const { activeView } = useNavView();
+  const isLight = activeView === 'final-invite';
+  const theme = SCENE_THEMES[isLight ? 'light' : 'dark'];
+  const images = isLight ? SLIDESHOW_IMAGES_LIGHT : SLIDESHOW_IMAGES_DARK;
+
   return (
     <>
-      <color attach="background" args={['#0a0908']} />
-      <fog attach="fog" args={['#0a0908', 18, 65]} />
+      <color attach="background" args={[theme.background]} />
+      <fog attach="fog" args={[theme.fogColor, theme.fogNear, theme.fogFar]} />
 
-      <Environment preset="sunset" />
+      <Environment preset={theme.envPreset} />
 
-      <ambientLight intensity={0.35} color="#FFF5E6" />
-      <pointLight position={[12, 12, 8]} intensity={1.2} color="#FFB347" />
-      <pointLight position={[-12, 6, 8]} intensity={0.9} color="#DDA15E" />
-      <pointLight position={[0, -8, 10]} intensity={0.4} color="#FFECD2" />
-      <spotLight position={[0, 18, 12]} angle={0.45} penumbra={1} intensity={0.9} color="#FFF8F0" />
-      <spotLight position={[-8, 8, 10]} angle={0.5} penumbra={0.9} intensity={0.4} color="#DDA15E" />
+      <ambientLight intensity={theme.ambientIntensity} color={theme.ambientColor} />
+      {theme.lights.map((light, i) =>
+        light.kind === 'point' ? (
+          <pointLight key={i} position={light.position} intensity={light.intensity} color={light.color} />
+        ) : (
+          <spotLight
+            key={i}
+            position={light.position}
+            intensity={light.intensity}
+            color={light.color}
+            angle={light.angle}
+            penumbra={light.penumbra}
+          />
+        )
+      )}
 
-      <WarmGlow />
+      <WarmGlow color={theme.glowColor} />
 
       <Suspense fallback={null}>
-        <ParallaxBackground currentSlide={currentSlide} />
+        <ParallaxBackground currentSlide={currentSlide} images={images} />
       </Suspense>
 
-      <Fireflies count={350} />
+      <Fireflies count={350} color={theme.fireflyColor} />
 
       <EffectComposer>
-        <Bloom luminanceThreshold={0.25} luminanceSmoothing={0.9} height={350} intensity={0.5} />
-        <Vignette eskil={false} offset={0.12} darkness={0.75} />
+        <Bloom
+          luminanceThreshold={theme.bloom.luminanceThreshold}
+          luminanceSmoothing={theme.bloom.luminanceSmoothing}
+          height={350}
+          intensity={theme.bloom.intensity}
+        />
+        <Vignette eskil={false} offset={0.12} darkness={theme.vignetteDarkness} />
       </EffectComposer>
     </>
   );
@@ -361,8 +464,8 @@ function HeroOverlay() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 80% 60% at 50% 40%, transparent 0%, transparent 50%, rgba(10,9,8,0.3) 75%, rgba(10,9,8,0.7) 100%),
-            linear-gradient(to bottom, rgba(10,9,8,0.4) 0%, transparent 15%, transparent 60%, rgba(10,9,8,0.95) 100%)
+            radial-gradient(ellipse 80% 60% at 50% 40%, transparent 0%, transparent 50%, rgba(var(--surface-rgb),0.3) 75%, rgba(var(--surface-rgb),0.7) 100%),
+            linear-gradient(to bottom, rgba(var(--surface-rgb),0.4) 0%, transparent 15%, transparent 60%, rgba(var(--surface-rgb),0.95) 100%)
           `
         }}
       />
@@ -390,8 +493,7 @@ function HeroOverlay() {
               <motion.p
                 variants={maskReveal}
                 custom={2.2}
-                className={`text-[#FFFFFF] tracking-[0.5em] text-sm sm:text-base md:text-lg font-extrabold uppercase mb-3 drop-shadow-lg ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
-                style={{ textShadow: '0 4px 30px rgba(0,0,0,1), 0 2px 10px rgba(0,0,0,1)' }}
+                className={`text-ink-heading tracking-[0.5em] text-sm sm:text-base md:text-lg font-extrabold uppercase mb-3 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
               >
                 {t('hero.month')}
               </motion.p>
@@ -401,12 +503,13 @@ function HeroOverlay() {
               <motion.div
                 variants={lineExpand}
                 custom={2.6}
-                className="w-12 sm:w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4A845]/80 origin-right"
+                className="w-12 sm:w-16 h-[1px] bg-gradient-to-r from-transparent to-accent/80 origin-right"
               />
               <div className="overflow-hidden">
                 <motion.span
                   variants={maskReveal}
                   custom={2.4}
+                  style={{ filter: 'none' }}
                   className="gold-shimmer font-serif text-6xl sm:text-7xl md:text-8xl italic block"
                 >
                   4
@@ -415,7 +518,7 @@ function HeroOverlay() {
               <motion.div
                 variants={lineExpand}
                 custom={2.6}
-                className="w-12 sm:w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D4A845]/80 origin-left"
+                className="w-12 sm:w-16 h-[1px] bg-gradient-to-l from-transparent to-accent/80 origin-left"
               />
             </div>
 
@@ -423,7 +526,7 @@ function HeroOverlay() {
               <motion.p
                 variants={maskReveal}
                 custom={2.5}
-                className={`editorial-label text-[#FFFFFF] tracking-[0.6em] text-xs sm:text-sm md:text-base font-bold uppercase mt-3 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
+                className={`editorial-label text-ink-heading tracking-[0.6em] text-xs sm:text-sm md:text-base font-bold uppercase mt-3 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
               >
                 2026
               </motion.p>
@@ -435,7 +538,7 @@ function HeroOverlay() {
             <motion.p
               variants={maskReveal}
               custom={2.8}
-              className={`editorial-label text-[#D4A845] tracking-[0.4em] text-xs sm:text-sm md:text-base font-bold uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
+              className={`editorial-label text-accent tracking-[0.4em] text-xs sm:text-sm md:text-base font-bold uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
             >
               {t('hero.location')}
             </motion.p>
@@ -468,6 +571,7 @@ function HeroOverlay() {
               <motion.h1
                 variants={maskReveal}
                 custom={0.5}
+                style={{ filter: 'none' }}
                 className={`gold-shimmer text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.15em] ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
               >
                 {t('hero.yonatan')}
@@ -483,13 +587,13 @@ function HeroOverlay() {
               <motion.div
                 variants={lineExpand}
                 custom={1.5}
-                className="w-8 sm:w-12 md:w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4A845]/50 origin-right"
+                className="w-8 sm:w-12 md:w-16 h-[1px] bg-gradient-to-r from-transparent to-accent/50 origin-right"
               />
-              <span className={`text-[#D4A845]/90 text-xl sm:text-2xl md:text-3xl font-serif italic ${isAmharic ? 'font-ethiopic not-italic' : ''}`}>&</span>
+              <span className={`text-accent/90 text-xl sm:text-2xl md:text-3xl font-serif italic ${isAmharic ? 'font-ethiopic not-italic' : ''}`}>&</span>
               <motion.div
                 variants={lineExpand}
                 custom={1.5}
-                className="w-8 sm:w-12 md:w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D4A845]/50 origin-left"
+                className="w-8 sm:w-12 md:w-16 h-[1px] bg-gradient-to-l from-transparent to-accent/50 origin-left"
               />
             </motion.div>
 
@@ -498,6 +602,7 @@ function HeroOverlay() {
               <motion.h1
                 variants={maskReveal}
                 custom={0.8}
+                style={{ filter: 'none' }}
                 className={`gold-shimmer text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.15em] ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
               >
                 {t('hero.saron')}
@@ -519,6 +624,7 @@ function HeroOverlay() {
              <motion.p
               animate={{ y: [0, 5, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              style={{ filter: 'none' }}
               className={`gold-shimmer tracking-[0.4em] text-xs sm:text-sm uppercase font-black ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}
             >
               {t('hero.scroll')}
@@ -538,7 +644,7 @@ function HeroOverlay() {
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
               className="flex flex-col items-center"
             >
-              <div className="w-[1px] h-12 bg-gradient-to-b from-[#D4A845]/60 to-transparent" />
+              <div className="w-[1px] h-12 bg-gradient-to-b from-accent/60 to-transparent" />
             </motion.div>
           </motion.div>
         </div>
@@ -553,7 +659,30 @@ export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [visible, setVisible] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const totalSlides = SLIDESHOW_IMAGES.length;
+
+  const { activeView } = useNavView();
+  const isLight = activeView === 'final-invite';
+  const images = isLight ? SLIDESHOW_IMAGES_LIGHT : SLIDESHOW_IMAGES_DARK;
+  const totalSlides = images.length;
+
+  // Crossfade the canvas briefly on theme toggle so the relight isn't seen mid-transition
+  const [canvasOpacity, setCanvasOpacity] = useState(1);
+  const isFirstView = useRef(true);
+  useEffect(() => {
+    if (isFirstView.current) {
+      isFirstView.current = false;
+      return;
+    }
+    setCanvasOpacity(0);
+    const timer = setTimeout(() => setCanvasOpacity(1), 400);
+    return () => clearTimeout(timer);
+  }, [activeView]);
+
+  // Image set changes with the theme (different slide counts) — restart the
+  // slideshow from the main/first slide rather than risk an out-of-range index.
+  useEffect(() => {
+    setCurrentSlide(0);
+  }, [activeView]);
 
   useEffect(() => {
     setMounted(true);
@@ -592,21 +721,24 @@ export default function Hero() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Auto-advance slideshow (only after preloader)
+  // Auto-advance slideshow (only after preloader). The main/first slide in the
+  // light-mode set gets a longer duration, so this reschedules per-slide instead
+  // of running on a fixed setInterval.
   useEffect(() => {
     if (!visible || !preloaderComplete) return;
 
-    const timer = setInterval(() => {
+    const duration = isLight && currentSlide === 0 ? MAIN_SLIDE_DURATION : SLIDE_DURATION;
+    const timer = setTimeout(() => {
       setCurrentSlide((prev) => (prev + 1) % totalSlides);
-    }, SLIDE_DURATION);
+    }, duration);
 
-    return () => clearInterval(timer);
-  }, [totalSlides, visible, preloaderComplete]);
+    return () => clearTimeout(timer);
+  }, [totalSlides, visible, preloaderComplete, currentSlide, isLight]);
 
   return (
     <div
       ref={containerRef}
-      className="relative h-[100dvh] w-screen overflow-hidden bg-[#0a0908]"
+      className="relative h-[100dvh] w-screen overflow-hidden bg-surface transition-colors duration-500"
       style={{
         pointerEvents: visible ? 'auto' : 'none',
         // Default value for SSR/initial render
@@ -630,21 +762,27 @@ export default function Hero() {
             transition={{ duration: 2.5 }}
             className="absolute inset-0"
           >
-            <Canvas
-              frameloop={visible ? "always" : "never"}
-              camera={{ position: [0, 0, 12], fov: 50 }}
-              gl={{
-                antialias: true,
-                alpha: false,
-                powerPreference: "high-performance",
-                stencil: false,
-              }}
-              dpr={[1, 2]}
+            <motion.div
+              animate={{ opacity: canvasOpacity }}
+              transition={{ duration: 0.4, ease: 'easeInOut' }}
+              className="absolute inset-0"
             >
-              <Suspense fallback={null}>
-                <Scene currentSlide={currentSlide} />
-              </Suspense>
-            </Canvas>
+              <Canvas
+                frameloop={visible ? "always" : "never"}
+                camera={{ position: [0, 0, 12], fov: 50 }}
+                gl={{
+                  antialias: true,
+                  alpha: false,
+                  powerPreference: "high-performance",
+                  stencil: false,
+                }}
+                dpr={[1, 2]}
+              >
+                <Suspense fallback={null}>
+                  <Scene currentSlide={currentSlide} />
+                </Suspense>
+              </Canvas>
+            </motion.div>
           </motion.div>
 
           <HeroOverlay />

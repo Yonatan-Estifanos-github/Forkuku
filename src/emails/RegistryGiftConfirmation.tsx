@@ -20,7 +20,10 @@ export const RegistryGiftConfirmation = ({
   shippingAddress,
 }: RegistryGiftConfirmationProps) => (
   <Html lang="en">
-    <Head />
+    <Head>
+      <meta name="color-scheme" content="dark" />
+      <meta name="supported-color-schemes" content="dark" />
+    </Head>
     <Preview>Thank you for your gift — Yonatan & Saron</Preview>
     <Body style={body}>
       <Text style={label}>GIFT CONFIRMED</Text>

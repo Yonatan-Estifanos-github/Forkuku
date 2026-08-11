@@ -83,7 +83,7 @@ const BRIDESMAIDS: PartyMember[] = [
 // Elegant continuous line-art objects — 1px gold stroke, no fill
 // Groomsmen: Bowtie   |   Bridesmaids: Flower
 // ─────────────────────────────────────────────────────────────────────────────
-const G  = 'rgba(212,168,69,0.82)';   // main stroke
+const G  = 'rgba(var(--accent-rgb), 0.82)';   // main stroke
 
 const lineProps = {
   fill: 'none',
@@ -174,8 +174,8 @@ const flashVariants = {
 // Shared border style used on both front and back face
 const cardFaceStyle = {
   background:
-    'linear-gradient(160deg, #141210 0%, #0a0908 100%) padding-box,' +
-    'linear-gradient(135deg, rgba(212,168,69,0.55) 0%, rgba(212,168,69,0.12) 50%, transparent 100%) border-box',
+    'linear-gradient(160deg, var(--surface-alt) 0%, var(--surface) 100%) padding-box,' +
+    'linear-gradient(135deg, rgba(var(--accent-rgb),0.55) 0%, rgba(var(--accent-rgb),0.12) 50%, transparent 100%) border-box',
   border: '1px solid transparent',
   backfaceVisibility: 'hidden' as const,
   WebkitBackfaceVisibility: 'hidden' as const,
@@ -203,7 +203,7 @@ function SuperlativeOverlay({ text }: { text: string }) {
     <motion.div
       key="superlative"
       className="absolute inset-0 z-40 flex flex-col items-center justify-center px-2 py-3 text-center"
-      style={{ background: 'rgba(6,5,4,0.78)', backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)' }}
+      style={{ background: 'rgba(var(--surface-rgb),0.78)', backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -232,7 +232,7 @@ function SuperlativeOverlay({ text }: { text: string }) {
 
       {/* Punchline — italic Cormorant */}
       <motion.p
-        className={`italic text-white/90 leading-snug ${isAmharic ? 'font-ethiopic font-light not-italic' : 'font-serif'}`}
+        className={`italic text-ink/90 leading-snug ${isAmharic ? 'font-ethiopic font-light not-italic' : 'font-serif'}`}
         style={{ fontSize: isAmharic ? '10px' : '8px' }}
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
@@ -244,7 +244,7 @@ function SuperlativeOverlay({ text }: { text: string }) {
 
       {/* Tap-to-close hint */}
       <motion.p
-        className={`text-white/20 tracking-[0.25em] uppercase absolute bottom-1.5 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
+        className={`text-ink/20 tracking-[0.25em] uppercase absolute bottom-1.5 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
         style={{ fontSize: isAmharic ? '7px' : '5px' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -291,7 +291,7 @@ function PartyCard({
   const glareBackground = useTransform(
     [mouseXSpring, mouseYSpring],
     ([mx, my]) =>
-      `radial-gradient(circle at ${(Number(mx) + 0.5) * 100}% ${(Number(my) + 0.5) * 100}%, rgba(255,240,150,0.28) 0%, rgba(212,168,69,0.10) 30%, transparent 65%)`
+      `radial-gradient(circle at ${(Number(mx) + 0.5) * 100}% ${(Number(my) + 0.5) * 100}%, rgba(255,240,150,0.28) 0%, rgba(var(--accent-rgb),0.10) 30%, transparent 65%)`
   );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -329,12 +329,12 @@ function PartyCard({
             style={{ objectPosition: member.photoPosition ?? 'center' }}
           />
           <div className="absolute inset-0"
-            style={{ background: 'linear-gradient(to bottom, transparent 50%, rgba(10,9,8,0.92) 80%, rgba(10,9,8,1) 100%)' }} />
+            style={{ background: 'linear-gradient(to bottom, transparent 50%, rgba(var(--surface-rgb),0.92) 80%, rgba(var(--surface-rgb),1) 100%)' }} />
         </div>
       ) : (
         <div
           className="absolute inset-x-[8%] top-[5%] bottom-[24%] pointer-events-none"
-          style={{ filter: 'drop-shadow(0 0 7px rgba(212,168,69,0.38))' }}
+          style={{ filter: 'drop-shadow(0 0 7px rgba(var(--accent-rgb),0.38))' }}
         >
           <Silhouette />
         </div>
@@ -347,11 +347,11 @@ function PartyCard({
     <div className="absolute bottom-0 left-0 right-0 px-2 pb-2 text-center z-30">
       {member.name ? (
         <>
-          <p className={`text-[10px] md:text-xs text-white/85 leading-tight truncate ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>{member.name}</p>
+          <p className={`text-[10px] md:text-xs text-ink/85 leading-tight truncate ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>{member.name}</p>
           <p className={`text-[7px] md:text-[9px] text-wedding-gold/60 tracking-[0.3em] uppercase mt-0.5 truncate ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>{member.role}</p>
         </>
       ) : (
-        <p className={`text-[7px] md:text-[9px] text-white/22 tracking-[0.3em] uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>{member.role}</p>
+        <p className={`text-[7px] md:text-[9px] text-ink/22 tracking-[0.3em] uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>{member.role}</p>
       )}
     </div>
   );
@@ -380,12 +380,12 @@ function PartyCard({
 
         {/* Edge vignette */}
         <div className="absolute inset-0 pointer-events-none z-10"
-          style={{ background: 'radial-gradient(ellipse at 50% 0%, transparent 50%, rgba(0,0,0,0.5) 100%)' }} />
+          style={{ background: 'radial-gradient(ellipse at 50% 0%, transparent 50%, rgba(var(--surface-rgb),0.5) 100%)' }} />
 
         {/* Tap hint (only when not active) */}
         {!isActive && (
           <div className="absolute top-1.5 right-1.5 z-30">
-            <span className={`text-[6px] text-white/20 tracking-widest uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>tap</span>
+            <span className={`text-[6px] text-ink/20 tracking-widest uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>tap</span>
           </div>
         )}
 
@@ -393,7 +393,7 @@ function PartyCard({
 
         {/* Gold flash on entrance */}
         <motion.div variants={flashVariants} className="absolute inset-0 z-40 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(255,240,130,0.9) 0%, rgba(212,168,69,0.6) 35%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(255,240,130,0.9) 0%, rgba(var(--accent-rgb),0.6) 35%, transparent 70%)' }} />
 
         {/* Superlative overlay */}
         <AnimatePresence>
@@ -443,16 +443,16 @@ function PartyCard({
 
           {/* Tap hint */}
           <div className="absolute top-1.5 right-1.5 z-30">
-            <span className={`text-[6px] text-white/20 tracking-widest uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>tap</span>
+            <span className={`text-[6px] text-ink/20 tracking-widest uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>tap</span>
           </div>
 
           {/* Edge vignette */}
           <div className="absolute inset-0 pointer-events-none z-10"
-            style={{ background: 'radial-gradient(ellipse at 50% 0%, transparent 50%, rgba(0,0,0,0.5) 100%)' }} />
+            style={{ background: 'radial-gradient(ellipse at 50% 0%, transparent 50%, rgba(var(--surface-rgb),0.5) 100%)' }} />
 
           {/* Gold flash on entrance */}
           <motion.div variants={flashVariants} className="absolute inset-0 z-40 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(255,240,130,0.9) 0%, rgba(212,168,69,0.6) 35%, transparent 70%)' }} />
+            style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(255,240,130,0.9) 0%, rgba(var(--accent-rgb),0.6) 35%, transparent 70%)' }} />
         </motion.div>
 
         {/* ── BACK FACE — fun fact ── */}
@@ -468,12 +468,12 @@ function PartyCard({
           </div>
 
           {/* Fun fact text */}
-          <p className={`text-[8px] md:text-[9px] text-white/78 text-center leading-relaxed italic flex-1 flex items-center px-0.5 py-2 ${isAmharic ? 'font-ethiopic font-light not-italic' : 'font-serif'}`}>
+          <p className={`text-[8px] md:text-[9px] text-ink/78 text-center leading-relaxed italic flex-1 flex items-center px-0.5 py-2 ${isAmharic ? 'font-ethiopic font-light not-italic' : 'font-serif'}`}>
             {member.funFact}
           </p>
 
           {/* Bottom hint */}
-          <p className={`text-[6px] text-white/20 tracking-[0.25em] uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>tap to close</p>
+          <p className={`text-[6px] text-ink/20 tracking-[0.25em] uppercase ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>tap to close</p>
         </div>
       </motion.div>
     </motion.div>
@@ -515,8 +515,8 @@ function PartyColumn({
             {sideLabel}
           </p>
         ) : null}
-        <h3 className={`text-xl md:text-2xl text-white/90 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
-          style={{ filter: 'drop-shadow(0 0 12px rgba(212,168,69,0.2))' }}>
+        <h3 className={`text-xl md:text-2xl text-ink/90 ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}
+          style={{ filter: 'drop-shadow(0 0 12px rgba(var(--accent-rgb),0.2))' }}>
           {title}
         </h3>
         <div className="w-6 h-[1px] bg-wedding-gold/40 mx-auto mt-3" />
@@ -567,12 +567,12 @@ export default function WeddingPartySection() {
   return (
     <section id="wedding-party" className="relative bg-luxury-black py-24 md:py-40 px-4 overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(212,168,69,0.04) 0%, transparent 70%)' }} />
+        style={{ background: 'radial-gradient(circle, rgba(var(--accent-rgb),0.04) 0%, transparent 70%)' }} />
 
       <div className="text-center mb-20 md:mb-28 relative z-10">
         <h2
-          className={`text-[2.9rem] md:text-7xl lg:text-[5.4rem] ${isAmharic ? 'font-ethiopic font-light tracking-normal text-stone-200' : 'font-serif italic font-normal tracking-tight text-[#EAE5D9]'}`}
-          style={{ filter: 'drop-shadow(0 0 28px rgba(212,168,69,0.14))' }}
+          className={`text-[2.9rem] md:text-7xl lg:text-[5.4rem] ${isAmharic ? 'font-ethiopic font-light tracking-normal text-stone-200' : 'font-serif italic font-normal tracking-tight text-ink-heading'}`}
+          style={{ filter: 'drop-shadow(0 0 28px rgba(var(--accent-rgb),0.14))' }}
         >
           {t('party.heading')}
         </h2>
@@ -596,7 +596,7 @@ export default function WeddingPartySection() {
           <PartyColumn title={t('party.groomsmen')} members={GROOMSMEN}   side="left"  gender="male"   variant="superlative" />
           <div className="hidden md:flex flex-col items-center self-stretch py-4">
             <div className="flex-1 w-[1px]"
-              style={{ background: 'linear-gradient(to bottom, transparent, rgba(212,168,69,0.2) 20%, rgba(212,168,69,0.2) 80%, transparent)' }} />
+              style={{ background: 'linear-gradient(to bottom, transparent, rgba(var(--accent-rgb),0.2) 20%, rgba(var(--accent-rgb),0.2) 80%, transparent)' }} />
           </div>
           <PartyColumn title={t('party.bridesmaids')} members={BRIDESMAIDS} side="right" gender="female" variant="superlative" />
         </div>
@@ -615,7 +615,7 @@ export default function WeddingPartySection() {
 
           <div className="relative group max-w-4xl mx-auto mb-10">
             {/* Museum Frame for Parents Photo */}
-            <div className="relative z-10 border border-wedding-gold/25 bg-[#0f0e0d] p-3 sm:p-5 shadow-2xl transition-transform duration-700 group-hover:scale-[1.01]">
+            <div className="relative z-10 border border-wedding-gold/25 bg-surface-alt p-3 sm:p-5 shadow-2xl transition-transform duration-700 group-hover:scale-[1.01]">
               {/* Gold corner accents */}
               <div className="absolute top-1.5 left-1.5 w-6 h-6 border-t border-l border-wedding-gold/55" />
               <div className="absolute top-1.5 right-1.5 w-6 h-6 border-t border-r border-wedding-gold/55" />
@@ -629,7 +629,7 @@ export default function WeddingPartySection() {
                   alt="Our Parents"
                   className="w-full h-full object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-surface/40 to-transparent" />
               </div>
             </div>
             

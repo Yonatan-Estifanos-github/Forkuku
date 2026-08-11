@@ -17,7 +17,6 @@ interface RSVPConfirmationProps {
 }
 
 const BASE_URL = 'https://theestifanos.com';
-const PWD = 'Matthew19:6';
 
 const PRAY_IMAGE_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG';
 
@@ -27,15 +26,22 @@ export const RSVPConfirmation = ({
   inviteToken,
 }: RSVPConfirmationProps) => {
   const attendingGuests = guests.filter(g => g.is_attending);
-  const siteLink = inviteToken
-    ? `${BASE_URL}/?token=${inviteToken}`
-    : partyId
-      ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
+  // Both `?token=<uuid>` and `?partyId=<uuid>` put a raw hex UUID directly
+  // after "=", which the outgoing quoted-printable MIME encoding silently
+  // corrupts (e.g. "partyId=78..." arrives as "partyIdx..."). Route through
+  // the /i/<partyId> path segment instead — see middleware.ts.
+  const siteLink = partyId
+    ? `${BASE_URL}/i/${partyId}`
+    : inviteToken
+      ? `${BASE_URL}/?token=${inviteToken}`
       : BASE_URL;
 
   return (
     <Html lang="en">
-      <Head />
+      <Head>
+        <meta name="color-scheme" content="dark" />
+        <meta name="supported-color-schemes" content="dark" />
+      </Head>
       <Preview>RSVP Confirmed — Yonatan &amp; Saron</Preview>
 
       <Body style={mainBody}>

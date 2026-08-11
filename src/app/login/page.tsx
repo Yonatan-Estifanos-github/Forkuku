@@ -127,7 +127,15 @@ function SiteLoginPageInner() {
       if (response.ok) {
         sessionStorage.setItem('wedding-music-pref', musicOn ? 'on' : 'off');
         const partyId = searchParams.get('partyId') || tokenPartyId;
-        window.location.href = partyId ? `/?partyId=${encodeURIComponent(partyId)}` : '/';
+        const view = searchParams.get('view');
+        const qs = new URLSearchParams();
+        if (partyId) qs.set('partyId', partyId);
+        if (view === 'final-invite') qs.set('view', view);
+        // Preserve any section anchor (e.g. #registry) through the redirect —
+        // it's client-side only, so it must be re-attached explicitly here
+        // rather than relying on the server response to carry it.
+        const hash = window.location.hash || '';
+        window.location.href = (qs.toString() ? `/?${qs.toString()}` : '/') + hash;
       } else {
         setError(t('login.incorrectPassword'));
         setLoading(false);
@@ -141,7 +149,7 @@ function SiteLoginPageInner() {
   const isAmharic = language === 'am';
 
   return (
-    <div className="min-h-[100dvh] bg-[#0a0908] flex items-center justify-center px-6">
+    <div className="min-h-[100dvh] bg-surface flex items-center justify-center px-6 transition-colors duration-500">
       <audio ref={audioRef} src={MUSIC_SRC} loop muted />
 
       {/* ── Centered focal content ───────────────────────────────── */}
@@ -152,23 +160,23 @@ function SiteLoginPageInner() {
           <motion.h1
             animate={{ y: [0, -4, 0] }}
             transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-            className="font-serif text-5xl sm:text-6xl md:text-7xl text-[#E6D2B5] tracking-wide leading-tight"
+            className="font-serif text-5xl sm:text-6xl md:text-7xl text-accent-soft tracking-wide leading-tight"
           >
             Yonatan
-            <span className="block text-[#D4A845]/70 text-3xl sm:text-4xl my-1 font-light not-italic">&</span>
+            <span className="block text-accent/70 text-3xl sm:text-4xl my-1 font-light not-italic">&</span>
             Saron
           </motion.h1>
           <div className="flex flex-col items-center gap-1 mt-1">
             {isAmharic ? (
-              <p className="font-ethiopic text-[#D4A845]/80 text-sm sm:text-base text-center">
+              <p className="font-ethiopic text-accent/80 text-sm sm:text-base text-center">
                 {t('login.psalm25')}
               </p>
             ) : (
-              <p className="font-serif italic text-[#D4A845]/80 text-sm sm:text-base tracking-wide text-center">
+              <p className="font-serif italic text-accent/80 text-sm sm:text-base tracking-wide text-center">
                 &ldquo;No one who hopes in you will ever be put to shame…&rdquo;
               </p>
             )}
-            <p className="font-sans text-white/25 text-[9px] tracking-widest uppercase mt-0.5">
+            <p className="font-sans text-ink/25 text-[9px] tracking-widest uppercase mt-0.5">
               Psalm 25:3
             </p>
           </div>
@@ -179,7 +187,7 @@ function SiteLoginPageInner() {
           initial={{ scaleX: 0, opacity: 0 }}
           animate={{ scaleX: 1, opacity: 1 }}
           transition={{ duration: 1.0, delay: 0.8, ease }}
-          className="w-16 h-px bg-gradient-to-r from-transparent via-[#D4A845]/40 to-transparent"
+          className="w-16 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent"
         />
 
         {/* Form */}
@@ -194,12 +202,12 @@ function SiteLoginPageInner() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center space-y-1"
             >
-              <p className={`text-[#D4A845] text-xs font-medium ${isAmharic ? 'font-ethiopic' : 'font-sans uppercase tracking-widest'}`}>
-                {searchParams.get('pwd') === MAGIC_PASSWORD 
-                  ? t('login.vipPasswordFilled') 
+              <p className={`text-accent text-xs font-medium ${isAmharic ? 'font-ethiopic' : 'font-sans uppercase tracking-widest'}`}>
+                {searchParams.get('pwd') === MAGIC_PASSWORD
+                  ? t('login.vipPasswordFilled')
                   : t('login.welcomeBack')}
               </p>
-              <p className={`text-white/40 text-[10px] ${isAmharic ? 'font-ethiopic' : 'font-serif italic'}`}>
+              <p className={`text-ink/40 text-[10px] ${isAmharic ? 'font-ethiopic' : 'font-serif italic'}`}>
                 {t('login.vipClickLogin')}
               </p>
             </motion.div>
@@ -220,7 +228,7 @@ function SiteLoginPageInner() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`w-full bg-transparent border-b border-white/20 py-3 text-center text-[#E6D2B5] tracking-[0.2em] placeholder:text-white/20 outline-none focus:border-white/50 transition-colors duration-300 ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
+            className={`w-full bg-transparent border-b border-hairline py-3 text-center text-accent-soft tracking-[0.2em] placeholder:text-ink/20 outline-none focus:border-ink/50 transition-colors duration-300 ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}
             placeholder={t('login.enterPassword')}
             required
           />
@@ -229,7 +237,7 @@ function SiteLoginPageInner() {
           <button
             type="submit"
             disabled={loading}
-            className={`border border-[#D4A845] text-[#D4A845] bg-transparent hover:bg-[#D4A845]/10 px-12 py-3 rounded-full tracking-widest text-[10px] sm:text-xs uppercase transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
+            className={`border border-accent text-accent bg-transparent hover:bg-accent/10 px-12 py-3 rounded-full tracking-widest text-[10px] sm:text-xs uppercase transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
           >
             {loading ? t('login.verifying') : t('login.enter')}
           </button>
@@ -240,8 +248,8 @@ function SiteLoginPageInner() {
             onClick={() => setMusicOn(v => !v)}
             className={`flex items-center gap-2.5 border rounded-full px-5 py-2 transition-all duration-300 ${
               musicOn
-                ? 'border-[#D4A845]/60 text-[#D4A845] bg-[#D4A845]/5'
-                : 'border-white/20 text-white/60 hover:border-white/40 hover:text-white/90'
+                ? 'border-accent/60 text-accent bg-accent/5'
+                : 'border-hairline text-ink/60 hover:border-ink/40 hover:text-ink/90'
             }`}
           >
             <div className="flex items-end gap-[3px] h-3">
@@ -268,14 +276,14 @@ function SiteLoginPageInner() {
       >
         {(['en', 'am'] as Language[]).map((lang, i) => (
           <span key={lang} className="inline-flex items-center gap-4">
-            {i > 0 && <span className="text-white/15 text-xs select-none">|</span>}
+            {i > 0 && <span className="text-ink/15 text-xs select-none">|</span>}
             <button
               onClick={() => setLanguage(lang)}
               aria-pressed={language === lang}
               className={`text-xs transition-colors duration-300 ${
                 lang === 'am' ? 'font-ethiopic' : 'font-sans tracking-widest uppercase'
               } ${
-                language === lang ? 'text-white' : 'text-white/35 hover:text-white/65'
+                language === lang ? 'text-ink-heading' : 'text-ink/35 hover:text-ink/65'
               }`}
             >
               {lang === 'en' ? t('login.english') : t('login.amharic')}
@@ -288,7 +296,7 @@ function SiteLoginPageInner() {
       <motion.div {...fadeIn(2.0)} className="fixed bottom-4 left-1/2 -translate-x-1/2">
         <Link
           href="/legal"
-          className="text-[10px] text-white/15 hover:text-white/40 tracking-widest uppercase transition-colors font-sans"
+          className="text-[10px] text-ink/15 hover:text-ink/40 tracking-widest uppercase transition-colors font-sans"
         >
           {t('login.privacyPolicy')}
         </Link>

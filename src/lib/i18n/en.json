@@ -43,7 +43,9 @@
     "home": "Home",
     "story": "Story",
     "venue": "Venue",
+    "timeline": "Timeline",
     "party": "Party",
+    "hotels": "Hotels",
     "rsvp": "RSVP",
     "registry": "Registry"
   },
@@ -78,7 +80,49 @@
     "caption3_2": "surrounded by those we love.",
     "caption4_1": "Come celebrate with us",
     "caption4_2": "in Wrightsville, Pennsylvania.",
-    "rsvpHint": "Please RSVP below and we will contact you soon about day-of plan and address"
+    "rsvpHint": "Please RSVP below and we will contact you soon about day-of plan and address",
+    "venueName": "Japanese Garden",
+    "ceremonyLocation": "Ceremony at Lauxmont Gardens",
+    "officialAddress": "1155 Long Level Road, Wrightsville, PA 17368",
+    "directionsButton": "Get Directions"
+  },
+  "timeline": {
+    "heading": "The Day Of",
+    "subtitle": "Everything you need to know for September 4th",
+    "event1Time": "2:00 PM",
+    "event1Label": "Guest Arrival & Seating",
+    "event2Time": "2:30 PM",
+    "event2Label": "Ceremony",
+    "event3Time": "3:15 PM",
+    "event3Label": "Cocktail Hour",
+    "event4Time": "4:30 PM",
+    "event4Label": "Reception & Dinner",
+    "event5Time": "6:00 PM",
+    "event5Label": "Toasts",
+    "event6Time": "6:30 PM",
+    "event6Label": "Dancing",
+    "event7Time": "11:00 PM",
+    "event7Label": "Farewell & Send-off"
+  },
+  "hotels": {
+    "heading": "Where to Stay",
+    "description": "A few well-reviewed, four-star options along the way — no block or discount code, just our picks.",
+    "viewHotel": "View Hotel",
+    "hilton": {
+      "name": "Hilton Harrisburg",
+      "address": "1 N 2nd St, Harrisburg, PA 17101",
+      "note": "Closest to Harrisburg / points north"
+    },
+    "yorktowne": {
+      "name": "The Yorktowne Hotel",
+      "address": "48 E Market St, York, PA 17401",
+      "note": "Historic, recently renovated, downtown York"
+    },
+    "hampton": {
+      "name": "Hampton Inn York",
+      "address": "1550 Mount Zion Rd, York, PA 17402",
+      "note": "Closest to the venue"
+    }
   },
   "scripture": {
     "reference": "Psalm 118:24",
@@ -194,8 +238,10 @@
     "cashGiftDescription": "Prefer to give cash? We'd be so grateful. You can send directly via:",
     "cashAppLabel": "Cash App",
     "venmoLabel": "Venmo",
+    "zelleLabel": "Zelle",
     "cashAppHandle": "$theestifanos",
     "venmoHandle": "@theestifanos",
+    "zelleHandle": "7179635535",
     "cashPayPhone": "7179635535",
     "copied": "Copied!",
     "copyHandle": "Copy",

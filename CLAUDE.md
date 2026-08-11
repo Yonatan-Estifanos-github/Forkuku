@@ -9,10 +9,12 @@ Estifanos Wedding (Forkuku) — a Next.js 14 (App Router) wedding website for Yo
 ## Commands
 
 - `npm run dev` — start dev server (localhost:3000; admin at `/admin`)
-- `npm run build` — production build
 - `npm run lint` — ESLint (`next lint`)
 
 There is no test suite configured (no test script, no test framework in package.json). CI (`.github/workflows/ci.yml`) runs `npm install`, `npm run lint`, `npm run build` on push/PR to `main`.
+
+### Do not run npm locally — this machine has limited resources
+Never run `npm install`, `npm run dev`, `npm run build`, `npm run lint`, or any other npm command locally. Commit and push to a branch instead — Vercel builds it automatically, and CI (`.github/workflows/ci.yml`) runs `npm install` + lint + build on the PR. Check results via the Vercel MCP tools (`mcp__vercel__get_deployment`, `mcp__vercel__get_deployment_build_logs`) or GitHub Actions/PR checks, not local commands. To verify a change actually works, use the `claude-in-chrome` browser skill (or computer use) against the resulting preview deployment URL rather than a local dev server.
 
 ## Architecture
 

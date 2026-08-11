@@ -25,13 +25,42 @@ export function middleware(request: NextRequest) {
     return res;
   }
 
+  // ── Theme signal: ?view=final-invite ──────────────────────────────────────
+  // Rides alongside either magic-link flow below; stamped as a cookie so
+  // ViewProvider can read it on the next render regardless of which flow ran.
+  const viewParam = searchParams.get('view');
+
   // ── Token-based magic link: ?token=<uuid> ────────────────────────────────
   // Opaque invite token — no password exposed in URL.
   const inviteToken = searchParams.get('token');
   if (inviteToken && pathname !== '/login') {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('token', inviteToken);
-    return NextResponse.redirect(loginUrl);
+    if (viewParam) loginUrl.searchParams.set('view', viewParam);
+    const res = NextResponse.redirect(loginUrl);
+    // Magic links always pin an explicit theme, regardless of the site-wide
+    // default — Save the Date guests must land on dark/RSVP even though the
+    // site otherwise defaults to light for fresh/organic visits.
+    res.cookies.set('view_pref', viewParam === 'final-invite' ? 'final-invite' : 'save-the-date', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
+    return res;
+  }
+
+  // ── Path-based magic link: /i/<partyId> ──────────────────────────────────
+  // Email links must never put a raw partyId (an all-hex UUID) directly after
+  // an "=" — Resend's outgoing quoted-printable MIME encoding silently
+  // corrupts any "=XY" where XY are hex digits (e.g. "partyId=78..." is
+  // decoded by the receiving mail client as "partyIdx..."). Routing the UUID
+  // through a path segment means it only ever sits next to "=" in this
+  // server-issued redirect, never inside the emailed HTML itself.
+  const pathPartyMatch = pathname.match(/^\/i\/([0-9a-fA-F-]{36})$/);
+  if (pathPartyMatch && pathname !== '/login') {
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('pwd', 'Matthew19:6');
+    loginUrl.searchParams.set('partyId', pathPartyMatch[1]);
+    if (viewParam) loginUrl.searchParams.set('view', viewParam);
+    const res = NextResponse.redirect(loginUrl);
+    res.cookies.set('view_pref', viewParam === 'final-invite' ? 'final-invite' : 'save-the-date', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
+    return res;
   }
 
   // ── Legacy magic link: ?pwd= or ?partyId= ────────────────────────────────
@@ -43,7 +72,12 @@ export function middleware(request: NextRequest) {
       const loginUrl = new URL('/login', request.url);
       if (magicPwd) loginUrl.searchParams.set('pwd', magicPwd);
       if (partyId) loginUrl.searchParams.set('partyId', partyId);
-      return NextResponse.redirect(loginUrl);
+      if (viewParam) loginUrl.searchParams.set('view', viewParam);
+      const res = NextResponse.redirect(loginUrl);
+      // Same pin as the token-based branch above — legacy magic links must
+      // not fall through to the site-wide light default.
+      res.cookies.set('view_pref', viewParam === 'final-invite' ? 'final-invite' : 'save-the-date', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
+      return res;
     }
     // If already on /login, just let it through
   }

@@ -6,6 +6,8 @@ import WeddingPartySection from '@/components/WeddingPartySection';
 import Section from '@/components/ui/Section';
 import Footer from '@/components/Footer';
 import RegistrySection from '@/components/RegistrySection';
+import DayOfTimeline from '@/components/DayOfTimeline';
+import HotelsSection from '@/components/HotelsSection';
 
 export default function Home() {
   return (
@@ -20,7 +22,15 @@ export default function Home() {
         <GoogleEarthVideo />
       </Section>
 
+      <Section id="timeline">
+        <DayOfTimeline />
+      </Section>
+
       <WeddingPartySection />
+
+      <Section id="hotels">
+        <HotelsSection />
+      </Section>
 
       <Section id="rsvp">
         <Rsvp />

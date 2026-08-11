@@ -13,14 +13,14 @@ export async function POST(request: Request) {
       name: string;
       email?: string;
       message?: string;
-      giftType: 'cashapp' | 'venmo';
+      giftType: 'cashapp' | 'venmo' | 'zelle';
     };
 
     if (!name?.trim()) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
 
-    if (!giftType || !['cashapp', 'venmo'].includes(giftType)) {
+    if (!giftType || !['cashapp', 'venmo', 'zelle'].includes(giftType)) {
       return NextResponse.json({ error: 'Invalid gift type' }, { status: 400 });
     }
 
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const platform = giftType === 'cashapp' ? 'Cash App' : 'Venmo';
+    const platform = giftType === 'cashapp' ? 'Cash App' : giftType === 'venmo' ? 'Venmo' : 'Zelle';
 
     const html = await render(
       React.createElement(CashGiftAlert, {

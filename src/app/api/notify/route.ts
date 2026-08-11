@@ -24,9 +24,10 @@ const PWD = 'Matthew19:6';
 const COMPLIANCE = 'You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.';
 
 function buildSmsBody(campaignId: string, guestName: string, partyId: string, inviteToken?: string): string {
+  const viewSuffix = campaignId === 'formal-invitation' ? '&view=final-invite' : '';
   const magicLink = inviteToken
-    ? `${BASE_URL}/?token=${inviteToken}`
-    : `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`;
+    ? `${BASE_URL}/?token=${inviteToken}${viewSuffix}`
+    : `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}${viewSuffix}`;
 
   switch (campaignId) {
     case 'save-the-date':
@@ -60,7 +61,13 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string, in
         '',
         "Your love, prayers, and support have deeply shaped our story. From the long-distance days to the quiet moments of faith that brought us here, you have been our village. We truly cannot imagine stepping into this next chapter without you by our side.",
         '',
-        `RSVP & Explore Our Story: ${magicLink}`,
+        'Japanese Garden',
+        'Ceremony at Lauxmont Gardens',
+        '1155 Long Level Road, Wrightsville, PA 17368',
+        'Guests welcomed at 2:00 PM  ·  Ceremony at 2:30 PM',
+        '',
+        `See Our Story & Details: ${magicLink}`,
+        `Registry (Cash App, Venmo & Zelle): ${magicLink}#registry`,
         '',
         '---',
         COMPLIANCE,

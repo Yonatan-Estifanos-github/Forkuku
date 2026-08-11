@@ -4,24 +4,32 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
+import { useNavView } from '@/context/ViewContext';
 
 const NAV_KEYS = [
-  { key: 'home',     href: '/',               icon: HomeIcon,     sectionId: 'home' },
-  { key: 'story',    href: '/#story',          icon: BookIcon,     sectionId: 'story' },
-  { key: 'venue',    href: '/#venue',          icon: MapPinIcon,   sectionId: 'venue' },
-  { key: 'party',    href: '/#wedding-party',  icon: PeopleIcon,   sectionId: 'wedding-party' },
-  { key: 'rsvp',     href: '/#rsvp',           icon: EnvelopeIcon, sectionId: 'rsvp' },
-  { key: 'registry', href: '/#registry',       icon: GiftIcon,     sectionId: 'registry' },
+  { key: 'home',     href: '/',               icon: HomeIcon,     sectionId: 'home',          lightOnly: false, hiddenInLight: false },
+  { key: 'story',    href: '/#story',          icon: BookIcon,     sectionId: 'story',         lightOnly: false, hiddenInLight: false },
+  { key: 'venue',    href: '/#venue',          icon: MapPinIcon,   sectionId: 'venue',         lightOnly: false, hiddenInLight: false },
+  { key: 'timeline', href: '/#timeline',       icon: ClockIcon,    sectionId: 'timeline',      lightOnly: true,  hiddenInLight: false },
+  { key: 'party',    href: '/#wedding-party',  icon: PeopleIcon,   sectionId: 'wedding-party', lightOnly: false, hiddenInLight: false },
+  { key: 'hotels',   href: '/#hotels',         icon: HotelIcon,    sectionId: 'hotels',        lightOnly: true,  hiddenInLight: false },
+  { key: 'rsvp',     href: '/#rsvp',           icon: EnvelopeIcon, sectionId: 'rsvp',          lightOnly: false, hiddenInLight: true },
+  { key: 'registry', href: '/#registry',       icon: GiftIcon,     sectionId: 'registry',      lightOnly: false, hiddenInLight: false },
 ];
 
 export default function FloatingNav() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string>('home');
   const { t, language, setLanguage } = useLanguage();
+  const { activeView } = useNavView();
+  const isLight = activeView === 'final-invite';
+  const navItems = NAV_KEYS.filter((item) =>
+    isLight ? !item.hiddenInLight : !item.lightOnly
+  );
 
   useEffect(() => {
     if (pathname !== '/') return;
-    const sectionIds = ['home', 'story', 'venue', 'wedding-party', 'rsvp', 'registry'];
+    const sectionIds = ['home', 'story', 'venue', 'timeline', 'wedding-party', 'hotels', 'rsvp', 'registry'];
 
     const handleScroll = () => {
       const midpoint = window.scrollY + window.innerHeight * 0.4;
@@ -66,10 +74,10 @@ export default function FloatingNav() {
       className="fixed bottom-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
       aria-label="Main navigation"
     >
-      <div className="pointer-events-auto flex items-center gap-2 sm:gap-4 rounded-3xl bg-black/50 backdrop-blur-md border border-white/10 px-3 sm:px-6 py-3 max-w-full overflow-x-auto scrollbar-hide">
+      <div className="pointer-events-auto flex items-center gap-2 sm:gap-4 rounded-3xl bg-surface/50 backdrop-blur-md border border-hairline px-3 sm:px-6 py-3 max-w-full overflow-x-auto scrollbar-hide">
 
         {/* Nav items */}
-        {NAV_KEYS.map(({ key, href, icon: Icon, sectionId }) => {
+        {navItems.map(({ key, href, icon: Icon, sectionId }) => {
           const active = activeSection === sectionId;
           const label = t(`nav.${key}`);
           return (
@@ -79,7 +87,7 @@ export default function FloatingNav() {
               onClick={(e) => handleClick(e, href)}
               aria-current={active ? 'page' : undefined}
               className={`flex flex-col items-center justify-center gap-1 sm:gap-1.5 shrink-0 transition-colors duration-300 ${
-                active ? 'text-[#D4A845]' : 'text-white/50 hover:text-white/90'
+                active ? 'text-accent' : 'text-ink/50 hover:text-ink/90'
               } ${language === 'am' ? 'font-ethiopic' : 'font-sans'}`}
             >
               <Icon className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
@@ -91,7 +99,7 @@ export default function FloatingNav() {
         })}
 
         {/* Divider */}
-        <span className="h-8 w-px bg-white/10 shrink-0" />
+        <span className="h-8 w-px bg-hairline shrink-0" />
 
         {/* Language switcher */}
         <div className="flex flex-col items-center gap-1.5 shrink-0">
@@ -99,7 +107,7 @@ export default function FloatingNav() {
             onClick={() => setLanguage('en')}
             aria-pressed={language === 'en'}
             className={`text-[9px] font-sans tracking-widest uppercase transition-colors duration-200 leading-none ${
-              language === 'en' ? 'text-[#D4A845]' : 'text-white/35 hover:text-white/70'
+              language === 'en' ? 'text-accent' : 'text-ink/35 hover:text-ink/70'
             }`}
           >
             EN
@@ -108,7 +116,7 @@ export default function FloatingNav() {
             onClick={() => setLanguage('am')}
             aria-pressed={language === 'am'}
             className={`text-[9px] font-ethiopic transition-colors duration-200 leading-none ${
-              language === 'am' ? 'text-[#D4A845]' : 'text-white/35 hover:text-white/70'
+              language === 'am' ? 'text-accent' : 'text-ink/35 hover:text-ink/70'
             }`}
           >
             አማ
@@ -170,6 +178,26 @@ function PeopleIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
       <path d="M3 21v-2a5 5 0 015-5h2a5 5 0 015 5v2" />
       <circle cx="17" cy="7" r="2.5" />
       <path d="M21 21v-1.5a4 4 0 00-3-3.87" />
+    </svg>
+  );
+}
+
+function ClockIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
+  return (
+    <svg className={className} aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3.5 2" />
+    </svg>
+  );
+}
+
+function HotelIcon({ className, 'aria-hidden': ariaHidden }: IconProps) {
+  return (
+    <svg className={className} aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 21V6a1 1 0 011-1h9a1 1 0 011 1v15" />
+      <path d="M14 10h6a1 1 0 011 1v10" />
+      <path d="M7 8h.01M7 12h.01M7 16h.01" />
+      <path d="M3 21h18" />
     </svg>
   );
 }
