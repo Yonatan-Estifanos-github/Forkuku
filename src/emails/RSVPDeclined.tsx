@@ -17,17 +17,20 @@ interface RSVPDeclinedProps {
 }
 
 const BASE_URL = 'https://theestifanos.com';
-const PWD = 'Matthew19:6';
 const PRAY_IMAGE_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG';
 
 export const RSVPDeclined = ({
   partyId,
   inviteToken,
 }: RSVPDeclinedProps) => {
-  const magicLink = inviteToken
-    ? `${BASE_URL}/?token=${inviteToken}`
-    : partyId
-      ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
+  // Both `?token=<uuid>` and `?partyId=<uuid>` put a raw hex UUID directly
+  // after "=", which the outgoing quoted-printable MIME encoding silently
+  // corrupts (e.g. "partyId=78..." arrives as "partyIdx..."). Route through
+  // the /i/<partyId> path segment instead — see middleware.ts.
+  const magicLink = partyId
+    ? `${BASE_URL}/i/${partyId}`
+    : inviteToken
+      ? `${BASE_URL}/?token=${inviteToken}`
       : BASE_URL;
 
   return (

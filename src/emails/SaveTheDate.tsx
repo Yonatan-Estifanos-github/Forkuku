@@ -24,8 +24,11 @@ export const SaveTheDate = ({
   guestName = 'Dear Friend',
   partyId
 }: SaveTheDateProps) => {
-  const magicLink = partyId 
-    ? `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`
+  // partyId is routed through a path segment (not `?partyId=<uuid>`) since a
+  // raw hex UUID directly after "=" gets silently corrupted by the outgoing
+  // quoted-printable MIME encoding — see middleware.ts's /i/<partyId> handler.
+  const magicLink = partyId
+    ? `${BASE_URL}/i/${partyId}`
     : `${BASE_URL}/?pwd=${PWD}`;
 
   return (

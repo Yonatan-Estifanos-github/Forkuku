@@ -45,6 +45,24 @@ export function middleware(request: NextRequest) {
     return res;
   }
 
+  // ── Path-based magic link: /i/<partyId> ──────────────────────────────────
+  // Email links must never put a raw partyId (an all-hex UUID) directly after
+  // an "=" — Resend's outgoing quoted-printable MIME encoding silently
+  // corrupts any "=XY" where XY are hex digits (e.g. "partyId=78..." is
+  // decoded by the receiving mail client as "partyIdx..."). Routing the UUID
+  // through a path segment means it only ever sits next to "=" in this
+  // server-issued redirect, never inside the emailed HTML itself.
+  const pathPartyMatch = pathname.match(/^\/i\/([0-9a-fA-F-]{36})$/);
+  if (pathPartyMatch && pathname !== '/login') {
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('pwd', 'Matthew19:6');
+    loginUrl.searchParams.set('partyId', pathPartyMatch[1]);
+    if (viewParam) loginUrl.searchParams.set('view', viewParam);
+    const res = NextResponse.redirect(loginUrl);
+    res.cookies.set('view_pref', viewParam === 'final-invite' ? 'final-invite' : 'save-the-date', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
+    return res;
+  }
+
   // ── Legacy magic link: ?pwd= or ?partyId= ────────────────────────────────
   const magicPwd = searchParams.get('pwd');
   const partyId  = searchParams.get('partyId');
