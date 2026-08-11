@@ -31,9 +31,11 @@ export const SaveTheDate = ({
   // partyId is routed through a path segment (not `?partyId=<uuid>`) since a
   // raw hex UUID directly after "=" gets silently corrupted by the outgoing
   // quoted-printable MIME encoding — see middleware.ts's /i/<partyId> handler.
-  const magicLink = partyId
+  // The 48hr variant jumps straight to #rsvp — the original Save the Date
+  // link is unchanged since it stays byte-identical to its send history.
+  const magicLink = (partyId
     ? `${BASE_URL}/i/${partyId}`
-    : `${BASE_URL}/?pwd=${PWD}`;
+    : `${BASE_URL}/?pwd=${PWD}`) + (urgent ? '#rsvp' : '');
 
   return (
     <Html lang="en">
