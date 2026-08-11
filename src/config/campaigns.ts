@@ -37,7 +37,7 @@ export const CAMPAIGNS: Campaign[] = [
     smsMediaUrl: PHOTO_INVITE,
     emailTemplate: 'FormalInvite',
     priority: 'both',
-    disabled: true,
+    disabled: false,
   },
   {
     id: 'rsvp-reminder',
