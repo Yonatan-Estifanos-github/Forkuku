@@ -42,18 +42,19 @@ export const FormalInvite = ({
               A true CSS background-image with overlaid text is unreliable
               across email clients (Outlook in particular has no support
               without VML fallback markup), so this uses the well-supported
-              equivalent: an edge-to-edge photo banner at the very top. */}
+              equivalent: an edge-to-edge photo banner at the very top.
+              The fade into the dark panel below is baked into the image
+              file itself (not a CSS gradient) — confirmed via a real sent
+              email that Gmail's web rendering strips both the `background`
+              shorthand and negative margins from inline styles, so a CSS
+              overlay silently did nothing. A pixel-level fade renders
+              identically in every client since it's just image data. */}
           <Img
-            src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/eng-main-image.jpg"
+            src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/eng-main-image-email-hero.jpg"
             alt="Yonatan and Saron"
             width="600"
             style={heroPhoto}
           />
-
-          {/* ── Fade — dissolves the photo into the dark panel below
-              instead of an abrupt hard cut. Overlaps the bottom of the
-              photo via a negative top margin. */}
-          <div style={heroFade} />
 
           <Section style={contentWrapper}>
             {/* ── Pre-header ── */}
@@ -156,12 +157,6 @@ const heroPhoto: React.CSSProperties = {
   height: 'auto',
   display: 'block',
   margin: '0 auto',
-};
-
-const heroFade: React.CSSProperties = {
-  height: '140px',
-  marginTop: '-140px',
-  background: 'linear-gradient(to bottom, rgba(10,10,10,0) 0%, rgba(10,10,10,0.85) 65%, #0A0A0A 100%)',
 };
 
 const contentWrapper: React.CSSProperties = {
