@@ -843,7 +843,18 @@ export default function Hero() {
                 style={{ pointerEvents: 'none' }}
               >
                 <Suspense fallback={null}>
-                  <Scene currentSlide={currentSlide} />
+                  {/* Keyed on theme so a toggle fully remounts the scene
+                      (lights, post-processing, background) instead of
+                      re-configuring it in place. Confirmed via direct pixel
+                      sampling that an in-place theme switch — even with
+                      both texture sets preloaded, ruling out Suspense — can
+                      leave the canvas rendering nothing at all afterward
+                      (not even the background color), with a valid,
+                      non-lost WebGL context. A full remount sidesteps
+                      whatever internal state (most likely the EffectComposer
+                      pipeline, whose Bloom/Vignette props change with theme)
+                      doesn't handle a live prop change cleanly. */}
+                  <Scene key={activeView} currentSlide={currentSlide} />
                 </Suspense>
               </Canvas>
             </motion.div>
