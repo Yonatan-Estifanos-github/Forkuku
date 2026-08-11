@@ -36,7 +36,7 @@ export const FormalInvite = ({
       <Head />
       <Preview>You are invited to the wedding of Yonatan & Saron — September 4, 2026</Preview>
 
-      <Body style={mainBody} bgColor="#0A0A0A">
+      <Body style={mainBody}>
         <Container style={outerContainer} bgColor="#0A0A0A">
           {/* ── Hero — main pre-wedding photo, full-bleed ──
               A true CSS background-image with overlaid text is unreliable
