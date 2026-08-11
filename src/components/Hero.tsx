@@ -31,6 +31,19 @@ const SLIDESHOW_IMAGES_LIGHT = [
   `https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/${encodeURIComponent('looking at each other.jpg')}`,
 ];
 
+// The cover-crop below is always centered on the image, which is fine for the
+// portrait slides (they only ever crop top/bottom, and the couple is
+// centered vertically in all of them). eng-main-image.jpg is the one
+// landscape-oriented slide, so on a narrow phone viewport the cover-crop has
+// to cut width instead — and since the couple sits toward the left third of
+// that specific frame (the horses fill the center/right), a centered crop
+// on a portrait phone cuts them out entirely, leaving only horses visible.
+// Bias just this image's crop window toward the left (0 = left edge,
+// 0.5 = centered/default) so the couple stays in frame.
+const FOCAL_X_OVERRIDES: Record<string, number> = {
+  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/eng-main-image.jpg': 0.2,
+};
+
 const SLIDE_DURATION = 6000;
 const MAIN_SLIDE_DURATION = 9000;
 
@@ -210,7 +223,7 @@ function ParallaxBackground({ currentSlide, images }: { currentSlide: number; im
     const vh = viewportAtDepth.height;
     const screenAspect = vw / vh;
 
-    return textures.map((texture) => {
+    return textures.map((texture, i) => {
       const img = texture.image as HTMLImageElement;
       const imageWidth = img?.width || 1;
       const imageHeight = img?.height || 1;
@@ -229,12 +242,20 @@ function ParallaxBackground({ currentSlide, images }: { currentSlide: number; im
       }
 
       // Apply safety buffer to prevent edge gaps
-      return {
-        width: width * COVER_BUFFER,
-        height: height * COVER_BUFFER,
-      };
+      width *= COVER_BUFFER;
+      height *= COVER_BUFFER;
+
+      // Bias the crop window horizontally per FOCAL_X_OVERRIDES (see comment
+      // at its definition) instead of always cropping from center. Only has
+      // an effect when this slide is actually being cropped in width (i.e.
+      // width > vw) — a plain center-crop (offset 0) otherwise.
+      const focalX = FOCAL_X_OVERRIDES[images[i]] ?? 0.5;
+      const maxOffsetX = Math.max(0, (width - vw) / 2);
+      const offsetX = THREE.MathUtils.clamp(width * (0.5 - focalX), -maxOffsetX, maxOffsetX);
+
+      return { width, height, offsetX };
     });
-  }, [textures, viewportAtDepth.width, viewportAtDepth.height]);
+  }, [textures, images, viewportAtDepth.width, viewportAtDepth.height]);
 
   return (
     <group ref={groupRef} position={[0, 0, PLANE_Z]}>
@@ -244,7 +265,7 @@ function ParallaxBackground({ currentSlide, images }: { currentSlide: number; im
         const zOffset = -index * 0.01;
 
         return (
-          <mesh key={index} position={[0, 0, zOffset]}>
+          <mesh key={index} position={[dims.offsetX, 0, zOffset]}>
             <planeGeometry args={[dims.width, dims.height]} />
             <meshBasicMaterial
               ref={(el) => { if (el) materialRefs.current[index] = el; }}
