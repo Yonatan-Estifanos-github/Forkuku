@@ -60,6 +60,14 @@ export default function RegistrySection() {
     zelle:   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/zelleqr.jpeg',
   };
 
+  // i18n key prefixes don't match `type` 1:1 — cashAppLabel/cashAppHandle are
+  // camelCased in en.json/am.json, unlike venmo/zelle
+  const CASH_I18N_KEY: Record<'cashapp' | 'venmo' | 'zelle', string> = {
+    cashapp: 'cashApp',
+    venmo: 'venmo',
+    zelle: 'zelle',
+  };
+
   // Cash gift state
   const [showCashModal, setShowCashModal] = useState(false);
   const [cashNoteStep, setCashNoteStep] = useState<CashNoteStep>('form');
@@ -319,10 +327,10 @@ export default function RegistrySection() {
                       <div style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
                         className="border border-hairline rounded-xl bg-ink/5 flex flex-col items-center justify-center gap-2 p-2 sm:gap-3 sm:p-5">
                         <p className={`text-[9px] sm:text-[10px] tracking-widest uppercase text-ink/40 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
-                          {t(`registry.${type}Label`)}
+                          {t(`registry.${CASH_I18N_KEY[type]}Label`)}
                         </p>
                         <p className={`text-sm sm:text-xl text-wedding-gold text-center break-all ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
-                          {t(`registry.${type}Handle`)}
+                          {t(`registry.${CASH_I18N_KEY[type]}Handle`)}
                         </p>
                         {type !== 'zelle' && (
                           <p className="text-[10px] sm:text-xs text-ink/30 font-sans">{t('registry.cashPayPhone')}</p>
@@ -581,7 +589,7 @@ export default function RegistrySection() {
                               : 'border-hairline text-ink/50 hover:border-ink/40'
                           }`}
                         >
-                          {t(`registry.${type}Label`)}
+                          {t(`registry.${CASH_I18N_KEY[type]}Label`)}
                         </button>
                       ))}
                     </div>
