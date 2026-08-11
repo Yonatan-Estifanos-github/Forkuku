@@ -46,6 +46,18 @@ const FOCAL_X_OVERRIDES: Record<string, number> = {
   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/eng-main-image.jpg': 0,
 };
 
+// Preload both slideshow sets eagerly (not just the active theme's) so a
+// manual theme toggle never triggers a fresh Suspense-loading pass mid-
+// session. Confirmed via direct testing: switching activeView swaps
+// `images`, which makes useTexture(images) suspend to load the other set's
+// textures for the first time — and that suspend-then-resolve cycle can
+// leave the canvas rendering nothing at all afterward (not even the scene's
+// background color), independent of the WebGL context or canvas size being
+// fine, and unrecoverable by any further interaction. Preloading both sets
+// up front means useTexture() always resolves from cache on toggle instead
+// of suspending, sidestepping the whole failure mode.
+[...SLIDESHOW_IMAGES_DARK, ...SLIDESHOW_IMAGES_LIGHT].forEach((url) => useTexture.preload(url));
+
 const SLIDE_DURATION = 6000;
 const MAIN_SLIDE_DURATION = 9000;
 
@@ -739,11 +751,19 @@ export default function Hero() {
   // including the slideshow photo — still renders, just into that tiny
   // buffer, so it's invisible at normal viewing size. Nudge a resize shortly
   // after the Canvas mounts so guests don't land on an apparently-blank Hero.
+  //
+  // The same stall reproduces on a manual theme toggle, not just first
+  // mount: switching activeView swaps `images`, so ParallaxBackground
+  // suspends to load a whole new texture set (e.g. arriving via a dark-mode
+  // Save the Date link, then switching to light) — the newly-resolved
+  // textures can hit the same "no frame gets painted" stall, leaving the
+  // Hero blank after the crossfade back in. Re-run the same nudge on every
+  // activeView change, not just the initial mount.
   useEffect(() => {
     if (!preloaderComplete) return;
     const timer = setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
     return () => clearTimeout(timer);
-  }, [preloaderComplete]);
+  }, [preloaderComplete, activeView]);
 
   // Mouse tracking for reactive gold shimmer - Direct DOM update to avoid re-renders
   useEffect(() => {
@@ -815,9 +835,26 @@ export default function Hero() {
                   stencil: false,
                 }}
                 dpr={[1, 2]}
+                // Purely decorative background — no clickable 3D objects in
+                // the scene. Blocking pointer events at the DOM level means
+                // taps/clicks never reach the canvas or R3F's own internal
+                // pointer/raycasting system at all, so they can't affect the
+                // slideshow or scene state in any way.
+                style={{ pointerEvents: 'none' }}
               >
                 <Suspense fallback={null}>
-                  <Scene currentSlide={currentSlide} />
+                  {/* Keyed on theme so a toggle fully remounts the scene
+                      (lights, post-processing, background) instead of
+                      re-configuring it in place. Confirmed via direct pixel
+                      sampling that an in-place theme switch — even with
+                      both texture sets preloaded, ruling out Suspense — can
+                      leave the canvas rendering nothing at all afterward
+                      (not even the background color), with a valid,
+                      non-lost WebGL context. A full remount sidesteps
+                      whatever internal state (most likely the EffectComposer
+                      pipeline, whose Bloom/Vignette props change with theme)
+                      doesn't handle a live prop change cleanly. */}
+                  <Scene key={activeView} currentSlide={currentSlide} />
                 </Suspense>
               </Canvas>
             </motion.div>
