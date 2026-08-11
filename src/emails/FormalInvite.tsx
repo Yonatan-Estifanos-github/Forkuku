@@ -1,6 +1,7 @@
 import {
   Body,
   Button,
+  Container,
   Head,
   Hr,
   Html,
@@ -36,20 +37,26 @@ export const FormalInvite = ({
       <Preview>You are invited to the wedding of Yonatan & Saron — September 4, 2026</Preview>
 
       <Body style={mainBody}>
-        {/* ── Hero — main pre-wedding photo, full-bleed ──
-            A true CSS background-image with overlaid text is unreliable
-            across email clients (Outlook in particular has no support
-            without VML fallback markup), so this uses the well-supported
-            equivalent: an edge-to-edge photo banner at the very top. */}
-        <Img
-          src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/eng-main-image.jpg"
-          alt="Yonatan and Saron"
-          width="600"
-          style={heroPhoto}
-        />
+        <Container style={outerContainer}>
+          {/* ── Hero — main pre-wedding photo, full-bleed ──
+              A true CSS background-image with overlaid text is unreliable
+              across email clients (Outlook in particular has no support
+              without VML fallback markup), so this uses the well-supported
+              equivalent: an edge-to-edge photo banner at the very top. */}
+          <Img
+            src="https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/eng-main-image.jpg"
+            alt="Yonatan and Saron"
+            width="600"
+            style={heroPhoto}
+          />
 
-        <Section style={contentWrapper}>
-          {/* ── Pre-header ── */}
+          {/* ── Fade — dissolves the photo into the dark panel below
+              instead of an abrupt hard cut. Overlaps the bottom of the
+              photo via a negative top margin. */}
+          <div style={heroFade} />
+
+          <Section style={contentWrapper}>
+            {/* ── Pre-header ── */}
           <Section style={centeredSection}>
             <Text style={preHeader}>FORMAL INVITATION</Text>
           </Section>
@@ -119,6 +126,7 @@ export const FormalInvite = ({
             </Text>
           </Section>
         </Section>
+        </Container>
       </Body>
     </Html>
   );
@@ -130,10 +138,15 @@ export default FormalInvite;
 
 const mainBody: React.CSSProperties = {
   backgroundColor: '#0A0A0A',
-  margin: '0 auto',
+  margin: '0',
   padding: '0',
   textAlign: 'center',
   fontFamily: 'Helvetica, Arial, sans-serif',
+};
+
+const outerContainer: React.CSSProperties = {
+  margin: '0 auto',
+  padding: '0',
   maxWidth: '600px',
 };
 
@@ -145,8 +158,14 @@ const heroPhoto: React.CSSProperties = {
   margin: '0 auto',
 };
 
+const heroFade: React.CSSProperties = {
+  height: '140px',
+  marginTop: '-140px',
+  background: 'linear-gradient(to bottom, rgba(10,10,10,0) 0%, rgba(10,10,10,0.85) 65%, #0A0A0A 100%)',
+};
+
 const contentWrapper: React.CSSProperties = {
-  padding: '48px 20px 60px',
+  padding: '32px 20px 60px',
 };
 
 const centeredSection: React.CSSProperties = {
