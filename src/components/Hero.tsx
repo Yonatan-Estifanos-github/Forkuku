@@ -707,6 +707,21 @@ export default function Hero() {
     return () => observer.disconnect();
   }, []);
 
+  // R3F's Canvas measures its container via ResizeObserver on mount to size
+  // its WebGL drawing buffer — but right as the Preloader unmounts and the
+  // Canvas mounts in its place, that first measurement can land before
+  // layout has fully settled, leaving the buffer stuck at the browser's
+  // 300x150 default (confirmed via canvas.width/height) until some other
+  // event (a scroll, a window resize) forces a re-measure. The whole scene —
+  // including the slideshow photo — still renders, just into that tiny
+  // buffer, so it's invisible at normal viewing size. Nudge a resize shortly
+  // after the Canvas mounts so guests don't land on an apparently-blank Hero.
+  useEffect(() => {
+    if (!preloaderComplete) return;
+    const timer = setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+    return () => clearTimeout(timer);
+  }, [preloaderComplete]);
+
   // Mouse tracking for reactive gold shimmer - Direct DOM update to avoid re-renders
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
