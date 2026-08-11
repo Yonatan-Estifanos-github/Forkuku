@@ -85,6 +85,11 @@ export const SaveTheDate = ({
           Website Password: Matthew19:6
         </Text>
 
+        {/* ── Urgency ── */}
+        <Text style={urgency}>
+          Can you confirm in the next 48 hours?
+        </Text>
+
         {/* ── CTA ── */}
         <Section style={ctaSection}>
           <Link href={magicLink} style={ctaButton}>
@@ -203,6 +208,15 @@ const passwordText: React.CSSProperties = {
   fontSize: '13px',
   fontStyle: 'italic',
   margin: '0 0 40px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
+};
+
+const urgency: React.CSSProperties = {
+  color: '#423E37',
+  fontSize: '13px',
+  fontWeight: 'bold',
+  letterSpacing: '0.05em',
+  margin: '0 0 16px',
   fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
