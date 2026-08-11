@@ -37,7 +37,7 @@ export const FormalInvite = ({
       <Preview>You are invited to the wedding of Yonatan & Saron — September 4, 2026</Preview>
 
       <Body style={mainBody}>
-        <Container style={outerContainer} bgColor="#0A0A0A">
+        <Container style={outerContainer} bgcolor="#0A0A0A">
           {/* ── Hero — main pre-wedding photo, full-bleed ──
               A true CSS background-image with overlaid text is unreliable
               across email clients (Outlook in particular has no support
@@ -56,7 +56,7 @@ export const FormalInvite = ({
             style={heroPhoto}
           />
 
-          <Section style={contentWrapper} bgColor="#0A0A0A">
+          <Section style={contentWrapper} bgcolor="#0A0A0A">
             {/* ── Pre-header ── */}
           <Section style={centeredSection}>
             <Text style={preHeader}>FORMAL INVITATION</Text>
