@@ -131,7 +131,11 @@ function SiteLoginPageInner() {
         const qs = new URLSearchParams();
         if (partyId) qs.set('partyId', partyId);
         if (view === 'final-invite') qs.set('view', view);
-        window.location.href = qs.toString() ? `/?${qs.toString()}` : '/';
+        // Preserve any section anchor (e.g. #registry) through the redirect —
+        // it's client-side only, so it must be re-attached explicitly here
+        // rather than relying on the server response to carry it.
+        const hash = window.location.hash || '';
+        window.location.href = (qs.toString() ? `/?${qs.toString()}` : '/') + hash;
       } else {
         setError(t('login.incorrectPassword'));
         setLoading(false);
