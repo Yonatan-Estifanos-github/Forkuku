@@ -30,6 +30,11 @@ export const FormalInvite = ({
   const magicLink = partyId
     ? `${BASE_URL}/i/${partyId}?view=final-invite`
     : `${BASE_URL}/?pwd=${PWD}&view=final-invite`;
+  // Guests on this send already RSVPed via Save the Date, so the button
+  // no longer says RSVP — it goes to the same site (story, timeline,
+  // hotels, registry), just with a #registry anchor on the second link
+  // to jump straight to the Cash App/Venmo cards.
+  const registryLink = `${magicLink}#registry`;
 
   return (
     <Html lang="en">
@@ -121,8 +126,13 @@ export const FormalInvite = ({
           {/* ── CTA ── */}
           <Section style={ctaSection}>
             <Button style={ctaButton} href={magicLink}>
-              RSVP &amp; Explore Our Story
+              See Our Story &amp; Details
             </Button>
+          </Section>
+          <Section style={secondaryCtaSection}>
+            <a href={registryLink} style={secondaryCtaLink}>
+              View Registry (Cash App &amp; Venmo)
+            </a>
           </Section>
 
           {/* ── Monogram ── */}
@@ -277,6 +287,18 @@ const ctaButton: React.CSSProperties = {
   textDecoration: 'none',
   display: 'inline-block',
   borderRadius: '100px',
+};
+
+const secondaryCtaSection: React.CSSProperties = {
+  margin: '0 0 20px',
+};
+
+const secondaryCtaLink: React.CSSProperties = {
+  color: '#A1A1AA',
+  fontSize: '10px',
+  letterSpacing: '0.1em',
+  textTransform: 'uppercase',
+  textDecoration: 'underline',
 };
 
 const monogram: React.CSSProperties = {
