@@ -26,9 +26,12 @@ const COMPLIANCE = 'You are subscribed to receive wedding updates. Message frequ
 
 function buildSmsBody(campaignId: string, guestName: string, partyId: string, inviteToken?: string): string {
   const viewSuffix = campaignId === 'formal-invitation' ? '&view=final-invite' : '';
-  const magicLink = inviteToken
+  // The 48hr variant jumps straight to #rsvp — the original Save the Date
+  // link is unchanged since it stays byte-identical to its send history.
+  const hashSuffix = campaignId === 'save-the-date-48hr' ? '#rsvp' : '';
+  const magicLink = (inviteToken
     ? `${BASE_URL}/?token=${inviteToken}${viewSuffix}`
-    : `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}${viewSuffix}`;
+    : `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}${viewSuffix}`) + hashSuffix;
 
   switch (campaignId) {
     case 'save-the-date':
