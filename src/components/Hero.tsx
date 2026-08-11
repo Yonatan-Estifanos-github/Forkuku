@@ -46,6 +46,18 @@ const FOCAL_X_OVERRIDES: Record<string, number> = {
   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/eng-main-image.jpg': 0,
 };
 
+// Preload both slideshow sets eagerly (not just the active theme's) so a
+// manual theme toggle never triggers a fresh Suspense-loading pass mid-
+// session. Confirmed via direct testing: switching activeView swaps
+// `images`, which makes useTexture(images) suspend to load the other set's
+// textures for the first time — and that suspend-then-resolve cycle can
+// leave the canvas rendering nothing at all afterward (not even the scene's
+// background color), independent of the WebGL context or canvas size being
+// fine, and unrecoverable by any further interaction. Preloading both sets
+// up front means useTexture() always resolves from cache on toggle instead
+// of suspending, sidestepping the whole failure mode.
+[...SLIDESHOW_IMAGES_DARK, ...SLIDESHOW_IMAGES_LIGHT].forEach((url) => useTexture.preload(url));
+
 const SLIDE_DURATION = 6000;
 const MAIN_SLIDE_DURATION = 9000;
 
