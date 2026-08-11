@@ -739,11 +739,19 @@ export default function Hero() {
   // including the slideshow photo — still renders, just into that tiny
   // buffer, so it's invisible at normal viewing size. Nudge a resize shortly
   // after the Canvas mounts so guests don't land on an apparently-blank Hero.
+  //
+  // The same stall reproduces on a manual theme toggle, not just first
+  // mount: switching activeView swaps `images`, so ParallaxBackground
+  // suspends to load a whole new texture set (e.g. arriving via a dark-mode
+  // Save the Date link, then switching to light) — the newly-resolved
+  // textures can hit the same "no frame gets painted" stall, leaving the
+  // Hero blank after the crossfade back in. Re-run the same nudge on every
+  // activeView change, not just the initial mount.
   useEffect(() => {
     if (!preloaderComplete) return;
     const timer = setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
     return () => clearTimeout(timer);
-  }, [preloaderComplete]);
+  }, [preloaderComplete, activeView]);
 
   // Mouse tracking for reactive gold shimmer - Direct DOM update to avoid re-renders
   useEffect(() => {
