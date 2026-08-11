@@ -38,7 +38,10 @@ export const RSVPConfirmation = ({
 
   return (
     <Html lang="en">
-      <Head />
+      <Head>
+        <meta name="color-scheme" content="dark" />
+        <meta name="supported-color-schemes" content="dark" />
+      </Head>
       <Preview>RSVP Confirmed — Yonatan &amp; Saron</Preview>
 
       <Body style={mainBody}>

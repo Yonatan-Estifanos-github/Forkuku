@@ -27,7 +27,10 @@ export const CashGiftAlert = ({
   message,
 }: CashGiftAlertProps) => (
   <Html lang="en">
-    <Head />
+    <Head>
+      <meta name="color-scheme" content="dark" />
+      <meta name="supported-color-schemes" content="dark" />
+    </Head>
     <Preview>💸 {senderName} sent a cash gift via {giftType === 'cashapp' ? 'Cash App' : 'Venmo'}!</Preview>
     <Body style={body}>
       <Text style={label}>CASH GIFT ALERT</Text>

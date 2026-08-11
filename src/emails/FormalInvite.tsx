@@ -33,7 +33,16 @@ export const FormalInvite = ({
 
   return (
     <Html lang="en">
-      <Head />
+      <Head>
+        {/* Without these, mobile Gmail's dark-mode adaptation layer treats
+            this as an ordinary light-authored email and auto-inverts it —
+            confirmed on a real device: background flipped to white AND the
+            authored white/gold text flipped to dark, i.e. Gmail re-derived
+            a whole alternate palette rather than just failing to apply one
+            style. Declaring the email as dark-only tells it not to. */}
+        <meta name="color-scheme" content="dark" />
+        <meta name="supported-color-schemes" content="dark" />
+      </Head>
       <Preview>You are invited to the wedding of Yonatan & Saron — September 4, 2026</Preview>
 
       <Body style={mainBody}>
@@ -79,7 +88,7 @@ export const FormalInvite = ({
           {/* ── Date & Location ── */}
           <Section style={centeredSection}>
             <Text style={details}>
-              SEPTEMBER 4, 2026&nbsp;&nbsp;·&nbsp;&nbsp;WRIGHTSVILLE, PA
+              SEPTEMBER 4, 2026&nbsp;·&nbsp;WRIGHTSVILLE, PA
             </Text>
           </Section>
 
@@ -103,8 +112,9 @@ export const FormalInvite = ({
 
           {/* ── Venue & Time ── */}
           <Section style={venueSection}>
-            <Text style={venueName}>Lauxmont Weddings</Text>
-            <Text style={venueDetail}>1215 Long Level Rd, Wrightsville, PA 17368</Text>
+            <Text style={venueName}>Japanese Garden</Text>
+            <Text style={ceremonyLocation}>Ceremony at Lauxmont Gardens</Text>
+            <Text style={venueDetail}>1155 Long Level Road, Wrightsville, PA 17368</Text>
             <Text style={venueDetail}>Guests welcomed at 2:00 PM &nbsp;·&nbsp; Ceremony at 2:30 PM</Text>
           </Section>
 
@@ -199,9 +209,10 @@ const ampersand: React.CSSProperties = {
 const details: React.CSSProperties = {
   color: '#A1A1AA',
   fontSize: '11px',
-  letterSpacing: '3px',
+  letterSpacing: '1px',
   textTransform: 'uppercase',
   margin: '0 0 10px',
+  whiteSpace: 'nowrap',
 };
 
 const bodySection: React.CSSProperties = {
@@ -235,6 +246,14 @@ const venueName: React.CSSProperties = {
   fontStyle: 'italic',
   fontSize: '20px',
   margin: '0 0 8px',
+};
+
+const ceremonyLocation: React.CSSProperties = {
+  color: '#A1A1AA',
+  fontSize: '10px',
+  letterSpacing: '2px',
+  textTransform: 'uppercase',
+  margin: '0 0 12px',
 };
 
 const venueDetail: React.CSSProperties = {

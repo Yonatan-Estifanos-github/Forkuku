@@ -32,7 +32,10 @@ export const PhotoSaveTheDate = ({
 
   return (
     <Html lang="en">
-      <Head />
+      <Head>
+        <meta name="color-scheme" content="dark" />
+        <meta name="supported-color-schemes" content="dark" />
+      </Head>
       <Preview>Save the Date — Yonatan &amp; Saron · September 4, 2026</Preview>
       <Body style={mainBody}>
         {/* ── Pre-header ── */}

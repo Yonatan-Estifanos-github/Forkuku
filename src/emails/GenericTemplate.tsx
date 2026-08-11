@@ -38,7 +38,10 @@ export const GenericTemplate = ({
 
   return (
     <Html lang="en">
-      <Head />
+      <Head>
+        <meta name="color-scheme" content="dark" />
+        <meta name="supported-color-schemes" content="dark" />
+      </Head>
       <Preview>{heading}</Preview>
       <Body style={mainBody}>
         {/* ── Pre-header ── */}

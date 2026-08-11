@@ -112,6 +112,9 @@ export default function GoogleEarthVideo() {
             <p className={`text-2xl md:text-3xl text-[#D4A845] drop-shadow-md ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
               {t('venue.venueName')}
             </p>
+            <p className={`text-white/80 text-xs md:text-sm tracking-widest uppercase drop-shadow-md ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}>
+              {t('venue.ceremonyLocation')}
+            </p>
             <p className={`text-white/90 text-sm md:text-base tracking-wide drop-shadow-md ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
               {t('venue.officialAddress')}
             </p>
