@@ -39,9 +39,11 @@ const SLIDESHOW_IMAGES_LIGHT = [
 // that specific frame (the horses fill the center/right), a centered crop
 // on a portrait phone cuts them out entirely, leaving only horses visible.
 // Bias just this image's crop window toward the left (0 = left edge,
-// 0.5 = centered/default) so the couple stays in frame.
+// 0.5 = centered/default) so the couple stays in frame. 0 is clamped by
+// maxOffsetX to the furthest-left position that still fully covers the
+// viewport (no exposed edge), which is what "far left" means here.
 const FOCAL_X_OVERRIDES: Record<string, number> = {
-  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/eng-main-image.jpg': 0.2,
+  'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/eng-main-image.jpg': 0,
 };
 
 const SLIDE_DURATION = 6000;
@@ -414,7 +416,7 @@ function Scene({ currentSlide }: { currentSlide: number }) {
         <ParallaxBackground currentSlide={currentSlide} images={images} />
       </Suspense>
 
-      <Fireflies count={350} color={theme.fireflyColor} />
+      {!isLight && <Fireflies count={350} color={theme.fireflyColor} />}
 
       <EffectComposer>
         <Bloom
