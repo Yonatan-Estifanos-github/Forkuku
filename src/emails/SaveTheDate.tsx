@@ -14,15 +14,19 @@ import * as React from 'react';
 interface SaveTheDateProps {
   guestName?: string;
   partyId?: string;
+  // Set only by the 48hr Save the Date campaign — the original Save the Date
+  // stays unchanged so its send history/copy isn't retroactively altered.
+  urgent?: boolean;
 }
 
 const BASE_URL = 'https://theestifanos.com';
 const PWD = 'Matthew19:6';
 const PHOTO_URL = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_3.jpeg';
 
-export const SaveTheDate = ({ 
+export const SaveTheDate = ({
   guestName = 'Dear Friend',
-  partyId
+  partyId,
+  urgent = false,
 }: SaveTheDateProps) => {
   // partyId is routed through a path segment (not `?partyId=<uuid>`) since a
   // raw hex UUID directly after "=" gets silently corrupted by the outgoing
@@ -84,6 +88,12 @@ export const SaveTheDate = ({
         <Text style={passwordText}>
           Website Password: Matthew19:6
         </Text>
+
+        {urgent && (
+          <Text style={urgency}>
+            Can you confirm in the next 48 hours?
+          </Text>
+        )}
 
         {/* ── CTA ── */}
         <Section style={ctaSection}>
@@ -203,6 +213,15 @@ const passwordText: React.CSSProperties = {
   fontSize: '13px',
   fontStyle: 'italic',
   margin: '0 0 40px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
+};
+
+const urgency: React.CSSProperties = {
+  color: '#423E37',
+  fontSize: '13px',
+  fontWeight: 'bold',
+  letterSpacing: '0.05em',
+  margin: '0 0 16px',
   fontFamily: "Georgia, 'Times New Roman', serif",
 };
 

@@ -1,5 +1,6 @@
 export type CampaignId =
   | 'save-the-date'
+  | 'save-the-date-48hr'
   | 'formal-invitation'
   | 'rsvp-reminder'
   | 'logistics-update'
@@ -31,6 +32,14 @@ export const CAMPAIGNS: Campaign[] = [
     smsBody: `Save the Date! Yonatan & Saron are getting married on September 4, 2026 in Wrightsville, PA. RSVP at ${SITE_LINK}\n\n${COMPLIANCE_FOOTER}`,
     smsMediaUrl: PHOTO_STD,
     emailTemplate: 'SaveTheDate',
+    priority: 'both',
+  },
+  {
+    id: 'save-the-date-48hr',
+    label: '48hr Save the Date',
+    smsBody: `Save the Date! Yonatan & Saron are getting married on September 4, 2026 in Wrightsville, PA. Can you confirm in the next 48 hours? RSVP at ${SITE_LINK}\n\n${COMPLIANCE_FOOTER}`,
+    smsMediaUrl: PHOTO_STD,
+    emailTemplate: 'SaveTheDate48hr',
     priority: 'both',
   },
   {
