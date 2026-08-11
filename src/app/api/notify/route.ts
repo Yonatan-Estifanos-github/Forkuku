@@ -12,6 +12,7 @@ import { GenericTemplate } from '@/emails/GenericTemplate';
 
 const SUBJECTS: Record<string, string> = {
   'save-the-date':       'Save the Date — Yonatan & Saron · September 4, 2026',
+  'save-the-date-48hr':  'Can You Confirm? — Yonatan & Saron · September 4, 2026',
   'formal-invitation':   'You are invited to the wedding of Yonatan & Saron',
   'rsvp-reminder':       'Reminder: RSVP by June 15th — Yonatan & Saron',
   'logistics-update':    'Wedding Week Details — Yonatan & Saron',
@@ -31,6 +32,24 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string, in
 
   switch (campaignId) {
     case 'save-the-date':
+      return [
+        'SAVE THE DATE',
+        '',
+        'Yonatan & Saron',
+        'SEPTEMBER 4, 2026',
+        'WRIGHTSVILLE, PENNSYLVANIA',
+        '',
+        `${guestName},`,
+        '',
+        "We are overjoyed to invite you to celebrate the beginning of our forever. God has been so faithful in bringing us together, and we couldn't imagine stepping into this marriage covenant without our favorite people in the room. To receive your formal invitation with the exact location and weekend details, please register your attendance on our website by June 15th.",
+        '',
+        `RSVP: ${magicLink}`,
+        '',
+        '---',
+        COMPLIANCE,
+      ].join('\n');
+
+    case 'save-the-date-48hr':
       return [
         'SAVE THE DATE',
         '',
@@ -306,6 +325,8 @@ export async function POST(req: Request) {
           html = await render(React.createElement(FormalInvite, { guestName, partyId }));
         } else if (campaign.emailTemplate === 'SaveTheDate') {
           html = await render(React.createElement(SaveTheDate, { guestName, partyId }));
+        } else if (campaign.emailTemplate === 'SaveTheDate48hr') {
+          html = await render(React.createElement(SaveTheDate, { guestName, partyId, urgent: true }));
         } else if (campaign.emailTemplate === 'PhotoSaveTheDate') {
           html = await render(React.createElement(PhotoSaveTheDate, { guestName, partyId }));
         } else {
