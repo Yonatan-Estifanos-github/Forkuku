@@ -823,6 +823,12 @@ export default function Hero() {
                   stencil: false,
                 }}
                 dpr={[1, 2]}
+                // Purely decorative background — no clickable 3D objects in
+                // the scene. Blocking pointer events at the DOM level means
+                // taps/clicks never reach the canvas or R3F's own internal
+                // pointer/raycasting system at all, so they can't affect the
+                // slideshow or scene state in any way.
+                style={{ pointerEvents: 'none' }}
               >
                 <Suspense fallback={null}>
                   <Scene currentSlide={currentSlide} />
