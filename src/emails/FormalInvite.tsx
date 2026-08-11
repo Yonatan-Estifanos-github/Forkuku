@@ -131,7 +131,7 @@ export const FormalInvite = ({
           </Section>
           <Section style={secondaryCtaSection}>
             <a href={registryLink} style={secondaryCtaLink}>
-              View Registry (Cash App &amp; Venmo)
+              View Registry (Cash App, Venmo &amp; Zelle)
             </a>
           </Section>
 

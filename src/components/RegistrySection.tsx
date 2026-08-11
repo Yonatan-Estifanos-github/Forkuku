@@ -52,23 +52,24 @@ export default function RegistrySection() {
   const [undoingId, setUndoingId] = useState<number | null>(null);
 
   // Flip card state for cash payment cards
-  const [flippedCard, setFlippedCard] = useState<'cashapp' | 'venmo' | null>(null);
+  const [flippedCard, setFlippedCard] = useState<'cashapp' | 'venmo' | 'zelle' | null>(null);
 
-  const QR: Record<'cashapp' | 'venmo', string> = {
+  const QR: Record<'cashapp' | 'venmo' | 'zelle', string> = {
     cashapp: 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/cashappqr.png',
     venmo:   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/venmoqr.png',
+    zelle:   'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/zelleqr.jpeg',
   };
 
   // Cash gift state
   const [showCashModal, setShowCashModal] = useState(false);
   const [cashNoteStep, setCashNoteStep] = useState<CashNoteStep>('form');
-  const [cashGiftType, setCashGiftType] = useState<'cashapp' | 'venmo'>('cashapp');
+  const [cashGiftType, setCashGiftType] = useState<'cashapp' | 'venmo' | 'zelle'>('cashapp');
   const [cashName, setCashName] = useState('');
   const [cashEmail, setCashEmail] = useState('');
   const [cashMessage, setCashMessage] = useState('');
   const [cashSubmitting, setCashSubmitting] = useState(false);
   const [cashError, setCashError] = useState('');
-  const [copiedHandle, setCopiedHandle] = useState<'cashapp' | 'venmo' | null>(null);
+  const [copiedHandle, setCopiedHandle] = useState<'cashapp' | 'venmo' | 'zelle' | null>(null);
 
   const fetchItems = async () => {
     const { data, error } = await supabase
@@ -235,8 +236,8 @@ export default function RegistrySection() {
     setPurchaserMessage('');
   };
 
-  const handleCopyHandle = (type: 'cashapp' | 'venmo') => {
-    const handle = type === 'cashapp' ? '$theestifanos' : '@theestifanos';
+  const handleCopyHandle = (type: 'cashapp' | 'venmo' | 'zelle') => {
+    const handle = type === 'cashapp' ? '$theestifanos' : type === 'venmo' ? '@theestifanos' : '7179635535';
     navigator.clipboard.writeText(handle);
     setCopiedHandle(type);
     setTimeout(() => setCopiedHandle(null), 2000);
@@ -299,8 +300,8 @@ export default function RegistrySection() {
             <p className={`text-xs tracking-widest uppercase text-ink/40 text-center mb-5 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
               {t('registry.cashGiftHeading')}
             </p>
-            <div className="grid grid-cols-2 gap-4">
-              {(['cashapp', 'venmo'] as const).map((type) => {
+            <div className="grid grid-cols-3 gap-3 sm:gap-4">
+              {(['cashapp', 'venmo', 'zelle'] as const).map((type) => {
                 const isFlipped = flippedCard === type;
                 return (
                   <div
@@ -316,21 +317,23 @@ export default function RegistrySection() {
                     }}>
                       {/* Front */}
                       <div style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
-                        className="border border-hairline rounded-xl bg-ink/5 flex flex-col items-center justify-center gap-3 p-5">
-                        <p className={`text-[10px] tracking-widest uppercase text-ink/40 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
-                          {type === 'cashapp' ? t('registry.cashAppLabel') : t('registry.venmoLabel')}
+                        className="border border-hairline rounded-xl bg-ink/5 flex flex-col items-center justify-center gap-2 p-2 sm:gap-3 sm:p-5">
+                        <p className={`text-[9px] sm:text-[10px] tracking-widest uppercase text-ink/40 ${isAmharic ? 'font-ethiopic' : 'font-sans'}`}>
+                          {t(`registry.${type}Label`)}
                         </p>
-                        <p className={`text-xl text-wedding-gold ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
-                          {type === 'cashapp' ? t('registry.cashAppHandle') : t('registry.venmoHandle')}
+                        <p className={`text-sm sm:text-xl text-wedding-gold text-center break-all ${isAmharic ? 'font-ethiopic' : 'font-serif'}`}>
+                          {t(`registry.${type}Handle`)}
                         </p>
-                        <p className="text-xs text-ink/30 font-sans">{t('registry.cashPayPhone')}</p>
+                        {type !== 'zelle' && (
+                          <p className="text-[10px] sm:text-xs text-ink/30 font-sans">{t('registry.cashPayPhone')}</p>
+                        )}
                         <button
                           onClick={(e) => { e.stopPropagation(); handleCopyHandle(type); }}
-                          className="px-4 py-1.5 border border-wedding-gold/30 text-wedding-gold text-[10px] rounded-full hover:bg-wedding-gold/10 transition-colors"
+                          className="px-3 sm:px-4 py-1.5 border border-wedding-gold/30 text-wedding-gold text-[9px] sm:text-[10px] rounded-full hover:bg-wedding-gold/10 transition-colors"
                         >
                           {copiedHandle === type ? t('registry.copied') : t('registry.copyHandle')}
                         </button>
-                        <p className="text-[9px] text-ink/20 font-sans">tap to see QR</p>
+                        <p className="hidden sm:block text-[9px] text-ink/20 font-sans">tap to see QR</p>
                       </div>
                       {/* Back — QR code */}
                       <div style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', position: 'absolute', inset: 0 }}
@@ -566,8 +569,8 @@ export default function RegistrySection() {
                     <label className={`block text-xs uppercase tracking-widest text-ink/50 mb-2 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : ''}`}>
                       {t('registry.whichPlatform')}
                     </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {(['cashapp', 'venmo'] as const).map((type) => (
+                    <div className="grid grid-cols-3 gap-3">
+                      {(['cashapp', 'venmo', 'zelle'] as const).map((type) => (
                         <button
                           key={type}
                           type="button"
@@ -578,7 +581,7 @@ export default function RegistrySection() {
                               : 'border-hairline text-ink/50 hover:border-ink/40'
                           }`}
                         >
-                          {type === 'cashapp' ? t('registry.cashAppLabel') : t('registry.venmoLabel')}
+                          {t(`registry.${type}Label`)}
                         </button>
                       ))}
                     </div>

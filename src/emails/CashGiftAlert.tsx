@@ -9,7 +9,7 @@ import {
 import * as React from 'react';
 
 interface CashGiftAlertProps {
-  giftType: 'cashapp' | 'venmo';
+  giftType: 'cashapp' | 'venmo' | 'zelle';
   senderName: string;
   senderEmail?: string;
   message?: string;
@@ -18,6 +18,13 @@ interface CashGiftAlertProps {
 const HANDLE: Record<string, string> = {
   cashapp: '$theestifanos',
   venmo: '7179635535',
+  zelle: '7179635535',
+};
+
+const PLATFORM_NAME: Record<string, string> = {
+  cashapp: 'Cash App',
+  venmo: 'Venmo',
+  zelle: 'Zelle',
 };
 
 export const CashGiftAlert = ({
@@ -31,16 +38,16 @@ export const CashGiftAlert = ({
       <meta name="color-scheme" content="dark" />
       <meta name="supported-color-schemes" content="dark" />
     </Head>
-    <Preview>💸 {senderName} sent a cash gift via {giftType === 'cashapp' ? 'Cash App' : 'Venmo'}!</Preview>
+    <Preview>💸 {senderName} sent a cash gift via {PLATFORM_NAME[giftType]}!</Preview>
     <Body style={body}>
       <Text style={label}>CASH GIFT ALERT</Text>
       <Text style={title}>
-        A cash gift was sent via {giftType === 'cashapp' ? 'Cash App' : 'Venmo'}!
+        A cash gift was sent via {PLATFORM_NAME[giftType]}!
       </Text>
 
       <Section style={card}>
         <Text style={cardLabel}>PLATFORM</Text>
-        <Text style={cardValue}>{giftType === 'cashapp' ? 'Cash App' : 'Venmo'}</Text>
+        <Text style={cardValue}>{PLATFORM_NAME[giftType]}</Text>
         <Text style={cardSub}>{HANDLE[giftType]}</Text>
       </Section>
 
