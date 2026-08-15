@@ -11,6 +11,7 @@ import {
   Text,
 } from '@react-email/components';
 import * as React from 'react';
+import { getGoogleCalendarUrl } from '@/lib/calendar';
 
 interface FormalInviteProps {
   guestName?: string;
@@ -35,6 +36,8 @@ export const FormalInvite = ({
   // hotels, registry), just with a #registry anchor on the second link
   // to jump straight to the Cash App/Venmo cards.
   const registryLink = `${magicLink}#registry`;
+  const icsLink = `${BASE_URL}/api/calendar`;
+  const googleCalendarUrl = getGoogleCalendarUrl();
 
   return (
     <Html lang="en">
@@ -132,6 +135,15 @@ export const FormalInvite = ({
           <Section style={secondaryCtaSection}>
             <a href={registryLink} style={secondaryCtaLink}>
               View Registry (Cash App, Venmo &amp; Zelle)
+            </a>
+          </Section>
+          <Section style={secondaryCtaSection}>
+            <a href={googleCalendarUrl} style={secondaryCtaLink} target="_blank" rel="noopener noreferrer">
+              Add to Google Calendar
+            </a>
+            &nbsp;&nbsp;·&nbsp;&nbsp;
+            <a href={icsLink} style={secondaryCtaLink}>
+              Add to Apple / Outlook
             </a>
           </Section>
 

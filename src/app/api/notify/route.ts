@@ -91,6 +91,7 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string, in
         '',
         `See Our Story & Details: ${magicLink}`,
         `Registry (Cash App, Venmo & Zelle): ${magicLink}#registry`,
+        `Add to Calendar: ${BASE_URL}/api/calendar`,
         '',
         '---',
         COMPLIANCE,

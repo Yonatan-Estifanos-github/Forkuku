@@ -84,7 +84,9 @@
     "venueName": "Japanese Garden",
     "ceremonyLocation": "Ceremony at Lauxmont Gardens",
     "officialAddress": "1155 Long Level Road, Wrightsville, PA 17368",
-    "directionsButton": "Get Directions"
+    "directionsButton": "Get Directions",
+    "addToCalendarGoogle": "Add to Google Calendar",
+    "addToCalendarApple": "Add to Apple / Outlook"
   },
   "timeline": {
     "heading": "The Day Of",
