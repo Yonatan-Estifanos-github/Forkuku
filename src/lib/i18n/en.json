@@ -184,6 +184,7 @@
     "errorPhone": "Please enter a valid phone number (10-15 digits)",
     "errorConsent": "Please consent to receive updates to complete your RSVP.",
     "errorGuestName": "Please enter a name for each attending guest",
+    "errorMissingResponse": "Please choose Accept or Decline for each guest before submitting",
     "submitButton": "Submit RSVP",
     "submitting": "Sending...",
     "submitError": "Failed to submit RSVP. Please try again.",

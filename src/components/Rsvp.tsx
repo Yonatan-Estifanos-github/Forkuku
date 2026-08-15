@@ -327,6 +327,16 @@ function FormScreen({
   const [guests, setGuests] = useState<Guest[]>(
     party.guests.map((g) => ({ ...g }))
   );
+  // Guests whose Accept/Decline choice the visitor has actually clicked this
+  // session. A guest's `is_attending` defaults to false in the DB before
+  // anyone responds, which used to make "Decline" render pre-selected for
+  // every guest on first load — easy to miss and submit by accident. If the
+  // party has already responded before (this is an edit), their real prior
+  // answers are legitimate and shown pre-selected; otherwise every guest
+  // starts untouched so neither button is highlighted until explicitly chosen.
+  const [touchedGuests, setTouchedGuests] = useState<Set<number>>(
+    () => new Set(party.has_responded ? party.guests.map((_, i) => i) : [])
+  );
   const [contact, setContact] = useState({ email: '', phone: '', message: '' });
   const [smsConsent, setSmsConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -341,6 +351,7 @@ function FormScreen({
     setGuests((prev) =>
       prev.map((g, i) => (i === index ? { ...g, is_attending: attending } : g))
     );
+    setTouchedGuests((prev) => new Set(prev).add(index));
   };
 
   const handleNameChange = (index: number, newName: string) => {
@@ -353,6 +364,13 @@ function FormScreen({
     // Check for empty guest list
     if (!guests || guests.length === 0) {
       return t('rsvp.noGuests');
+    }
+
+    // Every guest must have an explicit Accept/Decline choice — prevents
+    // accidentally submitting the untouched default (Decline) for someone
+    // the visitor never actually meant to answer for.
+    if (guests.some((_, i) => !touchedGuests.has(i))) {
+      return t('rsvp.errorMissingResponse');
     }
 
     // Email validation - stricter regex
@@ -507,9 +525,9 @@ function FormScreen({
                       type="button"
                       onClick={() => toggleGuest(idx, true)}
                       className={`px-4 py-2 text-[10px] tracking-widest uppercase border rounded-full transition-all duration-300 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'} ${
-                        guest.is_attending
-                          ? 'border-accent text-accent bg-accent/10'
-                          : 'bg-transparent border-hairline text-ink/60 hover:border-accent/50 hover:text-accent'
+                        touchedGuests.has(idx) && guest.is_attending
+                          ? 'border-green-500 text-green-500 bg-green-500/10'
+                          : 'bg-transparent border-hairline text-ink/60 hover:border-green-500/50 hover:text-green-500'
                       }`}
                     >
                       {t('rsvp.accept')}
@@ -518,9 +536,9 @@ function FormScreen({
                       type="button"
                       onClick={() => toggleGuest(idx, false)}
                       className={`px-4 py-2 text-[10px] tracking-widest uppercase border rounded-full transition-all duration-300 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'} ${
-                        !guest.is_attending
-                          ? 'border-accent text-accent bg-accent/10'
-                          : 'bg-transparent border-hairline text-ink/60 hover:border-accent/50 hover:text-accent'
+                        touchedGuests.has(idx) && !guest.is_attending
+                          ? 'border-red-500 text-red-500 bg-red-500/10'
+                          : 'bg-transparent border-hairline text-ink/60 hover:border-red-500/50 hover:text-red-500'
                       }`}
                     >
                       {t('rsvp.decline')}
