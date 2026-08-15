@@ -20,10 +20,10 @@ export interface Campaign {
 const COMPLIANCE_FOOTER = 'You are subscribed to receive wedding updates. Message frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.';
 const SITE_LINK = 'https://theestifanos.com/?pwd=Matthew19:6';
 const PHOTO_STD = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/engagement_photo_3.jpeg';
-// Formal Invitation pairs with the light-mode ("Final Invite") site — use the
-// same primary pre-wedding photo as the light-mode Hero, not the dark-mode
-// engagement shot used by the other (dark-mode) campaigns.
-const PHOTO_INVITE = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/eng-main-image.jpg';
+// Formal Invitation SMS MMS image only — the paired email keeps its own
+// hardcoded hero photo (eng-main-image-email-hero.jpg in FormalInvite.tsx),
+// unchanged.
+const PHOTO_INVITE = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/enjoyingeachother.jpg';
 
 export const CAMPAIGNS: Campaign[] = [
   {
