@@ -39,29 +39,27 @@ export const RSVPDeclined = ({
         <meta name="color-scheme" content="dark" />
         <meta name="supported-color-schemes" content="dark" />
       </Head>
-      <Preview>RSVP Received — Yonatan &amp; Saron</Preview>
+      <Preview>RSVP Declined — Yonatan &amp; Saron</Preview>
 
       <Body style={mainBody}>
         {/* ── Header ── */}
-        <Text style={preHeader}>RSVP RECEIVED</Text>
+        <Text style={preHeader}>RSVP DECLINED</Text>
 
         {/* ── Framing ── */}
         <Hr style={hairline} />
 
         {/* ── Title ── */}
-        <Text style={title}>We will miss you!</Text>
+        <Text style={title}>We&apos;ll miss you!</Text>
 
         {/* ── Main Message ── */}
         <Text style={messageText}>
-          We are so sorry you won&apos;t be able to join us, but we completely 
-          understand! Your love, prayers, and well-wishes are all we could 
-          ever ask for as we prepare to step into this marriage covenant.
+          We&apos;ve marked you as unable to join us on September 4, 2026.
+          Thank you for letting us know — we appreciate it.
         </Text>
 
         {/* ── Escape Hatch ── */}
         <Text style={escapeHatchText}>
-          If you selected &apos;Decline&apos; by mistake, or if your plans change,
-          you can update your response until June 15th using the link below.
+          Changed your mind? Update your RSVP below.
         </Text>
 
         {/* ── CTA ── */}
