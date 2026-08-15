@@ -160,6 +160,7 @@ export default function AdminDashboard() {
   const [expandedPartyId, setExpandedPartyId] = useState<string | null>(null);
   const [selectedCampaign, setSelectedCampaign] = useState<CampaignId>('save-the-date');
   const [familySideFilter, setFamilySideFilter] = useState<'all' | 'bride' | 'groom' | 'unassigned'>('all');
+  const [rsvpStatusFilter, setRsvpStatusFilter] = useState<'all' | 'pending' | 'attending' | 'partial' | 'declined'>('all');
 
   // 2. Memoized filtered parties list (Safe from TDZ)
   const filteredParties = useMemo(() => {
@@ -168,19 +169,23 @@ export default function AdminDashboard() {
       const sideMatch = familySideFilter === 'all' ? true :
                        familySideFilter === 'unassigned' ? !p.family_side :
                        p.family_side === familySideFilter;
-      
+
       if (!sideMatch) return false;
+
+      // RSVP Status Filter
+      const statusMatch = rsvpStatusFilter === 'all' ? true : getRSVPStatus(p).toLowerCase() === rsvpStatusFilter;
+      if (!statusMatch) return false;
 
       // Search Query Filter (Party name or Guest names)
       if (!adminSearchQuery.trim()) return true;
-      
+
       const query = adminSearchQuery.toLowerCase().trim();
       const partyNameMatch = p.party_name.toLowerCase().includes(query);
       const guestNamesMatch = p.guests.some(g => g.name?.toLowerCase().includes(query));
-      
+
       return partyNameMatch || guestNamesMatch;
     });
-  }, [parties, familySideFilter, adminSearchQuery]);
+  }, [parties, familySideFilter, rsvpStatusFilter, adminSearchQuery]);
 
   // Accepted-guest counts by family side, and the list of fully-declined
   // parties (getRSVPStatus === 'Declined': responded, zero guests attending).
@@ -1248,6 +1253,36 @@ export default function AdminDashboard() {
               ))}
             </div>
 
+            {/* RSVP Status Filter */}
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
+              {(['all', 'pending', 'attending', 'partial', 'declined'] as const).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setRsvpStatusFilter(s)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
+                    rsvpStatusFilter === s
+                      ? s === 'pending'
+                        ? 'bg-gray-500 text-white'
+                        : s === 'attending'
+                        ? 'bg-green-600 text-white'
+                        : s === 'partial'
+                        ? 'bg-yellow-500 text-white'
+                        : s === 'declined'
+                        ? 'bg-red-500 text-white'
+                        : 'bg-[#1B3B28] text-white'
+                      : 'bg-white border border-gray-200 text-gray-500 hover:border-gray-400'
+                  }`}
+                >
+                  {s === 'pending' ? "Hasn't Responded" : s === 'attending' ? 'Attending' : s === 'partial' ? 'Partial' : s === 'declined' ? 'Declined' : 'All RSVP'}
+                  {s !== 'all' && (
+                    <span className="ml-1 opacity-70">
+                      ({parties.filter(p => getRSVPStatus(p).toLowerCase() === s).length})
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+
             {/* Data Table */}
             <div className="bg-white rounded shadow-sm overflow-hidden border border-gray-100">
               <div className="overflow-x-auto">
@@ -1473,8 +1508,13 @@ export default function AdminDashboard() {
                                             {party.has_responded ? (
                                               guest.is_attending ? (
                                                 <span className="text-green-600 text-xs font-bold uppercase tracking-wider">✓ Attending</span>
-                                              ) : (
+                                              ) : getRSVPStatus(party) === 'Declined' ? (
                                                 <span className="text-red-500 text-xs font-bold uppercase tracking-wider">× Declined</span>
+                                              ) : (
+                                                // Party already responded overall, but this guest isn't marked
+                                                // attending — could be a guest added after the RSVP came in, so
+                                                // don't label them "Declined" when they were never actually asked.
+                                                <span className="text-gray-400 text-xs font-bold uppercase tracking-wider italic">Not Attending</span>
                                               )
                                             ) : (
                                               <span className="text-gray-400 text-xs font-bold uppercase tracking-wider italic">No Response</span>
