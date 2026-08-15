@@ -9,16 +9,25 @@ import { FormalInvite } from '@/emails/FormalInvite';
 import { SaveTheDate } from '@/emails/SaveTheDate';
 import { PhotoSaveTheDate } from '@/emails/PhotoSaveTheDate';
 import { GenericTemplate } from '@/emails/GenericTemplate';
+import { PartialRsvpNudge } from '@/emails/PartialRsvpNudge';
 
 const SUBJECTS: Record<string, string> = {
   'save-the-date':       'Save the Date — Yonatan & Saron · September 4, 2026',
   'save-the-date-48hr':  'Can You Confirm? — Yonatan & Saron · September 4, 2026',
   'formal-invitation':   'You are invited to the wedding of Yonatan & Saron',
+  'partial-rsvp-nudge':  'One More RSVP Needed — Yonatan & Saron',
   'rsvp-reminder':       'Reminder: RSVP by June 15th — Yonatan & Saron',
   'logistics-update':    'Wedding Week Details — Yonatan & Saron',
   'day-of-alert':        'Day-of Update — Yonatan & Saron',
   'thank-you':           'Thank You — Yonatan & Saron',
 };
+
+function joinNames(names: string[]): string {
+  if (names.length === 0) return '';
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return `${names[0]} and ${names[1]}`;
+  return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
+}
 
 const BASE_URL = 'https://theestifanos.com';
 const PWD = 'Matthew19:6';
@@ -217,6 +226,38 @@ function buildAlreadyRsvpedSmsBody(
   }
 }
 
+function buildPartialRsvpNudgeSmsBody(
+  acceptedNames: string[],
+  pendingNames: string[],
+  partyId: string,
+  inviteToken?: string
+): string {
+  const magicLink = (inviteToken
+    ? `${BASE_URL}/?token=${inviteToken}`
+    : `${BASE_URL}/?pwd=${PWD}&partyId=${partyId}`) + '#rsvp';
+
+  const acceptedText = joinNames(acceptedNames);
+  const pendingText = joinNames(pendingNames);
+  const intro = acceptedText
+    ? `${acceptedText} ${acceptedNames.length === 1 ? 'is' : 'are'} confirmed for our wedding on September 4, 2026`
+    : 'Your party is confirmed for our wedding on September 4, 2026';
+
+  return [
+    'RSVP UPDATE',
+    '',
+    'Yonatan & Saron',
+    '',
+    `${intro} — but we haven't heard from ${pendingText} yet.`,
+    '',
+    `Can you confirm ${pendingText}'s RSVP within the next 48 hours?`,
+    '',
+    `Update here: ${magicLink}`,
+    '',
+    '---',
+    COMPLIANCE,
+  ].join('\n');
+}
+
 const GENERIC_CONTENT: Record<string, { heading: string; body: string }> = {
   'rsvp-reminder': {
     heading: 'Please RSVP by June 15th',
@@ -281,6 +322,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'This campaign is currently locked' }, { status: 403 });
     }
 
+    interface PartyGuestInfo {
+      name?: string;
+      is_attending?: boolean;
+    }
+    const acceptedGuestNames = (party.guests as PartyGuestInfo[])
+      .filter(g => g.is_attending).map(g => g.name).filter(Boolean) as string[];
+    const pendingGuestNames = (party.guests as PartyGuestInfo[])
+      .filter(g => !g.is_attending).map(g => g.name).filter(Boolean) as string[];
+
+    if (campaignId === 'partial-rsvp-nudge' && pendingGuestNames.length === 0) {
+      return NextResponse.json(
+        { error: 'Every guest in this party already has a response — nobody to nudge.' },
+        { status: 400 }
+      );
+    }
+
     // Identify all recipients
     interface Recipient {
       email: string;
@@ -331,6 +388,12 @@ export async function POST(req: Request) {
           html = await render(React.createElement(SaveTheDate, { guestName, partyId, urgent: true }));
         } else if (campaign.emailTemplate === 'PhotoSaveTheDate') {
           html = await render(React.createElement(PhotoSaveTheDate, { guestName, partyId }));
+        } else if (campaign.emailTemplate === 'PartialRsvpNudge') {
+          html = await render(React.createElement(PartialRsvpNudge, {
+            partyId,
+            acceptedNames: acceptedGuestNames,
+            pendingNames: pendingGuestNames,
+          }));
         } else {
           const content = GENERIC_CONTENT[campaignId] || {
             heading: 'Update from Yonatan & Saron',
@@ -392,8 +455,12 @@ export async function POST(req: Request) {
         const inviteToken = (party as { invite_token?: string }).invite_token;
 
         // If they've already RSVPed, send a tailored acknowledgment instead of the campaign message
+        // — except partial-rsvp-nudge, which is specifically meant for already-responded parties
+        // with a newly added, still-pending guest.
         let smsBody: string;
-        if (party.has_responded) {
+        if (campaignId === 'partial-rsvp-nudge') {
+          smsBody = buildPartialRsvpNudgeSmsBody(acceptedGuestNames, pendingGuestNames, partyId, inviteToken);
+        } else if (party.has_responded) {
           const allGuests = party.guests as { name?: string; is_attending?: boolean }[];
           const attending = allGuests.filter(g => g.is_attending).map(g => g.name || '').filter(Boolean);
           const declined  = allGuests.filter(g => !g.is_attending).map(g => g.name || '').filter(Boolean);
@@ -403,7 +470,9 @@ export async function POST(req: Request) {
         }
 
         const PRAY_IMAGE = 'https://foxezhxncpzzpbemdafa.supabase.co/storage/v1/object/public/wedding-ui/prayforus.JPG';
-        const smsMediaUrl = party.has_responded ? PRAY_IMAGE : (campaign.smsMediaUrl || null);
+        const smsMediaUrl = campaignId === 'partial-rsvp-nudge'
+          ? (campaign.smsMediaUrl || null)
+          : party.has_responded ? PRAY_IMAGE : (campaign.smsMediaUrl || null);
 
         for (const phone of usPhones) {
           try {

@@ -2,6 +2,7 @@ export type CampaignId =
   | 'save-the-date'
   | 'save-the-date-48hr'
   | 'formal-invitation'
+  | 'partial-rsvp-nudge'
   | 'rsvp-reminder'
   | 'logistics-update'
   | 'day-of-alert'
@@ -48,6 +49,18 @@ export const CAMPAIGNS: Campaign[] = [
     smsBody: `You are formally invited to the wedding of Yonatan & Saron — September 4, 2026, Wrightsville, PA. RSVP at ${SITE_LINK}\n\n${COMPLIANCE_FOOTER}`,
     smsMediaUrl: PHOTO_INVITE,
     emailTemplate: 'FormalInvite',
+    priority: 'both',
+    disabled: false,
+  },
+  {
+    // Sent to a party where some guests have already RSVPed but a newly
+    // added guest hasn't — content is built dynamically per-party in
+    // notify/route.ts (accepted vs. pending names), so this smsBody is
+    // just a representative placeholder, unused at send time.
+    id: 'partial-rsvp-nudge',
+    label: 'Partial RSVP Nudge (48hr)',
+    smsBody: `RSVP UPDATE: Some of your party is confirmed for Yonatan & Saron's wedding on September 4, 2026, but we haven't heard from everyone yet. Can you confirm within 48 hours? ${SITE_LINK}\n\n${COMPLIANCE_FOOTER}`,
+    emailTemplate: 'PartialRsvpNudge',
     priority: 'both',
     disabled: false,
   },
