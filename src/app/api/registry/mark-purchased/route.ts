@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     const addr = settingRow?.value as { line1?: string; city?: string; state?: string; zip?: string } | null;
     const shippingAddress = addr
       ? `${addr.line1}\n${addr.city}, ${addr.state} ${addr.zip}`
-      : '12305 Oak Creek Ln, Apt 1201\nFairfax, VA 22033';
+      : '474 Kelker St\nOberlin, PA 17113';
 
     if (process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
