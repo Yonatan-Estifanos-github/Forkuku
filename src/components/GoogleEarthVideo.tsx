@@ -4,9 +4,11 @@ import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNavView } from '@/context/ViewContext';
+import { getGoogleCalendarUrl } from '@/lib/calendar';
 
 const VIDEO_SRC = "/videos/wedding_venue.mp4";
 const DIRECTIONS_URL = "https://share.google/AgUZUvvMOxSMr0oic";
+const ICS_URL = "/api/calendar";
 
 export default function GoogleEarthVideo() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -126,6 +128,23 @@ export default function GoogleEarthVideo() {
             >
               {t('venue.directionsButton')}
             </a>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <a
+                href={getGoogleCalendarUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`border border-white/40 text-white/80 bg-black/10 hover:bg-white/10 px-6 py-2 rounded-full text-[10px] tracking-widest uppercase transition-all duration-300 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
+              >
+                {t('venue.addToCalendarGoogle')}
+              </a>
+              <a
+                href={ICS_URL}
+                download
+                className={`border border-white/40 text-white/80 bg-black/10 hover:bg-white/10 px-6 py-2 rounded-full text-[10px] tracking-widest uppercase transition-all duration-300 ${isAmharic ? 'font-ethiopic normal-case tracking-normal' : 'font-sans'}`}
+              >
+                {t('venue.addToCalendarApple')}
+              </a>
+            </div>
           </div>
         ) : (
           <>
