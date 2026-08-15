@@ -148,7 +148,7 @@ export async function POST(req: Request) {
         await resend.emails.send({
           from: 'Yonatan & Saron (No Reply) <hello@theestifanos.com>',
           to: guestEmail,
-          subject: isAttending ? 'RSVP Confirmed — Yonatan & Saron' : 'RSVP Received — Yonatan & Saron',
+          subject: isAttending ? 'RSVP Confirmed — Yonatan & Saron' : 'RSVP Declined — Yonatan & Saron',
           react: isAttending
             ? RSVPConfirmation({ guests, partyId: party_id, inviteToken: currentParty?.invite_token })
             : RSVPDeclined({ partyId: party_id, inviteToken: currentParty?.invite_token })
@@ -194,16 +194,14 @@ export async function POST(req: Request) {
               COMPLIANCE,
             ].join('\n')
           : [
-              'RSVP RECEIVED',
+              'RSVP DECLINED',
               '',
-              'We will miss you!',
+              'Yonatan & Saron',
               '',
-              "We are so sorry you won't be able to join us, but we completely understand! Your love, prayers, and well-wishes are all we could ever ask for as we prepare to step into this marriage covenant.",
+              "Got it — we've marked you as unable to join us on September 4, 2026. We'll miss you, and thank you for letting us know!",
               '',
-              "If you selected 'Decline' by mistake, or if your plans change, you can update your response until June 15th:",
+              'Changed your mind? Update here:',
               magicLink,
-              '',
-              'Yonatan & Saron · September 4, 2026',
               '',
               '---',
               COMPLIANCE,
