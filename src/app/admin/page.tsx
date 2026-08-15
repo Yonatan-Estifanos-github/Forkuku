@@ -182,6 +182,24 @@ export default function AdminDashboard() {
     });
   }, [parties, familySideFilter, adminSearchQuery]);
 
+  // Accepted-guest counts by family side, and the list of fully-declined
+  // parties (getRSVPStatus === 'Declined': responded, zero guests attending).
+  const rsvpBreakdown = useMemo(() => {
+    let brideAccepted = 0;
+    let groomAccepted = 0;
+    const declinedParties: Party[] = [];
+
+    parties.forEach(party => {
+      const attendingGuests = party.guests.filter(g => g.is_attending).length;
+      if (party.family_side === 'bride') brideAccepted += attendingGuests;
+      else if (party.family_side === 'groom') groomAccepted += attendingGuests;
+
+      if (getRSVPStatus(party) === 'Declined') declinedParties.push(party);
+    });
+
+    return { brideAccepted, groomAccepted, declinedParties };
+  }, [parties]);
+
   const [stats, setStats] = useState<DashboardStats>({
     totalParties: 0,
     totalGuests: 0,
@@ -189,6 +207,9 @@ export default function AdminDashboard() {
     confirmedRSVPs: 0,
     campaignSentCount: 0,
   });
+
+  // Declined-list Modal State
+  const [showDeclinedModal, setShowDeclinedModal] = useState(false);
 
   // Modal State (Add/Edit Party)
   const [showModal, setShowModal] = useState(false);
@@ -1065,7 +1086,7 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto">
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-6 rounded shadow-sm border-t-4 border-[#D4A845]">
             <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Total Parties</p>
             <p className="font-serif text-3xl md:text-4xl">{stats.totalParties}</p>
@@ -1092,6 +1113,22 @@ export default function AdminDashboard() {
               {stats.campaignSentCount} <span className="text-base text-gray-400">/ {stats.totalParties}</span>
             </p>
           </div>
+          <div className="bg-white p-6 rounded shadow-sm border-t-4 border-pink-500">
+            <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Accepted (Bride&apos;s Side)</p>
+            <p className="font-serif text-3xl md:text-4xl">{rsvpBreakdown.brideAccepted}</p>
+          </div>
+          <div className="bg-white p-6 rounded shadow-sm border-t-4 border-blue-600">
+            <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Accepted (Groom&apos;s Side)</p>
+            <p className="font-serif text-3xl md:text-4xl">{rsvpBreakdown.groomAccepted}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowDeclinedModal(true)}
+            className="bg-white p-6 rounded shadow-sm border-t-4 border-red-500 text-left hover:shadow-md transition-shadow"
+          >
+            <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Declined (View List)</p>
+            <p className="font-serif text-3xl md:text-4xl">{rsvpBreakdown.declinedParties.length}</p>
+          </button>
         </div>
 
         {/* Tab Navigation */}
@@ -1968,6 +2005,63 @@ export default function AdminDashboard() {
                 className="px-6 py-2 bg-[#1B3B28] text-white rounded hover:bg-[#2a5a3f] transition-colors text-sm font-bold disabled:opacity-50"
               >
                 {savingItem ? 'Saving...' : editingItem ? 'Update Gift' : 'Add Gift'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Declined Parties Modal */}
+      {showDeclinedModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col relative overflow-hidden">
+            <div className="p-6 border-b border-gray-100 flex-shrink-0 flex items-center justify-between bg-white z-10">
+              <h2 className="font-serif text-2xl text-[#1B3B28]">
+                Declined ({rsvpBreakdown.declinedParties.length})
+              </h2>
+              <button
+                onClick={() => setShowDeclinedModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors text-2xl leading-none"
+              >
+                &times;
+              </button>
+            </div>
+            <div
+              className="p-6 space-y-4 overflow-y-auto flex-1 min-h-0"
+              style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}
+            >
+              {rsvpBreakdown.declinedParties.length === 0 ? (
+                <p className="text-sm text-gray-500">No declines yet.</p>
+              ) : (
+                rsvpBreakdown.declinedParties.map(party => (
+                  <div key={party.id} className="border border-gray-100 rounded p-4">
+                    <div className="flex items-center justify-between mb-1 gap-2">
+                      <p className="font-bold text-[#1B3B28]">{party.party_name}</p>
+                      {party.family_side && (
+                        <span
+                          className={`flex-shrink-0 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${
+                            party.family_side === 'bride'
+                              ? 'bg-pink-100 text-pink-600'
+                              : 'bg-blue-100 text-blue-600'
+                          }`}
+                        >
+                          {party.family_side === 'bride' ? "Bride's Side" : "Groom's Side"}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-500">
+                      {party.guests.map(g => g.name).filter(Boolean).join(', ') || 'No guests listed'}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="p-6 border-t border-gray-100 flex-shrink-0 flex justify-end gap-4 bg-white">
+              <button
+                onClick={() => setShowDeclinedModal(false)}
+                className="px-6 py-2 border border-gray-200 rounded hover:bg-gray-50 transition-colors text-sm"
+              >
+                Close
               </button>
             </div>
           </div>
