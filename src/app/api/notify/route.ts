@@ -304,7 +304,7 @@ export async function POST(req: Request) {
     // ── Fetch party + guests ──
     const { data: party, error: partyError } = await supabaseAdmin
       .from('parties')
-      .select('id, party_name, emails, phones, has_responded, invite_token, guests(id, name, email, is_attending)')
+      .select('id, party_name, emails, phones, has_responded, invite_token, guests(id, name, email, is_attending, has_responded)')
       .eq('id', partyId)
       .single();
 
@@ -325,11 +325,15 @@ export async function POST(req: Request) {
     interface PartyGuestInfo {
       name?: string;
       is_attending?: boolean;
+      has_responded?: boolean;
     }
     const acceptedGuestNames = (party.guests as PartyGuestInfo[])
       .filter(g => g.is_attending).map(g => g.name).filter(Boolean) as string[];
+    // "Pending" here specifically means genuinely un-answered — not simply
+    // is_attending === false, which is also true for guests who explicitly
+    // declined. Nudging someone who already said no would be wrong.
     const pendingGuestNames = (party.guests as PartyGuestInfo[])
-      .filter(g => !g.is_attending).map(g => g.name).filter(Boolean) as string[];
+      .filter(g => !g.has_responded).map(g => g.name).filter(Boolean) as string[];
 
     if (campaignId === 'partial-rsvp-nudge' && pendingGuestNames.length === 0) {
       return NextResponse.json(
@@ -461,9 +465,11 @@ export async function POST(req: Request) {
         if (campaignId === 'partial-rsvp-nudge') {
           smsBody = buildPartialRsvpNudgeSmsBody(acceptedGuestNames, pendingGuestNames, partyId, inviteToken);
         } else if (party.has_responded) {
-          const allGuests = party.guests as { name?: string; is_attending?: boolean }[];
+          const allGuests = party.guests as { name?: string; is_attending?: boolean; has_responded?: boolean }[];
           const attending = allGuests.filter(g => g.is_attending).map(g => g.name || '').filter(Boolean);
-          const declined  = allGuests.filter(g => !g.is_attending).map(g => g.name || '').filter(Boolean);
+          // Only list guests as "declined" if they've actually answered no —
+          // a guest who's simply still pending shouldn't show up here.
+          const declined  = allGuests.filter(g => g.has_responded && !g.is_attending).map(g => g.name || '').filter(Boolean);
           smsBody = buildAlreadyRsvpedSmsBody(guestName, partyId, attending, declined, inviteToken);
         } else {
           smsBody = buildSmsBody(campaignId, guestName, partyId, inviteToken);

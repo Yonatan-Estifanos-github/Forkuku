@@ -12,6 +12,7 @@ interface Guest {
   name?: string;
   email?: string;
   is_attending: boolean;
+  has_responded: boolean;
   dietary_notes?: string;
 }
 
@@ -255,7 +256,7 @@ export default function AdminDashboard() {
       .from('parties')
       .select(`
         *,
-        guests (id, name, email, is_attending, dietary_notes),
+        guests (id, name, email, is_attending, has_responded, dietary_notes),
         campaign_logs (campaign_id, channel, status)
       `)
       .order('updated_at', { ascending: false });
@@ -859,10 +860,16 @@ export default function AdminDashboard() {
 
   function getRSVPStatus(party: Party) {
     if (!party.has_responded) return 'Pending';
+    // 'Partial' means someone in the party still hasn't individually
+    // answered yet (e.g. added after the family's original RSVP) — not
+    // simply "not everyone is attending". Once everyone has answered,
+    // the party is resolved either way: Declined (nobody coming) or
+    // Attending (at least one is), even if attendance is a mix.
+    const unanswered = party.guests.some(g => !g.has_responded);
+    if (unanswered) return 'Partial';
     const attendingCount = party.guests.filter(g => g.is_attending).length;
     if (attendingCount === 0) return 'Declined';
-    if (attendingCount === party.guests.length) return 'Attending';
-    return 'Partial';
+    return 'Attending';
   }
 
   function getRSVPStatusColor(status: string) {
@@ -1505,19 +1512,12 @@ export default function AdminDashboard() {
                                             )}
                                           </div>
                                           <div className="flex items-center gap-2">
-                                            {party.has_responded ? (
-                                              guest.is_attending ? (
-                                                <span className="text-green-600 text-xs font-bold uppercase tracking-wider">✓ Attending</span>
-                                              ) : getRSVPStatus(party) === 'Declined' ? (
-                                                <span className="text-red-500 text-xs font-bold uppercase tracking-wider">× Declined</span>
-                                              ) : (
-                                                // Party already responded overall, but this guest isn't marked
-                                                // attending — could be a guest added after the RSVP came in, so
-                                                // don't label them "Declined" when they were never actually asked.
-                                                <span className="text-gray-400 text-xs font-bold uppercase tracking-wider italic">Not Attending</span>
-                                              )
-                                            ) : (
+                                            {!guest.has_responded ? (
                                               <span className="text-gray-400 text-xs font-bold uppercase tracking-wider italic">No Response</span>
+                                            ) : guest.is_attending ? (
+                                              <span className="text-green-600 text-xs font-bold uppercase tracking-wider">✓ Attending</span>
+                                            ) : (
+                                              <span className="text-red-500 text-xs font-bold uppercase tracking-wider">× Declined</span>
                                             )}
                                           </div>
                                         </div>
