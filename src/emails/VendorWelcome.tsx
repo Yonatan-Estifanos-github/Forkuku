@@ -71,6 +71,18 @@ export const VendorWelcome = ({
           </Link>
         </Section>
 
+        {/* ── Contacts ── */}
+        <Section style={contactSection}>
+          <Text style={contactLabel}>Questions before the day?</Text>
+          <Text style={contactLine}>Yonatan — 717-963-5535</Text>
+          <Text style={contactLine}>Saron — 240-694-5559</Text>
+        </Section>
+        <Section style={contactSection}>
+          <Text style={contactLabel}>Day-of point of contact</Text>
+          <Text style={contactLine}>Elsa Guta — 510-328-0055</Text>
+          <Text style={contactLine}>Elisabethsenbeta@gmail.com</Text>
+        </Section>
+
         {/* ── Monogram ── */}
         <Text style={monogram}>Y &amp; S</Text>
 
@@ -160,7 +172,27 @@ const message: React.CSSProperties = {
 };
 
 const ctaSection: React.CSSProperties = {
-  margin: '20px 0 60px',
+  margin: '20px 0 30px',
+};
+
+const contactSection: React.CSSProperties = {
+  margin: '0 0 24px',
+};
+
+const contactLabel: React.CSSProperties = {
+  color: '#B08D57',
+  fontSize: '10px',
+  letterSpacing: '0.15em',
+  textTransform: 'uppercase',
+  margin: '0 0 6px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
+};
+
+const contactLine: React.CSSProperties = {
+  color: '#5A544C',
+  fontSize: '13px',
+  margin: '0 0 2px',
+  fontFamily: "Georgia, 'Times New Roman', serif",
 };
 
 const ctaButton: React.CSSProperties = {
