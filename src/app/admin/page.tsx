@@ -81,7 +81,15 @@ interface RegistryItem {
   is_favorite: boolean;
 }
 
-type ActiveTab = 'guests' | 'registry';
+interface Vendor {
+  id: string;
+  category: string;
+  name: string;
+  phone?: string;
+  email?: string;
+}
+
+type ActiveTab = 'guests' | 'registry' | 'vendors';
 
 // Category and Store options
 const CATEGORIES = [
@@ -247,6 +255,21 @@ export default function AdminDashboard() {
   const [itemIsFavorite, setItemIsFavorite] = useState(false);
   const [savingItem, setSavingItem] = useState(false);
 
+  // Vendor State
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [vendorsLoading, setVendorsLoading] = useState(false);
+  const [deletingVendorId, setDeletingVendorId] = useState<string | null>(null);
+  const [sendingVendorId, setSendingVendorId] = useState<string | null>(null); // format: `${vendorId}-email` or `${vendorId}-sms`
+
+  // Vendor Modal State
+  const [showVendorModal, setShowVendorModal] = useState(false);
+  const [editingVendor, setEditingVendor] = useState<Vendor | null>(null);
+  const [vendorCategory, setVendorCategory] = useState('');
+  const [vendorName, setVendorName] = useState('');
+  const [vendorPhone, setVendorPhone] = useState('');
+  const [vendorEmail, setVendorEmail] = useState('');
+  const [savingVendor, setSavingVendor] = useState(false);
+
   // ============================================
   // HOISTED HANDLERS (function declarations)
   // ============================================
@@ -315,6 +338,116 @@ export default function AdminDashboard() {
       setRegistryItems(data as RegistryItem[]);
     }
     setRegistryLoading(false);
+  }
+
+  async function fetchVendors() {
+    setVendorsLoading(true);
+    const { data, error } = await supabase
+      .from('vendors')
+      .select('*')
+      .order('category', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching vendors:', error);
+    } else if (data) {
+      setVendors(data as Vendor[]);
+    }
+    setVendorsLoading(false);
+  }
+
+  function openAddVendorModal() {
+    setEditingVendor(null);
+    setVendorCategory('');
+    setVendorName('');
+    setVendorPhone('');
+    setVendorEmail('');
+    setShowVendorModal(true);
+  }
+
+  function openEditVendorModal(vendor: Vendor) {
+    setEditingVendor(vendor);
+    setVendorCategory(vendor.category);
+    setVendorName(vendor.name);
+    setVendorPhone(vendor.phone || '');
+    setVendorEmail(vendor.email || '');
+    setShowVendorModal(true);
+  }
+
+  function closeVendorModal() {
+    setShowVendorModal(false);
+    setEditingVendor(null);
+    setVendorCategory('');
+    setVendorName('');
+    setVendorPhone('');
+    setVendorEmail('');
+  }
+
+  async function handleSaveVendor() {
+    if (!vendorCategory.trim() || !vendorName.trim()) {
+      alert('Category and name are required');
+      return;
+    }
+
+    setSavingVendor(true);
+    try {
+      const payload = {
+        category: vendorCategory.trim(),
+        name: vendorName.trim(),
+        phone: vendorPhone.trim() || null,
+        email: vendorEmail.trim() || null,
+      };
+
+      if (editingVendor) {
+        const { error } = await supabase.from('vendors').update(payload).eq('id', editingVendor.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('vendors').insert(payload);
+        if (error) throw error;
+      }
+
+      closeVendorModal();
+      await fetchVendors();
+    } catch (err) {
+      console.error(err);
+      alert(err instanceof Error ? err.message : 'Failed to save vendor');
+    } finally {
+      setSavingVendor(false);
+    }
+  }
+
+  async function handleDeleteVendor(vendorId: string) {
+    const vendor = vendors.find(v => v.id === vendorId);
+    const confirmed = window.confirm(`Delete vendor "${vendor?.name || ''}"? This cannot be undone.`);
+    if (!confirmed) return;
+
+    setDeletingVendorId(vendorId);
+    const { error } = await supabase.from('vendors').delete().eq('id', vendorId);
+    if (error) {
+      console.error(error);
+      alert('Failed to delete vendor');
+    } else {
+      await fetchVendors();
+    }
+    setDeletingVendorId(null);
+  }
+
+  async function handleSendVendorWelcome(vendorId: string, channel: 'email' | 'sms') {
+    setSendingVendorId(`${vendorId}-${channel}`);
+    try {
+      const res = await fetch('/api/notify-vendor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vendorId, channel }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Send failed');
+      alert(`Vendor welcome ${channel === 'email' ? 'email' : 'SMS'} sent.`);
+    } catch (err) {
+      console.error(err);
+      alert(err instanceof Error ? err.message : 'Failed to send');
+    } finally {
+      setSendingVendorId(null);
+    }
   }
 
   async function handleLogout() {
@@ -1010,6 +1143,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (activeTab === 'registry') {
       fetchRegistryItems();
+    } else if (activeTab === 'vendors') {
+      fetchVendors();
     }
   }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -1164,6 +1299,16 @@ export default function AdminDashboard() {
             }`}
           >
             Registry
+          </button>
+          <button
+            onClick={() => setActiveTab('vendors')}
+            className={`px-6 py-3 text-sm font-bold uppercase tracking-widest rounded transition-colors ${
+              activeTab === 'vendors'
+                ? 'bg-[#1B3B28] text-white'
+                : 'text-[#1B3B28] hover:bg-gray-100'
+            }`}
+          >
+            Vendors
           </button>
         </div>
 
@@ -1683,6 +1828,102 @@ export default function AdminDashboard() {
             )}
           </>
         )}
+
+        {/* VENDORS TAB */}
+        {activeTab === 'vendors' && (
+          <>
+            {/* Vendor Management Toolbar */}
+            <div className="bg-white rounded shadow-sm p-4 mb-8 flex items-center justify-between border border-gray-100">
+              <span className="text-xs uppercase tracking-widest text-gray-500 font-bold">Vendor Management:</span>
+              <button
+                onClick={openAddVendorModal}
+                className="px-4 py-2 bg-[#1B3B28] text-white text-sm font-bold rounded hover:bg-[#2a5a3f] transition-colors flex items-center gap-2"
+              >
+                <span className="text-lg leading-none">+</span> Add Vendor
+              </button>
+            </div>
+
+            {vendorsLoading ? (
+              <div className="py-20 text-center">
+                <p className="font-serif text-[#1B3B28] animate-pulse italic">Loading vendors...</p>
+              </div>
+            ) : vendors.length === 0 ? (
+              <div className="py-20 text-center bg-white rounded border border-dashed border-gray-200">
+                <p className="text-gray-400 italic">No vendors added yet.</p>
+              </div>
+            ) : (
+              <div className="bg-white rounded shadow-sm overflow-hidden border border-gray-100">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead className="bg-[#1B3B28] text-white text-xs uppercase tracking-wider">
+                      <tr>
+                        <th className="p-4">Category</th>
+                        <th className="p-4">Name</th>
+                        <th className="p-4">Contact</th>
+                        <th className="p-4">Welcome Message</th>
+                        <th className="p-4"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {vendors.map((vendor) => (
+                        <tr key={vendor.id} className="hover:bg-gray-50">
+                          <td className="p-4">
+                            <span className="bg-gray-100 text-gray-600 text-xs font-bold uppercase tracking-wider px-2 py-1 rounded">
+                              {vendor.category}
+                            </span>
+                          </td>
+                          <td className="p-4 font-medium text-[#1B3B28]">{vendor.name}</td>
+                          <td className="p-4 text-sm text-gray-500">
+                            {vendor.email && <div>{vendor.email}</div>}
+                            {vendor.phone && <div>{vendor.phone}</div>}
+                            {!vendor.email && !vendor.phone && <span className="italic text-gray-300">No contact info</span>}
+                          </td>
+                          <td className="p-4">
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleSendVendorWelcome(vendor.id, 'email')}
+                                disabled={!vendor.email || sendingVendorId === `${vendor.id}-email`}
+                                className="px-3 py-1.5 border border-[#D4A845] text-[#D4A845] text-xs font-bold rounded hover:bg-[#D4A845] hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                              >
+                                {sendingVendorId === `${vendor.id}-email` ? '...' : 'Send Email'}
+                              </button>
+                              <button
+                                onClick={() => handleSendVendorWelcome(vendor.id, 'sms')}
+                                disabled={!vendor.phone || sendingVendorId === `${vendor.id}-sms`}
+                                className="px-3 py-1.5 border border-[#D4A845] text-[#D4A845] text-xs font-bold rounded hover:bg-[#D4A845] hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                              >
+                                {sendingVendorId === `${vendor.id}-sms` ? '...' : 'Send SMS'}
+                              </button>
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex items-center gap-1 justify-end">
+                              <button
+                                onClick={() => openEditVendorModal(vendor)}
+                                className="p-2 text-gray-400 hover:text-[#1B3B28] rounded transition-colors"
+                                title="Edit"
+                              >
+                                ✏️
+                              </button>
+                              <button
+                                onClick={() => handleDeleteVendor(vendor.id)}
+                                disabled={deletingVendorId === vendor.id}
+                                className="p-2 text-red-500 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                                title="Delete"
+                              >
+                                {deletingVendorId === vendor.id ? '...' : '🗑️'}
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {showModal && (
@@ -2102,6 +2343,82 @@ export default function AdminDashboard() {
                 className="px-6 py-2 border border-gray-200 rounded hover:bg-gray-50 transition-colors text-sm"
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Vendor Modal */}
+      {showVendorModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] flex flex-col relative overflow-hidden">
+            <div className="p-6 border-b border-gray-100 flex-shrink-0 flex items-center justify-between bg-white z-10">
+              <h2 className="font-serif text-2xl text-[#1B3B28]">
+                {editingVendor ? 'Edit Vendor' : 'Add Vendor'}
+              </h2>
+              <button
+                onClick={closeVendorModal}
+                className="text-gray-400 hover:text-gray-600 transition-colors text-2xl leading-none"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="p-6 space-y-4 overflow-y-auto flex-1 min-h-0" style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}>
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Category</label>
+                <input
+                  type="text"
+                  value={vendorCategory}
+                  onChange={(e) => setVendorCategory(e.target.value)}
+                  placeholder="e.g. Catering, Florist, Band..."
+                  className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
+                />
+              </div>
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Name</label>
+                <input
+                  type="text"
+                  value={vendorName}
+                  onChange={(e) => setVendorName(e.target.value)}
+                  placeholder="Vendor or business name"
+                  className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
+                />
+              </div>
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Phone</label>
+                <input
+                  type="tel"
+                  value={vendorPhone}
+                  onChange={(e) => setVendorPhone(e.target.value)}
+                  placeholder="+1..."
+                  className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
+                />
+              </div>
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Email</label>
+                <input
+                  type="email"
+                  value={vendorEmail}
+                  onChange={(e) => setVendorEmail(e.target.value)}
+                  placeholder="vendor@example.com"
+                  className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#D4A845] bg-white text-black"
+                />
+              </div>
+            </div>
+            <div className="p-6 border-t border-gray-100 flex-shrink-0 flex justify-end gap-4 bg-white">
+              <button
+                onClick={closeVendorModal}
+                className="px-6 py-2 border border-gray-200 rounded hover:bg-gray-50 transition-colors text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveVendor}
+                disabled={savingVendor}
+                className="px-6 py-2 bg-[#1B3B28] text-white rounded hover:bg-[#2a5a3f] transition-colors text-sm font-bold disabled:opacity-50"
+              >
+                {savingVendor ? 'Saving...' : editingVendor ? 'Update Vendor' : 'Add Vendor'}
               </button>
             </div>
           </div>
