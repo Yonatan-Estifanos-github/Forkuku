@@ -23,7 +23,7 @@ export default function ThemeToggle() {
             !isLight ? 'text-accent' : 'text-ink/40 hover:text-ink/70'
           }`}
         >
-          Dark Mode
+          Save the Date
         </button>
 
         <span className="h-3.5 w-px bg-hairline shrink-0" />
@@ -36,7 +36,7 @@ export default function ThemeToggle() {
             isLight ? 'text-accent' : 'text-ink/40 hover:text-ink/70'
           }`}
         >
-          Light Mode
+          Invitation
         </button>
       </div>
     </motion.div>
