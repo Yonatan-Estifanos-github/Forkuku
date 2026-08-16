@@ -123,7 +123,7 @@ export const FormalInvite = ({
             <Text style={venueName}>Japanese Garden</Text>
             <Text style={ceremonyLocation}>Ceremony at Lauxmont Gardens</Text>
             <Text style={venueDetail}>1155 Long Level Road, Wrightsville, PA 17368</Text>
-            <Text style={venueDetail}>Guests welcomed at 2:00 PM &nbsp;·&nbsp; Ceremony at 2:30 PM</Text>
+            <Text style={venueDetail}>Guests welcomed at 2:30 PM &nbsp;·&nbsp; Ceremony at 3:00 PM</Text>
           </Section>
 
           {/* ── CTA ── */}

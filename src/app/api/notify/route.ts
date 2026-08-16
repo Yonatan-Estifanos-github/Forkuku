@@ -96,7 +96,7 @@ function buildSmsBody(campaignId: string, guestName: string, partyId: string, in
         'Japanese Garden',
         'Ceremony at Lauxmont Gardens',
         '1155 Long Level Road, Wrightsville, PA 17368',
-        'Guests welcomed at 2:00 PM  ·  Ceremony at 2:30 PM',
+        'Guests welcomed at 2:30 PM  ·  Ceremony at 3:00 PM',
         '',
         `See Our Story & Details: ${magicLink}`,
         `Registry (Cash App, Venmo & Zelle): ${magicLink}#registry`,

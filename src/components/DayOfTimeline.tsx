@@ -58,7 +58,7 @@ export default function DayOfTimeline() {
 
   if (activeView !== 'final-invite') return null;
 
-  const events: TimelineEvent[] = [1, 2, 3, 4, 5, 6, 7].map((n) => ({
+  const events: TimelineEvent[] = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({
     time: t(`timeline.event${n}Time`),
     label: t(`timeline.event${n}Label`),
   }));
