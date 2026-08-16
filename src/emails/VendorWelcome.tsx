@@ -14,7 +14,7 @@ interface VendorWelcomeProps {
   vendorName?: string;
 }
 
-const SITE_LINK = 'https://theestifanos.com/?pwd=Matthew19:6';
+const SITE_LINK = 'https://theestifanos.com/?pwd=Matthew19:6&view=final-invite';
 
 export const VendorWelcome = ({
   vendorName = 'Friend',
