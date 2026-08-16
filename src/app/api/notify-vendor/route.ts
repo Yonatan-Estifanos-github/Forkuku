@@ -6,7 +6,7 @@ import twilio from 'twilio';
 import { supabaseAdmin } from '@/lib/supabase';
 import { VendorWelcome } from '@/emails/VendorWelcome';
 
-const SITE_LINK = 'https://theestifanos.com/?pwd=Matthew19:6';
+const SITE_LINK = 'https://theestifanos.com/?pwd=Matthew19:6&view=final-invite';
 const COMPLIANCE = 'Msg & data rates may apply. Reply STOP to opt out.';
 
 export async function POST(req: Request) {
