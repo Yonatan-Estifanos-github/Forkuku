@@ -25,7 +25,7 @@ export const VendorWelcome = ({
         <meta name="color-scheme" content="dark" />
         <meta name="supported-color-schemes" content="dark" />
       </Head>
-      <Preview>We're so excited to have you — Yonatan &amp; Saron · September 4, 2026</Preview>
+      <Preview>We&apos;re so excited to have you — Yonatan &amp; Saron · September 4, 2026</Preview>
 
       <Body style={mainBody}>
         {/* ── Pre-header ── */}
