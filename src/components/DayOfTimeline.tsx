@@ -9,6 +9,7 @@ import FadeIn from '@/components/ui/FadeIn';
 interface TimelineEvent {
   time: string;
   label: string;
+  description: string;
 }
 
 function TimelineRow({ event }: { event: TimelineEvent }) {
@@ -31,13 +32,18 @@ function TimelineRow({ event }: { event: TimelineEvent }) {
         initial={{ opacity: 0, x: -16 }}
         animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -16 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-        className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 -mt-1"
+        className="flex flex-col gap-1.5 -mt-1 flex-1"
       >
-        <p className={`w-24 shrink-0 text-accent/80 uppercase tracking-[0.2em] text-xs ${isAmharic ? 'font-ethiopic not-italic normal-case tracking-normal' : 'font-sans'}`}>
-          {event.time}
-        </p>
-        <p className={`text-xl md:text-2xl text-ink-heading ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
-          {event.label}
+        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6">
+          <p className={`w-24 shrink-0 text-accent/80 uppercase tracking-[0.2em] text-xs ${isAmharic ? 'font-ethiopic not-italic normal-case tracking-normal' : 'font-sans'}`}>
+            {event.time}
+          </p>
+          <p className={`text-xl md:text-2xl text-ink-heading ${isAmharic ? 'font-ethiopic font-light' : 'font-serif'}`}>
+            {event.label}
+          </p>
+        </div>
+        <p className={`sm:pl-[7.5rem] text-sm text-ink/60 leading-relaxed ${isAmharic ? 'font-ethiopic font-light' : 'font-serif italic'}`}>
+          {event.description}
         </p>
       </motion.div>
     </div>
@@ -61,6 +67,7 @@ export default function DayOfTimeline() {
   const events: TimelineEvent[] = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({
     time: t(`timeline.event${n}Time`),
     label: t(`timeline.event${n}Label`),
+    description: t(`timeline.event${n}Description`),
   }));
 
   return (
